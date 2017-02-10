@@ -1,31 +1,35 @@
-import React, { Component } from 'react';
-import {
-    Text,
-    View
-    } from 'react-native';
+//import React, { Component } from 'react';
 
 
 
-export default class database  {
+export default class database {
     constructor(props) {
-        //super(props);
-        this.state = {name: "database"};
+       //initialise firebase here
+        this.name="database";
+		this.id="";
+		this.type=null;
+		this.data={};
+		
+		if(props instanceof Object){
+			this.id=props.id?props.id:null;
+			this.data=props;
+		}
     }
-    render() {
-        return (
-            <View >
-                <Text >
-                {this.state.name}
-                </Text>
-
-            </View>
-        );
+   getID(){
+	   return this.id;
+   }
+   getType(){
+	   return this.type;
+   }
+   getInfo(){
+	   return {id:this.id,type:this.type}
+   }
+    create(){
+		alert(this.getInfo())
+		//return new this;
     }
-
-    create(value){
-        this.setState({name:value})
-    }
-    destroy(value){
-
+	
+    destroy(){
+    delete this;
     }
 }
