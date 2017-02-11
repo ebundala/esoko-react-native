@@ -19,10 +19,10 @@ export default class User extends Database {
 		}
 
     }
-	create(){
-		alert(this.getID())
+	/* create(){
+		alert(this.app)
 		
-	}
+	} */
 	listProduct(){}
 	placeBid(){}
 	pay(){}
