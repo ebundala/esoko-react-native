@@ -1,8 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+
 
 import React, { Component } from 'react';
 import {
@@ -12,14 +8,14 @@ import {
   View,
   TouchableHighlight
 } from 'react-native';
-import User from './components/database/user'
-import Product from './components/database/product'
-import Order from './components/database/order'
-import Bid from './components/database/bid'
-import Message from './components/database/message'
-import Chat from './components/database/chat.js'
-import Transaction from './components/database/transaction'
-import Review from './components/database/reviews'
+import User from './src/components/database/user'
+import Product from './src/components/database/product'
+import Order from './src/components/database/order'
+import Bid from './src/components/database/bid'
+import Message from './src/components/database/message'
+import Chat from './src/components/database/chat'
+import Transaction from './src/components/database/transaction'
+import Review from './src/components/database/reviews'
 
 
 

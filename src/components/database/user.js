@@ -29,7 +29,7 @@ this.auth.listenForAuth((evt)=> {
     console.log("error"+JSON.stringify(evt))
   } else {
     // evt.user contains the user details
-    alert('User details', evt.user);
+    alert('User details\n', JSON.stringify(evt.user));
   }
 })
 .then(() => {
