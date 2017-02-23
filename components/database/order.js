@@ -6,7 +6,7 @@ import Database from './database';
 export default class Order extends Database {
     constructor(props) {
         super(props);
-        this.name="Order";
+        this.name="Orders";
          if(props instanceof Object)
 		{
 			this.sellerID=props.email?props.email:null;

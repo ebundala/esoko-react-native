@@ -7,7 +7,7 @@ import Database from './database';
 export default class Chat extends Database {
     constructor(props) {
         super(props);
-        this.name="Chat";
+        this.name="Chats";
          if(props instanceof Object)
 		{
 			//this.sellerID=props.email?props.email:null;

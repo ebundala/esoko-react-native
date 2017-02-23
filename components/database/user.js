@@ -9,20 +9,45 @@ export default class User extends Database {
 
     constructor(props) {
         super(props);
-        this.name="user";
-		if(props instanceof Object)
+        this.name="users";
+		/* if(props instanceof Object)
 		{
 			this.id=props.id?props.id:null;
 			this.email=props.email?props.email:null;
 			this.phone=props.phone?props.phone:null;
 			this.shippingAddress=props.shippingAddress?props.shippingAddress:null;
-		}
+		} */	
+		
+
+this.auth.listenForAuth((evt)=> {
+  // evt is the authentication event
+  // it contains an `error` key for carrying the
+  // error message in case of an error
+  // and a `user` key upon successful authentication
+  if (!evt.authenticated) {
+    // There was an error or there is no user
+    console.log("error"+JSON.stringify(evt))
+  } else {
+    // evt.user contains the user details
+    alert('User details', evt.user);
+  }
+})
+.then(() => {
+	alert('Listening for authentication changes')})
 
     }
-	/* create(){
-		alert(this.app)
+	 create(){
 		
-	} */
+		
+	this.auth.createUserWithEmail('ari@fullstack.io', '123456').then((user) => {
+    alert('user created', user)
+  })
+  .catch((err) => {
+    alert('An error occurred', err);
+  })
+		
+	alert("hello");	
+	} 
 	listProduct(){}
 	placeBid(){}
 	pay(){}

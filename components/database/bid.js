@@ -6,7 +6,7 @@ import Database from './database';
 export default class Bid extends Database {
     constructor(props) {
         super(props);
-       this.name="Bid";
+       this.name="Bids";
 	   
          if(props instanceof Object)
 		{

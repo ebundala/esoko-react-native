@@ -6,7 +6,7 @@ import Database from './database';
 export default class Product extends Database {
     constructor(props) {
         super(props);
-        this.name="Product";
+        this.name="Products";
            
 		if(props instanceof Object)
 		{

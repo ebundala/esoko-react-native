@@ -21,6 +21,19 @@ import Chat from './components/database/chat.js'
 import Transaction from './components/database/transaction'
 import Review from './components/database/reviews'
 
+
+
+var user= new User({id:"ELIAS"}); 
+ var product= new Product({id:"ELIASProduct"}); 
+ var message= new Message({id:"ELIASmsg"}); 
+ var bid= new Bid({id:"ELIASmsg"}); 
+ var order= new Order({id:"ELIASmsg"}); 
+ var review= new Review({id:"ELIASmsg"}); 
+ var transaction= new Transaction({id:"ELIASmsg"}); 
+ var chat= new Chat({id:"ELIASmsg"}); 
+ 
+ 
+ 
 export default class eSoko extends Component {
 
   render() {
@@ -75,37 +88,37 @@ export default class eSoko extends Component {
     );
   }
   userCreated(){
-	 var user= new User({id:"ELIAS"}); 
+	 
 	 user.create()
-	 user.destroy()
+	 //user.destroy()
   }
   productCreated(){
-	 var user= new Product({id:"ELIASProduct"}); 
+	
 	 user.create()
   }
   messageCreated(){
-	 const user= new Message({id:"ELIASmsg"}); 
-	 user.create()
+	 
+	 message.create()
   }
   bidCreated(){
-	 const user= new Bid({id:"ELIASmsg"}); 
-	 user.create()
+	 
+	 bid.create()
   }
   orderCreated(){
-	 const user= new Order({id:"ELIASmsg"}); 
-	 user.create()
+	 
+	 order.create()
   }
   reviewCreated(){
-	 const user= new Review({id:"ELIASmsg"}); 
-	 user.create()
+	 
+	 review.create()
   }
   chatCreated(){
-	 const user= new Chat({id:"ELIASmsg"}); 
-	 user.create()
+	 
+	 chat.create()
   }
   transactionCreated(){
-	 const user= new Transaction({id:"ELIASmsg"}); 
-	 user.create()
+	 
+	 transaction.create()
   }
 }
 
