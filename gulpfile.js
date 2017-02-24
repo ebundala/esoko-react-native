@@ -6,24 +6,10 @@
 // Include Gulp & tools we'll use
 var gulp = require('gulp');
 var download = require("gulp-download-stream");
-var fs = require('fs');
-
-
-
-
+//var fs = require('fs');
 
 var DIST = 'android/app/src/main/assets/';
 var ProjectDir="/"
-
-
-
-
-
-
-
-
-
-
 
 var spwner=function(cmd){
   var cdvSpawn = require('child_process').exec;
@@ -32,7 +18,7 @@ var spwner=function(cmd){
   var options = {
     encoding: 'utf8',
     timeout: 0,
-    maxBuffer: 200*1024,
+   // maxBuffer: 200*1024,
     killSignal: 'SIGTERM',
     //cwd: ProjectDir,
     env: process.env
@@ -69,6 +55,12 @@ var spwner=function(cmd){
 }
 gulp.task("serve",function(){
   spwner('react-native start');
+})
+gulp.task("log",function(){
+  spwner('start adb logcat com.eSoko:V ReactNativeJS:V Firestack:V *:S');
+})
+gulp.task("run",function(){
+  spwner('react-native run-android');
 })
 gulp.task("build",["default"],function(){
  spwner('cd android && gradlew.bat installDebug');

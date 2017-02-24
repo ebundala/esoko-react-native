@@ -9,8 +9,7 @@ import Firestack from 'react-native-firestack'
     storageBucket: "esoko-fc718.appspot.com",
     messagingSenderId: "1071434923103"
   }; */
- 
-//const firestack = new Firestack();
+
 export default class database extends Firestack {
 	
     constructor(props) {
@@ -24,7 +23,7 @@ export default class database extends Firestack {
 		this.id="";
 		this.type=null;
 		this.data={};
-		
+        this.debug=true;
 		if(props instanceof Object){
 			this.id=props.id?props.id:null;
 			this.data=props;
@@ -33,6 +32,11 @@ export default class database extends Firestack {
    getID(){
 	   return this.id;
    }
+    log(message){
+        if(this.debug&&message){
+            console.log(JSON.stringify(message))
+        }
+    }
    getData(){
 	   return this.data;
    }
@@ -43,14 +47,12 @@ export default class database extends Firestack {
 	   return {id:this.id,type:this.type}
    }
     create(){
-		
-	//let ctx=this;
 
-   let newPostKey= this.database.ref(this.name).push().then((res) => {
+        this.database.ref(this.name).push().then((res) => {
  let newPostKey = res.key;
  
   this.ServerValue.then(map => {
-	  //alert(JSON.stringify(map));
+	  this.log(map);
    const postData = {
      type: this.name,
      timestamp: map.TIMESTAMP,
@@ -60,7 +62,7 @@ export default class database extends Firestack {
     let updates = {}
     updates['/'+this.name+'/' + newPostKey] = postData
     this.database.ref().update(updates).then(() => {
-     ("posted "+this.name);
+        this.log("posted "+this.name);
 	
 	}).catch(() => {
 		alert("error "+ctx.name)

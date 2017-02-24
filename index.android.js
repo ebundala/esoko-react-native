@@ -8,15 +8,16 @@ import {
   View,
   TouchableHighlight
 } from 'react-native';
-import User from './src/components/database/user'
-import Product from './src/components/database/product'
-import Order from './src/components/database/order'
-import Bid from './src/components/database/bid'
-import Message from './src/components/database/message'
-import Chat from './src/components/database/chat'
-import Transaction from './src/components/database/transaction'
-import Review from './src/components/database/reviews'
-
+import { provider } from 'redux';
+import User from './src/utils/user'
+import Product from './src/utils/product'
+import Order from './src/utils/order'
+import Bid from './src/utils//bid'
+import Message from './src/utils/message'
+import Chat from './src/utils/chat'
+import Transaction from './src/utils/transaction'
+import Review from './src/utils/reviews'
+import store from './src/store'
 
 
 var user= new User({id:"ELIAS"}); 
@@ -31,9 +32,15 @@ var user= new User({id:"ELIAS"});
  
  
 export default class eSoko extends Component {
-
+    constructor() {
+        super();
+        this.state = {
+            store: store
+        };
+    }
   render() {
     return (
+        <provider >
       <View style={styles.container}>
 	 
         <Text style={styles.welcome}>
@@ -81,6 +88,7 @@ export default class eSoko extends Component {
 		</TouchableHighlight>
         
       </View>
+        </provider>
     );
   }
   userCreated(){
@@ -90,11 +98,20 @@ export default class eSoko extends Component {
   }
   productCreated(){
 	
-	 user.create()
+	// product.create()
+      store.dispatch({
+          type:"USER_LOGIN",
+          data:{}
+      })
+
   }
   messageCreated(){
 	 
-	 message.create()
+	 //message.create()
+      store.dispatch({
+          type:"USER_LOGOUT",
+          data:{}
+      })
   }
   bidCreated(){
 	 
