@@ -8,7 +8,8 @@ import {
   View,
   TouchableHighlight
 } from 'react-native';
-import { provider } from 'redux';
+import { Provider } from 'react-redux'
+import App from "./src/app"
 import User from './src/utils/user'
 import Product from './src/utils/product'
 import Order from './src/utils/order'
@@ -32,126 +33,58 @@ var user= new User({id:"ELIAS"});
  
  
 export default class eSoko extends Component {
-    constructor() {
-        super();
-        this.state = {
-            store: store
-        };
-    }
+
   render() {
     return (
-        <provider >
-      <View style={styles.container}>
-	 
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <TouchableHighlight onPress={this.userCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         USER
-        </Text>
-		</TouchableHighlight>
-        <TouchableHighlight onPress={this.productCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         product
-        </Text>
-		</TouchableHighlight>
-		<TouchableHighlight onPress={this.bidCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         bid
-        </Text>
-		</TouchableHighlight>
-		<TouchableHighlight onPress={this.orderCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         order
-        </Text>
-		</TouchableHighlight>
-		<TouchableHighlight onPress={this.reviewCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         review
-        </Text>
-		</TouchableHighlight>
-		<TouchableHighlight onPress={this.transactionCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         transaction
-        </Text>
-		</TouchableHighlight>
-		<TouchableHighlight onPress={this.chatCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         chat
-        </Text>
-		</TouchableHighlight>
-		<TouchableHighlight onPress={this.messageCreated.bind(this)}>
-		<Text style={styles.instructions}>
-         message
-        </Text>
-		</TouchableHighlight>
-        
-      </View>
-        </provider>
+
+       <App/>
+
+
     );
   }
-  userCreated(){
-	 
-	 user.create()
-	 //user.destroy()
-  }
-  productCreated(){
-	
-	// product.create()
-      store.dispatch({
-          type:"USER_LOGIN",
-          data:{}
-      })
+    userCreated(){
 
-  }
-  messageCreated(){
-	 
-	 //message.create()
-      store.dispatch({
-          type:"USER_LOGOUT",
-          data:{}
-      })
-  }
-  bidCreated(){
-	 
-	 bid.create()
-  }
-  orderCreated(){
-	 
-	 order.create()
-  }
-  reviewCreated(){
-	 
-	 review.create()
-  }
-  chatCreated(){
-	 
-	 chat.create()
-  }
-  transactionCreated(){
-	 
-	 transaction.create()
-  }
+        user.create()
+        //user.destroy()
+    }
+    productCreated(){
+
+        // product.create()
+        store.dispatch({
+            type:"USER_LOGIN",
+            data:{}
+        })
+
+    }
+    messageCreated(){
+
+        //message.create()
+        store.dispatch({
+            type:"USER_LOGOUT",
+            data:{}
+        })
+    }
+    bidCreated(){
+
+        bid.create()
+    }
+    orderCreated(){
+
+        order.create()
+    }
+    reviewCreated(){
+
+        review.create()
+    }
+    chatCreated(){
+
+        chat.create()
+    }
+    transactionCreated(){
+
+        transaction.create()
+    }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
 
 AppRegistry.registerComponent('eSoko', () => eSoko);
