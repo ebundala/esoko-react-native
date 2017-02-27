@@ -29,7 +29,7 @@ var spwner=function(cmd){
 
         if (error) {
           console.error('exec error:'+error.toString());
-          return;
+          //return;
         }
         //console.log('stdout:'+stdout.toString());
         //console.log('stderr: '+stderr.toString());
@@ -62,7 +62,7 @@ gulp.task("log",function(){
 gulp.task("run",function(){
   spwner('react-native run-android');
 })
-gulp.task("build",["default"],function(){
+gulp.task("build",function(){
  spwner('cd android && gradlew.bat installDebug');
 
 })

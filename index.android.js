@@ -10,25 +10,25 @@ import {
 } from 'react-native';
 import { Provider } from 'react-redux'
 import App from "./src/app"
-import User from './src/utils/user'
+/*import User from './src/utils/user'
 import Product from './src/utils/product'
 import Order from './src/utils/order'
 import Bid from './src/utils//bid'
 import Message from './src/utils/message'
 import Chat from './src/utils/chat'
 import Transaction from './src/utils/transaction'
-import Review from './src/utils/reviews'
+import Review from './src/utils/reviews'*/
 import store from './src/store'
 
 
-var user= new User({id:"ELIAS"}); 
+/*var user= new User({id:"ELIAS"});
  var product= new Product({id:"ELIASProduct"}); 
  var message= new Message({id:"ELIASmsg"}); 
  var bid= new Bid({id:"ELIASmsg"}); 
  var order= new Order({id:"ELIASmsg"}); 
  var review= new Review({id:"ELIASmsg"}); 
  var transaction= new Transaction({id:"ELIASmsg"}); 
- var chat= new Chat({id:"ELIASmsg"}); 
+ var chat= new Chat({id:"ELIASmsg"}); */
  
  
  
@@ -36,54 +36,13 @@ export default class eSoko extends Component {
 
   render() {
     return (
-
+<Provider store={store}>
        <App/>
-
+</Provider>
 
     );
   }
-    userCreated(){
 
-        user.create()
-        //user.destroy()
-    }
-    productCreated(){
-
-        // product.create()
-        store.dispatch({
-            type:"USER_LOGIN",
-            data:{}
-        })
-
-    }
-    messageCreated(){
-
-        //message.create()
-        store.dispatch({
-            type:"USER_LOGOUT",
-            data:{}
-        })
-    }
-    bidCreated(){
-
-        bid.create()
-    }
-    orderCreated(){
-
-        order.create()
-    }
-    reviewCreated(){
-
-        review.create()
-    }
-    chatCreated(){
-
-        chat.create()
-    }
-    transactionCreated(){
-
-        transaction.create()
-    }
 }
 
 

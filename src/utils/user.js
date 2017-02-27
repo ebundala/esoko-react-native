@@ -36,17 +36,12 @@ this.auth.listenForAuth((evt)=> {
 	alert('Listening for authentication changes')})
 
     }
-	 create(){
+	 create(email,password){
 		
 		
-	this.auth.createUserWithEmail('ari@fullstack.io', '123456').then((user) => {
-    alert('user created', user)
-  })
-  .catch((err) => {
-    alert('An error occurred', err);
-  })
+  	return this.auth.createUserWithEmail(email, password)
 		
-	alert("hello");	
+
 	} 
 	listProduct(){}
 	placeBid(){}
