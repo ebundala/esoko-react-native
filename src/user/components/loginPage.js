@@ -24,103 +24,260 @@ class LoginPage extends Component{
 
         this.state = {
             email: "",
-            password:""
+            password:"",
+            signUpPassword:"",
+            retypedPassword:"",
+            showStart:true,
+            showLogin:false,
+            showSignUp:false,
+            showLogout:false,
+            passwordMatched:false
+
         }
     }
     render(){
         return(
-            <View style={styles.main}>
-                <View style={styles.space}>
+            <View style={styles.main,styles.horizontal}>
+                <View style={styles.flex1}>
 
                 </View>
-                <View style={styles.mid}>
+                <View style={styles.flex10}>
                     <View style={styles.row,styles.center}><Text style={styles.title}>Signin/Signup</Text></View>
-                    <View style={styles.row}>
 
-                        <View style={styles.row}>
-                            <TextInput
-                                ref="email"
-                                keyboardType="email-address"
-                                style={styles.input}
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                placeholderTextColor='#a8aAeC'
-                                placeholder="Email"
-                                onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
-                                onChangeText={email => this.setState({email})}
-                            />
+                {this.state.showStart?<View section="login/signup" style={styles.horizontal}>
+                        <View style={styles.flex1}/>
+                        <View style={styles.row,styles.flex4}>
+
+                            <Button title="Log In" onPress={()=>this.showLogin()}>
+
+                            </Button>
 
                         </View>
 
-                    </View>
-                    <View style={styles.row}>
 
-                        <TextInput
-                            ref="password"
-                            style={styles.input}
-                            maxLength={16}
-                            secureTextEntry={true}
-                            onSubmitEditing={this.submit.bind(this)}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            placeholderTextColor='#a8aAeC'
-                            placeholder="Password"
+                        <View style={styles.flex2}/>
+                        <View style={styles.row,styles.flex4}>
+                            <Button title="Sign Up" onPress={()=>this.showSignUp()}>
 
-                            onChangeText={password => this.setState({password})}
-                        />
+                            </Button>
 
-                    </View>
-                    <View style={styles.row}>
+                        </View>
 
-                        <Button title="SignInn" onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
+                        <View style={styles.flex1}/>
+                    </View>:null}
 
-                        </Button>
+                {this.computeShowOauth()?<View section="Oauth buttons">
+                        <View style={styles.row}>
+                            <Button style={styles.facebook} title="LOGIN WITH Facebook" onPress={()=>this.props.oAuth("FACEBOOK")}>
 
-                    </View>
-                    <View style={styles.row}>
+                            </Button>
+                        </View>
+                        <View style={styles.row}>
+                            <Button style={styles.google} title="login with Google" onPress={()=>this.props.oAuth("GOOGLE")}>
 
-                        <Button title="SignUp" onPress={()=>this.props.onCreate(this.state.email,this.state.password)}>
+                            </Button>
+                        </View>
 
-                        </Button>
+                        <View style={styles.row,styles.center}><Text style={styles.title}>or</Text></View>
+                    </View>:null}
+                {this.state.showLogin?<View sect="login screen"  >
+                    <View section="email/pass input">
+                   <View style={styles.row}>
 
-                    </View>
-                    <View style={styles.row}>
+                       <View style={styles.row}>
+                           <TextInput
+                               ref="email"
+                               keyboardType="email-address"
+                               style={styles.input}
+                               autoCorrect={false}
+                               autoCapitalize="none"
+                               placeholderTextColor='#a8aAeC'
+                               placeholder="Email"
+                               onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
+                               onChangeText={email => this.setState({email})}
+                           />
 
+                       </View>
+
+                   </View>
+                   <View style={styles.row}>
+
+                       <TextInput
+                           ref="password"
+                           style={styles.input}
+                           maxLength={16}
+                           secureTextEntry={true}
+                           onSubmitEditing={this.submit.bind(this)}
+                           autoCorrect={false}
+                           autoCapitalize="none"
+                           placeholderTextColor='#a8aAeC'
+                           placeholder="Password"
+
+                           onChangeText={password => this.setState({password})}
+                       />
+
+                   </View>
+                   <View style={styles.row}>
+
+                       <Button title="Log In" onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
+
+                       </Button>
+
+                   </View>
+               </View>
+           </View>:null}
+
+
+                {this.state.showSignUp&&<View sect="sign up screen">
+                   <View section="email/pass input">
+                       <View style={styles.row}>
+
+                           <View style={styles.row}>
+                               <TextInput
+                                   ref="email"
+                                   keyboardType="email-address"
+                                   style={styles.input}
+                                   autoCorrect={false}
+                                   autoCapitalize="none"
+                                   placeholderTextColor='#a8aAeC'
+                                   placeholder="Email"
+                                   onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
+                                   onChangeText={email => this.setState({email})}
+                               />
+
+                           </View>
+
+                       </View>
+                       <View style={styles.row}>
+
+                           <TextInput
+                               ref="signUpPassword"
+                               style={styles.input}
+                               maxLength={16}
+                               secureTextEntry={true}
+                               onSubmitEditing={this.submit.bind(this)}
+                               autoCorrect={false}
+                               autoCapitalize="none"
+                               placeholderTextColor='#a8aAeC'
+                               placeholder="Password"
+
+                               onChangeText={signUpPassword => this.setState({signUpPassword})}
+                           />
+
+                       </View>
+
+                       <View style={styles.row}>
+
+                           <TextInput
+                               ref="retypedPassword"
+                               style={styles.input}
+                               maxLength={16}
+                               secureTextEntry={true}
+                               onSubmitEditing={this.submit.bind(this)}
+                               autoCorrect={false}
+                               autoCapitalize="none"
+                               placeholderTextColor='#a8aAeC'
+                               placeholder="Re-type Password"
+
+                               onChangeText={retypedPassword => this.setState({retypedPassword})}
+                           />
+
+                       </View>
+
+                   {this.comparePassword()?<View style={styles.row}>
+
+                           <Button title="sign up" onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
+
+                           </Button>
+
+                       </View>:null}
+                   </View>
+
+
+               </View>}
+
+
+
+
+
+                {this.state.showLogout&&<View section="logout screen" style={styles.row}>
                         <Button title="logout" onPress={()=>this.props.onLogout()}>
 
                         </Button>
+                            </View>}
 
-                    </View>
-                    <View style={styles.row,styles.center}><Text style={styles.title}>or</Text></View>
 
-                    <View style={styles.row}>
-                        <Button style={styles.facebook} title="LOGIN WITH Facebook" onPress={()=>this.props.oAuth("FACEBOOK")}>
 
-                        </Button>
-                    </View>
-                    <View style={styles.row}>
-                        <Button style={styles.google} title="login with Google" onPress={()=>this.props.oAuth("GOOGLE")}>
 
-                        </Button>
-                    </View>
-                    <View style={styles.row}>
-                        <Button style={styles.twitter} title="login with TWITTER" onPress={()=>this.props.oAuth("TWITTER")}>
 
-                        </Button>
-                    </View>
-                    <View style={styles.row}>
-                        <Button style={styles.instagram} title="login with INSTAGRAM" onPress={()=>this.props.oAuth("INSTAGRAM")}>
-
-                        </Button>
-                    </View>
                 </View>
 
-                <View style={styles.space}>
+                <View style={styles.flex1}>
 
                 </View>
             </View>)
     }
+    showSignUp(){
+        this.setState({
+            showStart:false,
+            showLogin:false,
+            showSignUp:true,
+            showLogout:false,
+            passwordMatched:false
+        })
+    }
+    showLogin(){
+        this.setState({
+            showStart:false,
+            showLogin:true,
+            showSignUp:false,
+            showLogout:false,
+            passwordMatched:false
+        })
+    }
+    showStart(){
+        this.setState({
+            showStart:true,
+            showLogin:false,
+            showSignUp:false,
+            showLogout:false,
+            passwordMatched:false
+        })
+    }
+    showLogout(){
+        this.setState({
+            showStart:false,
+            showLogin:false,
+            showSignUp:false,
+            showLogout:true,
+            passwordMatched:false
+        })
+    }
+    computeShowOauth(){
 
+        if(this.state.showSignUp){
+            return true
+
+        }
+        else if(this.state.showLogin){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+    comparePassword(){
+
+       // console.log("password\n one "+retypedPassword+"\ntwo"+this.state.signUpPassword)
+
+        if((this.state.signUpPassword===this.state.retypedPassword)&&(this.state.signUpPassword&&this.state.retypedPassword)){
+
+            return true
+        }else{
+
+            return false
+        }
+    }
     validateEmail(){
         let em=this.state.email;
         alert("validate emaill"+em)
@@ -180,38 +337,83 @@ export default Oauth
 
 
 const  styles=StyleSheet.create({
-    main:{
-        flexDirection:"row",
-        flex: 1,
-        //justifyContent: 'center',
-        //alignItems: 'center',
-        // backgroundColor:'blue'
+   //layouts
+    horizontal:{
+        flexDirection:"row"
+    },
+    vertical:{
+        flexDirection:"column"
+    },
 
+    //flex factors
+    flex1:{
+        flex:1
     },
-    space:{
-        flex:1,
-        // alignItems: 'center',
-        // backgroundColor:'white'
+    flex2:{
+        flex:2
     },
-    mid:{
-        flex:10,
-        flexDirection:"column",
-        // alignItems: 'center',
-        // backgroundColor:'yellow'
+    flex3:{
+        flex:3
     },
+    flex4:{
+        flex:4
+    },
+    flex5:{
+        flex:5
+    },
+    flex6:{
+        flex:6
+    },
+    flex7:{
+        flex:7
+    },
+    flex8:{
+        flex:8
+    },
+    flex9:{
+        flex:9
+    },
+    flex10:{
+        flex:10
+    },
+    flex11:{
+        flex:11
+    },
+    flex12:{
+        flex:12
+    },
+
+    //content justify
+spaceBetween:{
+    justifyContent: 'space-between'
+},
+    flexStart:{
+        justifyContent: 'flex-start'
+    },
+    flexEnd:{
+        justifyContent: 'flex-end'
+    },
+    spaceAround:{
+        justifyContent: 'space-around'
+    },
+    centerJustified:{
+        justifyContent: 'center'
+    },
+    center:{
+        alignItems:'center'
+    },
+
     row:{
-        // flex:12,
-        flexDirection:"column",
+        // flex:2,
+
         //alignItems: 'center',
         // backgroundColor:'green',
-        height:40,
+       height:50,
         //width:260
 
     }
     ,
-    center:{
-        alignItems: 'center'
-    },
+
     input:{
         // flex: 4,
         paddingHorizontal: 10,

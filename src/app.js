@@ -9,7 +9,7 @@ import {
     View,
     TouchableHighlight
     } from 'react-native';
-import Oauth from "./user/components/LoginPage"
+import Oauth from "./user/components/loginPage"
  const App = () => (
  <Oauth/>
 
@@ -21,6 +21,6 @@ export default App
 
 
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
 
-});
+})*/;
