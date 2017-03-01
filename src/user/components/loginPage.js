@@ -37,7 +37,7 @@ class LoginPage extends Component{
 
         }
         let ctx=this;
-        actions.auth.listenForAuth((evt)=> {
+        actions.auth.listenForAuth((evt)=>{
             // evt is the authentication event
             // it contains an `error` key for carrying the
             // error message in case of an error
@@ -63,7 +63,7 @@ class LoginPage extends Component{
 
                 </View>
 
-                <View style={styles.flex10}>
+                <View style={{flex:10,justifyContent:"space-around"}}>
                     <View style={styles.row,styles.alignItemsCenterCN}>
                         <Text style={styles.title}>Signin/Signup</Text>
                     </View>
@@ -87,7 +87,8 @@ class LoginPage extends Component{
 
                         <View style={styles.row,styles.flex5}>
 
-                            <Button title="Log In" onPress={()=>this.showLogin()}>
+                            <Button
+                                title="Log In" onPress={()=>this.showLogin()}>
 
                             </Button>
 
@@ -164,7 +165,9 @@ class LoginPage extends Component{
                    </View>
                    <View style={styles.row}>
 
-                       <Button title="Log In" onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
+                       <Button disabled={!(this.state.email&&this.state.password)}
+                           title="Log In"
+                           onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
 
                        </Button>
 
@@ -230,13 +233,13 @@ class LoginPage extends Component{
 
                        </View>
 
-                   {this.comparePassword()?<View style={styles.row}>
+                   <View style={styles.row}>
 
-                           <Button title="sign up" onPress={()=>this.props.onCreate(this.state.signUpEmail,this.state.retypedPassword)}>
+                           <Button disabled={!this.comparePassword()} title="sign up" onPress={()=>this.props.onCreate(this.state.signUpEmail,this.state.retypedPassword)}>
 
                            </Button>
 
-                       </View>:null}
+                       </View>
                    </View>
 
 
@@ -244,11 +247,16 @@ class LoginPage extends Component{
                     }
 
                 {this.state.showLogout&&
+                    <View style={{
+                        flex:1,
+                        justifyContent:"center"
+                    }}>
                 <View section="logout screen" style={styles.row}>
                         <Button title="logout" onPress={()=>this.props.onLogout()}>
 
                         </Button>
                             </View>
+                    </View>
                     }
 
                 {  this.state.showLogout&&<View>
