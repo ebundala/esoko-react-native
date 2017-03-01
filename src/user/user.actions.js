@@ -4,7 +4,7 @@
 
 import userUtil from "../utils/user"
 
-export default class userActions extends userUtil {
+ class userActions extends userUtil {
   login(email,password){
     return (dispatch)=>
     {
@@ -145,3 +145,4 @@ create(email,password){
 }
 }
 }
+export default new userActions()

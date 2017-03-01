@@ -7,7 +7,7 @@
 
 const INITIAL_STATE={
     user:{
-
+        isAuthenticated:false
     }
 }
 export default function userReducer(state= INITIAL_STATE, action={type:""})

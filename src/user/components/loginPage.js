@@ -16,8 +16,9 @@ import {
 
     } from 'react-native';
 import { connect } from 'react-redux'
+import styles from '../../styles/styles'
 import actions from "../user.actions"
-let userActions=new actions;
+//let userActions=new actions;
 class LoginPage extends Component{
     constructor(props) {
         super(props);
@@ -26,6 +27,7 @@ class LoginPage extends Component{
             email: "",
             password:"",
             signUpPassword:"",
+            signUpEmail:"",
             retypedPassword:"",
             showStart:true,
             showLogin:false,
@@ -34,19 +36,56 @@ class LoginPage extends Component{
             passwordMatched:false
 
         }
+        let ctx=this;
+        actions.auth.listenForAuth((evt)=> {
+            // evt is the authentication event
+            // it contains an `error` key for carrying the
+            // error message in case of an error
+            // and a `user` key upon successful authentication
+            if (!evt.authenticated) {
+                // There was an error or there is no user
+                console.log(" user not authenticated\n"+JSON.stringify(evt))
+               ctx.showStart();
+                //ctx.showLogout();
+            } else {
+                // evt.user contains the user details
+                console.log('User authenticated\n', JSON.stringify(evt.user));
+                ctx.showLogout();
+
+            }
+        }).then(() => {
+                alert('Listening for authentication changes')})
     }
     render(){
         return(
-            <View style={styles.main,styles.horizontal}>
+            <View style={styles.flex1,styles.horizontal}>
                 <View style={styles.flex1}>
 
                 </View>
-                <View style={styles.flex10}>
-                    <View style={styles.row,styles.center}><Text style={styles.title}>Signin/Signup</Text></View>
 
-                {this.state.showStart?<View section="login/signup" style={styles.horizontal}>
-                        <View style={styles.flex1}/>
-                        <View style={styles.row,styles.flex4}>
+                <View style={styles.flex10}>
+                    <View style={styles.row,styles.alignItemsCenterCN}>
+                        <Text style={styles.title}>Signin/Signup</Text>
+                    </View>
+
+                {!this.state.showStart&&
+                <View style={styles.row}>
+                        <Button  title="back" onPress={()=>this.showStart()}>
+
+                        </Button>
+                    </View>}
+
+                {this.state.showStart&&
+                   <View style={styles.flex1}>
+                    <View section="login/signup"
+                        style={{
+                            flexDirection:"row",
+                            flex:1,
+                            alignItems:"flex-end",
+                            justifyContent:"space-between"
+                        }}>
+
+                        <View style={styles.row,styles.flex5}>
 
                             <Button title="Log In" onPress={()=>this.showLogin()}>
 
@@ -54,19 +93,23 @@ class LoginPage extends Component{
 
                         </View>
 
+                         <View style={styles.flex2}/>
 
-                        <View style={styles.flex2}/>
-                        <View style={styles.row,styles.flex4}>
+                        <View style={styles.row,styles.flex5}>
                             <Button title="Sign Up" onPress={()=>this.showSignUp()}>
 
                             </Button>
 
                         </View>
 
-                        <View style={styles.flex1}/>
-                    </View>:null}
 
-                {this.computeShowOauth()?<View section="Oauth buttons">
+                    </View>
+    <View style={styles.row}/>
+                    </View>
+                    }
+
+                {this.computeShowOauth()&&
+                <View section="Oauth buttons">
                         <View style={styles.row}>
                             <Button style={styles.facebook} title="LOGIN WITH Facebook" onPress={()=>this.props.oAuth("FACEBOOK")}>
 
@@ -78,9 +121,11 @@ class LoginPage extends Component{
                             </Button>
                         </View>
 
-                        <View style={styles.row,styles.center}><Text style={styles.title}>or</Text></View>
-                    </View>:null}
-                {this.state.showLogin?<View sect="login screen"  >
+                        <View style={styles.row,styles.alignItemsCenterCN}><Text style={styles.title}>or</Text></View>
+                    </View>
+                    }
+                {this.state.showLogin&&
+                <View sect="login screen"  >
                     <View section="email/pass input">
                    <View style={styles.row}>
 
@@ -125,10 +170,11 @@ class LoginPage extends Component{
 
                    </View>
                </View>
-           </View>:null}
+           </View>
+                    }
 
-
-                {this.state.showSignUp&&<View sect="sign up screen">
+                {this.state.showSignUp&&
+                <View sect="sign up screen">
                    <View section="email/pass input">
                        <View style={styles.row}>
 
@@ -141,8 +187,8 @@ class LoginPage extends Component{
                                    autoCapitalize="none"
                                    placeholderTextColor='#a8aAeC'
                                    placeholder="Email"
-                                   onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
-                                   onChangeText={email => this.setState({email})}
+                                   onSubmitEditing={()=>this.props.validateEmail(this.state.signUpEmail)}
+                                   onChangeText={signUpEmail => this.setState({signUpEmail})}
                                />
 
                            </View>
@@ -186,7 +232,7 @@ class LoginPage extends Component{
 
                    {this.comparePassword()?<View style={styles.row}>
 
-                           <Button title="sign up" onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
+                           <Button title="sign up" onPress={()=>this.props.onCreate(this.state.signUpEmail,this.state.retypedPassword)}>
 
                            </Button>
 
@@ -194,17 +240,22 @@ class LoginPage extends Component{
                    </View>
 
 
-               </View>}
+               </View>
+                    }
 
-
-
-
-
-                {this.state.showLogout&&<View section="logout screen" style={styles.row}>
+                {this.state.showLogout&&
+                <View section="logout screen" style={styles.row}>
                         <Button title="logout" onPress={()=>this.props.onLogout()}>
 
                         </Button>
-                            </View>}
+                            </View>
+                    }
+
+                {  this.state.showLogout&&<View>
+                    <Text style={styles.red}>
+                    {JSON.stringify(this.state)}
+                       </Text>
+                    </View>}
 
 
 
@@ -245,6 +296,7 @@ class LoginPage extends Component{
         })
     }
     showLogout(){
+
         this.setState({
             showStart:false,
             showLogin:false,
@@ -255,16 +307,12 @@ class LoginPage extends Component{
     }
     computeShowOauth(){
 
-        if(this.state.showSignUp){
+        if(this.state.showSignUp||this.state.showLogin){
             return true
 
         }
-        else if(this.state.showLogin){
-            return true
-        }
-        else{
+
             return false
-        }
     }
     comparePassword(){
 
@@ -302,26 +350,26 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onSubmit: (email,password) => {
-            dispatch(userActions.login(email,password))
+            dispatch(actions.login(email,password))
             /*dispatch({
              type:"USER_LOGIN",
              data:{email,password}
              })*/
         },
         oAuth:(name)=>{
-            dispatch(userActions.oAuth(name))
+            dispatch(actions.oAuth(name))
         },
         validateEmail:(email)=>{
             dispatch(
-                userActions.resetPasswordWithEmail(email)
+                actions.resetPasswordWithEmail(email)
             )
         },
 
         onCreate:(email,password)=>{
-            dispatch(userActions.create(email,password))
+            dispatch(actions.create(email,password))
         },
         onLogout:()=>{
-            dispatch(userActions.logout())
+            dispatch(actions.logout())
         }
     }
 }
@@ -336,107 +384,7 @@ const Oauth = connect(
 export default Oauth
 
 
-const  styles=StyleSheet.create({
-   //layouts
-    horizontal:{
-        flexDirection:"row"
-    },
-    vertical:{
-        flexDirection:"column"
-    },
 
-    //flex factors
-    flex1:{
-        flex:1
-    },
-    flex2:{
-        flex:2
-    },
-    flex3:{
-        flex:3
-    },
-    flex4:{
-        flex:4
-    },
-    flex5:{
-        flex:5
-    },
-    flex6:{
-        flex:6
-    },
-    flex7:{
-        flex:7
-    },
-    flex8:{
-        flex:8
-    },
-    flex9:{
-        flex:9
-    },
-    flex10:{
-        flex:10
-    },
-    flex11:{
-        flex:11
-    },
-    flex12:{
-        flex:12
-    },
-
-    //content justify
-spaceBetween:{
-    justifyContent: 'space-between'
-},
-    flexStart:{
-        justifyContent: 'flex-start'
-    },
-    flexEnd:{
-        justifyContent: 'flex-end'
-    },
-    spaceAround:{
-        justifyContent: 'space-around'
-    },
-    centerJustified:{
-        justifyContent: 'center'
-    },
-    center:{
-        alignItems:'center'
-    },
-
-    row:{
-        // flex:2,
-
-        //alignItems: 'center',
-        // backgroundColor:'green',
-       height:50,
-        //width:260
-
-    }
-    ,
-
-    input:{
-        // flex: 4,
-        paddingHorizontal: 10,
-        // height:40,
-    },
-    title:{
-        fontSize:16,
-        fontWeight:"bold",
-        color:"grey"
-    },
-    google:{
-        backgroundColor:'red',
-    },
-    facebook:{
-        // backgroundColor:'green',
-    },
-    twitter:{
-        backgroundColor:'blue',
-    },
-    instagram:{
-        backgroundColor:'brown',
-    }
-})
 
 
 

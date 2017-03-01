@@ -19,21 +19,7 @@ export default class User extends Database {
 		} */	
 		
 
-this.auth.listenForAuth((evt)=> {
-  // evt is the authentication event
-  // it contains an `error` key for carrying the
-  // error message in case of an error
-  // and a `user` key upon successful authentication
-  if (!evt.authenticated) {
-    // There was an error or there is no user
-    console.log("error"+JSON.stringify(evt))
-  } else {
-    // evt.user contains the user details
-    alert('User details\n', JSON.stringify(evt.user));
-  }
-})
-.then(() => {
-	alert('Listening for authentication changes')})
+
 
     }
 	 create(email,password){
@@ -62,5 +48,7 @@ this.auth.listenForAuth((evt)=> {
 	logout(){
 		
 	}
-	
+	listenForAuthChange(){
+		return this.auth.listenForAuth
+	}
 }
