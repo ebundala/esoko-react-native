@@ -45,6 +45,8 @@ export default function userReducer(state= INITIAL_STATE.user, action)
             showLogin:false,
             showSignUp:false,
             showLogout:false,
+            showResetPass:false,
+            showResetMail:false
         }
     }
     else
@@ -81,7 +83,7 @@ export default function userReducer(state= INITIAL_STATE.user, action)
                 showSignUp:true,
                 showLogout:false,
                 showResetPass:false,
-                showResetMail:true
+                showResetMail:false
             }
         case "SHOW_START":
             return{
@@ -91,7 +93,7 @@ export default function userReducer(state= INITIAL_STATE.user, action)
                 showSignUp:false,
                 showLogout:false,
                 showResetPass:false,
-                showResetMail:true
+                showResetMail:false
             }
         case "SHOW_RESET_PASSWORD":
             return{

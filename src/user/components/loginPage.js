@@ -47,12 +47,13 @@ class LoginPage extends Component{
             if (!evt.authenticated) {
                 // There was an error or there is no user
                 console.log(" user not authenticated\n"+JSON.stringify(evt))
-               ctx.showStart();
+               ctx.props._showStart();
+
                 //ctx.showLogout();
             } else {
                 // evt.user contains the user details
                 console.log('User authenticated\n', JSON.stringify(evt.user));
-                ctx.showLogout();
+                ctx.props._showLogout();
 
             }
         }).then(() => {
