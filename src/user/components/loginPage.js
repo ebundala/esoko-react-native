@@ -23,7 +23,8 @@ import actions from "../user.actions"
 class LoginPage extends Component{
     constructor(props) {
         super(props);
-
+        //this.props=props;
+//alert(JSON.stringify(props))
         this.state = {
             email: "",
             password:"",
@@ -74,14 +75,14 @@ class LoginPage extends Component{
                     styles.flex10,
                     styles.spaceAround]}>
                     <View style={[styles.row,styles.alignItemsCenter]}>
-                       <TouchableHighlight onPress={()=>this.showStart()}>
+                       <TouchableHighlight onPress={()=>this.props._showStart()}>
                            <Text style={styles.title}>Signin/Signup</Text>
                        </TouchableHighlight>
                     </View>
 
 
 
-                {this.state.showStart&&
+                {this.props.showStart&&
                    <View style={styles.flex1}>
                     <View section="login/signup"
                         style={[styles.horizontal,
@@ -94,7 +95,7 @@ class LoginPage extends Component{
                             <Button
                                 text="Log In"
                                 raised={true}
-                                onPress={()=>this.showLogin()}>
+                                onPress={()=>this.props._showLogin()}>
 
                             </Button>
 
@@ -105,7 +106,7 @@ class LoginPage extends Component{
                         <View style={[styles.row,styles.flex5]}>
                             <Button text="Sign Up"
                                     raised={true}
-                                    onPress={()=>this.showSignUp()}>
+                                    onPress={()=>this.props._showSignUp()}>
 
                             </Button>
 
@@ -139,7 +140,7 @@ class LoginPage extends Component{
                         <View style={[styles.row,styles.alignItemsCenter]}><Text style={styles.title}>or</Text></View>
                     </View>
                     }
-                {this.state.showLogin&&
+                {this.props.showLogin&&
                 <View sect="login screen"  >
                     <View section="email/pass input">
                    <View style={styles.row}>
@@ -191,7 +192,7 @@ class LoginPage extends Component{
            </View>
                     }
 
-                {this.state.showSignUp&&
+                {this.props.showSignUp&&
                 <View sect="sign up screen">
                    <View section="email/pass input">
                        <View style={styles.row}>
@@ -263,7 +264,7 @@ class LoginPage extends Component{
                </View>
                     }
 
-                {this.state.showLogout&&
+                {this.props.showLogout&&
                     <View style={[styles.flex1,styles.centerJustified]}>
                 <View section="logout screen" style={styles.row}>
                         <Button text="logout"
@@ -277,7 +278,7 @@ class LoginPage extends Component{
 
                 {  8&&<View>
                     <Text style={styles.red}>
-                    {JSON.stringify(this.state)}
+                    {JSON.stringify(this.props)}
                        </Text>
                     </View>}
 
@@ -336,7 +337,7 @@ class LoginPage extends Component{
     }
     computeShowOauth(){
 
-        if(this.state.showSignUp||this.state.showLogin){
+        if(this.props.showSignUp||this.props.showLogin){
             return true
 
         }
@@ -370,9 +371,7 @@ class LoginPage extends Component{
 
 
 const mapStateToProps = (state) => {
-    return {
-        user: state.user
-    }
+    return{...state.user}
 }
 
 
@@ -399,6 +398,27 @@ const mapDispatchToProps = (dispatch) => {
         },
         onLogout:()=>{
             dispatch(actions.logout())
+        },
+        _showSignUp:()=>{
+            dispatch(actions.showSignUp())
+        },
+        _showLogin:()=>{
+            dispatch(actions.showLogin())
+        },
+        _showStart:()=>{
+            dispatch(actions.showStart())
+        },
+        _showLogout:()=>{
+            dispatch(actions.showLogout())
+
+        },
+        _showResetPass:()=>{
+            dispatch(actions.showResetPass())
+
+        },
+        _showResetMail:()=>{
+            dispatch(actions.showResetMail())
+
         }
     }
 }

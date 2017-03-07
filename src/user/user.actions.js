@@ -145,5 +145,32 @@ create(email,password){
         })
 }
 }
+
+
+     showSignUp(data){
+        return{
+             type:"SHOW_SIGNUP",
+             data:data
+         }
+     }
+     showLogin(data){
+         return{
+             type:"SHOW_LOGIN",
+             data:data
+         }
+     }
+     showStart(data){
+         return{
+             type:"SHOW_START",
+             data:data
+         }
+     }
+     showLogout(data){
+
+         return{
+             type:"SHOW_lOGOUT",
+             data:data
+         }
+     }
 }
 export default new userActions()

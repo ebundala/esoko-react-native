@@ -18,7 +18,7 @@ import Message from './src/utils/message'
 import Chat from './src/utils/chat'
 import Transaction from './src/utils/transaction'
 import Review from './src/utils/reviews'*/
-import store from './src/store'
+import configStore from './src/store'
 
 
 /*var user= new User({id:"ELIAS"});
@@ -29,7 +29,7 @@ import store from './src/store'
  var review= new Review({id:"ELIASmsg"}); 
  var transaction= new Transaction({id:"ELIASmsg"}); 
  var chat= new Chat({id:"ELIASmsg"}); */
- 
+ let store=configStore();
  
  
 export default class eSoko extends Component {
