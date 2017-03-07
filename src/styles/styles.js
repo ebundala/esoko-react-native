@@ -13,13 +13,13 @@ const  styles=StyleSheet.create({
     //layouts
     horizontal:{
         flexDirection:"row",
-        flex:1,
+       // flex:1,
         //backgroundColor:"grey"
     },
     vertical:{
         flexDirection:"column"
         ,
-        flex:1,
+       // flex:1,
         //backgroundColor:"yellow"
 
     },
@@ -63,35 +63,35 @@ const  styles=StyleSheet.create({
     },
 
     //content justify
-    spaceBetweenCN:{
+    spaceBetween:{
         justifyContent: 'space-between'
     },
-    flexStartCN:{
+    flexStart:{
         justifyContent: 'flex-start'
     },
-    flexEndCN:{
+    flexEnd:{
         justifyContent: 'flex-end'
     },
-    spaceAroundCN:{
-        justifyContent: 'space-around'
+    spaceAround:{
+        justifyContent:'space-around'
     },
-    centerJustifiedCN:{
+    centerJustified:{
         justifyContent: 'center'
     },
     //align item in container
     /*alignItemBaselineCN:{
         alignItems:'baseline'
     },*/
-    alignItemsStartCN:{
+    alignItemsStart:{
         alignItems:'flex-start'
     },
-    alignItemsEndCN:{
+    alignItemsEnd:{
         alignItems:'flex-end'
     },
-    alignItemsCenterCN:{
+    alignItemsCenter:{
         alignItems:'center'
     },
-    alignItemsStretchCN:{
+    alignItemsStretch:{
         alignItems:'stretch'
     },
 red:{backgroundColor:"red"},

@@ -37,7 +37,7 @@ export default class eSoko extends Component {
   render() {
     return (
 <Provider store={store}>
-       <App/>
+       <App />
 </Provider>
 
     );

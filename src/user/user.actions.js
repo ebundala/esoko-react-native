@@ -20,7 +20,7 @@ import userUtil from "../utils/user"
                     }})
         })
         .catch((err) => {
-            console.error('User signin error', err);
+            alert('User signin error', err.message);
                 dispatch({
                     type:"USER_LOGIN",
                     status:"error",
@@ -47,7 +47,8 @@ import userUtil from "../utils/user"
                     }
                 )
             })
-        .catch(err =>{ console.error('Uh oh... something weird happened')
+        .catch(err =>{
+                console.error('Uh oh... something weird happened')
                 dispatch(
                     {
                         type:"USER_LOGOUT",

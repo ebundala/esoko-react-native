@@ -10,11 +10,12 @@ import {
     StyleSheet,
     Text,
     View,
-    Button,
     TextInput,
     TouchableHighlight,
-
+Image
     } from 'react-native';
+
+import { Button, Card } from 'react-native-material-design';
 import { connect } from 'react-redux'
 import styles from '../../styles/styles'
 import actions from "../user.actions"
@@ -58,37 +59,42 @@ class LoginPage extends Component{
     }
     render(){
         return(
-            <View style={styles.flex1,styles.horizontal}>
+
+                <Image
+                    style={{flex:1,width:null,height:null}}
+                    source={require('../images/background.png')}
+                    resizeMode={Image.resizeMode.cover}
+                >
+                <View style={[styles.flex1,styles.horizontal]}>
                 <View style={styles.flex1}>
 
                 </View>
 
-                <View style={{flex:10,justifyContent:"space-around"}}>
-                    <View style={styles.row,styles.alignItemsCenterCN}>
-                        <Text style={styles.title}>Signin/Signup</Text>
+                <View style={[
+                    styles.flex10,
+                    styles.spaceAround]}>
+                    <View style={[styles.row,styles.alignItemsCenter]}>
+                       <TouchableHighlight onPress={()=>this.showStart()}>
+                           <Text style={styles.title}>Signin/Signup</Text>
+                       </TouchableHighlight>
                     </View>
 
-                {!this.state.showStart&&
-                <View style={styles.row}>
-                        <Button  title="back" onPress={()=>this.showStart()}>
 
-                        </Button>
-                    </View>}
 
                 {this.state.showStart&&
                    <View style={styles.flex1}>
                     <View section="login/signup"
-                        style={{
-                            flexDirection:"row",
-                            flex:1,
-                            alignItems:"flex-end",
-                            justifyContent:"space-between"
-                        }}>
+                        style={[styles.horizontal,
+                            styles.flex1,
+                            styles.alignItemsEnd,
+                            styles.spaceBetween]}>
 
-                        <View style={styles.row,styles.flex5}>
+                        <View style={[styles.row,styles.flex5]}>
 
                             <Button
-                                title="Log In" onPress={()=>this.showLogin()}>
+                                text="Log In"
+                                raised={true}
+                                onPress={()=>this.showLogin()}>
 
                             </Button>
 
@@ -96,8 +102,10 @@ class LoginPage extends Component{
 
                          <View style={styles.flex2}/>
 
-                        <View style={styles.row,styles.flex5}>
-                            <Button title="Sign Up" onPress={()=>this.showSignUp()}>
+                        <View style={[styles.row,styles.flex5]}>
+                            <Button text="Sign Up"
+                                    raised={true}
+                                    onPress={()=>this.showSignUp()}>
 
                             </Button>
 
@@ -112,17 +120,23 @@ class LoginPage extends Component{
                 {this.computeShowOauth()&&
                 <View section="Oauth buttons">
                         <View style={styles.row}>
-                            <Button style={styles.facebook} title="LOGIN WITH Facebook" onPress={()=>this.props.oAuth("FACEBOOK")}>
+                            <Button style={styles.facebook}
+                                    raised={true}
+                                    text="LOGIN WITH FACEBOOK"
+                                    onPress={()=>this.props.oAuth("FACEBOOK")}>
 
                             </Button>
                         </View>
                         <View style={styles.row}>
-                            <Button style={styles.google} title="login with Google" onPress={()=>this.props.oAuth("GOOGLE")}>
+                            <Button style={styles.google}
+                                    raised={true}
+                                    text="LOGIN WITH GOOGLE"
+                                    onPress={()=>this.props.oAuth("GOOGLE")}>
 
                             </Button>
                         </View>
 
-                        <View style={styles.row,styles.alignItemsCenterCN}><Text style={styles.title}>or</Text></View>
+                        <View style={[styles.row,styles.alignItemsCenter]}><Text style={styles.title}>or</Text></View>
                     </View>
                     }
                 {this.state.showLogin&&
@@ -135,7 +149,7 @@ class LoginPage extends Component{
                                ref="email"
                                keyboardType="email-address"
                                style={styles.input}
-                               autoCorrect={false}
+                               autoCorrect={true}
                                autoCapitalize="none"
                                placeholderTextColor='#a8aAeC'
                                placeholder="Email"
@@ -166,7 +180,8 @@ class LoginPage extends Component{
                    <View style={styles.row}>
 
                        <Button disabled={!(this.state.email&&this.state.password)}
-                           title="Log In"
+                               raised={true}
+                           text="Log In"
                            onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
 
                        </Button>
@@ -235,7 +250,9 @@ class LoginPage extends Component{
 
                    <View style={styles.row}>
 
-                           <Button disabled={!this.comparePassword()} title="sign up" onPress={()=>this.props.onCreate(this.state.signUpEmail,this.state.retypedPassword)}>
+                           <Button disabled={!this.comparePassword()}
+                                   raised={true}
+                                   text="sign up" onPress={()=>this.props.onCreate(this.state.signUpEmail,this.state.retypedPassword)}>
 
                            </Button>
 
@@ -247,19 +264,18 @@ class LoginPage extends Component{
                     }
 
                 {this.state.showLogout&&
-                    <View style={{
-                        flex:1,
-                        justifyContent:"center"
-                    }}>
+                    <View style={[styles.flex1,styles.centerJustified]}>
                 <View section="logout screen" style={styles.row}>
-                        <Button title="logout" onPress={()=>this.props.onLogout()}>
+                        <Button text="logout"
+                                raised={true}
+                                onPress={()=>this.props.onLogout()}>
 
                         </Button>
                             </View>
                     </View>
                     }
 
-                {  this.state.showLogout&&<View>
+                {  8&&<View>
                     <Text style={styles.red}>
                     {JSON.stringify(this.state)}
                        </Text>
@@ -274,7 +290,12 @@ class LoginPage extends Component{
                 <View style={styles.flex1}>
 
                 </View>
-            </View>)
+            </View>
+
+                </Image>
+
+
+        )
     }
     showSignUp(){
         this.setState({

@@ -54,7 +54,7 @@ var spwner=function(cmd){
   });
 }
 gulp.task("serve",function(){
-  spwner('react-native start');
+  spwner('start react-native start');
 })
 gulp.task("log",function(){
   spwner('start adb logcat com.eSoko:V ReactNativeJS:V Firestack:V *:S');
