@@ -26,7 +26,7 @@ export default function activityReducer(state=INITIAL_STATE,action) {
         case "ERROR_LOADING":
             return{
                 ...state,
-                isLoading:false,
+                isLoading:true,
                 isError:true,
                 message:action.data
             }

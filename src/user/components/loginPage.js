@@ -48,7 +48,7 @@ class LoginPage extends Component{
             } else {
                 // evt.user contains the user details
                 console.log('User authenticated\n', JSON.stringify(evt.user));
-                ctx.props._showLogout();
+                //ctx.props._showLogout();
 
             }
         }).then(() => {
@@ -179,7 +179,7 @@ class LoginPage extends Component{
                        <Button disabled={!(this.state.email&&this.state.password)}
                                raised={true}
                            text="Log In"
-                           onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
+                           onPress={()=>this.props.login(this.state.email,this.state.password)}>
 
                        </Button>
 
@@ -416,8 +416,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSubmit: (email,password) => {
-            dispatch(activity.startActivity("loging user in"))
+        login: (email,password) => {
+           // dispatch(activity.startActivity("loging user in"))
             dispatch(actions.login(email,password))
             /*dispatch({
              type:"USER_LOGIN",
@@ -425,7 +425,7 @@ const mapDispatchToProps = (dispatch) => {
              })*/
         },
         oAuth:(name)=>{
-            dispatch(activity.startActivity("loging user in"))
+           // dispatch(activity.startActivity("loging user in"))
             dispatch(actions.oAuth(name))
         },
         validateEmail:(email)=>{
@@ -439,7 +439,7 @@ const mapDispatchToProps = (dispatch) => {
         )
     },
         onCreate:(email,password)=>{
-            dispatch(activity.startActivity("creating user account"))
+         //   dispatch(activity.startActivity("creating user account"))
             dispatch(actions.create(email,password))
         },
         onLogout:()=>{
@@ -485,7 +485,7 @@ export default Oauth
 
 LoginPage.propTypes = {
 
-    onSubmit: PropTypes.func.isRequired,
+    login: PropTypes.func.isRequired,
     validateEmail:PropTypes.func.isRequired,
     oAuth:PropTypes.func.isRequired,
     onCreate:PropTypes.func.isRequired,

@@ -3,15 +3,18 @@
  */
 
 import userUtil from "../utils/user"
-
+import * as activity from "../activityIndicator/activitIndicatorAction"
  class userActions extends userUtil {
   login(email,password){
     return (dispatch)=>
     {
-        if(email&&password)
+        if(email&&password){
+            dispatch(activity.startActivity("Login using "+email))
+
         return this.auth.signInWithEmail(email, password)
         .then((user) => {
-            console.log('User successfully logged in', user)
+            //console.log('User successfully logged in', user)
+            dispatch(activity.endActivity("User successfully logged in "+email))
                 dispatch({
                     type:"USER_LOGIN",
                     status:"OK",
@@ -20,7 +23,8 @@ import userUtil from "../utils/user"
                     }})
         })
         .catch((err) => {
-            alert('User signin error', err.message);
+           // alert('User signin error', err.message);
+            dispatch(activity.activityError(err.errorMessage||'UNKNOWN ERROR'))
                 dispatch({
                     type:"USER_LOGIN",
                     status:"error",
@@ -29,7 +33,7 @@ import userUtil from "../utils/user"
                     }})
         })
 
-
+        }
     }
 }
 
@@ -38,7 +42,7 @@ import userUtil from "../utils/user"
     {
         return this.auth.signOut()
         .then(res =>{
-                console.log('You have been signed out')
+                //console.log('You have been signed out')
                 dispatch(
                     {
                         type:"USER_LOGOUT",
@@ -48,7 +52,7 @@ import userUtil from "../utils/user"
                 )
             })
         .catch(err =>{
-                console.error('Uh oh... something weird happened')
+                //console.error('Uh oh... something weird happened')
                 dispatch(
                     {
                         type:"USER_LOGOUT",
@@ -69,9 +73,13 @@ import userUtil from "../utils/user"
 
   resetPasswordWithEmail(email){
     return(dispatch)=> {
-        if(email)
+        if(email){
+            dispatch(activity.startActivity("Sending reset  link to "+email))
+
       return  this.auth.sendPasswordResetWithEmail(email)
-            .then(res => {console.log('Check your inbox for further instructions')
+            .then(res => {
+                //console.log('Check your inbox for further instructions')
+                dispatch(activity.endActivity("Check your inbox for further instructions"))
               return dispatch({
                   type: "USER_RESET_PASSWORD",
                   status:"OK",
@@ -81,25 +89,27 @@ import userUtil from "../utils/user"
               })
           })
             .catch(err => {
-
+                dispatch(activity.activityError(err.errorMessage||"UNKNOWN ERROR"));
               return dispatch({
                   type: "USER_RESET_PASSWORD",
                   status:"error",
                   data:{err}
               })
-              console.error('There was an error ')})
+              //console.log('There was an error ')})
 
 
-
+        })
     }
 }
+  }
 oAuth(name,token){
     return (dispatch)=>{
 
-
+        dispatch(activity.startActivity("Login using "+name))
       return  this.auth.signInWithProvider(name, token, '') // facebook need only access token.
             .then((user)=>{
-              console.log('User successfully logged in', user)
+             // console.log('User successfully logged in', user)
+                dispatch(activity.endActivity("User successfully logged in "))
               dispatch({
                   type:"USER_LOGIN",
                   status:"OK",
@@ -107,7 +117,9 @@ oAuth(name,token){
                       user
                   }})
             }).catch(err=>{
-              console.log('User logged failed', err)
+
+              //console.log('User logged failed', err)
+              dispatch(activity.activityError(err.errorMessage||"UNKNOWN ERROR"));
               dispatch({
                   type:"USER_LOGIN",
                   status:"error",
@@ -119,10 +131,12 @@ oAuth(name,token){
 }
 create(email,password){
     return dispatch=>{
-        if(email&&password)
+        if(email&&password){
+            dispatch(activity.startActivity("Creating User "))
   return this.auth.createUserWithEmail(email, password)
         .then((user) => {
-            console.log('user created', user)
+           // console.log('user created', user)
+            dispatch(activity.endActivity("User Account Created "))
         dispatch({
             type:"USER_CREATED",
             status:"OK",
@@ -134,7 +148,8 @@ create(email,password){
 
         })
         .catch((err) => {
-            console.error('An error occurred', err);
+            //console.log('An error occurred', err);
+            dispatch(activity.activityError(err.errorMessage||"UNKNOWN ERROR"))
         dispatch({
             type:"USER_CREATED",
             status:"error",
@@ -143,6 +158,7 @@ create(email,password){
             }
         })
         })
+        }
 }
 }
 

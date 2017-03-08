@@ -11,6 +11,7 @@ Button,
     Text,
     View,
     TouchableHighlight,
+    ActivityIndicator
 } from 'react-native';
 
 //import { Button, Card } from 'react-native-material-design';
@@ -23,14 +24,18 @@ export class ActivityWrapper extends Component{
         return(
             <View style={[styles.flex1,styles.alignItemsCenter,styles.centerJustified]}>
                 {!this.props.isError&&
-                <TouchableHighlight onPress={()=>this.props.startActivity()}>
-                    <Text>Loading</Text>
+                <TouchableHighlight onPress={()=>this.props.activityError("failed to load")}>
+                    <ActivityIndicator></ActivityIndicator>
                 </TouchableHighlight>
                 }
-                <Text>{this.props.message}</Text>
+                <View style={{paddingLeft:20,paddingRight:20,paddingBottom:5}}>
+
+                    <Text >{this.props.message}</Text>
+                </View>
+
                 {this.props.isError&&<View >
 
-                <Button title="OK" onPress={this.props.endActivity()}></Button>
+                <Button color="red" title="OK" onPress={()=>this.props.endActivity()}></Button>
                 </View>}
 
             </View>
@@ -56,7 +61,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatch(actions.endActivity(data))
         },
 
-        activityError:()=>{
+        activityError:(data)=>{
     "use strict";
     dispatch(actions.activityError(data))
         }
