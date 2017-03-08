@@ -172,5 +172,12 @@ create(email,password){
              data:data
          }
      }
+     showResetPassword(data){
+
+         return{
+             type:"SHOW_RESET_PASSWORD",
+             data:data
+         }
+     }
 }
 export default new userActions()

@@ -31,11 +31,7 @@ class LoginPage extends Component{
             signUpPassword:"",
             signUpEmail:"",
             retypedPassword:"",
-            showStart:true,
-            showLogin:false,
-            showSignUp:false,
-            showLogout:false,
-            passwordMatched:false
+            emailReset:""
 
         }
         let ctx=this;
@@ -74,7 +70,7 @@ class LoginPage extends Component{
 
                 <View style={[
                     styles.flex10,
-                    styles.spaceAround]}>
+                    styles.spaceBetween]}>
                     <View style={[styles.row,styles.alignItemsCenter]}>
                        <TouchableHighlight onPress={()=>this.props._showStart()}>
                            <Text style={styles.title}>Signin/Signup</Text>
@@ -189,7 +185,16 @@ class LoginPage extends Component{
                        </Button>
 
                    </View>
+
+                        <View style={[styles.row,styles.alignItemsCenter]}>
+                            <TouchableHighlight onPress={()=>this.props._showResetPassword()}>
+                                <Text>
+                                    Forgot password
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
                </View>
+
            </View>
                     }
 
@@ -276,7 +281,41 @@ class LoginPage extends Component{
                             </View>
                     </View>
                     }
+                    {this.props.showResetPass&&
+                    <View sect="reset-password"  >
+                        <View >
+                            <View style={styles.row}>
 
+                                <View style={styles.row}>
+                                    <TextInput
+                                        ref="emailReset"
+                                        keyboardType="email-address"
+                                        style={styles.input}
+                                        autoCorrect={true}
+                                        autoCapitalize="none"
+                                        placeholderTextColor='#a8aAeC'
+                                        placeholder="Enter Email to receive reset link"
+                                        onSubmitEditing={()=>this.props.validateEmail(this.state.emailReset)}
+                                        onChangeText={emailReset => this.setState({emailReset})}
+                                    />
+
+                                </View>
+
+                            </View>
+
+                            <View style={styles.row}>
+
+                                <Button disabled={!(this.state.emailReset)}
+                                        raised={true}
+                                        text="Send Reset link"
+                                        onPress={()=>this.props.resetPasswordWithEmail(this.state.emailReset)}>
+
+                                </Button>
+
+                            </View>
+                        </View>
+                    </View>
+                    }
                 {  8&&<View>
                     <Text style={styles.red}>
                     {JSON.stringify(this.props)}
@@ -389,11 +428,15 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(actions.oAuth(name))
         },
         validateEmail:(email)=>{
-            dispatch(
-                actions.resetPasswordWithEmail(email)
-            )
+           // dispatch(
+               // actions.resetPasswordWithEmail(email)
+          //  )
         },
-
+resetPasswordWithEmail:(email)=>{
+        dispatch(
+            actions.resetPasswordWithEmail(email)
+        )
+    },
         onCreate:(email,password)=>{
             dispatch(actions.create(email,password))
         },
@@ -413,8 +456,8 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(actions.showLogout())
 
         },
-        _showResetPass:()=>{
-            dispatch(actions.showResetPass())
+        _showResetPassword:()=>{
+            dispatch(actions.showResetPassword())
 
         },
         _showResetMail:()=>{
