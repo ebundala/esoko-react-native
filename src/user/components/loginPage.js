@@ -19,12 +19,11 @@ import { Button, Card } from 'react-native-material-design';
 import { connect } from 'react-redux'
 import styles from '../../styles/styles'
 import actions from "../user.actions"
-//let userActions=new actions;
+import * as activity from "../../activityIndicator/activitIndicatorAction"
 class LoginPage extends Component{
     constructor(props) {
         super(props);
-        //this.props=props;
-//alert(JSON.stringify(props))
+
         this.state = {
             email: "",
             password:"",
@@ -43,7 +42,7 @@ class LoginPage extends Component{
             if (!evt.authenticated) {
                 // There was an error or there is no user
                 console.log(" user not authenticated\n"+JSON.stringify(evt))
-               ctx.props._showStart();
+              // ctx.props._showStart();
 
                 //ctx.showLogout();
             } else {
@@ -418,6 +417,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onSubmit: (email,password) => {
+            dispatch(activity.startActivity("loging user in"))
             dispatch(actions.login(email,password))
             /*dispatch({
              type:"USER_LOGIN",
@@ -425,6 +425,7 @@ const mapDispatchToProps = (dispatch) => {
              })*/
         },
         oAuth:(name)=>{
+            dispatch(activity.startActivity("loging user in"))
             dispatch(actions.oAuth(name))
         },
         validateEmail:(email)=>{
@@ -432,12 +433,13 @@ const mapDispatchToProps = (dispatch) => {
                // actions.resetPasswordWithEmail(email)
           //  )
         },
-resetPasswordWithEmail:(email)=>{
+        resetPasswordWithEmail:(email)=>{
         dispatch(
             actions.resetPasswordWithEmail(email)
         )
     },
         onCreate:(email,password)=>{
+            dispatch(activity.startActivity("creating user account"))
             dispatch(actions.create(email,password))
         },
         onLogout:()=>{
