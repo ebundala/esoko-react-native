@@ -10,23 +10,34 @@ import {
   // TouchableHighlight
     } from 'react-native';
 import { connect } from 'react-redux'
+import { StackNavigator } from 'react-navigation';
+
+
 import Oauth from "./user/components/loginPage"
+import Products from "./products/components/products"
+import Orders from "./orders/components/orders"
+import Bids from "./bids/components/bids"
+import Reviews from "./reviews/components/reviews"
+import Chats from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
-class  root extends Component{
-    render(){
-        return(
-     <View style={{flex:1}}>
+import Home from  "./Home/components/home"
 
-         {this.props.activity.isLoading&&<Activity  />}
+Activity.navigationOptions = {
+    title: 'Activity',
+};
+const root=StackNavigator({
+    Home: { screen: Home },
+    Oauth: { screen: Oauth },
+    Activity:{screen:Activity},
+    products:{screen:Products},
+    orders:{screen:Orders},
+    bids:{screen:Bids},
+    reviews:{screen:Reviews},
+    chats:{screen:Chats},
 
-         {!this.props.activity.isLoading&&<Oauth/>}
-
-     </View>
-
-)}
+});
 
 
-}
 const mapStateToProps = (state) => {
     return{...state}
 }

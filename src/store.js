@@ -10,12 +10,12 @@ import createLogger from 'redux-logger';
 //import {apiCallMiddleware} from './utils/api/apiCallMiddleware';
 //import {clearBodyMiddleware} from './utils/api/clearBodyMiddleware';
 import rootReducer from './rootReducer';
-import INITIAL_STATE from './initialState'
+
 function configStore() {
 
 
 const logger = createLogger();
-console.warn(INITIAL_STATE)
+//console.warn(INITIAL_STATE)
 const store = createStore(rootReducer,compose(
     applyMiddleware(/*clearBodyMiddleware, apiCallMiddleware,*/ thunk, logger),
     autoRehydrate()

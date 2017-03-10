@@ -41,6 +41,7 @@ export default function userReducer(state= INITIAL_STATE.user, action)
 
         return {
             ...state,
+            user:{},
             showStart:true,
             showLogin:false,
             showSignUp:false,
@@ -57,6 +58,7 @@ export default function userReducer(state= INITIAL_STATE.user, action)
         case "SHOW_LOGIN":
             return{
                 ...state,
+                user:{},
                 showStart:false,
                 showLogin:true,
                 showSignUp:false,

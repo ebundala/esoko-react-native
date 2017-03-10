@@ -19,7 +19,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
                     type:"USER_LOGIN",
                     status:"OK",
                     data:{
-                        user
+                        //user
                     }})
         })
         .catch((err) => {
@@ -141,7 +141,7 @@ create(email,password){
             type:"USER_CREATED",
             status:"OK",
             data:{
-                user
+                //user
             }
         })
 

@@ -10,17 +10,20 @@ import {
     StyleSheet,
     Text,
     View,
+
     TextInput,
     TouchableHighlight,
+    TouchableNativeFeedback,
 Image
     } from 'react-native';
-
-import { Button, Card } from 'react-native-material-design';
+import { StackNavigator } from 'react-navigation';
+import { Button, Card,Icon } from 'react-native-material-design';
 import { connect } from 'react-redux'
 import styles from '../../styles/styles'
 import actions from "../user.actions"
 import * as activity from "../../activityIndicator/activitIndicatorAction"
 class LoginPage extends Component{
+
     constructor(props) {
         super(props);
 
@@ -34,7 +37,7 @@ class LoginPage extends Component{
 
         }
         let ctx=this;
-        actions.auth.listenForAuth((evt)=>{
+        /*actions.auth.listenForAuth((evt)=>{
             // evt is the authentication event
             // it contains an `error` key for carrying the
             // error message in case of an error
@@ -52,7 +55,8 @@ class LoginPage extends Component{
 
             }
         }).then(() => {
-                alert('Listening for authentication changes')})
+                alert('Listening for authentication changes')}
+                )*/
     }
     render(){
         return(
