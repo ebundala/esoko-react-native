@@ -8,10 +8,19 @@ import {
     View
 } from 'react-native';
 
+import {Statuses,Menu,DrawerIcon}  from "../../statuses/components/statuses"
 
 export default class chats extends Component{
     static navigationOptions = {
         title: 'chats',
+        /*header: ({ state, setParams ,navigate}) => {
+
+            let  left=(<Menu navigate={navigate}/>
+            );
+
+            return { left};
+        },*/
+
     };
     render(){
         return(

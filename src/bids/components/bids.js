@@ -8,11 +8,20 @@ import {
     View
     } from 'react-native';
 
+import {Statuses,Menu,DrawerIcon}  from "../../statuses/components/statuses"
 
 export default class bids extends Component{
 
     static navigationOptions = {
         title: 'bids',
+       /* header: ({ state, setParams ,navigate}) => {
+
+            let  left=(<Menu navigate={navigate}/>
+            );
+
+            return { left};
+        },*/
+
     };
     render(){
         return(

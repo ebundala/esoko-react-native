@@ -7,10 +7,11 @@ import {
    // StyleSheet,
     Text,
     View,
-  // TouchableHighlight
+    DrawerLayoutAndroid,
+    TouchableNativeFeedback
     } from 'react-native';
 import { connect } from 'react-redux'
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator,DrawerNavigator ,TabNavigator} from 'react-navigation';
 
 
 import Oauth from "./user/components/loginPage"
@@ -21,11 +22,14 @@ import Reviews from "./reviews/components/reviews"
 import Chats from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
 import Home from  "./Home/components/home"
+import {introOne,introTwo,introThree} from "./intro/components/intro"
 
 Activity.navigationOptions = {
     title: 'Activity',
 };
-const root=StackNavigator({
+
+
+const StackHome = {
     Home: { screen: Home },
     Oauth: { screen: Oauth },
     Activity:{screen:Activity},
@@ -35,7 +39,51 @@ const root=StackNavigator({
     reviews:{screen:Reviews},
     chats:{screen:Chats},
 
-});
+}
+
+
+
+const Main =
+    TabNavigator(
+
+        {
+            introOne:{screen:introOne},
+            introTwo:{screen:introTwo},
+            introThree:{screen:introThree},
+            app:{screen:StackNavigator(StackHome)}
+        },
+        {
+            tabBarPosition: 'bottom',
+            tabBarComponent:()=>null
+        }
+    );
+
+//root=StackNavigator(StackHome)
+
+const root =()=>{
+    "use strict";
+    var navigationView = (
+        <View style={{flex: 1, backgroundColor: '#fff'}}>
+            <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
+        </View>
+    );
+    return(
+        <DrawerLayoutAndroid ref={component=>{this.drawer=component}}
+                             drawerWidth={300}
+                             drawerPosition={DrawerLayoutAndroid.positions.Left}
+                             renderNavigationView={() => navigationView}>
+            <View style={{flex: 1}}>
+
+                <Main/>
+                <TouchableNativeFeedback onPress={()=>this.drawer.openDrawer() }>
+                    <Text style={{margin: 10, fontSize: 15, textAlign: 'right'}}>Hello</Text>
+                </TouchableNativeFeedback>
+            </View>
+        </DrawerLayoutAndroid>
+
+
+    )
+}
 
 
 const mapStateToProps = (state) => {
@@ -58,7 +106,3 @@ export default App
 
 
 
-
-/*const styles = StyleSheet.create({
-
-})*/;
