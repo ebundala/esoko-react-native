@@ -11,7 +11,7 @@ import {
     TouchableNativeFeedback
     } from 'react-native';
 import { connect } from 'react-redux'
-import { StackNavigator,DrawerNavigator ,TabNavigator} from 'react-navigation';
+import { StackNavigator,NavigationActions ,TabNavigator} from 'react-navigation';
 
 
 import Oauth from "./user/components/loginPage"
@@ -53,12 +53,58 @@ const Main =
             app:{screen:StackNavigator(StackHome)}
         },
         {
+          //  backBehavior:"none",
+            swipeEnabled:false,
             tabBarPosition: 'bottom',
             tabBarComponent:()=>null
         }
     );
 
-//root=StackNavigator(StackHome)
+const st=Main.router.getStateForAction;
+    Main.router.getStateForAction = (action, state)=> {
+    if (
+        state &&
+        action.type === NavigationActions.BACK
+    ) {
+        // Returning null from getStateForAction means that the action
+        // has been handled/blocked, but there is not a new state
+       let  prevState=state.routes[state.index];
+
+        if((prevState.routeName==="app")&&prevState.index===0){
+            console.log("back button\n"+JSON.stringify(state))
+
+            return {...state,index:3}
+        }
+        //return {...state,index:3}//st(newaction||action,state);
+    }
+
+
+    return st(action,state)
+}
+
+/*{
+    ...Main.router,
+    getStateForAction(action, state) {
+        if (
+            state &&
+            action.type === NavigationActions.BACK
+        ) {
+            // Returning null from getStateForAction means that the action
+            // has been handled/blocked, but there is not a new state
+            alert("back button")
+            //return null;
+        }
+        //alert("not back button")
+
+        return null //Main.router.getStateForAction(action, state);
+    },
+};*/
+
+
+
+
+
+
 
 const root =()=>{
     "use strict";
@@ -72,13 +118,12 @@ const root =()=>{
                              drawerWidth={300}
                              drawerPosition={DrawerLayoutAndroid.positions.Left}
                              renderNavigationView={() => navigationView}>
-            <View style={{flex: 1}}>
 
-                <Main/>
-                <TouchableNativeFeedback onPress={()=>this.drawer.openDrawer() }>
-                    <Text style={{margin: 10, fontSize: 15, textAlign: 'right'}}>Hello</Text>
-                </TouchableNativeFeedback>
-            </View>
+
+                <Main screenProps={this.drawer} ref={component=>{this.main=component}}/>
+            {}
+
+
         </DrawerLayoutAndroid>
 
 

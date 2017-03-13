@@ -49,7 +49,7 @@ export  class Menu extends Component{
         return(
             <View style={styles.horizontal}>
                 <TouchableNativeFeedback
-                    onPress={()=>this.props.navigate("DrawerOpen")}
+                    onPress={this.props.onPress}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View>
                         <Icon name="menu"  />

@@ -5,7 +5,8 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    View
+    View,
+    TouchableNativeFeedback
 } from 'react-native';
 
 //import {Statuses,Menu,DrawerIcon}  from "../../statuses/components/statuses"
@@ -24,8 +25,14 @@ export class introOne extends Component{
     };
     render(){
         return(
-            <View>
+            <View style={{flex:1}}>
+                <TouchableNativeFeedback
+                    onPress={()=>this.props.navigation.navigate("introTwo")}
+                    background={TouchableNativeFeedback.SelectableBackground()}>
+                    <View>
                 <Text>introOne page</Text>
+                    </View>
+                </TouchableNativeFeedback>
             </View>
         )
     }
@@ -46,8 +53,14 @@ export class introTwo extends Component{
     };
     render(){
         return(
-            <View>
+            <View style={{flex:1}}>
+                <TouchableNativeFeedback
+                    onPress={()=>this.props.navigation.navigate("introThree")}
+                    background={TouchableNativeFeedback.SelectableBackground()}>
+                    <View>
                 <Text>introTwo page</Text>
+                    </View>
+                </TouchableNativeFeedback>
             </View>
         )
     }
@@ -68,8 +81,14 @@ export  class introThree extends Component{
     };
     render(){
         return(
-            <View>
+            <View style={{flex:1}}>
+                <TouchableNativeFeedback
+                    onPress={()=>this.props.navigation.navigate("app")}
+                    background={TouchableNativeFeedback.SelectableBackground()}>
+                    <View>
                 <Text>introThree page</Text>
+                    </View>
+                </TouchableNativeFeedback>
             </View>
         )
     }
