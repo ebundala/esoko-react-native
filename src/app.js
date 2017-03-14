@@ -11,7 +11,7 @@ import {
     TouchableNativeFeedback
     } from 'react-native';
 import { connect } from 'react-redux'
-import { StackNavigator,NavigationActions ,TabNavigator} from 'react-navigation';
+import { StackNavigator,NavigationActions ,TabNavigator,addNavigationHelpers,} from 'react-navigation';
 
 
 import Oauth from "./user/components/loginPage"
@@ -62,19 +62,20 @@ const Main =
 
 const st=Main.router.getStateForAction;
     Main.router.getStateForAction = (action, state)=> {
-    if (
-        state &&
-        action.type === NavigationActions.BACK
-    ) {
-        // Returning null from getStateForAction means that the action
-        // has been handled/blocked, but there is not a new state
-       let  prevState=state.routes[state.index];
+        if (
+            state &&
+            action.type === NavigationActions.BACK
+        ) {
+            // Returning null from getStateForAction means that the action
+            // has been handled/blocked, but there is not a new state
+            console.log("back button\n" + JSON.stringify(state))
+            let prevState = state.routes[state.index];
 
-        if((prevState.routeName==="app")&&prevState.index===0){
-            console.log("back button\n"+JSON.stringify(state))
+            if ((prevState.routeName === "app") && prevState.index === 0) {
+                //console.log("back button\n"+JSON.stringify(state))
 
-            return {...state,index:3}
-        }
+                return {...state, index: 3}
+            }
         //return {...state,index:3}//st(newaction||action,state);
     }
 
@@ -82,33 +83,60 @@ const st=Main.router.getStateForAction;
     return st(action,state)
 }
 
-/*{
-    ...Main.router,
-    getStateForAction(action, state) {
-        if (
-            state &&
-            action.type === NavigationActions.BACK
-        ) {
-            // Returning null from getStateForAction means that the action
-            // has been handled/blocked, but there is not a new state
-            alert("back button")
-            //return null;
+const initialNavState= {
+        routes:[
+           { key: 'introOne', routeName: 'introOne' },
+           { key: 'introTwo', routeName: 'introTwo' },
+           { key: 'introThree', routeName: 'introThree' },
+           { index: 0, routes: [ { routeName: 'Home', key: 'Init' } ], key: 'app', routeName: 'app' } ],
+            index: 0 };
+
+export const routeReducers=(state = initialNavState, action) => {
+    //alert("back button\n"+JSON.stringify(action))
+        if (action.type === NavigationActions.BACK) {
+            //console.warn("back button")
+            return Main.router.getStateForAction(action, state);
         }
-        //alert("not back button")
-
-        return null //Main.router.getStateForAction(action, state);
-    },
-};*/
-
-
-
+        if (action.type === NavigationActions.NAVIGATE) {
+            //console.warn("navigate button");
+            return Main.router.getStateForAction(action, state);
+        }
+        return state; //Main.router.getStateForAction(action, state);
+    }
 
 
 
 
-const root =()=>{
+/*connect(state => ({
+    nav: state.nav,
+}))(({ dispatch, nav }) => (
+    <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />
+));*/
+
+/*const stateToProps=(state)=>{
     "use strict";
-    var navigationView = (
+    return{
+        nav:state.nav
+    }
+}
+
+const dispatchToProps=(dispatch)=>
+{
+    "use strict";
+    return{
+        dispatch:(cmd)=>{
+            dispatch(cmd)
+        }
+    }
+
+}*/
+
+//const cont=
+
+const root =({dispatch,nav})=>
+{
+   // "use strict";
+    let navigationView = (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
             <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
         </View>
@@ -120,8 +148,11 @@ const root =()=>{
                              renderNavigationView={() => navigationView}>
 
 
-                <Main screenProps={this.drawer} ref={component=>{this.main=component}}/>
-            {}
+            <Main screenProps={this.drawer}
+                  ref={component=>{this.main=component}}
+                  navigation={addNavigationHelpers({ dispatch, state: nav })}
+            />
+
 
 
         </DrawerLayoutAndroid>
@@ -131,21 +162,27 @@ const root =()=>{
 }
 
 
+
 const mapStateToProps = (state) => {
-    return{...state}
+    return{
+    nav:state.nav
+    }
 }
 
 
 const mapDispatchToProps = (dispatch) => {
     return {
-
+dispatch:(cmd)=>{
+    "use strict";
+    dispatch(cmd)
+}
     }
 }
 
 
 const App = connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps//,
+    //mapDispatchToProps
 )(root);
 export default App
 

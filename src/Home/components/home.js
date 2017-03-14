@@ -10,14 +10,14 @@ import {
     TouchableNativeFeedback
 } from 'react-native';
 import {Statuses,Menu}  from "../../statuses/components/statuses"
-import { StackNavigator ,DrawerNavigator,TabNavigator} from 'react-navigation';
+//import { StackNavigator ,DrawerNavigator,TabNavigator} from 'react-navigation';
 
 import Oauth from "../../user/components/loginPage"
 let ctx;
 export default class home extends Component{
 
 constructor(props){
-    super(props)
+    super(props);
 
 }
     static navigationOptions = {
