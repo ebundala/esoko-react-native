@@ -15,9 +15,10 @@ import { StackNavigator ,DrawerNavigator,TabNavigator} from 'react-navigation';
 import Oauth from "../../user/components/loginPage"
 let ctx;
 export default class home extends Component{
+
 constructor(props){
     super(props)
-    ctx=this
+
 }
     static navigationOptions = {
         title: 'Home',
@@ -36,11 +37,13 @@ constructor(props){
         this.props.screenProps.openDrawer()
     }
     render(){
-      return( <View>
+        ctx=this;
+      return(
 
-            <Text>home</Text>
 
-        </View>
+              <Oauth/>
+
+
       )
     }
 }

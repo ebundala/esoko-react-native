@@ -6,7 +6,8 @@ import React, { Component } from 'react';
 import {
     Text,
     View,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    Button
 } from 'react-native';
 
 //import {Statuses,Menu,DrawerIcon}  from "../../statuses/components/statuses"
@@ -25,14 +26,14 @@ export class introOne extends Component{
     };
     render(){
         return(
-            <View style={{flex:1}}>
-                <TouchableNativeFeedback
-                    onPress={()=>this.props.navigation.navigate("introTwo")}
-                    background={TouchableNativeFeedback.SelectableBackground()}>
+            <View style={{flex:1,justifyContent:'space-between'}}>
+                <Text>intro One page</Text>
+
                     <View>
-                <Text>introOne page</Text>
+
+                <Button title="Next" onPress={()=>this.props.navigation.navigate("introTwo")}/>
                     </View>
-                </TouchableNativeFeedback>
+
             </View>
         )
     }
@@ -53,14 +54,14 @@ export class introTwo extends Component{
     };
     render(){
         return(
-            <View style={{flex:1}}>
-                <TouchableNativeFeedback
-                    onPress={()=>this.props.navigation.navigate("introThree")}
-                    background={TouchableNativeFeedback.SelectableBackground()}>
+            <View style={{flex:1,justifyContent:'space-between'}}>
+                <Text>intro two page</Text>
+
                     <View>
-                <Text>introTwo page</Text>
+
+                        <Button title="Next" onPress={()=>this.props.navigation.navigate("introThree")}/>
                     </View>
-                </TouchableNativeFeedback>
+
             </View>
         )
     }
@@ -81,14 +82,14 @@ export  class introThree extends Component{
     };
     render(){
         return(
-            <View style={{flex:1}}>
-                <TouchableNativeFeedback
-                    onPress={()=>this.props.navigation.navigate("app")}
-                    background={TouchableNativeFeedback.SelectableBackground()}>
+            <View style={{flex:1,justifyContent:'space-between'}}>
+                <Text>intro three page</Text>
+
                     <View>
-                <Text>introThree page</Text>
+
+                        <Button title="Next" onPress={()=>this.props.navigation.navigate("app")}/>
                     </View>
-                </TouchableNativeFeedback>
+
             </View>
         )
     }
