@@ -41,7 +41,9 @@ constructor(props){
       return(
 
 
-              <Oauth/>
+             <View>
+                 <Text>home</Text>
+             </View>
 
 
       )

@@ -59,7 +59,7 @@ export class introTwo extends Component{
 
                     <View>
 
-                        <Button title="Next" onPress={()=>this.props.navigation.navigate("introThree")}/>
+                        <Button title="Next" onPress={()=>this.props.navigation.navigate("oauth")}/>
                     </View>
 
             </View>

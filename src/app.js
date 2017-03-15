@@ -8,7 +8,9 @@ import {
     Text,
     View,
     DrawerLayoutAndroid,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    BackAndroid,
+    ToastAndroid
     } from 'react-native';
 import { connect } from 'react-redux'
 import { StackNavigator,NavigationActions ,TabNavigator,addNavigationHelpers,} from 'react-navigation';
@@ -41,6 +43,19 @@ const StackHome = {
 
 }
 
+/*
+const HomeRouter=StackNavigator(StackHome)
+
+const appStackNav=connect(state=>{
+    return{
+        ...state
+    }
+})(HomeRouter)
+*/
+
+
+
+
 
 
 const Main =
@@ -49,12 +64,12 @@ const Main =
         {
             introOne:{screen:introOne},
             introTwo:{screen:introTwo},
-            introThree:{screen:introThree},
+            oauth:{screen:Oauth},
             app:{screen:StackNavigator(StackHome)}
         },
         {
-            //backBehavior:"none",
-            swipeEnabled:false,
+            backBehavior:"none",
+            //swipeEnabled:false,
             tabBarPosition: 'bottom',
             tabBarComponent:()=>null,
             //initialRoute:"app"
@@ -75,7 +90,7 @@ const st=Main.router.getStateForAction;
             if ((prevState.routeName === "app") && prevState.index === 0) {
                 //console.log("back button\n"+JSON.stringify(state))
 
-                return {...state, index: 3}
+                //return {...state, index: 3}
             }
         //return {...state,index:3}//st(newaction||action,state);
     }
@@ -88,27 +103,21 @@ const initialNavState= {
         routes:[
            { key: 'introOne', routeName: 'introOne' },
            { key: 'introTwo', routeName: 'introTwo' },
-           { key: 'introThree', routeName: 'introThree' },
+            { index: 0,
+                         routes: [ { routeName: 'start', key: 'Init' } ],
+       key: 'oauth',
+          routeName: 'oauth' },
            { index: 0, routes: [ { routeName: 'Home', key: 'Init' } ], key: 'app', routeName: 'app' } ],
             index: 0 };
 
 export const routeReducers=(state = initialNavState, action) => {
-   // alert("back button\n"+JSON.stringify(action))
-      /*  if (action.type === NavigationActions.BACK) {
-            //console.warn("back button")
-            return Main.router.getStateForAction(action, state);
-        }
-        if (action.type === NavigationActions.NAVIGATE) {
-            //console.warn("navigate button");
-            return Main.router.getStateForAction(action, state);
-        }
-        return state; //Main.router.getStateForAction(action, state);*/
+
 
     switch (action.type) {
         case NavigationActions.BACK:
         case NavigationActions.NAVIGATE:
             return Main.router.getStateForAction(action, state);
-        /*case "persist/REHYDRATE":
+        case "persist/REHYDRATE":
             //alert(JSON.stringify(action.type))
             if(action.hasOwnProperty("payload"))
             if (action.payload.nav.hasOwnProperty("routes")) {
@@ -118,9 +127,9 @@ export const routeReducers=(state = initialNavState, action) => {
 
                 //routeName=Main.router.getStateForAction(NavigationActions.navigate({routeName:routeName}), state)
                 //alert(JSON.stringify(routeName))
-            //return action.payload.nav;
+            return action.payload.nav;
             }
-         return state;*/
+         return state;
         default:
             return state
     }
@@ -128,47 +137,63 @@ export const routeReducers=(state = initialNavState, action) => {
     }
 
 
+class root extends Component{
+    componentDidMount() {
+        BackAndroid.addEventListener('backPress', () => {
+            const { dispatch, nav } = this.props;
+            if(this.drawerOpen){
+            this.drawer.closeDrawer();
+            return true;
+            }
+            if (this.shouldCloseApp(nav)) return false
 
-
-/*connect(state => ({
-    nav: state.nav,
-}))(({ dispatch, nav }) => (
-    <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />
-));*/
-
-/*const stateToProps=(state)=>{
-    "use strict";
-    return{
-        nav:state.nav
+            dispatch({ type: NavigationActions.BACK })
+            return true
+        })
     }
-}
+    shouldCloseApp(nav){
+        if(nav.hasOwnProperty("routes")) {
+            let route = nav.routes[nav.index];
+            if (route.hasOwnProperty("routes")) {
+                if(route.index==0){
+                    if(this.shouldClose)
+                    {
+                        return true
+                    }
+                    this.shouldClose=true;
+                    const cb=()=>{
+                        this.shouldClose=false;
+                    }
+                    setTimeout(cb.bind(this),500);
+                    ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
+                    return false
+                }
 
-const dispatchToProps=(dispatch)=>
-{
-    "use strict";
-    return{
-        dispatch:(cmd)=>{
-            dispatch(cmd)
+                // ToastAndroid.showWithGravity('All Your Base Are Belong To Us', ToastAndroid.SHORT, ToastAndroid.CENTER);
+            }
         }
+        return false
     }
-
-}*/
-
-//const cont=
-
-const root =({dispatch,nav})=>
-{
+    componentWillUnmount() {
+        BackAndroid.removeEventListener('backPress')
+    }
+render(){
    // "use strict";
+  const  { dispatch, nav}=this.props;
     let navigationView = (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
             <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
         </View>
     );
-    return(
+
+        return(
         <DrawerLayoutAndroid ref={component=>{this.drawer=component}}
                              drawerWidth={300}
                              drawerPosition={DrawerLayoutAndroid.positions.Left}
-                             renderNavigationView={() => navigationView}>
+                             renderNavigationView={() => navigationView}
+                             onDrawerOpen={()=>this.drawerOpen=true}
+                             onDrawerClose={()=>this.drawerOpen=false}
+        >
 
 
             <Main screenProps={{drawer:this.drawer}}
@@ -182,7 +207,7 @@ const root =({dispatch,nav})=>
 
 
     )
-}
+}}
 
 
 
