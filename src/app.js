@@ -53,10 +53,11 @@ const Main =
             app:{screen:StackNavigator(StackHome)}
         },
         {
-          //  backBehavior:"none",
+            //backBehavior:"none",
             swipeEnabled:false,
             tabBarPosition: 'bottom',
-            tabBarComponent:()=>null
+            tabBarComponent:()=>null,
+            //initialRoute:"app"
         }
     );
 
@@ -92,8 +93,8 @@ const initialNavState= {
             index: 0 };
 
 export const routeReducers=(state = initialNavState, action) => {
-    //alert("back button\n"+JSON.stringify(action))
-        if (action.type === NavigationActions.BACK) {
+   // alert("back button\n"+JSON.stringify(action))
+      /*  if (action.type === NavigationActions.BACK) {
             //console.warn("back button")
             return Main.router.getStateForAction(action, state);
         }
@@ -101,7 +102,29 @@ export const routeReducers=(state = initialNavState, action) => {
             //console.warn("navigate button");
             return Main.router.getStateForAction(action, state);
         }
-        return state; //Main.router.getStateForAction(action, state);
+        return state; //Main.router.getStateForAction(action, state);*/
+
+    switch (action.type) {
+        case NavigationActions.BACK:
+        case NavigationActions.NAVIGATE:
+            return Main.router.getStateForAction(action, state);
+        /*case "persist/REHYDRATE":
+            //alert(JSON.stringify(action.type))
+            if(action.hasOwnProperty("payload"))
+            if (action.payload.nav.hasOwnProperty("routes")) {
+
+            //let route = action.payload.nav.routes[action.payload.nav.index];
+            //let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
+
+                //routeName=Main.router.getStateForAction(NavigationActions.navigate({routeName:routeName}), state)
+                //alert(JSON.stringify(routeName))
+            //return action.payload.nav;
+            }
+         return state;*/
+        default:
+            return state
+    }
+
     }
 
 
@@ -148,7 +171,7 @@ const root =({dispatch,nav})=>
                              renderNavigationView={() => navigationView}>
 
 
-            <Main screenProps={this.drawer}
+            <Main screenProps={{drawer:this.drawer}}
                   ref={component=>{this.main=component}}
                   navigation={addNavigationHelpers({ dispatch, state: nav })}
             />

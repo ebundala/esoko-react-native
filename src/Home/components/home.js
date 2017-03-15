@@ -34,7 +34,7 @@ constructor(props){
 
     };
     openDrawer(){
-        this.props.screenProps.openDrawer()
+        this.props.screenProps.drawer.openDrawer()
     }
     render(){
         ctx=this;
