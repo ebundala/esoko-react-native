@@ -10,7 +10,8 @@ import {
     DrawerLayoutAndroid,
     TouchableNativeFeedback,
     BackAndroid,
-    ToastAndroid
+    ToastAndroid,
+    Button
     } from 'react-native';
 import { connect } from 'react-redux'
 import { StackNavigator,NavigationActions ,TabNavigator,addNavigationHelpers,} from 'react-navigation';
@@ -78,26 +79,31 @@ const Main =
 
 const st=Main.router.getStateForAction;
     Main.router.getStateForAction = (action, state)=> {
-        if (
-            state &&
-            action.type === NavigationActions.BACK
-        ) {
-            // Returning null from getStateForAction means that the action
-            // has been handled/blocked, but there is not a new state
-            console.log("back button\n" + JSON.stringify(state))
-            let prevState = state.routes[state.index];
 
-            if ((prevState.routeName === "app") && prevState.index === 0) {
-                //console.log("back button\n"+JSON.stringify(state))
+       switch (action.type){
 
-                //return {...state, index: 3}
-            }
-        //return {...state,index:3}//st(newaction||action,state);
-    }
+           case NavigationActions.BACK:
+               if (state) {
+                   // Returning null from getStateForAction means that the action
+                   // has been handled/blocked, but there is not a new state
+                   //console.log("back button\n" + JSON.stringify(state))
+                   let prevState = state.routes[state.index];
+
+                   if ((prevState.routeName === "app") && prevState.index === 0) {
+                       console.log("back button\n"+JSON.stringify(state))
+
+                       return {...state, index: 3}
+                   }
+                   //return {...state,index:3}//st(newaction||action,state);
+               }
+
+           default:
+               return st(action,state)
+       }
 
 
-    return st(action,state)
-}
+
+};
 
 const initialNavState= {
         routes:[
@@ -116,11 +122,18 @@ export const routeReducers=(state = initialNavState, action) => {
     switch (action.type) {
         case NavigationActions.BACK:
         case NavigationActions.NAVIGATE:
+        case NavigationActions.INIT:
+        case NavigationActions.RESET:
+        case NavigationActions.SET_PARAMS:
+
             return Main.router.getStateForAction(action, state);
-        case "persist/REHYDRATE":
+        /*case "ACCOUNT":
+            alert(action.type);
+            return Main.router.getStateForAction(NavigationActions.navigate({routeName:"account"}), state);*/
+        /*case "persist/REHYDRATE":
             //alert(JSON.stringify(action.type))
             if(action.hasOwnProperty("payload"))
-            if (action.payload.nav.hasOwnProperty("routes")) {
+            if (action.payload.hasOwnProperty("nav")?action.payload.nav:false) {
 
             //let route = action.payload.nav.routes[action.payload.nav.index];
             //let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
@@ -129,7 +142,7 @@ export const routeReducers=(state = initialNavState, action) => {
                 //alert(JSON.stringify(routeName))
             return action.payload.nav;
             }
-         return state;
+         return state;*/
         default:
             return state
     }
@@ -139,10 +152,11 @@ export const routeReducers=(state = initialNavState, action) => {
 
 class root extends Component{
     componentDidMount() {
+        this.shouldClose=false;
         BackAndroid.addEventListener('backPress', () => {
             const { dispatch, nav } = this.props;
             if(this.drawerOpen){
-            this.drawer.closeDrawer();
+            this.closeDrawer();
             return true;
             }
             if (this.shouldCloseApp(nav)) return false
@@ -155,17 +169,22 @@ class root extends Component{
         if(nav.hasOwnProperty("routes")) {
             let route = nav.routes[nav.index];
             if (route.hasOwnProperty("routes")) {
-                if(route.index==0){
+                if(route.index===0){
                     if(this.shouldClose)
                     {
+                        //
+                        BackAndroid.exitApp()
                         return true
                     }
+                   // alert("hello")
                     this.shouldClose=true;
                     const cb=()=>{
+                        //alert("hello")
                         this.shouldClose=false;
                     }
-                    setTimeout(cb.bind(this),500);
+                    setTimeout(cb.bind(this),5000);
                     ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
+
                     return false
                 }
 
@@ -183,6 +202,9 @@ render(){
     let navigationView = (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
             <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
+            <Button title="Account" onPress={()=>{
+                this.closeDrawer();
+                this.navigate("start")}}/>
         </View>
     );
 
@@ -195,19 +217,38 @@ render(){
                              onDrawerClose={()=>this.drawerOpen=false}
         >
 
+<View style={{ flex:1}} >
 
-            <Main screenProps={{drawer:this.drawer}}
+            <Main   screenProps={{drawer:this.drawer}}
                   ref={component=>{this.main=component}}
                   navigation={addNavigationHelpers({ dispatch, state: nav })}
             />
+    <Activity style={{alignSelf:"flex-end"}}/>
 
+
+</View>
 
 
         </DrawerLayoutAndroid>
 
 
     )
-}}
+}
+navigate(route){
+    if(route) {
+        this.main.props.navigation.navigate(route)
+    }
+    else {
+        console.warm("navigate require a valid route")
+    }
+}
+closeDrawer(){
+    this.drawer.closeDrawer();
+}
+openDrawer(){
+    this.drawer.openDrawer();
+}
+}
 
 
 

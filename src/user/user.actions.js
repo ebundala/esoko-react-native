@@ -5,7 +5,7 @@
 import userUtil from "../utils/user"
 import * as activity from "../activityIndicator/activitIndicatorAction"
  class userActions extends userUtil {
-  login(email,password){
+  login(email,password,navigate){
     return (dispatch)=>
     {
         if(email&&password){
@@ -21,6 +21,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
                     data:{
                         //user
                     }})
+            navigate("account")
         })
         .catch((err) => {
            // alert('User signin error', err.message);
@@ -37,7 +38,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
     }
 }
 
-  logout(){
+  logout(navigate){
     return(dispatch)=>
     {
         return this.auth.signOut()
@@ -50,6 +51,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
                         //data:null
                     }
                 )
+            navigate("start")
             })
         .catch(err =>{
                 //console.error('Uh oh... something weird happened')
@@ -71,7 +73,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
     }
 }
 
-  resetPasswordWithEmail(email){
+  resetPasswordWithEmail(email,navigate){
     return(dispatch)=> {
         if(email){
             dispatch(activity.startActivity("Sending reset  link to "+email))
@@ -102,7 +104,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
     }
 }
   }
-oAuth(name,token){
+oAuth(name,token,navigate){
     return (dispatch)=>{
 
         dispatch(activity.startActivity("Login using "+name))
@@ -116,6 +118,9 @@ oAuth(name,token){
                   data:{
                       user
                   }})
+                navigate("account");
+                navigate("app")
+
             }).catch(err=>{
 
               //console.log('User logged failed', err)
@@ -129,7 +134,7 @@ oAuth(name,token){
           })
     }
 }
-create(email,password){
+create(email,password,navigate){
     return dispatch=>{
         if(email&&password){
             dispatch(activity.startActivity("Creating User "))
@@ -144,7 +149,7 @@ create(email,password){
                 //user
             }
         })
-
+            navigate("account")
 
         })
         .catch((err) => {

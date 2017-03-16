@@ -22,7 +22,8 @@ import * as actions from '../activitIndicatorAction'
 export class ActivityWrapper extends Component{
     render(){
         return(
-            <View style={[styles.flex1,styles.alignItemsCenter,styles.centerJustified]}>
+
+            <View style={[styles.alignItemsCenter,styles.centerJustified]}>
                 {!this.props.isError&&
 
                     <ActivityIndicator></ActivityIndicator>
@@ -40,6 +41,7 @@ export class ActivityWrapper extends Component{
                 </View>}
 
             </View>
+
         )
     }
 }
@@ -70,7 +72,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-const Activity = connect(
+const Activity =connect(
     mapStateToProps,
     mapDispatchToProps
 )(ActivityWrapper);

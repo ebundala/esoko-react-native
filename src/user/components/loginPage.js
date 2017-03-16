@@ -34,6 +34,7 @@ class LoginSection extends Component{
         }
     }
     render(){
+        let {navigate,validateEmail,onSubmit}=this.props
         return(
             <View   >
                 <View section="email/pass input">
@@ -48,7 +49,8 @@ class LoginSection extends Component{
                                 autoCapitalize="none"
                                 placeholderTextColor='#a8aAeC'
                                 placeholder="Email"
-                                onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
+                                onSubmitEditing={()=>validateEmail(this.state.email,navigate)?
+                                    this.passwordInput.focus():this.emailInput.focus()}
                                 onChangeText={email => this.setState({email})}
                             />
 
@@ -77,14 +79,14 @@ class LoginSection extends Component{
                         <Button disabled={!(this.state.email&&this.state.password)}
                                 raised={true}
                                 text="Log In"
-                                onPress={()=>this.props.onSubmit(this.state.email,this.state.password)}>
+                                onPress={()=>onSubmit(this.state.email,this.state.password,navigate)}>
 
                         </Button>
 
                     </View>
 
                     <View style={[styles.row,styles.alignItemsCenter]}>
-                        <TouchableNativeFeedback onPress={()=>this.props.navigate("resetPassword")}>
+                        <TouchableNativeFeedback onPress={()=>navigate("resetPassword")}>
                             <Text>
                                 Forgot password
                             </Text>
@@ -104,7 +106,9 @@ class SignUpSection extends Component{
         }
     }
     render(){
+        let {navigate,validateEmail,onSubmit}=this.props;
         return(
+
             <View sect="sign up screen">
                 <View section="email/pass input">
                     <View style={styles.row}>
@@ -114,11 +118,11 @@ class SignUpSection extends Component{
                                 ref={component=>this.emailInput=component}
                                 keyboardType="email-address"
                                 style={styles.input}
-                                autoCorrect={false}
+                                autoCorrect={true}
                                 autoCapitalize="none"
                                 placeholderTextColor='#a8aAeC'
                                 placeholder="Email"
-                                onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
+                                onSubmitEditing={()=>validateEmail(this.state.email,navigate)?this.passwordInput.focus():this.emailInput.focus()}
                                 onChangeText={email => this.setState({email})}
                             />
 
@@ -132,8 +136,8 @@ class SignUpSection extends Component{
                             style={styles.input}
                             maxLength={16}
                             secureTextEntry={true}
-                            onSubmitEditing={()=>alert("submiting")}
-                            autoCorrect={false}
+                            onSubmitEditing={()=>this.retypedPassword.focus()}
+                            autoCorrect={true}
                             autoCapitalize="none"
                             placeholderTextColor='#a8aAeC'
                             placeholder="Password"
@@ -150,7 +154,8 @@ class SignUpSection extends Component{
                             style={styles.input}
                             maxLength={16}
                             secureTextEntry={true}
-                            onSubmitEditing={()=>alert("hello")}
+                            onSubmitEditing={()=>this.comparePassword()?onSubmit(this.state.email,this.state.retypedPassword)
+                                :alert("password didn't match")}
                             autoCorrect={false}
                             autoCapitalize="none"
                             placeholderTextColor='#a8aAeC'
@@ -164,6 +169,7 @@ class SignUpSection extends Component{
                     <View style={styles.row}>
 
                         <Button disabled={!this.comparePassword()}
+                                ref={component=>this.submitButton=component}
                                 raised={true}
                                 text="sign up" onPress={()=>this.props.onSubmit(this.state.email,this.state.retypedPassword)}>
 
@@ -191,13 +197,14 @@ class SignUpSection extends Component{
 }
 class OauthSection extends Component{
     render(){
+        let {navigate,oAuth}=this.props;
     return(
         <View >
             <View style={styles.row}>
                 <Button style={styles.facebook}
                         raised={true}
                         text="LOGIN WITH FACEBOOK"
-                        onPress={()=>this.props.oAuth("FACEBOOK")}>
+                        onPress={()=>oAuth("FACEBOOK",navigate)}>
 
                 </Button>
             </View>
@@ -205,7 +212,7 @@ class OauthSection extends Component{
                 <Button style={styles.google}
                         raised={true}
                         text="LOGIN WITH GOOGLE"
-                        onPress={()=>this.props.oAuth("GOOGLE")}>
+                        onPress={()=>oAuth("GOOGLE",navigate)}>
 
                 </Button>
             </View>
@@ -220,9 +227,11 @@ class startScreen extends Component {
 
     render(){
         let {navigate}=this.props.navigation;
+        let user=this.props;
         return(
 
             <View style={styles.flex1}>
+                <Text>{JSON.stringify(user)}</Text>
                 <View
                     style={[styles.horizontal,
                         styles.flex1,
@@ -263,19 +272,21 @@ class startScreen extends Component {
 class LoginScreen extends Component{
     render(){
         let {navigate}=this.props.navigation;
+        let user=this.props.screenProps;
         return(
     <View>
-    <OauthSection />
-   <LoginSection onSubmit={alert} navigate={navigate}/>
+    <OauthSection oAuth={user.oAuth} navigate={navigate}/>
+   <LoginSection onSubmit={user.login}  navigate={navigate} validateEmail={user.validateEmail}/>
     </View>
 )}}
 class SignUpScreen extends Component{
     render(){
-        //let {navigate}=this.props.navigation;
+        let {navigate}=this.props.navigation;
+        let user=this.props.screenProps;
     return(
     <View>
-        <OauthSection />
-        <SignUpSection onSubmit={alert} />
+        <OauthSection oAuth={user.oAuth} navigate={navigate}/>
+        <SignUpSection onSubmit={user.signUp} validateEmail={user.validateEmail} navigate={navigate}/>
 
     </View>
 )}}
@@ -288,7 +299,8 @@ class resetPasswordScreen extends Component{
         }
     }
     render(){
-        let {navigate}=this.props.navigation
+        let {navigate}=this.props.navigation;
+        let user=this.props.screenProps;
     return(
 
         <View style={[styles.flex1,styles.centerJustified]}>
@@ -303,7 +315,7 @@ class resetPasswordScreen extends Component{
                         autoCapitalize="none"
                         placeholderTextColor='#a8aAeC'
                         placeholder="Enter Email to receive reset link"
-                        onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
+                        onSubmitEditing={()=>user.validateEmail(this.state.email,navigate)}
                         onChangeText={email => this.setState({email})}
                     />
 
@@ -316,7 +328,7 @@ class resetPasswordScreen extends Component{
                 <Button disabled={!(this.state.email)}
                         raised={true}
                         text="Send Reset link"
-                        onPress={()=>this.props.resetPasswordWithEmail(this.state.email)}>
+                        onPress={()=>user.resetPasswordWithEmail(this.state.email,navigate)}>
 
                 </Button>
 
@@ -324,13 +336,16 @@ class resetPasswordScreen extends Component{
         </View>
 
 )}}
-class AccountScreen extends Component{render(){
+class AccountScreen extends Component{
+    render(){
+        let {navigate}=this.props.navigation;
+        let user=this.props.screenProps;
     return(
     <View style={[styles.flex1,styles.centerJustified]}>
         <View  style={styles.row}>
             <Button text="logout"
                     raised={true}
-                    onPress={()=>alert("logout")}>
+                    onPress={()=>user.logout(navigate)}>
 
             </Button>
         </View>
@@ -339,9 +354,7 @@ class AccountScreen extends Component{render(){
 
 
 
-const mapStateToProps = (state) => {
-    return{...state.user}
-}
+
 const routes={
     start:{screen:startScreen},
     login:{screen:LoginScreen},
@@ -352,72 +365,90 @@ const routes={
 const stackConfig={
     headerMode:"none"
 }
-const LoginPage=StackNavigator(routes,stackConfig)
+const LoginPage=StackNavigator(routes,stackConfig);
+
+const mapStateToProps = (state) => {
+    return{...state.user}
+}
 const mapDispatchToProps = (dispatch) => {
-    return {
-        login: (email,password) => {
-           // dispatch(activity.startActivity("loging user in"))
-            dispatch(actions.login(email,password))
+    return{
+
+        login: (email,password,navigate={}) => {
+            dispatch(activity.startActivity("loging user in"))
+            dispatch(actions.login(email,password,navigate))
             /*dispatch({
              type:"USER_LOGIN",
              data:{email,password}
              })*/
         },
-        oAuth:(name)=>{
-           // dispatch(activity.startActivity("loging user in"))
-            dispatch(actions.oAuth(name))
+        oAuth:(name,navigate)=>{
+
+            dispatch(activity.startActivity("loging user in"));
+            dispatch(actions.oAuth(name,token="",navigate))
         },
-        validateEmail:(email)=>{
-           // dispatch(
-               // actions.resetPasswordWithEmail(email)
-          //  )
+        validateEmail:(email,navigate)=>{
+            dispatch(
+                {type:"VALIDATE_EMAIL",data:{email}}
+           )
+return true
         },
-        resetPasswordWithEmail:(email)=>{
-        dispatch(
-            actions.resetPasswordWithEmail(email)
+        resetPasswordWithEmail:(email,navigate)=>{
+            dispatch(activity.startActivity("reset Password With Email"+email))
+        dispatch(actions.resetPasswordWithEmail(email,navigate)
         )
     },
-        onCreate:(email,password)=>{
-         //   dispatch(activity.startActivity("creating user account"))
-            dispatch(actions.create(email,password))
+        signUp:(email,password,navigate)=>{
+           dispatch(activity.startActivity("creating user account"))
+            dispatch(actions.create(email,password,navigate))
         },
-        onLogout:()=>{
-            dispatch(actions.logout())
+        logout:(navigate)=>{
+            dispatch(actions.logout(navigate))
         },
-        _showSignUp:()=>{
-            dispatch(actions.showSignUp())
-        },
-        _showLogin:()=>{
-            dispatch(actions.showLogin())
-        },
-        _showStart:()=>{
-            dispatch(actions.showStart())
-        },
-        _showLogout:()=>{
-            dispatch(actions.showLogout())
+        _showSignUp:(navigate)=>{
 
         },
-        _showResetPassword:()=>{
-            dispatch(actions.showResetPassword())
+        _showLogin:(navigate)=>{
 
         },
-        _showResetMail:()=>{
-            dispatch(actions.showResetMail())
+        _showStart:(navigate)=>{
+
+        },
+        _showLogout:(navigate)=>{
+
+
+        },
+        _showResetPassword:(navigate)=>{
+
+
+        },
+        _showResetMail:(navigate)=>{
+
 
         }
+
     }
+
 }
 
-
+const mergeProps=(stateProps,dispatchProp,ownProps)=>{
+return{
+    ...ownProps,
+    screenProps:{
+     ...stateProps,
+    ...dispatchProp,
+    }
+}
+}
 
 const Oauth= connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    mergeProps
 )(LoginPage);
 
 export default  Oauth
 
-LoginPage.propTypes = {
+/*LoginPage.propTypes = {
 
     login: PropTypes.func.isRequired,
     validateEmail:PropTypes.func.isRequired,
@@ -425,7 +456,7 @@ LoginPage.propTypes = {
     onCreate:PropTypes.func.isRequired,
     onLogout:PropTypes.func.isRequired
 
-}
+}*/
 
 
 
