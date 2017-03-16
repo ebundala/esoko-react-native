@@ -202,9 +202,9 @@ render(){
     let navigationView = (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
             <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
-            <Button title="Account" onPress={()=>{
-                this.closeDrawer();
-                this.navigate("start")}}/>
+            <Button title="Account" onPress={()=>
+            this.goToAccount()
+            }/>
         </View>
     );
 
@@ -234,12 +234,20 @@ render(){
 
     )
 }
+goToAccount()
+    {
+        this.closeDrawer();
+
+
+        this.navigate("oauth")
+    }
+
 navigate(route){
     if(route) {
         this.main.props.navigation.navigate(route)
     }
     else {
-        console.warm("navigate require a valid route")
+        console.warn("navigate require a valid route")
     }
 }
 closeDrawer(){
