@@ -25,6 +25,8 @@ import styles from '../../styles/styles'
 import actions from "../user.actions"
 import * as activity from "../../activityIndicator/activitIndicatorAction"
 
+
+
 class LoginSection extends Component{
     constructor(props){
         super(props)
@@ -96,6 +98,13 @@ class LoginSection extends Component{
 
             </View>
         )}
+}
+LoginSection.propTypes = {
+    navigate:PropTypes.func.isRequired
+    ,onSubmit: PropTypes.func.isRequired,
+    validateEmail:PropTypes.func.isRequired,
+
+
 }
 class SignUpSection extends Component{
     constructor(props){
@@ -169,7 +178,7 @@ class SignUpSection extends Component{
                     <View style={styles.row}>
 
                         <Button disabled={!this.comparePassword()}
-                                ref={component=>this.submitButton=component}
+
                                 raised={true}
                                 text="sign up" onPress={()=>this.props.onSubmit(this.state.email,this.state.retypedPassword)}>
 
@@ -194,6 +203,12 @@ class SignUpSection extends Component{
             return false
         }
     }
+}
+SignUpSection.propTypes = {
+    navigate:PropTypes.func.isRequired
+    ,onSubmit: PropTypes.func.isRequired,
+    validateEmail:PropTypes.func.isRequired,
+
 }
 class OauthSection extends Component{
     render(){
@@ -221,13 +236,17 @@ class OauthSection extends Component{
         </View>
 
     )}}
+OauthSection.propTypes = {
+    navigate:PropTypes.func.isRequired,
+    oAuth:PropTypes.func.isRequired,
 
+}
     //screens
 class startScreen extends Component {
 
     render(){
         let {navigate}=this.props.navigation;
-        let user=this.props;
+        let user=this.props.screenProps;
         return(
 
             <View style={styles.flex1}>
@@ -268,29 +287,43 @@ class startScreen extends Component {
         )
     }
 }
-
+startScreen.propTypes = {
+   // navigation:PropTypes.obj.isRequired,
+   // screenProps: PropTypes.obj.isRequired
+}
 class LoginScreen extends Component{
     render(){
         let {navigate}=this.props.navigation;
         let user=this.props.screenProps;
         return(
     <View>
+        <Text>{JSON.stringify(user)}</Text>
     <OauthSection oAuth={user.oAuth} navigate={navigate}/>
    <LoginSection onSubmit={user.login}  navigate={navigate} validateEmail={user.validateEmail}/>
     </View>
 )}}
+LoginScreen.propTypes = {
+   // screenProps: PropTypes.Object.isRequired,
+    //navigation:PropTypes.Object.isRequired
+}
 class SignUpScreen extends Component{
     render(){
         let {navigate}=this.props.navigation;
         let user=this.props.screenProps;
     return(
     <View>
+        <Text>{JSON.stringify(user)}</Text>
         <OauthSection oAuth={user.oAuth} navigate={navigate}/>
         <SignUpSection onSubmit={user.signUp} validateEmail={user.validateEmail} navigate={navigate}/>
 
     </View>
 )}}
+SignUpScreen.propTypes = {
 
+   // screenProps: PropTypes.Object.isRequired,
+   // navigation:PropTypes.Object.isRequired
+
+}
 class resetPasswordScreen extends Component{
     constructor(props){
         super(props)
@@ -304,6 +337,7 @@ class resetPasswordScreen extends Component{
     return(
 
         <View style={[styles.flex1,styles.centerJustified]}>
+            <Text>{JSON.stringify(user)}</Text>
             <View style={styles.row}>
 
                 <View style={styles.row}>
@@ -336,12 +370,17 @@ class resetPasswordScreen extends Component{
         </View>
 
 )}}
+resetPasswordScreen.propTypes = {
+   // screenProps: PropTypes.Object.isRequired,
+  //  navigation:PropTypes.Object.isRequired
+}
 class AccountScreen extends Component{
     render(){
         let {navigate}=this.props.navigation;
         let user=this.props.screenProps;
     return(
     <View style={[styles.flex1,styles.centerJustified]}>
+        <Text>{JSON.stringify(user)}</Text>
         <View  style={styles.row}>
             <Button text="logout"
                     raised={true}
@@ -351,7 +390,10 @@ class AccountScreen extends Component{
         </View>
     </View>
 )}}
-
+AccountScreen.propTypes = {
+   // screenProps: PropTypes.Object.isRequired,
+   // navigation:PropTypes.Object.isRequired
+}
 
 
 
@@ -387,9 +429,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(actions.oAuth(name,token="",navigate))
         },
         validateEmail:(email,navigate)=>{
-            dispatch(
+            /*dispatch(
                 {type:"VALIDATE_EMAIL",data:{email}}
-           )
+           )*/
 return true
         },
         resetPasswordWithEmail:(email,navigate)=>{
@@ -403,28 +445,8 @@ return true
         },
         logout:(navigate)=>{
             dispatch(actions.logout(navigate))
-        },
-        _showSignUp:(navigate)=>{
-
-        },
-        _showLogin:(navigate)=>{
-
-        },
-        _showStart:(navigate)=>{
-
-        },
-        _showLogout:(navigate)=>{
-
-
-        },
-        _showResetPassword:(navigate)=>{
-
-
-        },
-        _showResetMail:(navigate)=>{
-
-
         }
+
 
     }
 
@@ -464,393 +486,5 @@ export default  Oauth
 
 
 
-class LoginPagex extends Component{
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            email: "",
-            password:"",
-            signUpPassword:"",
-            signUpEmail:"",
-            retypedPassword:"",
-            emailReset:""
-
-        }
-        let ctx=this;
-        /*actions.auth.listenForAuth((evt)=>{
-         // evt is the authentication event
-         // it contains an `error` key for carrying the
-         // error message in case of an error
-         // and a `user` key upon successful authentication
-         if (!evt.authenticated) {
-         // There was an error or there is no user
-         console.log(" user not authenticated\n"+JSON.stringify(evt))
-         // ctx.props._showStart();
-
-         //ctx.showLogout();
-         } else {
-         // evt.user contains the user details
-         console.log('User authenticated\n', JSON.stringify(evt.user));
-         //ctx.props._showLogout();
-
-         }
-         }).then(() => {
-         alert('Listening for authentication changes')}
-         )*/
-    }
-    render(){
-        return(
-
-            <Image
-                style={{flex:1,width:null,height:null}}
-                source={require('../images/background.png')}
-                resizeMode={Image.resizeMode.cover}
-            >
-                <View style={[styles.flex1,styles.horizontal]}>
-                    <View style={styles.flex1}>
-
-                    </View>
-
-                    <View style={[
-                        styles.flex10,
-                        styles.spaceBetween]}>
-                        <View style={[styles.row,styles.alignItemsCenter]}>
-                            <TouchableHighlight onPress={()=>this.props._showStart()}>
-                                <Text style={styles.title}>Signin/Signup</Text>
-                            </TouchableHighlight>
-                        </View>
-
-
-
-                        {this.props.showStart&&
-                        <View style={styles.flex1}>
-                            <View section="login/signup"
-                                  style={[styles.horizontal,
-                                      styles.flex1,
-                                      styles.alignItemsEnd,
-                                      styles.spaceBetween]}>
-
-                                <View style={[styles.row,styles.flex5]}>
-
-                                    <Button
-                                        text="Log In"
-                                        raised={true}
-                                        onPress={()=>this.props._showLogin()}>
-
-                                    </Button>
-
-                                </View>
-
-                                <View style={styles.flex2}/>
-
-                                <View style={[styles.row,styles.flex5]}>
-                                    <Button text="Sign Up"
-                                            raised={true}
-                                            onPress={()=>this.props._showSignUp()}>
-
-                                    </Button>
-
-                                </View>
-
-
-                            </View>
-                            <View style={styles.row}/>
-                        </View>
-                        }
-
-                        {this.computeShowOauth()&&
-                        <View section="Oauth buttons">
-                            <View style={styles.row}>
-                                <Button style={styles.facebook}
-                                        raised={true}
-                                        text="LOGIN WITH FACEBOOK"
-                                        onPress={()=>this.props.oAuth("FACEBOOK")}>
-
-                                </Button>
-                            </View>
-                            <View style={styles.row}>
-                                <Button style={styles.google}
-                                        raised={true}
-                                        text="LOGIN WITH GOOGLE"
-                                        onPress={()=>this.props.oAuth("GOOGLE")}>
-
-                                </Button>
-                            </View>
-
-                            <View style={[styles.row,styles.alignItemsCenter]}><Text style={styles.title}>or</Text></View>
-                        </View>
-                        }
-                        {this.props.showLogin&&
-                        <View sect="login screen"  >
-                            <View section="email/pass input">
-                                <View style={styles.row}>
-
-                                    <View style={styles.row}>
-                                        <TextInput
-                                            ref="email"
-                                            keyboardType="email-address"
-                                            style={styles.input}
-                                            autoCorrect={true}
-                                            autoCapitalize="none"
-                                            placeholderTextColor='#a8aAeC'
-                                            placeholder="Email"
-                                            onSubmitEditing={()=>this.props.validateEmail(this.state.email)}
-                                            onChangeText={email => this.setState({email})}
-                                        />
-
-                                    </View>
-
-                                </View>
-                                <View style={styles.row}>
-
-                                    <TextInput
-                                        ref="password"
-                                        style={styles.input}
-                                        maxLength={16}
-                                        secureTextEntry={true}
-                                        onSubmitEditing={this.submit.bind(this)}
-                                        autoCorrect={false}
-                                        autoCapitalize="none"
-                                        placeholderTextColor='#a8aAeC'
-                                        placeholder="Password"
-
-                                        onChangeText={password => this.setState({password})}
-                                    />
-
-                                </View>
-                                <View style={styles.row}>
-
-                                    <Button disabled={!(this.state.email&&this.state.password)}
-                                            raised={true}
-                                            text="Log In"
-                                            onPress={()=>this.props.login(this.state.email,this.state.password)}>
-
-                                    </Button>
-
-                                </View>
-
-                                <View style={[styles.row,styles.alignItemsCenter]}>
-                                    <TouchableHighlight onPress={()=>this.props._showResetPassword()}>
-                                        <Text>
-                                            Forgot password
-                                        </Text>
-                                    </TouchableHighlight>
-                                </View>
-                            </View>
-
-                        </View>
-                        }
-
-                        {this.props.showSignUp&&
-                        <View sect="sign up screen">
-                            <View section="email/pass input">
-                                <View style={styles.row}>
-
-                                    <View style={styles.row}>
-                                        <TextInput
-                                            ref="email"
-                                            keyboardType="email-address"
-                                            style={styles.input}
-                                            autoCorrect={false}
-                                            autoCapitalize="none"
-                                            placeholderTextColor='#a8aAeC'
-                                            placeholder="Email"
-                                            onSubmitEditing={()=>this.props.validateEmail(this.state.signUpEmail)}
-                                            onChangeText={signUpEmail => this.setState({signUpEmail})}
-                                        />
-
-                                    </View>
-
-                                </View>
-                                <View style={styles.row}>
-
-                                    <TextInput
-                                        ref="signUpPassword"
-                                        style={styles.input}
-                                        maxLength={16}
-                                        secureTextEntry={true}
-                                        onSubmitEditing={this.submit.bind(this)}
-                                        autoCorrect={false}
-                                        autoCapitalize="none"
-                                        placeholderTextColor='#a8aAeC'
-                                        placeholder="Password"
-
-                                        onChangeText={signUpPassword => this.setState({signUpPassword})}
-                                    />
-
-                                </View>
-
-                                <View style={styles.row}>
-
-                                    <TextInput
-                                        ref="retypedPassword"
-                                        style={styles.input}
-                                        maxLength={16}
-                                        secureTextEntry={true}
-                                        onSubmitEditing={this.submit.bind(this)}
-                                        autoCorrect={false}
-                                        autoCapitalize="none"
-                                        placeholderTextColor='#a8aAeC'
-                                        placeholder="Re-type Password"
-
-                                        onChangeText={retypedPassword => this.setState({retypedPassword})}
-                                    />
-
-                                </View>
-
-                                <View style={styles.row}>
-
-                                    <Button disabled={!this.comparePassword()}
-                                            raised={true}
-                                            text="sign up" onPress={()=>this.props.onCreate(this.state.signUpEmail,this.state.retypedPassword)}>
-
-                                    </Button>
-
-                                </View>
-                            </View>
-
-
-                        </View>
-                        }
-
-                        {this.props.showLogout&&
-                        <View style={[styles.flex1,styles.centerJustified]}>
-                            <View section="logout screen" style={styles.row}>
-                                <Button text="logout"
-                                        raised={true}
-                                        onPress={()=>this.props.onLogout()}>
-
-                                </Button>
-                            </View>
-                        </View>
-                        }
-                        {this.props.showResetPass&&
-                        <View sect="reset-password"  >
-                            <View >
-                                <View style={styles.row}>
-
-                                    <View style={styles.row}>
-                                        <TextInput
-                                            ref="emailReset"
-                                            keyboardType="email-address"
-                                            style={styles.input}
-                                            autoCorrect={true}
-                                            autoCapitalize="none"
-                                            placeholderTextColor='#a8aAeC'
-                                            placeholder="Enter Email to receive reset link"
-                                            onSubmitEditing={()=>this.props.validateEmail(this.state.emailReset)}
-                                            onChangeText={emailReset => this.setState({emailReset})}
-                                        />
-
-                                    </View>
-
-                                </View>
-
-                                <View style={styles.row}>
-
-                                    <Button disabled={!(this.state.emailReset)}
-                                            raised={true}
-                                            text="Send Reset link"
-                                            onPress={()=>this.props.resetPasswordWithEmail(this.state.emailReset)}>
-
-                                    </Button>
-
-                                </View>
-                            </View>
-                        </View>
-                        }
-                        {  8&&<View>
-                            <Text style={styles.red}>
-                                {JSON.stringify(this.props)}
-                            </Text>
-                        </View>}
-
-
-
-
-
-                    </View>
-
-                    <View style={styles.flex1}>
-
-                    </View>
-                </View>
-
-            </Image>
-
-
-        )
-    }
-    showSignUp(){
-        this.setState({
-            showStart:false,
-            showLogin:false,
-            showSignUp:true,
-            showLogout:false,
-            passwordMatched:false
-        })
-    }
-    showLogin(){
-        this.setState({
-            showStart:false,
-            showLogin:true,
-            showSignUp:false,
-            showLogout:false,
-            passwordMatched:false
-        })
-    }
-    showStart(){
-        this.setState({
-            showStart:true,
-            showLogin:false,
-            showSignUp:false,
-            showLogout:false,
-            passwordMatched:false
-        })
-    }
-    showLogout(){
-
-        this.setState({
-            showStart:false,
-            showLogin:false,
-            showSignUp:false,
-            showLogout:true,
-            passwordMatched:false
-        })
-    }
-    computeShowOauth(){
-
-        if(this.props.showSignUp||this.props.showLogin){
-            return true
-
-        }
-
-        return false
-    }
-    comparePassword(){
-
-        // console.log("password\n one "+retypedPassword+"\ntwo"+this.state.signUpPassword)
-
-        if((this.state.signUpPassword===this.state.retypedPassword)&&(this.state.signUpPassword&&this.state.retypedPassword)){
-
-            return true
-        }else{
-
-            return false
-        }
-    }
-    validateEmail(){
-        let em=this.state.email;
-        alert("validate emaill"+em)
-    }
-    submit(){
-
-
-
-        alert("submit\n"+this.state.email+"\n"+this.state.password)
-    }
-
-}
 

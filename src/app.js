@@ -25,7 +25,7 @@ import Reviews from "./reviews/components/reviews"
 import Chats from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
 import Home from  "./Home/components/home"
-import {introOne,introTwo,introThree} from "./intro/components/intro"
+import {introOne,introTwo} from "./intro/components/intro"
 
 Activity.navigationOptions = {
     title: 'Activity',
@@ -34,8 +34,6 @@ Activity.navigationOptions = {
 
 const StackHome = {
     Home: { screen: Home },
-    Oauth: { screen: Oauth },
-    Activity:{screen:Activity},
     products:{screen:Products},
     orders:{screen:Orders},
     bids:{screen:Bids},
@@ -44,15 +42,7 @@ const StackHome = {
 
 }
 
-/*
-const HomeRouter=StackNavigator(StackHome)
 
-const appStackNav=connect(state=>{
-    return{
-        ...state
-    }
-})(HomeRouter)
-*/
 
 
 
@@ -61,16 +51,16 @@ const appStackNav=connect(state=>{
 
 const Main =
     TabNavigator(
-
         {
             introOne:{screen:introOne},
             introTwo:{screen:introTwo},
             oauth:{screen:Oauth},
-            app:{screen:StackNavigator(StackHome)}
+            app:{screen:StackNavigator(StackHome)},
+           // Activity:{screen:Activity},
         },
         {
             backBehavior:"none",
-            //swipeEnabled:false,
+            swipeEnabled:false,
             tabBarPosition: 'bottom',
             tabBarComponent:()=>null,
             //initialRoute:"app"
@@ -92,7 +82,7 @@ const st=Main.router.getStateForAction;
                    if ((prevState.routeName === "app") && prevState.index === 0) {
                        console.log("back button\n"+JSON.stringify(state))
 
-                       return {...state, index: 3}
+                       return {...state}
                    }
                    //return {...state,index:3}//st(newaction||action,state);
                }
@@ -130,19 +120,42 @@ export const routeReducers=(state = initialNavState, action) => {
         /*case "ACCOUNT":
             alert(action.type);
             return Main.router.getStateForAction(NavigationActions.navigate({routeName:"account"}), state);*/
-        /*case "persist/REHYDRATE":
+       case "persist/REHYDRATE":
             //alert(JSON.stringify(action.type))
             if(action.hasOwnProperty("payload"))
             if (action.payload.hasOwnProperty("nav")?action.payload.nav:false) {
 
-            //let route = action.payload.nav.routes[action.payload.nav.index];
+                if(action.payload.hasOwnProperty("user")){
+                    let user=action.payload.user;
+
+                    if(user.isAuthenticated){
+
+                        //let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), state)
+                        //alert("user authenticated\n"+JSON.stringify(state))
+                        return  {...action.payload.nav}
+
+                    }
+                    else if(user.isNewUser){
+
+                        let newState=Main.router.getStateForAction(NavigationActions.navigate({routeName:"introOne"}), state)
+                       // alert("new user\n"+JSON.stringify(st))
+                        return  {...action.payload.nav,...newState}
+                    }
+                    else {
+                        let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"oauth"}), state)
+                       // alert("user authenticated\n"+st)
+                        return  {...action.payload.nav,...st}
+                    }
+
+                }
+           // let route = action.payload.nav.routes[action.payload.nav.index];
             //let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
 
-                //routeName=Main.router.getStateForAction(NavigationActions.navigate({routeName:routeName}), state)
-                //alert(JSON.stringify(routeName))
-            return action.payload.nav;
+                //route=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), action.payload.nav)
+                //alert(JSON.stringify(action.payload.nav))
+            return {...action.payload.nav};
             }
-         return state;*/
+        return state;
         default:
             return state
     }
@@ -151,54 +164,11 @@ export const routeReducers=(state = initialNavState, action) => {
 
 
 class root extends Component{
-    componentDidMount() {
-        this.shouldClose=false;
-        BackAndroid.addEventListener('backPress', () => {
-            const { dispatch, nav } = this.props;
-            if(this.drawerOpen){
-            this.closeDrawer();
-            return true;
-            }
-            if (this.shouldCloseApp(nav)) return false
 
-            dispatch({ type: NavigationActions.BACK })
-            return true
-        })
-    }
-    shouldCloseApp(nav){
-        if(nav.hasOwnProperty("routes")) {
-            let route = nav.routes[nav.index];
-            if (route.hasOwnProperty("routes")) {
-                if(route.index===0){
-                    if(this.shouldClose)
-                    {
-                        //
-                        BackAndroid.exitApp()
-                        return true
-                    }
-                   // alert("hello")
-                    this.shouldClose=true;
-                    const cb=()=>{
-                        //alert("hello")
-                        this.shouldClose=false;
-                    }
-                    setTimeout(cb.bind(this),5000);
-                    ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
+    render(){
+   "use strict";
+  const  { dispatch, nav,user,activity}=this.props;
 
-                    return false
-                }
-
-                // ToastAndroid.showWithGravity('All Your Base Are Belong To Us', ToastAndroid.SHORT, ToastAndroid.CENTER);
-            }
-        }
-        return false
-    }
-    componentWillUnmount() {
-        BackAndroid.removeEventListener('backPress')
-    }
-render(){
-   // "use strict";
-  const  { dispatch, nav}=this.props;
     let navigationView = (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
             <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
@@ -219,11 +189,11 @@ render(){
 
 <View style={{ flex:1}} >
 
-            <Main   screenProps={{drawer:this.drawer}}
+    {activity.isLoading?<Activity />:<Main   screenProps={{drawer:this.drawer}}
                   ref={component=>{this.main=component}}
                   navigation={addNavigationHelpers({ dispatch, state: nav })}
             />
-    <Activity style={{alignSelf:"flex-end"}}/>
+    }
 
 
 </View>
@@ -234,15 +204,65 @@ render(){
 
     )
 }
-goToAccount()
-    {
+componentWillMount(){
+    //const {user}=this.props;
+
+
+
+}
+    componentDidMount() {
+        this.shouldClose=false;
+
+        BackAndroid.addEventListener('backPress', () => {
+            const { dispatch, nav,user } = this.props;
+            if(this.drawerOpen){
+                this.closeDrawer();
+                return true;
+            }
+            if (this.shouldCloseApp(nav)) return false
+
+            dispatch({ type: NavigationActions.BACK })
+            return true
+        })
+    }
+    shouldCloseApp(nav){
+        if(nav.hasOwnProperty("routes")) {
+            let route = nav.routes[nav.index];
+            if (route.hasOwnProperty("routes")) {
+                if(route.index===0){
+                    if(this.shouldClose)
+                    {
+                        //
+                        BackAndroid.exitApp()
+                        return true
+                    }
+                    // alert("hello")
+                    this.shouldClose=true;
+                    const cb=()=>{
+                        //alert("hello")
+                        this.shouldClose=false;
+                    }
+                    setTimeout(cb.bind(this),5000);
+                    ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
+
+                    return false
+                }
+
+                // ToastAndroid.showWithGravity('All Your Base Are Belong To Us', ToastAndroid.SHORT, ToastAndroid.CENTER);
+            }
+        }
+        return false
+    }
+   static componentWillUnmount() {
+        BackAndroid.removeEventListener('backPress')
+    }
+    goToAccount() {
         this.closeDrawer();
 
 
         this.navigate("oauth")
     }
-
-navigate(route){
+    navigate(route){
     if(route) {
         this.main.props.navigation.navigate(route)
     }
@@ -250,10 +270,10 @@ navigate(route){
         console.warn("navigate require a valid route")
     }
 }
-closeDrawer(){
+    closeDrawer(){
     this.drawer.closeDrawer();
 }
-openDrawer(){
+    openDrawer(){
     this.drawer.openDrawer();
 }
 }
@@ -262,7 +282,9 @@ openDrawer(){
 
 const mapStateToProps = (state) => {
     return{
-    nav:state.nav
+    nav:state.nav,
+    user:state.user,
+    activity:state.activity
     }
 }
 

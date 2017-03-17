@@ -4,6 +4,15 @@
 
 import userUtil from "../utils/user"
 import * as activity from "../activityIndicator/activitIndicatorAction"
+
+export const USER_ACTIONS={
+    LOGIN:"USER_LOGIN",
+    LOGOUT:"USER_LOGOUT",
+    RESETPASSWORD:"USER_RESET_PASSWORD",
+    CREATED:"USER_CREATED"
+
+}
+
  class userActions extends userUtil {
   login(email,password,navigate){
     return (dispatch)=>
@@ -16,7 +25,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
             //console.log('User successfully logged in', user)
             dispatch(activity.endActivity("User successfully logged in "+email))
                 dispatch({
-                    type:"USER_LOGIN",
+                    type:USER_ACTIONS.LOGIN,
                     status:"OK",
                     data:{
                         //user
@@ -27,7 +36,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
            // alert('User signin error', err.message);
             dispatch(activity.activityError(err.errorMessage||'UNKNOWN ERROR'))
                 dispatch({
-                    type:"USER_LOGIN",
+                    type:USER_ACTIONS.LOGIN,
                     status:"error",
                     data:{
                         err
@@ -37,7 +46,6 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
         }
     }
 }
-
   logout(navigate){
     return(dispatch)=>
     {
@@ -46,7 +54,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
                 //console.log('You have been signed out')
                 dispatch(
                     {
-                        type:"USER_LOGOUT",
+                        type:USER_ACTIONS.LOGOUT,
                         status:"OK"
                         //data:null
                     }
@@ -57,7 +65,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
                 //console.error('Uh oh... something weird happened')
                 dispatch(
                     {
-                        type:"USER_LOGOUT",
+                        type:USER_ACTIONS.LOGOUT,
                         status:"error",
                         data:{
                             err
@@ -72,7 +80,6 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
 
     }
 }
-
   resetPasswordWithEmail(email,navigate){
     return(dispatch)=> {
         if(email){
@@ -83,7 +90,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
                 //console.log('Check your inbox for further instructions')
                 dispatch(activity.endActivity("Check your inbox for further instructions"))
               return dispatch({
-                  type: "USER_RESET_PASSWORD",
+                  type: USER_ACTIONS.RESETPASSWORD,
                   status:"OK",
                   data:{
                       res
@@ -93,7 +100,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
             .catch(err => {
                 dispatch(activity.activityError(err.errorMessage||"UNKNOWN ERROR"));
               return dispatch({
-                  type: "USER_RESET_PASSWORD",
+                  type: USER_ACTIONS.RESETPASSWORD,
                   status:"error",
                   data:{err}
               })
@@ -104,7 +111,7 @@ import * as activity from "../activityIndicator/activitIndicatorAction"
     }
 }
   }
-oAuth(name,token,navigate){
+  oAuth(name,token,navigate){
     return (dispatch)=>{
 
         dispatch(activity.startActivity("Login using "+name))
@@ -113,7 +120,7 @@ oAuth(name,token,navigate){
              // console.log('User successfully logged in', user)
                 dispatch(activity.endActivity("User successfully logged in "))
               dispatch({
-                  type:"USER_LOGIN",
+                  type:USER_ACTIONS.LOGIN,
                   status:"OK",
                   data:{
                       user
@@ -126,7 +133,7 @@ oAuth(name,token,navigate){
               //console.log('User logged failed', err)
               dispatch(activity.activityError(err.errorMessage||"UNKNOWN ERROR"));
               dispatch({
-                  type:"USER_LOGIN",
+                  type:USER_ACTIONS.LOGIN,
                   status:"error",
                   data:{
                       err
@@ -134,7 +141,7 @@ oAuth(name,token,navigate){
           })
     }
 }
-create(email,password,navigate){
+  create(email,password,navigate){
     return dispatch=>{
         if(email&&password){
             dispatch(activity.startActivity("Creating User "))
@@ -143,7 +150,7 @@ create(email,password,navigate){
            // console.log('user created', user)
             dispatch(activity.endActivity("User Account Created "))
         dispatch({
-            type:"USER_CREATED",
+            type:USER_ACTIONS.CREATED,
             status:"OK",
             data:{
                 //user
@@ -156,7 +163,7 @@ create(email,password,navigate){
             //console.log('An error occurred', err);
             dispatch(activity.activityError(err.errorMessage||"UNKNOWN ERROR"))
         dispatch({
-            type:"USER_CREATED",
+            type:USER_ACTIONS.CREATED,
             status:"error",
             data:{
                 err
@@ -168,37 +175,6 @@ create(email,password,navigate){
 }
 
 
-     showSignUp(data){
-        return{
-             type:"SHOW_SIGNUP",
-             data:data
-         }
-     }
-     showLogin(data){
-         return{
-             type:"SHOW_LOGIN",
-             data:data
-         }
-     }
-     showStart(data){
-         return{
-             type:"SHOW_START",
-             data:data
-         }
-     }
-     showLogout(data){
 
-         return{
-             type:"SHOW_lOGOUT",
-             data:data
-         }
-     }
-     showResetPassword(data){
-
-         return{
-             type:"SHOW_RESET_PASSWORD",
-             data:data
-         }
-     }
 }
 export default new userActions()

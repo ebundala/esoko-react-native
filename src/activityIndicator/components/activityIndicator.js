@@ -23,7 +23,7 @@ export class ActivityWrapper extends Component{
     render(){
         return(
 
-            <View style={[styles.alignItemsCenter,styles.centerJustified]}>
+            <View style={[styles.flex1,styles.alignItemsCenter,styles.centerJustified]}>
                 {!this.props.isError&&
 
                     <ActivityIndicator></ActivityIndicator>
