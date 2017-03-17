@@ -11,7 +11,7 @@ import {
 
 import { StackNavigator } from 'react-navigation';
 
-
+import Reviews from "../../reviews/components/reviews"
 
 class AllView extends Component{
     static navigationOptions = {
@@ -33,8 +33,9 @@ class AllView extends Component{
 
                 <Button title="Products One" onPress={()=>navigate("singleProduct",{title:"Products one"})}/>
                 <Button title="Products two" onPress={()=>navigate("singleProduct",{title:"Products two"})}/>
-                <Button title="Products three" onPress={()=>navigate("singleProduct",{title:"Products three"})}/>
-                <Button title="Products four" onPress={()=>navigate("singleProduct",{title:"Products four"})}/>
+                <Button title="review all" onPress={()=>navigate("reviews",{title:"Review four"})}/>
+
+
             </View>
         )
     }
@@ -56,9 +57,12 @@ class SingleView extends Component{
 
     };
     render(){
+        let navigate=this.props.navigation.navigate;
         return(
             <View style={{flex:1}}>
                 <Text>singleView</Text>
+                <Button title="review all" onPress={()=>navigate("reviews")}/>
+
             </View>
         )
     }
@@ -66,7 +70,8 @@ class SingleView extends Component{
 
 const products=StackNavigator({
     allProducts:{screen:AllView}  ,
-    singleProduct:{screen:SingleView}
+    singleProduct:{screen:SingleView},
+    reviews:{screen:Reviews}
 },{headerMode:"none"})
 
 export default products;

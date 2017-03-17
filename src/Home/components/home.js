@@ -52,17 +52,28 @@ constructor(props){
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+/*
 class AllView extends Component{
     static navigationOptions = {
         title: 'allView',
-        /*header: ({ state, setParams ,navigate}) => {
+        /!*header: ({ state, setParams ,navigate}) => {
             let  right=(<Statuses navigate={navigate}/>
             );
             let  left=(<Menu navigate={navigate}/>
             );
 
             return { right ,left};
-        },*/
+        },*!/
 
     };
     render(){
@@ -84,14 +95,14 @@ class SingleView extends Component{
         title: ({ state, setParams ,navigate}) => {
             return state.params.title
         },
-        /*header: ({ state, setParams ,navigate}) => {
+        /!*header: ({ state, setParams ,navigate}) => {
             let  right=(<Statuses navigate={navigate}/>
             );
             let  left=(<Menu navigate={navigate}/>
             );
 
             return { right ,left};
-        },*/
+        },*!/
 
     };
     render(){
@@ -106,4 +117,4 @@ class SingleView extends Component{
 export const TestPage=StackNavigator({
   all:{screen:AllView}  ,
   single:{screen:SingleView}
-},{headerMode:"none"})
+},{headerMode:"none"})*/
