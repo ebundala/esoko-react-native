@@ -1,17 +1,10 @@
 /**
  * Created by ebundala on 3/11/2017.
  */
-import React, { Component } from 'react';
-
-import {
-    Text,
-    View,
-    Button
-} from 'react-native';
-
-import { StackNavigator } from 'react-navigation';
-
-import Reviews from "../../reviews/components/reviews"
+import React, {Component} from "react";
+import {Text, View, Button, ListView} from "react-native";
+import {StackNavigator} from "react-navigation";
+import Reviews from "../../reviews/components/reviews";
 
 class AllView extends Component{
     static navigationOptions = {
@@ -26,14 +19,22 @@ class AllView extends Component{
          },*/
 
     };
+    constructor(props){
+        super(props)
+        const ds= new ListView.DataSource({rowHasChanged:(x,y)=>x!==y});
+        this.state={
+            dataSource:ds.cloneWithRows(["one","two","three","four"])
+        }
+    }
     render(){
         let navigate=this.props.navigation.navigate;
         return(
-            <View style={{flex:1,justifyContent:"space-around"}}>
+            <View style={{flex:1}}>
+                <ListView dataSource={this.state.dataSource}
+                          renderRow={(rowDate)=><Button title={rowDate} onPress={()=>navigate("singleProduct",{title:rowDate,data:rowDate})}/>}
+                />
 
-                <Button title="Products One" onPress={()=>navigate("singleProduct",{title:"Products one"})}/>
-                <Button title="Products two" onPress={()=>navigate("singleProduct",{title:"Products two"})}/>
-                <Button title="review all" onPress={()=>navigate("reviews",{title:"Review four"})}/>
+
 
 
             </View>
@@ -58,10 +59,11 @@ class SingleView extends Component{
     };
     render(){
         let navigate=this.props.navigation.navigate;
+        let {data}=this.props.navigation.state.params
         return(
             <View style={{flex:1}}>
                 <Text>singleView</Text>
-                <Button title="review all" onPress={()=>navigate("reviews")}/>
+                <Button title={"review "+data} onPress={()=>navigate("reviews",{title:data,reviews:["one","two","three"]})}/>
 
             </View>
         )

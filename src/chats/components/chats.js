@@ -1,16 +1,19 @@
 /**
  * Created by ebundala on 3/11/2017.
  */
+
+//TODO add bot assistant to help shoppers find what they look for in chat
 import React, { Component } from 'react';
 
 import {
     Text,
     View,
-    Button
+    Button,
+    ListView
 } from 'react-native';
 
 import { StackNavigator } from 'react-navigation';
-
+import { GiftedChat } from 'react-native-gifted-chat';
 
 
 class AllView extends Component{
@@ -26,15 +29,27 @@ class AllView extends Component{
          },*/
 
     };
+
+    constructor(props){
+        super(props)
+        const ds =new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
+        this.state={
+            dataSource:ds.cloneWithRows([
+
+                'John', 'Joel', 'James', 'Jimmy', 'Jackson', 'Jillian', 'Julie', 'Devin'
+
+            ])
+        }
+    }
+
     render(){
         let navigate=this.props.navigation.navigate;
         return(
-            <View style={{flex:1,justifyContent:"space-around"}}>
-
-                <Button title="chats One" onPress={()=>navigate("singleChat",{title:"chats one"})}/>
-                <Button title="chats two" onPress={()=>navigate("singleChat",{title:"chats two"})}/>
-                <Button title="chats three" onPress={()=>navigate("singleChat",{title:"chats three"})}/>
-                <Button title="chats four" onPress={()=>navigate("singleChat",{title:"chats four"})}/>
+            <View style={{flex:1}}>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={(rowData)=><Button title={rowData} onPress={()=>navigate("singleChat",{title:rowData,data:rowData})}/>}
+                />
             </View>
         )
     }
@@ -55,12 +70,89 @@ class SingleView extends Component{
          },*/
 
     };
-    render(){
-        return(
-            <View style={{flex:1}}>
-                <Text>singleView</Text>
-            </View>
-        )
+    constructor(props) {
+        super(props);
+        this.state = {messages: []};
+        this.onSend = this.onSend.bind(this);
+    }
+    componentDidMount() {
+        let{data}=this.props.navigation.state.params;
+        this.setState({
+            messages: [
+                {
+                    _id: 1,
+                    text: 'Hello '+data,
+                    createdAt: new Date(Date.UTC(2016, 7, 25, 17, 20, 0)),
+                    user: {
+                        _id: 1,
+                        name: 'React',
+                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                    },
+                },
+                {
+                    _id:2 ,
+                    text: 'Hello developer',
+                    createdAt: new Date(Date.UTC(2016, 7, 24, 17, 20, 0)),
+                    user: {
+                        _id: 2,
+                        name: 'Native',
+                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                    },
+                },
+                {
+                    _id: 3,
+                    text: 'Hello developer',
+                    createdAt: new Date(Date.UTC(2016, 7, 26, 17, 20, 0)),
+                    user: {
+                        _id: 1,
+                        name: 'React',
+                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                    },
+                },
+                {
+                    _id: 4,
+                    text: 'Hello developer',
+                    createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
+                    user: {
+                        _id: 2,
+                        name: 'React',
+                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                    },
+                },
+                {
+                    _id: 5,
+                    text: 'Hello developer geeks',
+                    createdAt: new Date(Date.UTC(2016, 7, 31, 17, 20, 0)),
+                    user: {
+                        _id: 1,
+                        name: 'Redux',
+                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                    },
+                },
+            ],
+        });
+    }
+    onSend(messages = []) {
+        this.setState((previousState) => {
+            return {
+                messages: GiftedChat.append(previousState.messages, messages),
+            };
+        });
+    }
+    render() {
+
+
+        return (
+            <GiftedChat
+                messages={this.state.messages}
+                onSend={this.onSend}
+                user={{
+                    _id: 2,
+                    name: 'React',
+                    avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                }}
+            />
+        );
     }
 }
 
