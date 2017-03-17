@@ -25,8 +25,10 @@ import Bids from "./bids/components/bids"
 import Reviews from "./reviews/components/reviews"
 import Chats from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
-import Home from  "./Home/components/home"
+import Home,{TestPage} from  "./Home/components/home"
 import {introOne,introTwo} from "./intro/components/intro"
+
+
 
 Activity.navigationOptions = {
     title: 'Activity',
@@ -61,7 +63,7 @@ const Main =
         },
         {
             backBehavior:"none",
-            swipeEnabled:false,
+            swipeEnabled:true,
             tabBarPosition: 'bottom',
             tabBarComponent:()=>null,
            // initialRoute:"introOneh"
@@ -133,7 +135,7 @@ export const routeReducers=(state = initialNavState, action) => {
                     let user=action.payload.user;
 
 
-                     if(!user.isNewUser){
+                     if(user.isNewUser){
 
                         let newState=Main.router.getStateForAction(NavigationActions.navigate({routeName:"introOne"}), state)
                          console.log("new user\n"+JSON.stringify({...initialNavState,...newState}))
@@ -163,7 +165,7 @@ export const routeReducers=(state = initialNavState, action) => {
                 //route=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), action.payload.nav)
                 //alert(JSON.stringify(action.payload.nav))
            // return {...action.payload.nav};
-                alert(JSON.stringify(action.type))
+                //alert(JSON.stringify(action.type))
             }
 
         return {...state};
@@ -201,7 +203,7 @@ class root extends Component{
 
 <View style={{ flex:1}} >
 
-    {activity.isLoading?<Activity />:<Main   screenProps={{drawer:this.drawer}}
+    {activity.isLoading?<Activity />:<Main   screenProps={{drawer:this.drawer,user,activity}}
                   ref={component=>{this.main=component}}
                   navigation={addNavigationHelpers({ dispatch, state: nav })}
             />
@@ -265,14 +267,17 @@ componentWillMount(){
         }
         return false
     }
-   static componentWillUnmount() {
+    componentWillUnmount() {
         BackAndroid.removeEventListener('backPress')
     }
     goToAccount() {
-        this.closeDrawer();
+       this.closeDrawer();
 
+        setTimeout(()=>{
 
-        this.navigate("oauth")
+            this.navigate("oauth")
+        },500)
+
     }
     navigate(route){
     if(route) {

@@ -16,28 +16,40 @@ export default function userReducer(state= INITIAL_STATE, action)
 {
     switch (action.type){
         case USER_ACTIONS.CREATED:
+            if(action.status==="OK"){
+
+                return {
+                    ...state,
+                    isAuthenticated:true,
+                    ///isNewUser:true
+                }
+            }
+            else
+                return state;
         case USER_ACTIONS.LOGIN:
            // console.log(action.type);
             if(action.status==="OK"){
 
             return {
                ...state,
-                isAuthenticated:true
+                isAuthenticated:true,
+                isNewUser:false
                 }
              }
              else
    return state;
         case USER_ACTIONS.LOGOUT:
            // console.log(action.type)
-   // if(action.status==="OK"){
+    if(action.status==="OK"){
 
         return {
             ...state,
-            isAuthenticated:false
+            isAuthenticated:false,
+            isNewUser:true
         }
-    //}
-   // else
-   // return state;
+    }
+    else
+    return state;
         case USER_ACTIONS.RESETPASSWORD:
             //console.log(action.type)
             return {...state}

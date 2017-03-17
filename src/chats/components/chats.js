@@ -5,28 +5,68 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    View
+    View,
+    Button
 } from 'react-native';
 
-import {Statuses,Menu,DrawerIcon}  from "../../statuses/components/statuses"
+import { StackNavigator } from 'react-navigation';
 
-export default class chats extends Component{
+
+
+class AllView extends Component{
     static navigationOptions = {
-        title: 'chats',
+        title: 'Chats',
         /*header: ({ state, setParams ,navigate}) => {
+         let  right=(<Statuses navigate={navigate}/>
+         );
+         let  left=(<Menu navigate={navigate}/>
+         );
 
-            let  left=(<Menu navigate={navigate}/>
-            );
-
-            return { left};
-        },*/
+         return { right ,left};
+         },*/
 
     };
     render(){
+        let navigate=this.props.navigation.navigate;
         return(
-            <View>
-                <Text>chats page</Text>
+            <View style={{flex:1,justifyContent:"space-around"}}>
+
+                <Button title="chats One" onPress={()=>navigate("singleChat",{title:"chats one"})}/>
+                <Button title="chats two" onPress={()=>navigate("singleChat",{title:"chats two"})}/>
+                <Button title="chats three" onPress={()=>navigate("singleChat",{title:"chats three"})}/>
+                <Button title="chats four" onPress={()=>navigate("singleChat",{title:"chats four"})}/>
             </View>
         )
     }
 }
+
+class SingleView extends Component{
+    static navigationOptions = {
+        title: ({ state, setParams ,navigate}) => {
+            return state.params.title
+        },
+        /*header: ({ state, setParams ,navigate}) => {
+         let  right=(<Statuses navigate={navigate}/>
+         );
+         let  left=(<Menu navigate={navigate}/>
+         );
+
+         return { right ,left};
+         },*/
+
+    };
+    render(){
+        return(
+            <View style={{flex:1}}>
+                <Text>singleView</Text>
+            </View>
+        )
+    }
+}
+
+const chats=StackNavigator({
+    allChats:{screen:AllView}  ,
+    singleChat:{screen:SingleView}
+},{headerMode:"none"})
+
+export default chats;
