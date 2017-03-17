@@ -14,6 +14,7 @@ import {
     Button
     } from 'react-native';
 import { connect } from 'react-redux'
+import {REHYDRATE} from 'redux-persist/constants'
 import { StackNavigator,NavigationActions ,TabNavigator,addNavigationHelpers,} from 'react-navigation';
 
 
@@ -63,7 +64,7 @@ const Main =
             swipeEnabled:false,
             tabBarPosition: 'bottom',
             tabBarComponent:()=>null,
-            //initialRoute:"app"
+           // initialRoute:"introOneh"
         }
     );
 
@@ -108,7 +109,7 @@ const initialNavState= {
 
 export const routeReducers=(state = initialNavState, action) => {
 
-
+    //console.warn(action.type);
     switch (action.type) {
         case NavigationActions.BACK:
         case NavigationActions.NAVIGATE:
@@ -120,44 +121,55 @@ export const routeReducers=(state = initialNavState, action) => {
         /*case "ACCOUNT":
             alert(action.type);
             return Main.router.getStateForAction(NavigationActions.navigate({routeName:"account"}), state);*/
-       case "persist/REHYDRATE":
+       case REHYDRATE:
             //alert(JSON.stringify(action.type))
-            if(action.hasOwnProperty("payload"))
-            if (action.payload.hasOwnProperty("nav")?action.payload.nav:false) {
 
-                if(action.payload.hasOwnProperty("user")){
+            if(action.hasOwnProperty("payload"))
+            if (action.payload.hasOwnProperty("nav")?action.payload.nav:false)
+            {
+
+                if(action.payload.hasOwnProperty("user"))
+                {
                     let user=action.payload.user;
 
-                    if(user.isAuthenticated){
 
-                        //let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), state)
-                        //alert("user authenticated\n"+JSON.stringify(state))
-                        return  {...action.payload.nav}
-
-                    }
-                    else if(user.isNewUser){
+                     if(!user.isNewUser){
 
                         let newState=Main.router.getStateForAction(NavigationActions.navigate({routeName:"introOne"}), state)
-                       // alert("new user\n"+JSON.stringify(st))
-                        return  {...action.payload.nav,...newState}
+                         console.log("new user\n"+JSON.stringify({...initialNavState,...newState}))
+                        return {...initialNavState,...newState}
                     }
+                     else if(user.isAuthenticated){
+
+                        // let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), state)
+                         console.log("user authenticated\n"+JSON.stringify({...initialNavState,...action.payload.nav}))
+                         return  {...initialNavState,...action.payload.nav}
+
+                     }
                     else {
-                        let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"oauth"}), state)
-                       // alert("user authenticated\n"+st)
-                        return  {...action.payload.nav,...st}
+                       let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"oauth"}), state)
+                       console.log("user not authenticated\n"+JSON.stringify(st))
+                        return  st
                     }
 
                 }
+                else{
+                    return {...state};
+                }
+
            // let route = action.payload.nav.routes[action.payload.nav.index];
             //let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
 
                 //route=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), action.payload.nav)
                 //alert(JSON.stringify(action.payload.nav))
-            return {...action.payload.nav};
+           // return {...action.payload.nav};
+                alert(JSON.stringify(action.type))
             }
-        return state;
+
+        return {...state};
         default:
-            return state
+            //alert(JSON.stringify(action.type))
+            return{...state}
     }
 
     }

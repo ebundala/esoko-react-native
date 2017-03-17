@@ -16,11 +16,12 @@ function configStore() {
 
 const logger = createLogger();
 //console.warn(INITIAL_STATE)
-const store = createStore(rootReducer,compose(
+const store = createStore(rootReducer,
+    compose(
     applyMiddleware(/*clearBodyMiddleware, apiCallMiddleware,*/ thunk, logger),
     autoRehydrate()
-
-));
+    )
+);
 
 persistStore(store, {storage: AsyncStorage});
 return store
