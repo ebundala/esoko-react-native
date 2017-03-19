@@ -39,7 +39,6 @@ class ProductsList extends Component{
                           renderRow={(rowData)=>
                               <View>
                               <Button title={title+" "+rowData} onPress={()=>navigate("singleProduct",{title:title+" "+rowData,data:rowData})}/>
-
                               <Button title={"review "+title} onPress={()=>navigate("reviews",{title:title,reviews:["one","two","three"]})}/>
                                   <Button title={"Bids "+title} onPress={()=>navigate("bids",{title:title,reviews:["one","two","three"]})}/>
                                   <Button title={"Chats "+title} onPress={()=>navigate("chats",{title:title,reviews:["one","two","three"]})}/>

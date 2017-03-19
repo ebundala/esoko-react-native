@@ -7,11 +7,12 @@ import {
     Text,
     View,
     TouchableNativeFeedback,
-    Button
+    Button,
+    ScrollView
 } from 'react-native';
 import {Statuses,Menu}  from "../../statuses/components/statuses"
 import { StackNavigator } from 'react-navigation';
-
+import styles from "../../styles/styles"
 let ctx;
 export default class home extends Component{
 
@@ -41,17 +42,102 @@ constructor(props){
       return(
 
 
-             <View style={{flex:1,justifyContent:"space-around"}}>
-                 <Text>{JSON.stringify(this.props.screenProps.user)}</Text>
-                 <Button title="all" onPress={()=>navigate("products",{title:"all"})}/>
-                 <Button title="electronics" onPress={()=>navigate("products",{title:"electronics"})}/>
-                 <Button title="apparel" onPress={()=>navigate("products",{title:"apparel"})}/>
+             <View >
+                 <ScrollView contentContainerStyle={[{flexWrap:"wrap"},styles.horizontal,styles.spaceAround]}>
+                 {this.catergories().map((child,i)=>
+                 <TouchableNativeFeedback key={i} onPress={() => navigate("products", {title: child})}>
+                 <View style={[{
+                     width:100,
+                     height:100,
+                     marginVertical:8,
+                     borderRadius:8,
+                     elevation:2,
+                    // backgroundColor:"blue"
+                 },
+                     //styles.yellow,
+                     styles.alignItemsCenter,
+                     styles.centerJustified
+                 ]}>
+                     <Text style={[{width:100,fontSize:12,textAlign:"center"}]}>{child}</Text>
+                 </View>
+                 </TouchableNativeFeedback>
+                 )}
+                 </ScrollView>
 
              </View>
 
 
       )
     }
+    catergories(){
+        return[
+            "electronics",
+            "Furniture",
+            "Women's Apparel",
+            "Women's shoes",
+            "Men's shoes",
+            "Men's Apparel",
+            "Men's Watches",
+            "Women's Watches",
+            "Back Packs",
+            "Books",
+            "Automotive",
+            "Computers",
+            "Mobile Phones",
+            "Accessories",
+            "Jewelry",
+
+
+            "electronics",
+            "Furniture",
+            "Women's Apparel",
+            "Women's shoes",
+            "Men's shoes",
+            "Men's Apparel",
+            "Men's Watches",
+            "Women's Watches",
+            "Back Packs",
+            "Books",
+            "Automotive",
+            "Computers",
+            "Mobile Phones",
+            "Accessories",
+            "Jewelry",
+
+            "electronics",
+            "Furniture",
+            "Women's Apparel",
+            "Women's shoes",
+            "Men's shoes",
+            "Men's Apparel",
+            "Men's Watches",
+            "Women's Watches",
+            "Back Packs",
+            "Books",
+            "Automotive",
+            "Computers",
+            "Mobile Phones",
+            "Accessories",
+            "Jewelry",
+
+            "electronics",
+            "Furniture",
+            "Women's Apparel",
+            "Women's shoes",
+            "Men's shoes",
+            "Men's Apparel",
+            "Men's Watches",
+            "Women's Watches",
+            "Back Packs",
+            "Books",
+            "Automotive",
+            "Computers",
+            "Mobile Phones",
+            "Accessories",
+            "Jewelry",
+        ]
+    }
+
 }
 
 
