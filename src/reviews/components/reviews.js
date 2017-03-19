@@ -16,7 +16,9 @@ import { StackNavigator } from 'react-navigation';
 
 class AllView extends Component{
     static navigationOptions = {
-        title: 'Reviews',
+        title:({ state, setParams ,navigate}) => {
+            return  state.params.title+' Reviews'
+        },
         /*header: ({ state, setParams ,navigate}) => {
          let  right=(<Statuses navigate={navigate}/>
          );
@@ -37,10 +39,11 @@ class AllView extends Component{
     }
     render(){
         let navigate=this.props.navigation.navigate;
+        let {title}=this.props.navigation.state.params;
         return(
             <View style={{flex:1,justifyContent:"space-around"}}>
-<ListView dataSource={this.state.dataSource}
-          renderRow={(rowData)=><Button title={"Review "+rowData} onPress={()=>navigate("singleReview",{title:rowData})}/>}
+           <ListView dataSource={this.state.dataSource}
+          renderRow={(rowData)=><Button title={"Review "+title+" "+rowData} onPress={()=>navigate("singleReview",{title:title+" "+rowData})}/>}
           />
 
 

@@ -5,10 +5,14 @@ import React, {Component} from "react";
 import {Text, View, Button, ListView} from "react-native";
 import {StackNavigator} from "react-navigation";
 import Reviews from "../../reviews/components/reviews";
+import Bids from "../../bids/components/bids"
+import Chats from "../../chats/components/chats"
 
-class AllView extends Component{
+class ProductsList extends Component{
     static navigationOptions = {
-        title: 'Products',
+        title: ({ state, setParams ,navigate}) => {
+            return state.params.title
+        }
         /*header: ({ state, setParams ,navigate}) => {
          let  right=(<Statuses navigate={navigate}/>
          );
@@ -28,10 +32,22 @@ class AllView extends Component{
     }
     render(){
         let navigate=this.props.navigation.navigate;
+        let {title}=this.props.navigation.state.params;
         return(
             <View style={{flex:1}}>
                 <ListView dataSource={this.state.dataSource}
-                          renderRow={(rowDate)=><Button title={rowDate} onPress={()=>navigate("singleProduct",{title:rowDate,data:rowDate})}/>}
+                          renderRow={(rowData)=>
+                              <View>
+                              <Button title={title+" "+rowData} onPress={()=>navigate("singleProduct",{title:title+" "+rowData,data:rowData})}/>
+
+                              <Button title={"review "+title} onPress={()=>navigate("reviews",{title:title,reviews:["one","two","three"]})}/>
+                                  <Button title={"Bids "+title} onPress={()=>navigate("bids",{title:title,reviews:["one","two","three"]})}/>
+                                  <Button title={"Chats "+title} onPress={()=>navigate("chats",{title:title,reviews:["one","two","three"]})}/>
+                                  <Button title={"add Product "+title} onPress={()=>navigate("addProduct",{title:title,reviews:["one","two","three"]})}/>
+                                  <Button title={"edit Product "+title} onPress={()=>navigate("aditProduct",{title:title,reviews:["one","two","three"]})}/>
+
+                              </View>
+                                  }
                 />
 
 
@@ -42,7 +58,7 @@ class AllView extends Component{
     }
 }
 
-class SingleView extends Component{
+class SingleProductView extends Component{
     static navigationOptions = {
         title: ({ state, setParams ,navigate}) => {
             return state.params.title
@@ -59,11 +75,15 @@ class SingleView extends Component{
     };
     render(){
         let navigate=this.props.navigation.navigate;
-        let {data}=this.props.navigation.state.params
+        let {data,title}=this.props.navigation.state.params
         return(
-            <View style={{flex:1}}>
+            <View style={{flex:1,justifyContent:"space-around"}}>
                 <Text>singleView</Text>
-                <Button title={"review "+data} onPress={()=>navigate("reviews",{title:data,reviews:["one","two","three"]})}/>
+                <Button title={"review "+title} onPress={()=>navigate("reviews",{title:title,reviews:["one","two","three"]})}/>
+                <Button title={"Bids "+title} onPress={()=>navigate("bids",{title:title,reviews:["one","two","three"]})}/>
+                <Button title={"Chats "+title} onPress={()=>navigate("chats",{title:title,reviews:["one","two","three"]})}/>
+                <Button title={"add Product "+title} onPress={()=>navigate("addProduct",{title:"addProduct",reviews:["one","two","three"]})}/>
+                <Button title={"edit Product "+title} onPress={()=>navigate("aditProduct",{title:"aditProduct",reviews:["one","two","three"]})}/>
 
             </View>
         )
@@ -71,9 +91,13 @@ class SingleView extends Component{
 }
 
 const products=StackNavigator({
-    allProducts:{screen:AllView}  ,
-    singleProduct:{screen:SingleView},
-    reviews:{screen:Reviews}
+    allProducts:{screen:ProductsList}  ,
+    singleProduct:{screen:SingleProductView},
+   // productReviews:{screen:Reviews},
+    //productBids:{screen:Bids},
+   // productChats:{screen:Chats},
+    addProduct:{screen:ProductsList},
+    aditProduct:{screen:ProductsList}
 },{headerMode:"none"})
 
 export default products;

@@ -12,7 +12,7 @@ import {
 
 //import {Statuses,Menu,DrawerIcon}  from "../../statuses/components/statuses"
 
-export class introOne extends Component{
+export class IntroOne extends Component{
     static navigationOptions = {
         title: 'introOne',
        /* header: ({ state, setParams ,navigate}) => {
@@ -25,13 +25,14 @@ export class introOne extends Component{
 
     };
     render(){
+        let{setPage}=this.props;
         return(
             <View style={{flex:1,justifyContent:'space-between'}}>
                 <Text>intro One page</Text>
 
                     <View>
 
-                <Button title="Next" onPress={()=>this.props.navigation.navigate("introTwo")}/>
+                <Button title="Next" onPress={()=>setPage("IntroTwo")}/>
                     </View>
 
             </View>
@@ -40,7 +41,7 @@ export class introOne extends Component{
 }
 
 
-export class introTwo extends Component{
+export class IntroTwo extends Component{
     static navigationOptions = {
         title: 'introTwo',
         /* header: ({ state, setParams ,navigate}) => {
@@ -53,13 +54,14 @@ export class introTwo extends Component{
 
     };
     render(){
+        let{setPage}=this.props;
         return(
             <View style={{flex:1,justifyContent:'space-between'}}>
                 <Text>intro two page</Text>
 
                     <View>
 
-                        <Button title="Next" onPress={()=>this.props.navigation.navigate("oauth")}/>
+                        <Button title="Next" onPress={()=>setPage("Oauth")}/>
                     </View>
 
             </View>

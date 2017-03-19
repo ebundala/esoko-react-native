@@ -14,7 +14,7 @@ export const USER_ACTIONS={
 }
 
  class userActions extends userUtil {
-  login(email,password,navigate){
+  login(email,password,navigate,setPage){
     return (dispatch)=>
     {
         if(email&&password){
@@ -31,6 +31,9 @@ export const USER_ACTIONS={
                         //user
                     }})
             navigate("account")
+            if(setPage){
+                setPage("app")
+            }
         })
         .catch((err) => {
            // alert('User signin error', err.message);
@@ -46,7 +49,7 @@ export const USER_ACTIONS={
         }
     }
 }
-  logout(navigate){
+  logout(navigate,setPage){
     return(dispatch)=>
     {
         return this.auth.signOut()
@@ -80,7 +83,7 @@ export const USER_ACTIONS={
 
     }
 }
-  resetPasswordWithEmail(email,navigate){
+  resetPasswordWithEmail(email,navigate,setPage){
     return(dispatch)=> {
         if(email){
             dispatch(activity.startActivity("Sending reset  link to "+email))
@@ -111,7 +114,7 @@ export const USER_ACTIONS={
     }
 }
   }
-  oAuth(name,token,navigate){
+  oAuth(name,token,navigate,setPage){
     return (dispatch)=>{
 
         dispatch(activity.startActivity("Login using "+name))
@@ -126,7 +129,10 @@ export const USER_ACTIONS={
                       user
                   }})
                 navigate("account");
-                navigate("app")
+               // navigate("app")
+                if(setPage){
+                    setPage("app")
+                }
 
             }).catch(err=>{
 
@@ -141,7 +147,7 @@ export const USER_ACTIONS={
           })
     }
 }
-  create(email,password,navigate){
+  create(email,password,navigate,setPage){
     return dispatch=>{
         if(email&&password){
             dispatch(activity.startActivity("Creating User "))
@@ -157,6 +163,9 @@ export const USER_ACTIONS={
             }
         })
             navigate("account")
+            if(setPage){
+                setPage("app")
+            }
 
         })
         .catch((err) => {

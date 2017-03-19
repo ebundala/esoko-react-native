@@ -43,8 +43,10 @@ constructor(props){
 
              <View style={{flex:1,justifyContent:"space-around"}}>
                  <Text>{JSON.stringify(this.props.screenProps.user)}</Text>
-                 <Button title="products" onPress={()=>navigate("products")}/>
-                 <Button title="reviews" onPress={()=>navigate("reviews")}/>
+                 <Button title="all" onPress={()=>navigate("products",{title:"all"})}/>
+                 <Button title="electronics" onPress={()=>navigate("products",{title:"electronics"})}/>
+                 <Button title="apparel" onPress={()=>navigate("products",{title:"apparel"})}/>
+
              </View>
 
 
