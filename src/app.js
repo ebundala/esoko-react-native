@@ -97,7 +97,7 @@ const initialNavState = {
         //{ key: 'introOne', routeName: 'introOne' },
         //   { key: 'introTwo', routeName: 'introTwo' },
         // { index: 0, routes: [ { routeName: 'start', key: 'Init' } ], key: 'oauth', routeName: 'oauth' },
-        {index: 0, routes: [{routeName: 'Home', key: 'Init'}], key: 'app', routeName: 'app'}],
+        {index: 0, routes: [{routeName: 'Home', key: 'Init'}], key: 'Home', routeName: 'Home'}],
     index: 0
 };
 
@@ -115,39 +115,42 @@ export const routeReducers = (state = initialNavState, action) => {
         /*case "ACCOUNT":
          alert(action.type);
          return Main.router.getStateForAction(NavigationActions.navigate({routeName:"account"}), state);*/
-        /*case REHYDRATE:
+        case REHYDRATE:
             //alert(JSON.stringify(action.type))
 
             if (action.hasOwnProperty("payload"))
                 if (action.payload.hasOwnProperty("nav") ? action.payload.nav : false) {
 
                     if (action.payload.hasOwnProperty("user")) {
-                        let user = action.payload.user;
+                        const user = action.payload.user;
 
 
                         if (user.isNewUser) {
 
-                            let newState = Main.router.getStateForAction(NavigationActions.navigate({routeName: "introOne"}), state)
-                            console.log("new user\n" + JSON.stringify({...initialNavState, ...newState}))
-                            return {...initialNavState, ...newState}
+                          //  let newState = Main.router.getStateForAction(NavigationActions.navigate({routeName: "introOne"}), state)
+                           // console.log("new user\n" + JSON.stringify({...initialNavState, ...newState}))
+                           // return {...initialNavState, ...newState}
                         }
                         else if (user.isAuthenticated) {
 
                             // let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), state)
-                            console.log("user authenticated\n" + JSON.stringify({...initialNavState, ...action.payload.nav}))
+                            //console.log("user authenticated\n" + JSON.stringify({...initialNavState, ...action.payload.nav}))
                             return {...initialNavState, ...action.payload.nav}
 
                         }
                         else {
-                            let st = Main.router.getStateForAction(NavigationActions.navigate({routeName: "oauth"}), state)
-                            console.log("user not authenticated\n" + JSON.stringify(st))
-                            return st
+                            //let st = Main.router.getStateForAction(NavigationActions.navigate({routeName: "oauth"}), state)
+                           // console.log("user not authenticated\n" + JSON.stringify(st))
+                           // return st
                         }
+
+
 
                     }
                     else {
                         return {...state};
                     }
+
 
                     // let route = action.payload.nav.routes[action.payload.nav.index];
                     //let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
@@ -158,7 +161,7 @@ export const routeReducers = (state = initialNavState, action) => {
                     //alert(JSON.stringify(action.type))
                 }
 
-            return {...state};*/
+            return {...state};
         default:
             //alert(JSON.stringify(action.type))
             return {...state}
@@ -280,8 +283,8 @@ class root extends Component {
     }
 
     componentDidMount() {
-       // const {user} = this.props;
-        /*this.shouldClose=false;
+
+        this.shouldClose=false;
 
          BackAndroid.addEventListener('backPress', () => {
          const { dispatch, nav,user } = this.props;
@@ -293,7 +296,7 @@ class root extends Component {
 
          dispatch({ type: NavigationActions.BACK })
          return true
-         })*/
+         })
         // const res= user.isNewUser?this._setPage("IntroOne"):user.isAuthenticated?this._setPage("app"):this._setPage("Oauth")
 
         //return user.isNewUser?this._setPage("IntroOne"):user.isAuthenticated?this._setPage("app"):this._setPage("Oauth")
@@ -301,7 +304,7 @@ class root extends Component {
 
     componentDidUpdate() {
         const {user} = this.props;
-        const res = user.isNewUser ? this._setPage("IntroOne") : user.isAuthenticated ? this._setPage("app") : this._setPage("Oauth")
+       const res = user.isNewUser ? this._setPage("IntroOne") : user.isAuthenticated ? this._setPage("app") : this._setPage("Oauth")
 
     }
 
@@ -335,7 +338,7 @@ class root extends Component {
     }
 
     componentWillUnmount() {
-        //BackAndroid.removeEventListener('backPress')
+        BackAndroid.removeEventListener('backPress')
     }
 
     goToAccount() {
