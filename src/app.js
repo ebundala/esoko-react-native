@@ -47,138 +47,17 @@ const StackHome = {
 
 
 const Main = StackNavigator(StackHome)
-/*TabNavigator(
- {
- introOne:{screen:introOne},
- introTwo:{screen:introTwo},
- oauth:{screen:Oauth},
- app:{screen:StackNavigator(StackHome)},
- // Activity:{screen:Activity},
- },
- {
- backBehavior:"none",
- swipeEnabled:true,
- tabBarPosition: 'bottom',
- tabBarComponent:()=>null,
- // initialRoute:"introOne"
- }
- );*/
-
-/*const st=Main.router.getStateForAction;
- Main.router.getStateForAction = (action, state)=> {
-
- switch (action.type){
-
- case NavigationActions.BACK:
- if (state) {
- // Returning null from getStateForAction means that the action
- // has been handled/blocked, but there is not a new state
- //console.log("back button\n" + JSON.stringify(state))
- let prevState = state.routes[state.index];
-
- if ((prevState.routeName === "app") && prevState.index === 0) {
- console.log("back button\n"+JSON.stringify(state))
-
- return {...state}
- }
- //return {...state,index:3}//st(newaction||action,state);
- }
-
- default:
- return st(action,state)
- }
-
-
-
- };*/
-
-const initialNavState = {
-    routes: [
-        //{ key: 'introOne', routeName: 'introOne' },
-        //   { key: 'introTwo', routeName: 'introTwo' },
-        // { index: 0, routes: [ { routeName: 'start', key: 'Init' } ], key: 'oauth', routeName: 'oauth' },
-        {index: 0, routes: [{routeName: 'Home', key: 'Init'}], key: 'Home', routeName: 'Home'}],
-    index: 0
-};
-
-export const routeReducers = (state = initialNavState, action) => {
-
-    //console.warn(action.type);
-    switch (action.type) {
-        case NavigationActions.BACK:
-        case NavigationActions.NAVIGATE:
-        case NavigationActions.INIT:
-        case NavigationActions.RESET:
-        case NavigationActions.SET_PARAMS:
-
-            return Main.router.getStateForAction(action, state);
-        /*case "ACCOUNT":
-         alert(action.type);
-         return Main.router.getStateForAction(NavigationActions.navigate({routeName:"account"}), state);*/
-        case REHYDRATE:
-            //alert(JSON.stringify(action.type))
-
-            if (action.hasOwnProperty("payload"))
-                if (action.payload.hasOwnProperty("nav") ? action.payload.nav : false) {
-
-                    if (action.payload.hasOwnProperty("user")) {
-                        const user = action.payload.user;
-
-
-                        if (user.isNewUser) {
-
-                          //  let newState = Main.router.getStateForAction(NavigationActions.navigate({routeName: "introOne"}), state)
-                           // console.log("new user\n" + JSON.stringify({...initialNavState, ...newState}))
-                           // return {...initialNavState, ...newState}
-                        }
-                        else if (user.isAuthenticated) {
-
-                            // let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), state)
-                            //console.log("user authenticated\n" + JSON.stringify({...initialNavState, ...action.payload.nav}))
-                            return {...initialNavState, ...action.payload.nav}
-
-                        }
-                        else {
-                            //let st = Main.router.getStateForAction(NavigationActions.navigate({routeName: "oauth"}), state)
-                           // console.log("user not authenticated\n" + JSON.stringify(st))
-                           // return st
-                        }
-
-
-
-                    }
-                    else {
-                        return {...state};
-                    }
-
-
-                    // let route = action.payload.nav.routes[action.payload.nav.index];
-                    //let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
-
-                    //route=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), action.payload.nav)
-                    //alert(JSON.stringify(action.payload.nav))
-                    // return {...action.payload.nav};
-                    //alert(JSON.stringify(action.type))
-                }
-
-            return {...state};
-        default:
-            //alert(JSON.stringify(action.type))
-            return {...state}
-    }
-
-}
-
 
 class root extends Component {
     constructor(props) {
         super(props)
+        this.seInitialtPage=true;
 
     }
 
     render() {
         "use strict";
-        const {dispatch, nav, user, activity}=this.props;
+        const { activity}=this.props;
 
         let navigationView = (
             <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -206,7 +85,7 @@ class root extends Component {
 
                 <ViewPagerAndroid
                     keyboardDismissMode='on-drag'
-                    initialPage={0}
+                    initialPage={3}
                     scrollEnabled={true}
 
                     style={{flex: 1}}
@@ -230,7 +109,7 @@ class root extends Component {
 
 
     _renderScene = () => {
-        const {dispatch, nav, user, activity}=this.props;
+        const {dispatch, nav, user, activity,navOauth}=this.props;
 
 
         return [
@@ -238,7 +117,9 @@ class root extends Component {
 
             <IntroTwo setPage={this._setPage}/>,
 
-            <Oauth screenProps={{setPage: this._setPage, user, drawer: this.drawer}}/>,
+            <Oauth screenProps={{setPage: this._setPage, user, drawer: this.drawer}}
+                   navigation={addNavigationHelpers({dispatch, state:navOauth})}
+            />,
 
             <Main screenProps={{drawer: this.drawer, user, activity, setPage: this._setPage}}
                   ref={component => {
@@ -253,21 +134,23 @@ class root extends Component {
         let index = 0;
         switch (name) {
             case "IntroOne":
-                index = 0
+                index = 0;
+
                 break;
             case "IntroTwo":
                 index = 1;
                 break;
             case "Oauth":
                 index = 2;
-                break
+                break;
             case "app":
                 index = 3;
                 break
             default:
+               // alert(name)
                 index = null
         }
-        if (this._viewPager && index) {
+        if (this._viewPager && index!==null) {
             if (this._viewPager.props.animationEnabled !== false) {
                 this._viewPager.setPage(index);
             } else {
@@ -282,8 +165,8 @@ class root extends Component {
 
     }
 
-    componentDidMount() {
-
+    componentDidMount(){
+        const {user} = this.props;
         this.shouldClose=false;
 
          BackAndroid.addEventListener('backPress', () => {
@@ -297,15 +180,20 @@ class root extends Component {
          dispatch({ type: NavigationActions.BACK })
          return true
          })
-        // const res= user.isNewUser?this._setPage("IntroOne"):user.isAuthenticated?this._setPage("app"):this._setPage("Oauth")
 
-        //return user.isNewUser?this._setPage("IntroOne"):user.isAuthenticated?this._setPage("app"):this._setPage("Oauth")
+        //const res = user.isNewUser ? this._setPage("IntroOne") : !user.isAuthenticated ? this._setPage("Oauth"):null /*this._setPage("app")*/
     }
 
     componentDidUpdate() {
-        const {user} = this.props;
-       const res = user.isNewUser ? this._setPage("IntroOne") : user.isAuthenticated ? this._setPage("app") : this._setPage("Oauth")
+        //alert("seInitialtPage "+this.seInitialtPage)
+        if(this.seInitialtPage)
+        {
+            const {user} = this.props;
+             user.isNewUser ? this._setPage("IntroOne") : !user.isAuthenticated ? this._setPage("Oauth") : null;
+            /*this._setPage("app")*/
+        }
 
+        this.seInitialtPage=false;
     }
 
     shouldCloseApp(nav) {
@@ -372,6 +260,7 @@ class root extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        navOauth:state.navOauth,
         nav: state.nav,
         user: state.user,
         activity: state.activity
@@ -388,7 +277,6 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-
 const App = connect(
     mapStateToProps//,
     //mapDispatchToProps
@@ -396,4 +284,145 @@ const App = connect(
 export default App
 
 
+const initialNavState = {
+    routes: [
+        //{ key: 'introOne', routeName: 'introOne' },
+        //   { key: 'introTwo', routeName: 'introTwo' },
+        // { index: 0, routes: [ { routeName: 'start', key: 'Init' } ], key: 'oauth', routeName: 'oauth' },
+        {index: 0, routes: [{routeName: 'Home', key: 'Init'}], key: 'Home', routeName: 'Home'}],
+    index: 0
+};
 
+export const routeReducers = (state = initialNavState, action) => {
+
+    //console.warn(action.type);
+    switch (action.type) {
+        case NavigationActions.BACK:
+        case NavigationActions.NAVIGATE:
+        case NavigationActions.INIT:
+        case NavigationActions.RESET:
+        case NavigationActions.SET_PARAMS:
+
+            return Main.router.getStateForAction(action, state);
+        /*case "ACCOUNT":
+         alert(action.type);
+         return Main.router.getStateForAction(NavigationActions.navigate({routeName:"account"}), state);*/
+        case REHYDRATE:
+            //alert(JSON.stringify(action.type))
+
+            if (action.hasOwnProperty("payload"))
+                if (action.payload.hasOwnProperty("nav") ? action.payload.nav : false) {
+
+                    if (action.payload.hasOwnProperty("user")) {
+                        const user = action.payload.user;
+
+
+                        if (user.isNewUser) {
+
+                            //  let newState = Main.router.getStateForAction(NavigationActions.navigate({routeName: "introOne"}), state)
+                            // console.log("new user\n" + JSON.stringify({...initialNavState, ...newState}))
+                            // return {...initialNavState, ...newState}
+                        }
+                        else if (user.isAuthenticated) {
+
+                            // let st=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), state)
+                            //console.log("user authenticated\n" + JSON.stringify({...initialNavState, ...action.payload.nav}))
+                            return {...initialNavState, ...action.payload.nav}
+
+                        }
+                        else {
+                            //let st = Main.router.getStateForAction(NavigationActions.navigate({routeName: "oauth"}), state)
+                            // console.log("user not authenticated\n" + JSON.stringify(st))
+                            // return st
+                        }
+
+
+
+                    }
+                    else {
+                        return {...state};
+                    }
+
+
+                    // let route = action.payload.nav.routes[action.payload.nav.index];
+                    //let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
+
+                    //route=Main.router.getStateForAction(NavigationActions.navigate({routeName:"app"}), action.payload.nav)
+                    //alert(JSON.stringify(action.payload.nav))
+                    // return {...action.payload.nav};
+                    //alert(JSON.stringify(action.type))
+                }
+
+            return {...state};
+        default:
+            //alert(JSON.stringify(action.type))
+            return {...state}
+    }
+
+}
+
+const initialOauthNavState = {
+    routes: [
+        //{ key: 'introOne', routeName: 'introOne' },
+        //   { key: 'introTwo', routeName: 'introTwo' },
+        // { index: 0, routes: [ { routeName: 'start', key: 'Init' } ], key: 'oauth', routeName: 'oauth' },
+        {index: 0, routes: [{routeName: 'start', key: 'Init'}], key: 'start', routeName: 'start'}],
+    index: 0
+};
+
+export const oauthRouteReducers = (state = initialOauthNavState, action) => {
+
+    //console.warn(action.type);
+    switch (action.type) {
+        case NavigationActions.BACK:
+        case NavigationActions.NAVIGATE:
+        case NavigationActions.INIT:
+        case NavigationActions.RESET:
+        case NavigationActions.SET_PARAMS:
+            const routeName=state.routes[state.index].routeName
+
+            if((routeName==="account")&&action.type===NavigationActions.BACK)
+            {
+                //Todo riderect to app if user is loged in
+                
+                return{...state}
+            }
+            else if((routeName==="start")&&action.type===NavigationActions.BACK){
+                return {...initialOauthNavState}
+            }
+            return Oauth.router.getStateForAction(action, state);
+
+        case REHYDRATE:
+
+
+            if (action.hasOwnProperty("payload"))
+                if (action.payload.hasOwnProperty("navOauth") ? action.payload.navOauth : false) {
+
+                    if (action.payload.hasOwnProperty("user")) {
+                        const user = action.payload.user;
+
+                        if (user.isAuthenticated) {
+
+                            return {...initialOauthNavState, ...action.payload.navOauth}
+                        }
+                        else {
+
+                            return {...initialOauthNavState}
+                        }
+
+
+
+                    }
+                    else {
+                        return {...state};
+                    }
+
+                }
+
+            return {...state};
+        default:
+            //alert(JSON.stringify(action.type))
+            return {...state}
+    }
+
+}
