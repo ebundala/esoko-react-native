@@ -12,7 +12,8 @@ import {
     BackAndroid,
     ToastAndroid,
     Button,
-    ViewPagerAndroid
+    ViewPagerAndroid,
+    Modal
 } from 'react-native';
 import {connect} from 'react-redux'
 import {REHYDRATE} from 'redux-persist/constants'
@@ -80,8 +81,15 @@ class root extends Component {
             >
 
 
-                {activity.isLoading && <Activity />}
 
+                <Modal
+                           animationType={"slide"}
+                           transparent={false}
+                           visible={activity.isLoading}
+                           onRequestClose={() => {alert("Modal has been closed.")}}
+                          >
+                    <Activity />
+                </Modal>
 
                 <ViewPagerAndroid
                     keyboardDismissMode='on-drag'
@@ -384,7 +392,7 @@ export const oauthRouteReducers = (state = initialOauthNavState, action) => {
             if((routeName==="account")&&action.type===NavigationActions.BACK)
             {
                 //Todo riderect to app if user is loged in
-                
+
                 return{...state}
             }
             else if((routeName==="start")&&action.type===NavigationActions.BACK){

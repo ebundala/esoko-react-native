@@ -24,14 +24,15 @@ export class ActivityWrapper extends Component{
         return(
 
             <View style={[styles.flex1,styles.alignItemsCenter,styles.centerJustified]}>
+                <View style={{backgroundColor:"white"}}>
                 {!this.props.isError&&
 
-                    <ActivityIndicator></ActivityIndicator>
+                    <ActivityIndicator ></ActivityIndicator>
 
                 }
                 <View style={{paddingLeft:20,paddingRight:20,paddingBottom:5}}>
                     <TouchableHighlight onPress={()=>this.props.activityError("failed to load")}>
-                    <Text >{this.props.message}</Text>
+                    <Text style={{color:"black"}}>{this.props.message}</Text>
                     </TouchableHighlight>
                 </View>
 
@@ -39,7 +40,7 @@ export class ActivityWrapper extends Component{
 
                 <Button color="red" title="OK" onPress={()=>this.props.endActivity()}></Button>
                 </View>}
-
+                </View>
             </View>
 
         )
