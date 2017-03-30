@@ -15,7 +15,9 @@ import { StackNavigator } from 'react-navigation';
 
 class AllView extends Component{
     static navigationOptions = {
-        title: 'Bids',
+        title:({ state, setParams ,navigate}) => {
+            return state.params.product.title+" Bids"
+        }
         /*header: ({ state, setParams ,navigate}) => {
          let  right=(<Statuses navigate={navigate}/>
          );

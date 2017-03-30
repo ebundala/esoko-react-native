@@ -11,6 +11,8 @@ import {
 import styles from '../../styles/styles'
 import {Icon } from 'react-native-material-design';
 import {connect} from "react-redux";
+import {bindActionCreators} from 'redux'
+import * as actions from '../../products/products.actions'
 
 class Badge extends Component
 {
@@ -42,10 +44,11 @@ export  class StatusesComponet extends Component{
 
 
     render(){
+        let {navigate}=this.props;
         return(
             <View style={styles.horizontal}>
                 <TouchableNativeFeedback
-                    onPress={()=>{this.props.navigate("bids");this.props.changeBids(58)}}
+                    onPress={()=>{this.props.placeBid({title:'my bids',uid:'all'},navigate);this.props.changeBids(58)}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View>
 
@@ -54,7 +57,7 @@ export  class StatusesComponet extends Component{
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
-                    onPress={()=>{this.props.navigate("chats"),this.props.changeMessages(78);}}
+                    onPress={()=>{this.props.startChat({title:'my chats',uid:'all'},navigate),this.props.changeMessages(78);}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View>
                         <Badge count={this.props.messages}/>
@@ -62,7 +65,7 @@ export  class StatusesComponet extends Component{
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
-                    onPress={()=>{this.props.navigate("orders"),this.props.changeOrders(776)}}
+                    onPress={()=>{this.props.placeOrder({title:'my chats',uid:'all'},navigate),this.props.changeOrders(776)}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View>
                         <Badge count={this.props.orders}/>
@@ -91,7 +94,8 @@ const  mapDispatchToProps=(dispatch)=>{
         },
         changeOrders:(count=0)=>{
             dispatch({type:"CHANGE_ORDERS_COUNT",data:count})
-        }
+        },
+        ...bindActionCreators(actions,dispatch)
     }
 
 }

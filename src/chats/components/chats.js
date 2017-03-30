@@ -33,12 +33,9 @@ class AllView extends Component{
     constructor(props){
         super(props)
         const ds =new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
+        let {chats}=this.props.navigation.state.params
         this.state={
-            dataSource:ds.cloneWithRows([
-
-                'John', 'Joel', 'James', 'Jimmy', 'Jackson', 'Jillian', 'Julie', 'Devin'
-
-            ])
+            dataSource:ds.cloneWithRows(chats)
         }
     }
 

@@ -10,11 +10,14 @@ import {
     Button,
     ScrollView
 } from 'react-native';
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import * as actions from  "../../products/products.actions"
 import {Statuses,Menu}  from "../../statuses/components/statuses"
 import { StackNavigator } from 'react-navigation';
 import styles from "../../styles/styles"
 let ctx;
-export default class home extends Component{
+ class homeComponent extends Component{
 
 constructor(props){
     super(props);
@@ -39,13 +42,14 @@ constructor(props){
     render(){
         ctx=this;
         let {navigate}=this.props.navigation;
+        let {queryProducts}=this.props
       return(
 
 
              <View >
                  <ScrollView contentContainerStyle={[{flexWrap:"wrap"},styles.horizontal,styles.spaceAround]}>
                  {this.catergories().map((child,i)=>
-                 <TouchableNativeFeedback key={i} onPress={() => navigate("products", {title: child})}>
+                 <TouchableNativeFeedback key={i} onPress={() =>queryProducts(child, navigate)}>
                  <View style={[{
                      width:100,
                      height:100,
@@ -141,8 +145,23 @@ constructor(props){
 }
 
 
+const mapStateToProps=(state)=>{
+    "use strict";
+    return{
+
+    }
+}
 
 
+
+const mapDispatchToProps=(dispatch)=>{
+    "use strict";
+    return bindActionCreators(actions,dispatch)
+}
+const mergeProps=()=>{}
+
+
+export default home=connect(mapStateToProps,mapDispatchToProps)(homeComponent)
 
 
 

@@ -17,7 +17,7 @@ import { StackNavigator } from 'react-navigation';
 class AllView extends Component{
     static navigationOptions = {
         title:({ state, setParams ,navigate}) => {
-            return  state.params.title+' Reviews'
+            return  state.params.product.title+' Reviews'
         },
         /*header: ({ state, setParams ,navigate}) => {
          let  right=(<Statuses navigate={navigate}/>
@@ -32,14 +32,16 @@ class AllView extends Component{
     constructor(props){
         super(props)
         const ds = new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
-        let {title,reviews}=this.props.navigation.state.params;
+        let {reviews}=this.props.navigation.state.params;
         this.state={
             dataSource:ds.cloneWithRows(reviews)
         }
     }
     render(){
         let navigate=this.props.navigation.navigate;
-        let {title}=this.props.navigation.state.params;
+        let {product}=this.props.navigation.state.params;
+        //alert(product)
+        let title=product.title;
         return(
             <View style={{flex:1,justifyContent:"space-around"}}>
            <ListView dataSource={this.state.dataSource}

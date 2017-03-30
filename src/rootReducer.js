@@ -6,12 +6,13 @@ import user from './user/user.reducer';
 import activity from './activityIndicator/activityIndicatorReducers';
 import {statusReducers} from "./statuses/components/statuses"
 import  {routeReducers, oauthRouteReducers} from "./app"
-
+import productsReducer from "./products/products.reducer"
 
 export default combineReducers({
     user,
     activity,
     notifications: statusReducers,
     nav: routeReducers,
-    navOauth: oauthRouteReducers
+    navOauth: oauthRouteReducers,
+    products:productsReducer
 });

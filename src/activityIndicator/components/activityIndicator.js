@@ -36,7 +36,7 @@ export class ActivityWrapper extends Component{
                     </TouchableHighlight>
                 </View>
 
-                {this.props.isError&&<View >
+                {this.props.isError&&<View style={{paddingLeft:20,paddingRight:20,paddingBottom:5}}>
 
                 <Button color="red" title="OK" onPress={()=>this.props.endActivity()}></Button>
                 </View>}

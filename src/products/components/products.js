@@ -8,10 +8,13 @@ import {
     TouchableNativeFeedback
 } from "react-native";
 import {StackNavigator} from "react-navigation";
+import {bindActionCreators} from "redux"
+import {connect} from "react-redux"
 import Reviews from "../../reviews/components/reviews";
 import Bids from "../../bids/components/bids"
 import Chats from "../../chats/components/chats"
 import styles from "../../styles/styles"
+import * as actions from  "../products.actions"
 class ProductsList extends Component {
     static navigationOptions = {
         title: ({state, setParams, navigate}) => {
@@ -30,28 +33,27 @@ class ProductsList extends Component {
 
     constructor(props) {
         super(props)
-        const ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
+        this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
+        let {title}=this.props.navigation.state.params;
+
+        let {products}=this.props.screenProps;
         this.state = {
-            dataSource: ds.cloneWithRows([
-                "one", "two", "three", "four", "five", "six", "seven"
-                , "one", "two", "three", "four", "five", "six", "seven"
-                , "one", "two", "three", "four", "five", "six", "seven"
-                , "one", "two", "three", "four", "five", "six", "seven"
-                , "one", "two", "three", "four", "five", "six", "seven"
-            ])
+            dataSource: this.ds.cloneWithRows(products)
         }
+
     }
 
     render() {
         let navigate = this.props.navigation.navigate;
         let {title}=this.props.navigation.state.params;
+        let props=this.props.screenProps;
+
         return (
             <View style={{flex: 1}}>
                 <ListView dataSource={this.state.dataSource}
                           renderRow={(rowData) =>
 
                               <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
-                                  title: title + " " + rowData,
                                   data: rowData
                               })}>
                                   <View style={[{
@@ -66,15 +68,15 @@ class ProductsList extends Component {
                                       styles.alignItemsCenter,
                                       styles.centerJustified
                                   ]}>
-                                      <Text style={[{width: 100, fontSize: 12, textAlign: "center"}]}>{rowData}</Text>
+                                      <Text style={[{width: 100, fontSize: 12, textAlign: "center"}]}>{rowData.title}</Text>
                                       <View style={[styles.horizontal]}>
 
                                           <Button title={"review "}
-                                                  onPress={() => navigate("reviews", {title: title, reviews: ["one", "two", "three"]})}/>
+                                                  onPress={() => props.reviewProduct(rowData,navigate)}/>
                                           <Button title={"Bids "}
-                                                  onPress={() => navigate("bids", {title: title, reviews: ["one", "two", "three"]})}/>
+                                                  onPress={() => props.placeBid(rowData,navigate)}/>
                                           <Button title={"Chats "}
-                                                  onPress={() => navigate("chats", {title: title, reviews: ["one", "two", "three"]})}/>
+                                                  onPress={() =>props.startChat(rowData,navigate)}/>
 
 
                                       </View>
@@ -82,9 +84,9 @@ class ProductsList extends Component {
 
 
                                           <Button title={"add Product "}
-                                                  onPress={() => navigate("addProduct", {title: title, reviews: ["one", "two", "three"]})}/>
+                                                  onPress={() =>props.addProduct(rowData,navigate)}/>
                                           <Button title={"edit Product "}
-                                                  onPress={() => navigate("aditProduct", {title: title, reviews: ["one", "two", "three"]})}/>
+                                                  onPress={() =>props.editProduct(rowData,navigate)}/>
 
                                       </View>
                                   </View>
@@ -99,12 +101,15 @@ class ProductsList extends Component {
             </View>
         )
     }
+    componentWillUpdate(){
+
+    }
 }
 
 class SingleProductView extends Component {
     static navigationOptions = {
         title: ({state, setParams, navigate}) => {
-            return state.params.title
+            return state.params.data.title
         },
         /*header: ({ state, setParams ,navigate}) => {
          let  right=(<Statuses navigate={navigate}/>
@@ -119,56 +124,66 @@ class SingleProductView extends Component {
 
     render() {
         let navigate = this.props.navigation.navigate;
-        let {data, title}=this.props.navigation.state.params
+        let {data}=this.props.navigation.state.params
+        let props=this.props.screenProps;
         return (
             <View style={{flex: 1, justifyContent: "space-around"}}>
                 <Text>singleView</Text>
-                <Button title={"review " + title}
-                        onPress={() => navigate("reviews", {title: title, reviews: ["one", "two", "three"]})}/>
-                <Button title={"Bids " + title}
-                        onPress={() => navigate("bids", {title: title, reviews: ["one", "two", "three"]})}/>
-                <Button title={"Chats " + title}
-                        onPress={() => navigate("chats", {title: title, reviews: ["one", "two", "three"]})}/>
-                <Button title={"add Product " + title} onPress={() => navigate("addProduct", {
-                    title: "addProduct",
-                    reviews: ["one", "two", "three"]
-                })}/>
-                <Button title={"edit Product " + title} onPress={() => navigate("aditProduct", {
-                    title: "aditProduct",
-                    reviews: ["one", "two", "three"]
-                })}/>
+                <Button title={"review "}
+                        onPress={() => props.reviewProduct(data,navigate)}/>
+                <Button title={"Bids "}
+                        onPress={() => props.placeBid(data,navigate)}/>
+                <Button title={"Chats "}
+                        onPress={() =>props.startChat(data,navigate)}/>
 
             </View>
         )
     }
 }
 
-const products = StackNavigator({
+const productsStack = StackNavigator({
     allProducts: {screen: ProductsList},
     singleProduct: {screen: SingleProductView},
     // productReviews:{screen:Reviews},
     //productBids:{screen:Bids},
     // productChats:{screen:Chats},
     addProduct: {screen: ProductsList},
-    aditProduct: {screen: ProductsList}
+    editProduct: {screen: ProductsList}
 }, {headerMode: "none"})
 
+const mapDispatchToProps=(dispatch)=>{
+
+    "use strict";
+    return bindActionCreators(actions,dispatch)
+
+}
+
+const mapStateToProps=(state)=>{
+    "use strict";
+    return{
+        products:state.products
+    }
+
+}
+
+const mergeProps = (stateProps, dispatchProp, ownProps) => {
+
+    return {
+        ...ownProps,
+        screenProps: {
+            ...ownProps.screenProps,
+            ...stateProps,
+            ...dispatchProp,
+
+        }
+    }
+}
+
+const products=connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps
+)(productsStack);
 export default products;
 
 
-const items = () => (
-    <View>
-
-        <Button title={"review " + title}
-                onPress={() => navigate("reviews", {title: title, reviews: ["one", "two", "three"]})}/>
-        <Button title={"Bids " + title}
-                onPress={() => navigate("bids", {title: title, reviews: ["one", "two", "three"]})}/>
-        <Button title={"Chats " + title}
-                onPress={() => navigate("chats", {title: title, reviews: ["one", "two", "three"]})}/>
-        <Button title={"add Product " + title}
-                onPress={() => navigate("addProduct", {title: title, reviews: ["one", "two", "three"]})}/>
-        <Button title={"edit Product " + title}
-                onPress={() => navigate("aditProduct", {title: title, reviews: ["one", "two", "three"]})}/>
-
-    </View>
-)
