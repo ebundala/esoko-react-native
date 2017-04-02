@@ -54,7 +54,7 @@ constructor(props){
                      width:100,
                      height:100,
                      marginVertical:8,
-                     borderRadius:8,
+                     borderRadius:5,
                      elevation:2,
                     // backgroundColor:"blue"
                  },
@@ -62,7 +62,7 @@ constructor(props){
                      styles.alignItemsCenter,
                      styles.centerJustified
                  ]}>
-                     <Text style={[{width:100,fontSize:12,textAlign:"center"}]}>{child}</Text>
+                     <Text style={[{width:100,fontSize:12,textAlign:"center"}]}>{child+i}</Text>
                  </View>
                  </TouchableNativeFeedback>
                  )}

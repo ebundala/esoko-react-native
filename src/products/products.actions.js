@@ -32,10 +32,11 @@ export const queryProducts=(filter,navigate)=>{
         let product={
             uid:UID,
             title:"product "+UID,
-            discription:"hellow world "+UID,
+            discription:"React Native JS code runs inside this Chrome tab.Press Ctrl⇧J to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session"+UID,
             price:UID,
             sellerID:"xxxxx",
-            catergory:filter
+            catergory:filter,
+            postedOn:new Date().getFullYear()
 
         }
        // dispatch({type:PRODUCTS_ACTIONS.ADD,data:Products})
@@ -43,10 +44,16 @@ export const queryProducts=(filter,navigate)=>{
         let products=[
             product,
             product,
+            product,
+            product,
+            product,
             product
 
 
         ];
+        for(let i=0,n=500;i<n;i++){
+            products.push(product)
+        }
         dispatch({type:PRODUCTS_ACTIONS.GET,data:products})
 
 

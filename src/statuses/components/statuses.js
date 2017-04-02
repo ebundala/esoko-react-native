@@ -50,26 +50,26 @@ export  class StatusesComponet extends Component{
                 <TouchableNativeFeedback
                     onPress={()=>{this.props.placeBid({title:'my bids',uid:'all'},navigate);this.props.changeBids(58)}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View>
+                    <View style={{marginLeft:16,marginRight:4,marginVertical:16}}>
 
                        <Badge count={this.props.bids}/>
-                        <Icon name="notifications"  />
+                        <Icon size={24} name="notifications"  />
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
                     onPress={()=>{this.props.startChat({title:'my chats',uid:'all'},navigate),this.props.changeMessages(78);}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View>
+                    <View style={{marginLeft:4,marginRight:4,marginVertical:16}}>
                         <Badge count={this.props.messages}/>
-                        <Icon name="message"  />
+                        <Icon size={24} name="message"  />
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
                     onPress={()=>{this.props.placeOrder({title:'my chats',uid:'all'},navigate),this.props.changeOrders(776)}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View>
+                    <View style={{marginLeft:4,marginRight:16,marginVertical:16}}>
                         <Badge count={this.props.orders}/>
-                        <Icon name="shopping-cart"  />
+                        <Icon size={24} name="shopping-cart"  />
                     </View>
                 </TouchableNativeFeedback>
             </View>
@@ -139,8 +139,8 @@ export  class Menu extends Component{
                 <TouchableNativeFeedback
                     onPress={this.props.onPress}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View>
-                        <Icon name="menu"  />
+                    <View style={{width:24,height:24,margin:16}}>
+                        <Icon size={24} name="menu"  />
                     </View>
                 </TouchableNativeFeedback>
 

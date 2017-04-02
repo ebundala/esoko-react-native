@@ -58,29 +58,72 @@ class ProductsList extends Component {
                               })}>
                                   <View style={[{
 
-                                      height: 100,
-                                      marginVertical: 8,
-                                      borderRadius: 8,
-                                      elevation: 2,
-                                      // backgroundColor:"blue"
+                                      height: 160,
+                                      marginVertical: 4,
+                                      marginHorizontal:8,
+
+                                     // borderRadius: 8,
+                                      elevation: 1,
+                                      backgroundColor:"white"
+
                                   },
                                       //styles.yellow,
-                                      styles.alignItemsCenter,
-                                      styles.centerJustified
+                                      //styles.alignItemsStart,
+                                      //styles.centerJustified
+                                      //styles.alignItemsStretch
                                   ]}>
-                                      <Text style={[{width: 100, fontSize: 12, textAlign: "center"}]}>{rowData.title}</Text>
                                       <View style={[styles.horizontal]}>
+                                          <Text style={[{fontSize: 10,marginHorizontal:5}]}>{rowData.postedOn}</Text>
 
-                                          <Button title={"review "}
-                                                  onPress={() => props.reviewProduct(rowData,navigate)}/>
-                                          <Button title={"Bids "}
-                                                  onPress={() => props.placeBid(rowData,navigate)}/>
-                                          <Button title={"Chats "}
-                                                  onPress={() =>props.startChat(rowData,navigate)}/>
+                                      </View>
+                                      <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
+
+                                          <View ref="detail" style={[styles.flex8,]}>
+                                              <View style={[styles.horizontal,]}>
+                                                  <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{rowData.title}</Text>
+                                              </View>
+                                              <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
+                                                  <Text style={[{fontSize: 12,textAlign:"left"}]}>{rowData.discription}</Text>
+                                              </View>
+                                              <View >
+                                                  <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+rowData.price}</Text>
+                                              </View>
+
+                                          </View>
+                                          <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
+
+                                          </View>
+                                      </View>
+                                      <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
+
+                                          <TouchableNativeFeedback  title={"review "}
+                                                  onPress={() => props.reviewProduct(rowData,navigate)}>
+                                              <View>
+                                                  <Text>
+                                                      review
+                                                  </Text>
+                                              </View>
+                                          </TouchableNativeFeedback>
+                                          <TouchableNativeFeedback  title={"Bids "}
+                                                  onPress={() => props.placeBid(rowData,navigate)}>
+                                              <View>
+                                                  <Text>
+                                                      Bids
+                                                  </Text>
+                                              </View>
+                                          </TouchableNativeFeedback>
+                                          <TouchableNativeFeedback
+                                                  onPress={() =>props.startChat(rowData,navigate)}>
+                                              <View>
+                                                  <Text>
+                                                      Chats
+                                                  </Text>
+                                              </View>
+                                          </TouchableNativeFeedback>
 
 
                                       </View>
-                                      <View style={[styles.horizontal]}>
+                                      {false&&<View style={[styles.horizontal]}>
 
 
                                           <Button title={"add Product "}
@@ -88,7 +131,7 @@ class ProductsList extends Component {
                                           <Button title={"edit Product "}
                                                   onPress={() =>props.editProduct(rowData,navigate)}/>
 
-                                      </View>
+                                      </View>}
                                   </View>
                               </TouchableNativeFeedback>
 
