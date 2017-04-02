@@ -3,10 +3,11 @@
  */
 import React, {Component} from "react";
 import {
-    Text, View, Button, ListView,
-
+    Text, View, Button, ListView,Image,
+ViewPagerAndroid,
     TouchableNativeFeedback
 } from "react-native";
+import {Icon } from 'react-native-material-design';
 import {StackNavigator} from "react-navigation";
 import {bindActionCreators} from "redux"
 import {connect} from "react-redux"
@@ -72,7 +73,8 @@ class ProductsList extends Component {
                                       //styles.centerJustified
                                       //styles.alignItemsStretch
                                   ]}>
-                                      <View style={[styles.horizontal]}>
+                                      <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
+                                          <Icon size={14} name="update"  />
                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{rowData.postedOn}</Text>
 
                                       </View>
@@ -83,7 +85,7 @@ class ProductsList extends Component {
                                                   <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{rowData.title}</Text>
                                               </View>
                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
-                                                  <Text style={[{fontSize: 12,textAlign:"left"}]}>{rowData.discription}</Text>
+                                                  <Text style={[{fontSize: 12,textAlign:"left"}]}>{rowData.description}</Text>
                                               </View>
                                               <View >
                                                   <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+rowData.price}</Text>
@@ -170,17 +172,81 @@ class SingleProductView extends Component {
         let {data}=this.props.navigation.state.params
         let props=this.props.screenProps;
         return (
-            <View style={{flex: 1, justifyContent: "space-around"}}>
-                <Text>singleView</Text>
-                <Button title={"review "}
-                        onPress={() => props.reviewProduct(data,navigate)}/>
-                <Button title={"Bids "}
-                        onPress={() => props.placeBid(data,navigate)}/>
-                <Button title={"Chats "}
-                        onPress={() =>props.startChat(data,navigate)}/>
+            <View style={[styles.flex1,{elevation:5,margin:5,backgroundColor:"white"}]}>
+                <View style={[styles.red,styles.flex4]}>
+                    <ViewPagerAndroid
+                        keyboardDismissMode='on-drag'
+                        initialPage={0}
+                        scrollEnabled={true}
+
+                        style={{flex: 1}}
+                        ref={(el) => this._viewPager = el}>
+                        {this._renderImages().map((child, i) => (
+                            <View
+                                key={"key" + i}
+                                testID={"test" + i}
+                                style={[styles.flex1,{
+                                    backgroundColor:"rgb("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+")"}]}>
+                                <Image style={[styles.flex1,{width:null,height:null}]} source={{uri:child.url}}>
+                                    <Text>{child.name}</Text>
+                                </Image>
+                            </View>
+                        ))}
+                    </ViewPagerAndroid>
+                </View>
+                <View style={[styles.flex8,{marginHorizontal:5}]}>
+                    <View style={[styles.horizontal]}>
+                        <Text style={[{fontSize:20,fontWeight:"bold",color:"black"}]}>
+                            {data.title}
+                        </Text>
+                    </View>
+                    <View style={[styles.flex1,{marginVertical:20}]}>
+                        <Text style={[{fontSize:16}]}>
+                            {data.description}
+
+                        </Text>
+                    </View>
+
+                   < View style={[styles.horizontal,styles.flexEnd,{marginVertical:20}]}>
+                    <Text style={[{fontSize:18,color:"orange",fontWeight:"bold"}]}>
+                        {"Price "+data.price}
+
+                    </Text>
+                </View>
+
+                    <View style={[styles.horizontal,styles.spaceAround]}>
+
+                        <Button title={"review "}
+                                onPress={() => props.reviewProduct(data,navigate)}/>
+                        <Button title={"Bids "}
+                                onPress={() => props.placeBid(data,navigate)}/>
+                        <Button title={"Chats "}
+                                onPress={() =>props.startChat(data,navigate)}/>
+
+                    </View>
+                </View>
+
+
+
 
             </View>
         )
+    }
+    _renderImages(){
+        let {data}=this.props.navigation.state.params
+        if(data.hasOwnProperty("photos")){
+            if(data.photos instanceof Array){
+                return data.photos;
+            }
+        }
+        return[
+            "hello",
+            "world",
+            "mick",
+            "mill",
+            "youi",
+            "alt"
+        ]
     }
 }
 
