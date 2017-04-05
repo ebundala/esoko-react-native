@@ -52,18 +52,7 @@ const StackHome = {
 const Main = StackNavigator(StackHome)
 
 
-const navigationViewc=(goToAccount)=>{
-    "use strict";
-    return(
-        <View style={[{flex: 1, backgroundColor: '#fff'}]}>
-            <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer also!</Text>
-            <Button title="Account" onPress={() =>
-                goToAccount()
-            }/>
-        </View>
-    );
 
-}
 
 
 
@@ -84,9 +73,7 @@ class root extends Component {
 
         return (
 
-            <DrawerLayoutAndroid ref={component => {
-                this.drawer = component
-            }}
+            <DrawerLayoutAndroid ref={component => {this.drawer = component}}
                                  drawerWidth={300}
                                  drawerPosition={DrawerLayoutAndroid.positions.Left}
                                  renderNavigationView={()=> <NavigationView root={this} navigation={addNavigationHelpers({dispatch, state: nav})}/>}

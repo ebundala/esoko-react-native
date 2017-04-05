@@ -14,7 +14,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as actions from  "../../products/products.actions"
 import {Statuses,Menu}  from "../../statuses/components/statuses"
-import { StackNavigator } from 'react-navigation';
+
 import styles from "../../styles/styles"
 let ctx;
  class homeComponent extends Component{
