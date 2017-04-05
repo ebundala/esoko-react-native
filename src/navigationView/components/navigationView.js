@@ -1,5 +1,5 @@
 /**
- * Created by ebundala on 3/11/2017.
+ * Created by ebundala on 4/5/2017.
  */
 import React, { Component } from 'react';
 
@@ -13,69 +13,63 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as actions from  "../../products/products.actions"
-import {Statuses,Menu}  from "../../statuses/components/statuses"
-import { StackNavigator } from 'react-navigation';
 import styles from "../../styles/styles"
-let ctx;
- class homeComponent extends Component{
 
-   constructor(props){
-    super(props);
 
-}
-    static navigationOptions = {
-        title: 'Home',
+class navigationViewContainer extends Component{
 
-        header: ({ state, setParams ,navigate}) => {
-            let  right=(<Statuses navigate={navigate}/>
-            );
-            let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>
-            );
+    constructor(props){
+        super(props);
 
-            return { right ,left};
-        },
-
-    };
-    openDrawer(){
-        this.props.screenProps.drawer.openDrawer()
     }
+
+
     render(){
-        ctx=this;
+
+        let {queryProducts,root}=this.props;
         let {navigate}=this.props.navigation;
-        let {queryProducts}=this.props;
-      return(
+        return(
 
 
-             <View >
-                 <ScrollView contentContainerStyle={[{flexWrap:"wrap"},styles.horizontal,styles.spaceAround]}>
-                 {this.catergories().map((child,i)=>
-                 <TouchableNativeFeedback key={i} onPress={() =>queryProducts(child, navigate)}>
-                 <View style={[{
-                     width:100,
-                     height:100,
-                     marginVertical:8,
-                     borderRadius:5,
-                     elevation:2,
-                    // backgroundColor:"blue"
-                 },
-                     //styles.yellow,
-                     styles.alignItemsCenter,
-                     styles.centerJustified
-                 ]}>
-                     <Text style={[{width:100,fontSize:12,textAlign:"center"}]}>{child+i}</Text>
-                 </View>
-                 </TouchableNativeFeedback>
-                 )}
-                 </ScrollView>
+            <View style={[styles.flex1]}>
+                <View style={[styles.flex2,styles.red]}>
 
-             </View>
+                </View>
+                <View style={[styles.flex8]}>
+                <ScrollView contentContainerStyle={[styles.spaceAround]}>
+
+                    {this.catergories().map((child,i)=>
+                        <TouchableNativeFeedback key={i} onPress={() =>{root.closeDrawer();queryProducts(child, navigate)}}>
+                            <View style={[{
+                                height:50,
+                                marginVertical:5,
+                                marginHorizontal:5,
+
+                                elevation:1,
+                                // backgroundColor:"blue"
+                            },
+                                //styles.yellow,
+                                styles.alignItemsCenter,
+                                styles.centerJustified
+                            ]}>
+                                <Text style={[{fontSize:16,fontWeight:"bold",textAlign:"center"}]}>{child+i}</Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                    )}
+
+                </ScrollView>
+                </View>
+                <View style={[styles.flex4,styles.yellow]}>
+
+                </View>
+            </View>
 
 
-      )
+
+        )
     }
     catergories(){
-        return[]
-        /*[
+        return[
             "electronics",
             "Furniture",
             "Women's Apparel",
@@ -140,8 +134,7 @@ let ctx;
             "Mobile Phones",
             "Accessories",
             "Jewelry",
-        ]*/
-
+        ]
     }
 
 }
@@ -160,14 +153,8 @@ const mapDispatchToProps=(dispatch)=>{
     "use strict";
     return bindActionCreators(actions,dispatch)
 }
-const mergeProps=()=>{}
+//const mergeProps=()=>{}
 
 
-export default home=connect(mapStateToProps,mapDispatchToProps)(homeComponent)
-
-
-
-
-
-
+export default navigationView=connect(mapStateToProps,mapDispatchToProps)(navigationViewContainer)
 

@@ -29,6 +29,8 @@ import Chats from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
 import Home from  "./Home/components/home"
 import {IntroOne, IntroTwo} from "./intro/components/intro"
+import NavigationView from "./navigationView/components/navigationView"
+import {styles} from "./styles/styles"
 
 
 Activity.navigationOptions = {
@@ -49,6 +51,24 @@ const StackHome = {
 
 const Main = StackNavigator(StackHome)
 
+
+const navigationViewc=(goToAccount)=>{
+    "use strict";
+    return(
+        <View style={[{flex: 1, backgroundColor: '#fff'}]}>
+            <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer also!</Text>
+            <Button title="Account" onPress={() =>
+                goToAccount()
+            }/>
+        </View>
+    );
+
+}
+
+
+
+
+
 class root extends Component {
     constructor(props) {
         super(props)
@@ -58,24 +78,18 @@ class root extends Component {
 
     render() {
         "use strict";
-        const { activity}=this.props;
 
-        let navigationView = (
-            <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
-                <Button title="Account" onPress={() =>
-                    this.goToAccount()
-                }/>
-            </View>
-        );
+
+        const {dispatch, nav, user, activity,navOauth}=this.props;
 
         return (
+
             <DrawerLayoutAndroid ref={component => {
                 this.drawer = component
             }}
                                  drawerWidth={300}
                                  drawerPosition={DrawerLayoutAndroid.positions.Left}
-                                 renderNavigationView={() => navigationView}
+                                 renderNavigationView={()=> <NavigationView root={this} navigation={addNavigationHelpers({dispatch, state: nav})}/>}
                                  onDrawerOpen={() => this.drawerOpen = true}
                                  onDrawerClose={() => this.drawerOpen = false}
             >
@@ -94,7 +108,7 @@ class root extends Component {
                 <ViewPagerAndroid
                     keyboardDismissMode='on-drag'
                     initialPage={3}
-                    scrollEnabled={false}
+                    scrollEnabled={true}
 
                     style={{flex: 1}}
                     ref={(el) => this._viewPager = el}>
