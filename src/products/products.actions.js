@@ -20,7 +20,25 @@ export const PRODUCTS_ACTIONS = {
     ADD_BID:"ADD_BID",
     ADD_ORDER:"ADD_ORDER",
     START_CHAT:"START_CHAT"
-}
+};
+const IMAGES=[
+    require("../pngs/baseball.png"),
+    require("../pngs/bear.png"),
+    require("../pngs/bison.png"),
+    require("../pngs/brooklyn.png"),
+    require("../pngs/delaware.png"),
+    require("../pngs/goldengate.png"),
+    require("../pngs/goldengate2.png"),
+    require("../pngs/grandcanyon.png"),
+    require("../pngs/leonardo_da_vinci_52027-1400x1050.png"),
+    require("../pngs/liberty2.png"),
+    require("../pngs/rockies-1.png"),
+    require("../pngs/rushmore.png"),
+    require("../pngs/salmoncreek.png"),
+    require("../pngs/shuttle.png"),
+    require("../pngs/teton.png"),
+
+]
 
 export const queryProducts=(filter,navigate)=>{
     "use strict";
@@ -28,49 +46,41 @@ export const queryProducts=(filter,navigate)=>{
 
         //TODO query products from local database here
 
-        let UID=Math.ceil(Math.random()*100000)
-        let product={
-            uid:UID,
-            title:"product "+UID,
-            description:"React Native JS code runs inside this Chrome tab.Press Ctrl⇧J to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session"+UID,
-            price:UID,
-            sellerID:"xxxxx",
-            catergory:filter,
-            postedOn:new Date().getUTCFullYear(),
-            currency:"TZS",
-            photos:[
-                {name:"one",
-                    url:"ic_laucher.png",
-                    type:"jpg"},
-                {name:"two",
-                    url:"ic_laucher.png",
-                    type:"jpg"},
-                {name:"three",
-                    url:"ic_laucher.png",
-                    type:"jpg"},
-                {name:"four",
-                    url:"ic_laucher.png",
-                    type:"jpg"},
-                {name:"five",
-                    url:"ic_laucher.png",
-                    type:"jpg"}
-            ]
 
-        }
+        let product=[]
        // dispatch({type:PRODUCTS_ACTIONS.ADD,data:Products})
 
-        let products=[
-            product,
-            product,
-            product,
-            product,
-            product,
-            product
+        let products=[];
+        for(let i=0,n=50;i<n;i++){
+            let UID=Math.ceil(Math.random()*100000)
+            products.push({
+                uid:UID,
+                title:"product "+UID,
+                description:"React Native JS code runs inside this Chrome tab.Press Ctrl⇧J to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session"+UID,
+                price:UID,
+                sellerID:"xxxxx",
+                catergory:filter,
+                postedOn:new Date().getUTCFullYear(),
+                currency:"TZS",
+                photos:[
+                    {name:"one",
+                        url:IMAGES[Math.ceil(Math.random()*10)],
+                        type:"jpg"},
+                    {name:"two",
+                        url:IMAGES[Math.ceil(Math.random()*10)],
+                        type:"jpg"},
+                    {name:"three",
+                        url:IMAGES[Math.ceil(Math.random()*10)],
+                        type:"jpg"},
+                    {name:"four",
+                        url:IMAGES[Math.ceil(Math.random()*10)],
+                        type:"jpg"},
+                    {name:"five",
+                        url:IMAGES[Math.ceil(Math.random()*10)],
+                        type:"jpg"}
+                ]
 
-
-        ];
-        for(let i=0,n=5;i<n;i++){
-            products.push(product)
+            })
         }
         dispatch({type:PRODUCTS_ACTIONS.GET,data:products})
 

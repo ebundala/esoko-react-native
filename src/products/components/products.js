@@ -18,6 +18,24 @@ import Chats from "../../chats/components/chats"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import * as actions from  "../products.actions"
 let ctx;
+const IMAGES=[
+    require("../../pngs/baseball.png"),
+    require("../../pngs/bear.png"),
+    require("../../pngs/bison.png"),
+    require("../../pngs/brooklyn.png"),
+    require("../../pngs/delaware.png"),
+    require("../../pngs/goldengate.png"),
+    require("../../pngs/goldengate2.png"),
+    require("../../pngs/grandcanyon.png"),
+    require("../../pngs/leonardo_da_vinci_52027-1400x1050.png"),
+    require("../../pngs/liberty2.png"),
+    require("../../pngs/rockies-1.png"),
+    require("../../pngs/rushmore.png"),
+    require("../../pngs/salmoncreek.png"),
+    require("../../pngs/shuttle.png"),
+    require("../../pngs/teton.png"),
+
+]
 class ProductsList extends Component {
     static navigationOptions = {
         title: ({state, setParams, navigate}) => {
@@ -54,7 +72,7 @@ class ProductsList extends Component {
 
         return (
             <View style={[styles.flex1]}>
-                <Card style={[{minHeight:50}]} >
+                <Card style={[{height:50}]} >
                     <View style={[styles.horizontal]}>
                     <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
                         <Icon name="search" />
@@ -88,12 +106,31 @@ class ProductsList extends Component {
                                   data: rowData
                               })}>
                                   <View style={[,{
-                                      height: 360,
+                                      height: 220,
                                       width:180
                                   },
 
                                   ]}>
                                       <Card style={[styles.flex1]}>
+
+                                          <View style={[styles.flex1]}>
+                                              <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                                      source={rowData.photos[0].url}>
+
+                                              </Image>
+                                              <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
+                                                  <View style={[]}>
+                                                      <Text>{rowData.title}</Text>
+                                                  </View>
+                                                  <View style={[]}>
+                                                      <Text>
+                                                          {rowData.currency} {rowData.price}
+                                                          </Text>
+                                                  </View>
+                                              </View>
+                                          </View>
+
+                                          {false&& <View>
                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
                                           <Icon size={14} name="update"  />
                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{rowData.postedOn}</Text>
@@ -146,6 +183,7 @@ class ProductsList extends Component {
 
 
                                       </View>
+                                          </View>}
 
                                       {false&&<View style={[styles.horizontal]}>
 
@@ -225,7 +263,8 @@ class SingleProductView extends Component {
                                     key={"key" + i}
                                     testID={"test" + i}
                                     style={[styles.flex1,{backgroundColor:"rgb("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+")"}]}>
-                                    <Image  style={[styles.flex1,{width:null,height:null,resizeMode:Image.resizeMode.cover}]} source={require("../../user/images/background.png")}>
+                                    <Image  style={[styles.flex1,{width:null,height:null,resizeMode:Image.resizeMode.cover}]}
+                                            source={data.photos[i].url}>
                                         <Text>{child.name}</Text>
                                     </Image>
                                 </View>
