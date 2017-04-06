@@ -2,12 +2,12 @@
  * Created by ebundala on 3/11/2017.
  */
 import React, {Component} from "react";
-import {
-    Text, View, Button, ListView,Image,ScrollView,
-ViewPagerAndroid,
+import { StyleSheet,
+    Text, View, ListView,Image,ScrollView, TextInput,
+     ViewPagerAndroid,
     TouchableNativeFeedback
 } from "react-native";
-import {Icon,Card } from 'react-native-material-design';
+import {Icon,Card ,Button,Divider} from 'react-native-material-design';
 import {StackNavigator} from "react-navigation";
 import {bindActionCreators} from "redux"
 import {connect} from "react-redux"
@@ -15,7 +15,7 @@ import {Statuses,Menu}  from "../../statuses/components/statuses"
 import Reviews from "../../reviews/components/reviews";
 import Bids from "../../bids/components/bids"
 import Chats from "../../chats/components/chats"
-import styles from "../../styles/styles"
+import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import * as actions from  "../products.actions"
 let ctx;
 class ProductsList extends Component {
@@ -53,29 +53,47 @@ class ProductsList extends Component {
         let props=this.props.screenProps;
 
         return (
-            <View style={{flex: 1}}>
-                <ListView dataSource={this.state.dataSource}
-                          renderRow={(rowData) =>
+            <View style={[styles.flex1]}>
+                <Card style={[{minHeight:50}]} >
+                    <View style={[styles.horizontal]}>
+                    <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
+                        <Icon name="search" />
+                    </View>
 
+                        <View style={[styles.flex9]}>
+
+
+                            <TextInput
+                                ref={component => this.searchInput = component}
+                                keyboardType="email-address"
+                                style={styles.input}
+                                autoCorrect={true}
+                                autoCapitalize="none"
+                                placeholderTextColor='#a8aAeC'
+                                placeholder={"Search "+title}
+                                onSubmitEditing={() => {}}
+                                onChangeText={query => this.setState({query})}
+                            />
+
+                        </View>
+                    </View>
+                </Card>
+
+                <ListView dataSource={this.state.dataSource}
+                          contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
+
+
+                          renderRow={(rowData) =>
                               <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
                                   data: rowData
                               })}>
-                                  <View style={[{
-
-                                      height: 160,
-                                      marginVertical: 4,
-                                      marginHorizontal:8,
-
-                                     // borderRadius: 8,
-                                      elevation: 1,
-                                      backgroundColor:"white"
-
+                                  <View style={[,{
+                                      height: 360,
+                                      width:180
                                   },
-                                      //styles.yellow,
-                                      //styles.alignItemsStart,
-                                      //styles.centerJustified
-                                      //styles.alignItemsStretch
+
                                   ]}>
+                                      <Card style={[styles.flex1]}>
                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
                                           <Icon size={14} name="update"  />
                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{rowData.postedOn}</Text>
@@ -128,6 +146,7 @@ class ProductsList extends Component {
 
 
                                       </View>
+
                                       {false&&<View style={[styles.horizontal]}>
 
 
@@ -137,12 +156,9 @@ class ProductsList extends Component {
                                                   onPress={() =>props.editProduct(rowData,navigate)}/>
 
                                       </View>}
+                                      </Card>
                                   </View>
-                              </TouchableNativeFeedback>
-
-
-
-                          }
+                              </TouchableNativeFeedback>}
                 />
 
 
@@ -179,20 +195,23 @@ class SingleProductView extends Component {
         let props=this.props.screenProps;
         return (
             <View style={[styles.flex1]}>
-                <View style={[styles.horizontal,styles.spaceAround,{marginVertical:8}]}>
 
-                    <Button title={"review "}
+                <Card ref="CTA" style={[styles.horizontal,styles.spaceAround]}>
+
+                    <Button text={"Review "}
                             onPress={() => props.reviewProduct(data,navigate)}/>
-                    <Button title={"Bids "}
+                    <Button text={"Bids "}
                             onPress={() => props.placeBid(data,navigate)}/>
-                    <Button title={"Chats "}
+                    <Button text={"Chats "}
                             onPress={() =>props.startChat(data,navigate)}/>
 
-                </View>
+                </Card>
 
-                <ScrollView contentContainerStyle={[styles.flex1]}>
 
-                    <Card style={[styles.flex8,]}>
+
+                <ScrollView contentContainerStyle={[]}>
+                    <View >
+                    <Card ref="mainCard" style={[{height:360}]}>
                         <View style={[styles.flex8,{marginVertical:8}]}>
                         <ViewPagerAndroid
                             keyboardDismissMode='on-drag'
@@ -205,9 +224,8 @@ class SingleProductView extends Component {
                                 <View
                                     key={"key" + i}
                                     testID={"test" + i}
-                                    style={[styles.flex1,{
-                                        backgroundColor:"rgb("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+")"}]}>
-                                    <Image style={[styles.flex1,{width:null,height:null}]} source={{uri:child.url}}>
+                                    style={[styles.flex1,{backgroundColor:"rgb("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+")"}]}>
+                                    <Image  style={[styles.flex1,{width:null,height:null,resizeMode:Image.resizeMode.cover}]} source={require("../../user/images/background.png")}>
                                         <Text>{child.name}</Text>
                                     </Image>
                                 </View>
@@ -217,16 +235,16 @@ class SingleProductView extends Component {
                         <View style={[styles.flex2,styles.horizontal,]}>
                             <View style={[styles.flex8,styles.centerJustified]}>
                                 <View style={[styles.horizontal]}>
-                                    <Text style={[{fontSize:14,fontWeight:"bold",color:"black"}]}>
+                                    <Text style={[colorStyle.paperGrey800,{fontSize:14,fontWeight:"bold"}]}>
                                         {data.title}
                                     </Text>
                                 </View>
 
                             </View>
-                            <View style={[styles.flex4,styles.centerJustified,styles.alignItemsCenter,{backgroundColor:"silver",borderRadius:8,margin:8}]}>
-                                < View style={[styles.horizontal,]}>
-                                    <Text style={[{fontSize:14,color:"white",fontWeight:"bold",textAlign:"center"}]}>
-                                        {"TZS "+data.price}
+                            <View style={[styles.flex4,styles.centerJustified,styles.alignItemsCenter,{backgroundColor:colours.paperYellow400.color,borderRadius:8,margin:8}]}>
+                                < View style={[styles.horizontal]}>
+                                    <Text style={[colorStyle.paperBlue900,{fontSize:14,fontWeight:"bold",textAlign:"center"}]}>
+                                        {data.currency} {data.price}
 
                                     </Text>
                                 </View>
@@ -235,19 +253,46 @@ class SingleProductView extends Component {
                         </View>
 
                     </Card>
-                    {true&&<Card style={[styles.flex3,{marginHorizontal:5}]}>
+                    <Card ref="description" style={[styles.flex1,{minHeight:50}]}>
 
-                        <View style={[styles.flex1,{marginVertical:20}]}>
-                            <Text style={[{fontSize:16}]}>
+                        <View style={[styles.flex1]}>
+                            <Text style={[typographyStyle.paperFontTitle]}>
+                                Description
+
+                            </Text>
+                            <Divider/>
+                            <Text style={[typographyStyle.paperFontBody1]}>
                                 {data.description}
 
                             </Text>
+
                         </View>
 
 
 
 
-                    </Card>}
+                    </Card>
+                    <Card ref="reviews" style={[{minHeight:50}]}>
+                            <Text style={[typographyStyle.paperFontTitle]}>
+                                Reviews
+                            </Text>
+                        <Divider/>
+                        <Text style={[typographyStyle.paperFontBody1]}>
+                            {data.description}
+
+                        </Text>
+                        <Text style={[typographyStyle.paperFontBody1]}>
+                            {data.description}
+
+                        </Text>
+                        <Text style={[typographyStyle.paperFontBody1]}>
+                            {data.description}
+
+                        </Text>
+                            <Divider/>
+                        </Card>
+
+                    </View>
                 </ScrollView>
 
 

@@ -37,21 +37,22 @@ export const queryProducts=(filter,navigate)=>{
             sellerID:"xxxxx",
             catergory:filter,
             postedOn:new Date().getUTCFullYear(),
+            currency:"TZS",
             photos:[
                 {name:"one",
-                    url:"app_icon",
+                    url:"ic_laucher.png",
                     type:"jpg"},
                 {name:"two",
-                    url:"app_icon",
+                    url:"ic_laucher.png",
                     type:"jpg"},
                 {name:"three",
-                    url:"app_icon",
+                    url:"ic_laucher.png",
                     type:"jpg"},
                 {name:"four",
-                    url:"app_icon",
+                    url:"ic_laucher.png",
                     type:"jpg"},
                 {name:"five",
-                    url:"app_icon",
+                    url:"ic_laucher.png",
                     type:"jpg"}
             ]
 

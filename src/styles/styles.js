@@ -8,7 +8,10 @@ import {
     StyleSheet
 
     } from 'react-native';
-
+import { typography, color } from 'react-native-material-design-styles';
+export const typographyStyle = StyleSheet.create(typography);
+export const colorStyle=StyleSheet.create(color)
+export const colours=color
 const  styles=StyleSheet.create({
     //layouts
     horizontal:{
@@ -122,6 +125,9 @@ red:{backgroundColor:"red"},
     /*order:{
         order:1
     },*/
+    flexWrap:{
+        flexWrap:"wrap"
+    },
     flexGrow:{
         flexGrow:1
     },
