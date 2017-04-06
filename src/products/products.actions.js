@@ -51,7 +51,7 @@ export const queryProducts=(filter,navigate)=>{
        // dispatch({type:PRODUCTS_ACTIONS.ADD,data:Products})
 
         let products=[];
-        for(let i=0,n=50;i<n;i++){
+        for(let i=0,n=10000;i<n;i++){
             let UID=Math.ceil(Math.random()*100000)
             products.push({
                 uid:UID,

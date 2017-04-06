@@ -99,7 +99,7 @@ class ProductsList extends Component {
 
                 <ListView dataSource={this.state.dataSource}
                           contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
-
+                          scrollRenderAheadDistance={640}
 
                           renderRow={(rowData) =>
                               <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
@@ -247,7 +247,7 @@ class SingleProductView extends Component {
 
 
 
-                <ScrollView contentContainerStyle={[]}>
+                <ScrollView >
                     <View >
                     <Card ref="mainCard" style={[{height:360}]}>
                         <View style={[styles.flex8,{marginVertical:8}]}>
