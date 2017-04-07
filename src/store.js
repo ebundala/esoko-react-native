@@ -22,8 +22,8 @@ const store = createStore(rootReducer,
     autoRehydrate()
     )
 );
-
-persistStore(store, {storage: AsyncStorage});
+    {}
+persistStore(store, {storage: AsyncStorage,blacklist: ['activity','products',"nav"]});
 return store
 }
 export default configStore;

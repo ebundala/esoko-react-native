@@ -1,15 +1,34 @@
 /**
  * Created by ebundala on 3/11/2017.
  */
-import React, { Component } from 'react';
 
+
+
+'use strict';
+
+import React, { Component } from 'react';
 import {
+    StyleSheet,
     Text,
     View,
+    ListView,
     Button
 } from 'react-native';
 
 import { StackNavigator } from 'react-navigation';
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29,6 +48,8 @@ class AllView extends Component{
     render(){
         let navigate=this.props.navigation.navigate;
         return(
+
+
             <View style={{flex:1,justifyContent:"space-around"}}>
 
                 <Button title="Orders One" onPress={()=>navigate("singleOrder",{title:"Orders one"})}/>
@@ -68,5 +89,9 @@ class SingleView extends Component{
     allOrders:{screen:AllView}  ,
     singleOrder:{screen:SingleView}
 },{headerMode:"none"})
+
+
+
+
 
 export default orders;

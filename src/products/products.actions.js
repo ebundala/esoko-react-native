@@ -21,7 +21,7 @@ export const PRODUCTS_ACTIONS = {
     ADD_ORDER:"ADD_ORDER",
     START_CHAT:"START_CHAT"
 };
-const IMAGES=[
+export const IMAGES=[
     require("../pngs/baseball.png"),
     require("../pngs/bear.png"),
     require("../pngs/bison.png"),

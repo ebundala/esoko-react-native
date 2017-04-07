@@ -17,6 +17,7 @@ import Bids from "../../bids/components/bids"
 import Chats from "../../chats/components/chats"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import * as actions from  "../products.actions"
+import {DB} from "../../utils/database"
 let ctx;
 const IMAGES=[
     require("../../pngs/baseball.png"),
@@ -100,7 +101,7 @@ class ProductsList extends Component {
                 <ListView dataSource={this.state.dataSource}
                           contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                           scrollRenderAheadDistance={640}
-
+                           enableEmptySections={true}
                           renderRow={(rowData) =>
                               <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
                                   data: rowData
@@ -250,7 +251,7 @@ class SingleProductView extends Component {
                 <ScrollView >
                     <View >
                     <Card ref="mainCard" style={[{height:360}]}>
-                        <View style={[styles.flex8,{marginVertical:8}]}>
+                        <View style={[styles.flex8,{marginVertical:16}]}>
                         <ViewPagerAndroid
                             keyboardDismissMode='on-drag'
                             initialPage={0}
