@@ -17,26 +17,9 @@ import Bids from "../../bids/components/bids"
 import Chats from "../../chats/components/chats"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import * as actions from  "../products.actions"
-import {DB} from "../../utils/database"
+//import {DB} from "../../utils/database"
 let ctx;
-const IMAGES=[
-    require("../../pngs/baseball.png"),
-    require("../../pngs/bear.png"),
-    require("../../pngs/bison.png"),
-    require("../../pngs/brooklyn.png"),
-    require("../../pngs/delaware.png"),
-    require("../../pngs/goldengate.png"),
-    require("../../pngs/goldengate2.png"),
-    require("../../pngs/grandcanyon.png"),
-    require("../../pngs/leonardo_da_vinci_52027-1400x1050.png"),
-    require("../../pngs/liberty2.png"),
-    require("../../pngs/rockies-1.png"),
-    require("../../pngs/rushmore.png"),
-    require("../../pngs/salmoncreek.png"),
-    require("../../pngs/shuttle.png"),
-    require("../../pngs/teton.png"),
-
-]
+import {IMAGES} from "../products.actions"
 class ProductsList extends Component {
     static navigationOptions = {
         title: ({state, setParams, navigate}) => {
@@ -102,9 +85,9 @@ class ProductsList extends Component {
                           contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                           scrollRenderAheadDistance={640}
                            enableEmptySections={true}
-                          renderRow={(rowData) =>
+                          renderRow={(data) =>
                               <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
-                                  data: rowData
+                                  data: data
                               })}>
                                   <View style={[,{
                                       height: 220,
@@ -116,16 +99,16 @@ class ProductsList extends Component {
 
                                           <View style={[styles.flex1]}>
                                               <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
-                                                      source={rowData.photos[0].url}>
+                                                      source={{uri:data.photos[0].url}}>
 
                                               </Image>
                                               <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
                                                   <View style={[]}>
-                                                      <Text>{rowData.title}</Text>
+                                                      <Text>{data.title}</Text>
                                                   </View>
                                                   <View style={[]}>
                                                       <Text>
-                                                          {rowData.currency} {rowData.price}
+                                                          {data.currency} {data.price}
                                                           </Text>
                                                   </View>
                                               </View>
@@ -134,20 +117,20 @@ class ProductsList extends Component {
                                           {false&& <View>
                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
                                           <Icon size={14} name="update"  />
-                                          <Text style={[{fontSize: 10,marginHorizontal:5}]}>{rowData.postedOn}</Text>
+                                          <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
 
                                       </View>
                                       <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
 
                                           <View ref="detail" style={[styles.flex8,]}>
                                               <View style={[styles.horizontal,]}>
-                                                  <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{rowData.title}</Text>
+                                                  <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
                                               </View>
                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
-                                                  <Text style={[{fontSize: 12,textAlign:"left"}]}>{rowData.description}</Text>
+                                                  <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
                                               </View>
                                               <View >
-                                                  <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+rowData.price}</Text>
+                                                  <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
                                               </View>
 
                                           </View>
@@ -158,7 +141,7 @@ class ProductsList extends Component {
                                       <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
 
                                           <TouchableNativeFeedback  title={"review "}
-                                                  onPress={() => props.reviewProduct(rowData,navigate)}>
+                                                  onPress={() => props.reviewProduct(data,navigate)}>
                                               <View>
                                                   <Text>
                                                       review
@@ -166,7 +149,7 @@ class ProductsList extends Component {
                                               </View>
                                           </TouchableNativeFeedback>
                                           <TouchableNativeFeedback  title={"Bids "}
-                                                  onPress={() => props.placeBid(rowData,navigate)}>
+                                                  onPress={() => props.placeBid(data,navigate)}>
                                               <View>
                                                   <Text>
                                                       Bids
@@ -174,7 +157,7 @@ class ProductsList extends Component {
                                               </View>
                                           </TouchableNativeFeedback>
                                           <TouchableNativeFeedback
-                                                  onPress={() =>props.startChat(rowData,navigate)}>
+                                                  onPress={() =>props.startChat(data,navigate)}>
                                               <View>
                                                   <Text>
                                                       Chats
@@ -190,9 +173,9 @@ class ProductsList extends Component {
 
 
                                           <Button title={"add Product "}
-                                                  onPress={() =>props.addProduct(rowData,navigate)}/>
+                                                  onPress={() =>props.addProduct(data,navigate)}/>
                                           <Button title={"edit Product "}
-                                                  onPress={() =>props.editProduct(rowData,navigate)}/>
+                                                  onPress={() =>props.editProduct(data,navigate)}/>
 
                                       </View>}
                                       </Card>
@@ -265,7 +248,7 @@ class SingleProductView extends Component {
                                     testID={"test" + i}
                                     style={[styles.flex1,{backgroundColor:"rgb("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+")"}]}>
                                     <Image  style={[styles.flex1,{width:null,height:null,resizeMode:Image.resizeMode.cover}]}
-                                            source={data.photos[i].url}>
+                                            source={{uri:data.photos[i].url}}>
                                         <Text>{child.name}</Text>
                                     </Image>
                                 </View>

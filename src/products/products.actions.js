@@ -3,7 +3,7 @@
  */
 
 import * as activity from "../activityIndicator/activitIndicatorAction";
-
+import {DB} from "../utils/database"
 
 export const initialState = [
 
@@ -22,21 +22,21 @@ export const PRODUCTS_ACTIONS = {
     START_CHAT:"START_CHAT"
 };
 export const IMAGES=[
-    require("../pngs/baseball.png"),
-    require("../pngs/bear.png"),
-    require("../pngs/bison.png"),
-    require("../pngs/brooklyn.png"),
-    require("../pngs/delaware.png"),
-    require("../pngs/goldengate.png"),
-    require("../pngs/goldengate2.png"),
-    require("../pngs/grandcanyon.png"),
-    require("../pngs/leonardo_da_vinci_52027-1400x1050.png"),
-    require("../pngs/liberty2.png"),
-    require("../pngs/rockies-1.png"),
-    require("../pngs/rushmore.png"),
-    require("../pngs/salmoncreek.png"),
-    require("../pngs/shuttle.png"),
-    require("../pngs/teton.png"),
+    "http://10.0.2.2 :3000/baseball.png",
+    "http://10.0.2.2 :3000/bear.png",
+    "http://10.0.2.2 :3000/bison.png",
+    "http://10.0.2.2 :3000/brooklyn.png",
+    "http://10.0.2.2 :3000/delaware.png",
+    "http://10.0.2.2 :3000/goldengate.png",
+    "http://10.0.2.2 :3000/goldengate2.png",
+    "http://10.0.2.2 :3000/grandcanyon.png",
+    "http://10.0.2.2 :3000/leonardo_da_vinci_52027-1400x1050.png",
+    "http://10.0.2.2 :3000/liberty2.png",
+    "http://10.0.2.2 :3000/rockies-1.png",
+    "http://10.0.2.2 :3000/rushmore.png",
+    "http://10.0.2.2 :3000/salmoncreek.png",
+    "http://10.0.2.2 :3000/shuttle.png",
+    "http://10.0.2.2 :3000/teton.png",
 
 ]
 
@@ -45,44 +45,80 @@ export const queryProducts=(filter,navigate)=>{
     return(dispatch)=>{
 
         //TODO query products from local database here
+//DB.deleteDatabase()
+
+//DB.closeDatabase()
+//DB.openDatabase()
+       // DB.transaction((tx)=>{
+           // debugger;
+            //DB.populateDB(tx);
+
+            let product=[];
+            // dispatch({type:PRODUCTS_ACTIONS.ADD,data:Products})
+
+            let products=[];
+            for(let i=0,n=5;i<n;i++){
+                let UID=Math.ceil(Math.random()*100000)
+                products.push({
+                    ID:UID,
+                    title:"product "+UID,
+                    description:"React Native JS code runs inside this Chrome tab.Press Ctrl⇧J to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session"+UID,
+                    price:UID,
+                    sellerID:"xxxxx",
+                    catergory:filter,
+                    postedOn:new Date().getTime(),
+                    currency:"TZS",
+                    photos:[
+                        {name:"one",
+                            url:IMAGES[Math.ceil(Math.random()*10)],
+                            type:"jpg"},
+                        {name:"two",
+                            url:IMAGES[Math.ceil(Math.random()*10)],
+                            type:"jpg"},
+                        {name:"three",
+                            url:IMAGES[Math.ceil(Math.random()*10)],
+                            type:"jpg"},
+                        {name:"four",
+                            url:IMAGES[Math.ceil(Math.random()*10)],
+                            type:"jpg"},
+                        {name:"five",
+                            url:IMAGES[Math.ceil(Math.random()*10)],
+                            type:"jpg"}
+                    ]
+
+                })
+            }
+
+           /* products.forEach((item)=>{
+           /!* tx.executeSql('INSERT INTO Products (productID,'+
+                'title ,'+
+              '  currency ,'+
+                'sellerID ,'+
+               ' price ,'+
+               ' postedOn ,'+
+                'description ,'+
+                'catergory ) VALUES (' +
+                item.ID+','+
+                item.title+','+
+                item.currency+','+
+                item.sellerID +','+
+                item.price +','+
+                item.postedOn +','+
+                item.description +','+
+                item.catergory+')').then(()=>{
+                console.log("added to db success"+item.productID)
+            }).catch(()=>{
+                console.log("failed add to db")
+            });*!/
 
 
-        let product=[]
-       // dispatch({type:PRODUCTS_ACTIONS.ADD,data:Products})
+        })*/
 
-        let products=[];
-        for(let i=0,n=10000;i<n;i++){
-            let UID=Math.ceil(Math.random()*100000)
-            products.push({
-                uid:UID,
-                title:"product "+UID,
-                description:"React Native JS code runs inside this Chrome tab.Press Ctrl⇧J to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session"+UID,
-                price:UID,
-                sellerID:"xxxxx",
-                catergory:filter,
-                postedOn:new Date().getUTCFullYear(),
-                currency:"TZS",
-                photos:[
-                    {name:"one",
-                        url:IMAGES[Math.ceil(Math.random()*10)],
-                        type:"jpg"},
-                    {name:"two",
-                        url:IMAGES[Math.ceil(Math.random()*10)],
-                        type:"jpg"},
-                    {name:"three",
-                        url:IMAGES[Math.ceil(Math.random()*10)],
-                        type:"jpg"},
-                    {name:"four",
-                        url:IMAGES[Math.ceil(Math.random()*10)],
-                        type:"jpg"},
-                    {name:"five",
-                        url:IMAGES[Math.ceil(Math.random()*10)],
-                        type:"jpg"}
-                ]
+                dispatch({type:PRODUCTS_ACTIONS.GET,data:products});
 
-            })
-        }
-        dispatch({type:PRODUCTS_ACTIONS.GET,data:products})
+
+
+
 
 
 

@@ -96,21 +96,21 @@ export default class database extends Firestack {
 
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
-SQLite.enablePromise(true);
+//SQLite.enablePromise(true);
 
 
 const database_name = "esoko.db";
 const database_version = "1.0";
 const database_displayname = "SQLite Test Database";
 const database_size = 200000;
-let db;
 
+let instance=null;
 
-export class DB {
+ class DBwrapper {
 
     constructor(){
-
-     this.loadAndQueryDB()
+     instance=this;
+    // this.openDatabase()
     }
 
 
@@ -119,13 +119,13 @@ export class DB {
 
     }
 
-    populateDatabase(db){
+    populateDatabase(){
         let that = this;
 
 
-        db.executeSql('SELECT 1 FROM Version LIMIT 1').then(() =>{
+        this.db.executeSql('SELECT 1 FROM Version LIMIT 1').then(() =>{
 
-alert("db good")
+
         }).catch((error) =>{
             console.log("Received error: ", error)
 
@@ -208,15 +208,37 @@ alert("db good")
 
 
 
-    loadAndQueryDB(){
+     openDatabase(){
         let that = this;
 
         SQLite.echoTest().then(() => {
 
-            SQLite.openDatabase({name : database_name, createFromLocation : "default"}).then((DB) => {
-               db = DB;
+             SQLite.openDatabase({name : database_name, createFromLocation : "default"}).then((DB) => {
+                console.log("DB connection opened ");
+               that.db = DB;
+               //console.log(that.db)
+                /*that.db.executeSql('SELECT 1 FROM Version LIMIT 1').then(() =>{
+                   console.log("Database is ready ... executing query ...");
 
-                that.populateDatabase(DB);
+                    /!*that.db.transaction(that.populateDB).then(() => {
+                       console.log("Processing completed");
+
+                    });*!/
+                }).catch((error) =>{
+                    console.log("Received error: ", error)})*/
+
+               /* that.db.transaction((tx)=>{
+                   tx.executeSql("SELECT * FROM Products").then(()=>{
+                       console.log("Select success")
+                   }).catch(()=>{
+                       console.log("select failed")
+                   })
+                }).then((result) => {
+                    console.log("Transaction is now finished");
+
+            }).catch((error) => {
+                    console.log(error);
+                });*/
             }).catch((error) => {
                 console.log(error);
             });
@@ -228,10 +250,16 @@ alert("db good")
 
     closeDatabase(){
         let that = this;
-        if (db) {
-            console.log("Closing database ...");
+        if (this.db) {
 
-            db.close().then((status) => {
+            that.db.transaction(() => {
+               that.db.close().then((status) => {
+                   console.log("Closing database ...");
+               }).catch((error) => {
+                   that.errorCB(error);
+               });
+
+               }).then((status) => {
 
             }).catch((error) => {
                 that.errorCB(error);
@@ -252,11 +280,14 @@ alert("db good")
         });
     }
     transaction(transactions){
-       return db.transaction(transactions)
+
+        //transactions(this.db)
+       // debugger;
+     return this.db.transaction(transactions)
 
     }
     query(sql){
-     return   db.transaction((tx)=>{
+     return   this.db.transaction((tx)=>{
            return tx.executeSql(sql)
         })
     }
@@ -266,3 +297,4 @@ alert("db good")
 
 }
 
+export const DB =new DBwrapper
