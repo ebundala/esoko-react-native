@@ -12,7 +12,8 @@ import {
     Text,
     View,
     ListView,
-    Button
+    Button,
+    TouchableNativeFeedback
 } from 'react-native';
 
 import { StackNavigator } from 'react-navigation';
@@ -35,46 +36,29 @@ const database_size = 200000;
 let db;
 
 const SQLiteDemo = React.createClass({
-    getInitialState(){
-        return {
-            progress: [],
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2,
-            })
-        };
-    },
-
-    componentWillUnmount(){
-        this.closeDatabase();
-    },
-
+   //common
     errorCB(err) {
         console.log("error: ",err);
         this.state.progress.push("Error: "+ (err.message || err));
         this.setState(this.state);
         return false;
     },
-
     successCB() {
         console.log("SQL executed ...");
     },
-
     openCB() {
         this.state.progress.push("Database OPEN");
         this.setState(this.state);
     },
-
     closeCB() {
         this.state.progress.push("Database CLOSED");
         this.setState(this.state);
     },
-
     deleteCB() {
         console.log("Database DELETED");
         this.state.progress.push("Database DELETED");
         this.setState(this.state);
     },
-
     populateDatabase(db){
         let that = this;
         that.state.progress.push("Database integrity check");
@@ -112,7 +96,6 @@ const SQLiteDemo = React.createClass({
                 });
             });
     },
-
     populateDB(tx) {
         this.state.progress.push("Executing DROP stmts");
         this.setState(this.state);
@@ -132,8 +115,7 @@ const SQLiteDemo = React.createClass({
             + 'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB)
 
         tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '
-            +'ID INTEGER PRIMARY KEY NOT NULL,'
-            + 'productID VARCHAR(30) , '
+            + 'productID VARCHAR(30) PRIMARY KEY NOT NULL, '
             + 'title VARCHAR(80) NOT NULL,' +
             'currency VARCHAR(5) NOT NULL,' +
             'sellerID VARCHAR(30) NOT NULL,' +
@@ -145,8 +127,7 @@ const SQLiteDemo = React.createClass({
 
         tx.executeSql(
             'CREATE TABLE IF NOT EXISTS Orders( '
-            +'ID INTEGER PRIMARY KEY NOT NULL,'
-            + 'orderID VARCHAR(30) , '
+            + 'orderID VARCHAR(30) PRIMARY KEY NOT NULL, '
             + 'productID VARCHAR(30) NOT NULL, '
             + 'price INTEGER NOT NULL, '
             + 'bidPrice INTEGER NOT NULL, '
@@ -155,8 +136,7 @@ const SQLiteDemo = React.createClass({
 
         tx.executeSql(
             'CREATE TABLE IF NOT EXISTS Messages( '
-            +'ID INTEGER PRIMARY KEY NOT NULL,'
-            + 'messageID VARCHAR(30) NOT NULL, '
+            + 'messageID VARCHAR(30) PRIMARY KEY NOT NULL, '
             + 'chatID VARCHAR(30) NOT NULL, '
             + 'userID VARCHAR(30) NOT NULL, '
             + 'productID VARCHAR(30),'
@@ -171,7 +151,7 @@ const SQLiteDemo = React.createClass({
         for(let i=0,n=5;i<n;i++){
             let UID=Math.ceil(Math.random()*100000);
             products.push({
-                ID:UID,
+                productID:UID,
                 title:"title",
                 description:"React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
                 price:900000,
@@ -200,8 +180,8 @@ const SQLiteDemo = React.createClass({
             })
         }
 
-        products.forEach((item)=>{
-                tx.executeSql('INSERT INTO Products (productID,title,currency,sellerID,price,postedOn,description,category,photos ) VALUES (?,?,?,?,?,?,?,?,?)',
+        products.forEach((item,i)=>{
+                /*tx.executeSql('INSERT INTO Products (productID,title,currency,sellerID,price,postedOn,description,category,photos ) VALUES (?,?,?,?,?,?,?,?,?)',
                 [
                 item.ID,
                 item.title,
@@ -211,7 +191,12 @@ const SQLiteDemo = React.createClass({
                 item.postedOn ,
                 item.description ,
                 item.category,
-                JSON.stringify(item.photos)],that.successCB, that.errorCB)})
+                JSON.stringify(item.photos)],that.successCB, that.errorCB)*/
+
+                that.addProduct(item).then((res,r)=>{
+                    console.log("item added"+i+" ")
+                })
+        })
 
 
        /* tx.executeSql('DROP TABLE IF EXISTS Employees;');
@@ -266,7 +251,29 @@ const SQLiteDemo = React.createClass({
         tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Samantha Fox", 2, 1);', []);*/
         console.log("all config SQL done");
     },
-
+    loadAndQueryDB(){
+        this.state.progress.push("Opening database ...");
+        this.setState(this.state);
+        db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
+        this.populateDatabase(db);
+    },
+    deleteDatabase(){
+        this.state.progress = ["Deleting database"];
+        this.setState(this.state);
+        SQLite.deleteDatabase(database_name, this.deleteCB, this.errorCB);
+    },
+    closeDatabase(){
+        var that = this;
+        if (db) {
+            console.log("Closing database ...");
+            that.state.progress.push("Closing database");
+            that.setState(that.state);
+            db.close(that.closeCB,that.errorCB);
+        } else {
+            that.state.progress.push("Database was not OPENED");
+            that.setState(that.state);
+        }
+    },
     getAllProducts() {
 
         console.log("getAllProducts sql...");
@@ -302,7 +309,7 @@ const SQLiteDemo = React.createClass({
         let len = results.length;
         for (let i = 0; i < len; i++) {
             let row = results[i];
-            this.state.progress.push(`Product: ${row.postedOn}`);
+            this.state.progress.push(row);
         }
         this.setState(this.state);
     },
@@ -316,15 +323,16 @@ const SQLiteDemo = React.createClass({
             }, reject, that.successCB);
         })
     },
-    addProduct(product)
-    {
+
+    //PRODUCT METHODS
+    addProduct(product){
         let that =this;
         return new Promise((resolve,reject)=>{
         db.transaction((tx)=>{
 
             tx.executeSql('INSERT INTO Products (productID,title,currency,sellerID,price,postedOn,description,category,photos ) VALUES (?,?,?,?,?,?,?,?,?)',
                 [
-                    product.ID,
+                    product.productID,
                     product.title,
                     product.currency,
                     product.sellerID ,
@@ -341,6 +349,68 @@ const SQLiteDemo = React.createClass({
         }, reject,that.successCB)
         })
     },
+    deleteProduct(id){
+        let that =this;
+        return new Promise((resolve,reject)=>{
+            db.transaction((tx)=>{
+
+                tx.executeSql('DELETE FROM Products WHERE productID=(?)',
+                    [id],resolve, reject)
+
+
+
+
+
+            }, reject,that.successCB)
+        })
+    },
+    searchProducts(keyword="*" ,category="*"){
+        let that = this;
+        return new Promise((resolve, reject) => {
+
+            db.transaction((tx) => {
+
+                tx.executeSql(' SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword,category], (tx,results)=>{
+                    let len = results.rows.length;
+                    let res=[];
+                    for (let i = 0; i < len; i++) {
+                        res.push(results.rows.item(i));
+
+                    }
+                    resolve(res)
+                }, reject)
+
+            }, reject, that.successCB)
+        })
+    },
+    updateProduct(product){
+
+        let that =this;
+        return new Promise((resolve,reject)=>{
+            db.transaction((tx)=>{
+
+                tx.executeSql('UPDATE Products SET title=(?),currency=(?),price=(?),postedOn=(?),description=(?),category=(?),photos=(?)'+
+                    ' WHERE productID=(?) AND sellerID=(?)',
+                    [   product.title,
+                        product.currency,
+                        product.price ,
+                        product.postedOn ,
+                        product.description ,
+                        product.category,
+                        JSON.stringify(product.photos),
+                        product.productID,
+                        product.sellerID
+                    ],resolve, reject)
+
+
+
+
+
+            }, reject,that.successCB)
+        })
+    },
+
+    //ORDERS METHODS
     addOrder(order){
         let that =this;
         return new Promise((resolve,reject)=>{
@@ -366,6 +436,66 @@ const SQLiteDemo = React.createClass({
             }, reject,that.successCB)
         })
     },
+    deleteOrder(id){
+        let that =this;
+        return new Promise((resolve,reject)=>{
+            db.transaction((tx)=>{
+
+                tx.executeSql('DELETE FROM Orders WHERE productID=(?)',
+                    [id],resolve, reject)
+
+
+
+
+
+            }, reject,that.successCB)
+        })
+    },
+    searchOrders(keyword="*",sellerID="*",productID="*"){
+        let that = this;
+        return new Promise((resolve, reject) => {
+
+            db.transaction((tx) => {
+
+                tx.executeSql(' SELECT * FROM Orders WHERE Orders MATCH (?) AND sellerID=(?) ORDER BY postedOn DESC', [keyword,sellerID], (tx,results)=>{
+                    let len = results.rows.length;
+                    let res=[];
+                    for (let i = 0; i < len; i++) {
+                        res.push(results.rows.item(i));
+
+                    }
+                    resolve(res)
+                }, reject)
+
+            }, reject, that.successCB)
+        })
+    },
+    updateOrder(product){
+        let that =this;
+        return new Promise((resolve,reject)=>{
+            db.transaction((tx)=>{
+
+                tx.executeSql('UPDATE Products SET title=(?),currency=(?),sellerID=(?),price=(?),postedOn=(?),description=(?),category=(?),photos=(?) WHERE productID=(?)',
+                    [   product.title,
+                        product.currency,
+                        product.sellerID ,
+                        product.price ,
+                        product.postedOn ,
+                        product.description ,
+                        product.category,
+                        JSON.stringify(product.photos),
+                        product.productID
+                    ],resolve, reject)
+
+
+
+
+
+            }, reject,that.successCB)
+        })
+    },
+
+    //MESSAGES METHODS
     addMessage(message){
         let that = this;
         return new Promise((resolve, reject) => {
@@ -388,14 +518,23 @@ const SQLiteDemo = React.createClass({
             }, reject, that.successCB)
         })
     },
-    searchProducts(keyword="*" ,category="*")
-    {
+    deleteMessage(id){
+        let that =this;
+        return new Promise((resolve,reject)=>{
+            db.transaction((tx)=>{
+                tx.executeSql('DELETE FROM Messages WHERE productID=(?)',
+                    [id],resolve, reject)
+            }, reject,that.successCB)
+        })
+    },
+
+    searchMessages(keyword="*",senderID="*"){
         let that = this;
         return new Promise((resolve, reject) => {
 
             db.transaction((tx) => {
 
-                tx.executeSql(' SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword,category], (tx,results)=>{
+                tx.executeSql(' SELECT * FROM Messages WHERE Messages MATCH (?) AND senderID=(?) ORDER BY postedOn DESC', [keyword,senderID], (tx,results)=>{
                     let len = results.rows.length;
                     let res=[];
                     for (let i = 0; i < len; i++) {
@@ -408,74 +547,45 @@ const SQLiteDemo = React.createClass({
             }, reject, that.successCB)
         })
     },
-    searchMessages(keyword="*",sender="*",receiver="*")
-    {
+
+    updateMessage(product){
         let that =this;
         return new Promise((resolve,reject)=>{
-
             db.transaction((tx)=>{
 
-                tx.executeSql(' SELECT * FROM Messages WHERE senderID=? AND recepientID=? AND contains(*,?)',[sender,receiver,keyword],(tx,results)=>{
-                    let len = results.rows.length;
-                    let res=[];
-                    for (let i = 0; i < len; i++) {
-                        products.push(results.rows.item(i));
+                tx.executeSql('UPDATE Products SET title=(?),currency=(?),sellerID=(?),price=(?),postedOn=(?),description=(?),category=(?),photos=(?) WHERE productID=(?)',
+                    [   product.title,
+                        product.currency,
+                        product.sellerID ,
+                        product.price ,
+                        product.postedOn ,
+                        product.description ,
+                        product.category,
+                        JSON.stringify(product.photos),
+                        product.productID
+                    ],resolve, reject)
 
-                    }
-                    resolve(res)
-                }, reject)
 
-            }, reject,that.successCB)
-        })
-    },
-    searchOrders(keyword="*",sellerID="*",buyerID="*")
-    {
-        let that =this;
-        return new Promise((resolve,reject)=>{
 
-            db.transaction((tx)=>{
 
-                tx.executeSql('SELECT * FROM Orders WHERE sellerID=? AND buyerID=? AND contains(*,?)',[sellerID,buyerID,keyword],(tx,results)=>{
-                    let len = results.rows.length;
-                    let res=[];
-                    for (let i = 0; i < len; i++) {
-                        res.push(results.rows.item(i));
-
-                    }
-                    resolve(res)
-                }, reject)
 
             }, reject,that.successCB)
         })
     },
 
-
-    loadAndQueryDB(){
-        this.state.progress.push("Opening database ...");
-        this.setState(this.state);
-        db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
-        this.populateDatabase(db);
+//react methods
+    getInitialState(){
+        return {
+            progress: [],
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2,
+            })
+        };
     },
 
-    deleteDatabase(){
-        this.state.progress = ["Deleting database"];
-        this.setState(this.state);
-        SQLite.deleteDatabase(database_name, this.deleteCB, this.errorCB);
+    componentWillUnmount(){
+        this.closeDatabase();
     },
-
-    closeDatabase(){
-        var that = this;
-        if (db) {
-            console.log("Closing database ...");
-            that.state.progress.push("Closing database");
-            that.setState(that.state);
-            db.close(that.closeCB,that.errorCB);
-        } else {
-            that.state.progress.push("Database was not OPENED");
-            that.setState(that.state);
-        }
-    },
-
     runDemo(){
         this.state.progress = ["Starting SQLite Callback Demo"];
         this.setState(this.state);
@@ -485,7 +595,12 @@ const SQLiteDemo = React.createClass({
     renderProgressEntry(entry){
         return (<View style={listStyles.li}>
             <View>
-                <Text style={listStyles.title}>{entry}</Text>
+                {entry.hasOwnProperty("title")?
+                    <TouchableNativeFeedback onPress={()=>{this.updateProduct({...entry,title:"updated too"})}}>
+                    <Text style={listStyles.title}>{entry.title}</Text>
+                </TouchableNativeFeedback>:
+                    <Text style={listStyles.title}>{entry}</Text>
+                        }
             </View>
         </View>)
     },
