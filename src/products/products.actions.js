@@ -45,15 +45,10 @@ export const queryProducts=(filter,navigate)=>{
     return(dispatch)=>{
 
         //TODO query products from local database here
-//DB.deleteDatabase()
 
-//DB.closeDatabase()
-//DB.openDatabase()
-       // DB.transaction((tx)=>{
-           // debugger;
-            //DB.populateDB(tx);
 
-            let product=[];
+        //console.log(DB)
+         /*   let product=[];
             // dispatch({type:PRODUCTS_ACTIONS.ADD,data:Products})
 
             let products=[];
@@ -89,42 +84,22 @@ export const queryProducts=(filter,navigate)=>{
                 })
             }
 
-           /* products.forEach((item)=>{
-           /!* tx.executeSql('INSERT INTO Products (productID,'+
-                'title ,'+
-              '  currency ,'+
-                'sellerID ,'+
-               ' price ,'+
-               ' postedOn ,'+
-                'description ,'+
-                'catergory ) VALUES (' +
-                item.ID+','+
-                item.title+','+
-                item.currency+','+
-                item.sellerID +','+
-                item.price +','+
-                item.postedOn +','+
-                item.description +','+
-                item.catergory+')').then(()=>{
-                console.log("added to db success"+item.productID)
-            }).catch(()=>{
-                console.log("failed add to db")
-            });*!/
+
+           */
+        DB.getAllProducts().then((products) => {
+            dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
 
 
-        })*/
-
-                dispatch({type:PRODUCTS_ACTIONS.GET,data:products});
-
-
-
-
-
-
-
+        })
 
 
         navigate("products", {title: filter})
+
+
+
+
+
+
     }
 
 }

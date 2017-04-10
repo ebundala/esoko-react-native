@@ -41,10 +41,10 @@ class ProductsList extends Component {
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
         let {title}=this.props.navigation.state.params;
 
-        let {products}=this.props.screenProps;
+        /*let {products}=this.props.screenProps;
         this.state = {
             dataSource: this.ds.cloneWithRows(products)
-        }
+        }*/
 
     }
 
@@ -53,7 +53,7 @@ class ProductsList extends Component {
         let navigate = this.props.navigation.navigate;
         let {title}=this.props.navigation.state.params;
         let props=this.props.screenProps;
-
+        let {products}=this.props.screenProps
         return (
             <View style={[styles.flex1]}>
                 <Card style={[{height:50}]} >
@@ -81,7 +81,7 @@ class ProductsList extends Component {
                     </View>
                 </Card>
 
-                <ListView dataSource={this.state.dataSource}
+                <ListView dataSource={this.ds.cloneWithRows(products)}
                           contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                           scrollRenderAheadDistance={640}
                            enableEmptySections={true}

@@ -92,11 +92,11 @@ export default class database extends Firestack {
 
 
 
-
+import {IMAGES} from "../products/products.actions"
 
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
-//SQLite.enablePromise(true);
+SQLite.enablePromise(false);
 
 
 const database_name = "esoko.db";
@@ -106,14 +106,18 @@ const database_size = 200000;
 
 let instance=null;
 
- class DBwrapper {
+export class DBwrapper{
 
     constructor(){
-     instance=this;
-    // this.openDatabase()
+      //super()
+        instance=this;
+        try {
+            this.openDatabase();
+        }catch (e){
+            console.error(e.message)
+        }
+
     }
-
-
      errorCB(err) {
          console.log("error: ",err);
          console.log("Error: "+ (err.message || err));
@@ -125,7 +129,7 @@ let instance=null;
      }
      openCB() {
          console.log("Database OPEN");
-
+         this.populateDatabase();
      }
      closeCB() {
          console.log("Database CLOSED");
@@ -133,47 +137,33 @@ let instance=null;
      }
      deleteCB() {
          console.log("Database DELETED");
-         console.log("Database DELETED");
+
 
      }
-     populateDatabase(db){
+     populateDatabase(){
          let that = this;
          console.log("Database integrity check");
 
-         db.executeSql('SELECT 1 FROM Version LIMIT 1', [],
+         that.db.executeSql('SELECT 1 FROM Version LIMIT 1', [],
              function () {
                  console.log("Database is ready ... executing query ...");
 
-                 // db.transaction((tx)=>{
-                 that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
+
+                 /*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
                      console.error(e.message)
-                 })
-                 //}
+                 })*/
+
              },
              function (error) {
                  console.log("received version error:", error);
                  console.log("Database not yet ready ... populating data");
+                 that.populateDB();
 
-                 db.transaction(that.populateDB, that.errorCB, function () {
-                     console.log("Database populated ... executing query ...");
-
-                     db.transaction(()=>{
-
-                         that.getAllProducts().then(that.getAllProductsSuccess).catch((e)=>{
-                             console.error(e.message)
-                         })
-
-
-                     },that.errorCB, function () {
-                         console.log("Transaction is now finished");
-                         console.log("Processing completed");
-
-                         //that.closeDatabase();
-                     });
-                 });
              });
      }
-     populateDB(tx) {
+     populateDB() {
+         let that=this;
+         this.db.transaction((tx)=>{
          console.log("Executing DROP stmts");
 
          tx.executeSql('DROP TABLE IF EXISTS Products;');
@@ -219,56 +209,81 @@ let instance=null;
 
 
 
-         let products=[];
-         let that=this;
-         for(let i=0,n=5;i<n;i++){
-             let UID=Math.ceil(Math.random()*100000);
-             products.push({
-                 productID:UID,
-                 title:"title",
-                 description:"React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
-                 price:900000,
-                 sellerID:"xxxxx",
-                 category:"electronics",
-                 postedOn:new Date().getTime(),
-                 currency:"TZS",
-                 photos:[
-                     {name:"one",
-                         url:IMAGES[Math.ceil(Math.random()*10)],
-                         type:"jpg"},
-                     {name:"two",
-                         url:IMAGES[Math.ceil(Math.random()*10)],
-                         type:"jpg"},
-                     {name:"three",
-                         url:IMAGES[Math.ceil(Math.random()*10)],
-                         type:"jpg"},
-                     {name:"four",
-                         url:IMAGES[Math.ceil(Math.random()*10)],
-                         type:"jpg"},
-                     {name:"five",
-                         url:IMAGES[Math.ceil(Math.random()*10)],
-                         type:"jpg"}
+        // let products=[];
+        //
+         for(let i=0,n=50;i<n;i++) {
+             let UID = Math.ceil(Math.random() * 100000);
+
+
+             that.addProduct({
+                 productID: UID,
+                 title: "title"+UID,
+                 description: "React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
+                 price: 900000,
+                 sellerID: "xxxxx",
+                 category: "electronics",
+                 postedOn: new Date().getTime()/Math.ceil(Math.random() * 10),
+                 currency: "TZS",
+                 photos: [
+                     {
+                         name: "one",
+                         url: IMAGES[Math.ceil(Math.random() * 10)],
+                         type: "jpg"
+                     },
+                     {
+                         name: "two",
+                         url: IMAGES[Math.ceil(Math.random() * 10)],
+                         type: "jpg"
+                     },
+                     {
+                         name: "three",
+                         url: IMAGES[Math.ceil(Math.random() * 10)],
+                         type: "jpg"
+                     },
+                     {
+                         name: "four",
+                         url: IMAGES[Math.ceil(Math.random() * 10)],
+                         type: "jpg"
+                     },
+                     {
+                         name: "five",
+                         url: IMAGES[Math.ceil(Math.random() * 10)],
+                         type: "jpg"
+                     }
                  ]
 
+             }).then((res) => {
+                 console.log("item added" + i + " ")
              })
          }
 
-         products.forEach((item,i)=>{
+         }, that.errorCB, function () {
+             console.log("Database populated ... executing query ...");
 
-             that.addProduct(item).then((res,r)=>{
-                 console.log("item added"+i+" ")
-             })
-         })
+             /*that.db.transaction(()=>{
+
+                 that.getAllProducts().then(that.getAllProductsSuccess).catch((e)=>{
+                     console.error(e.message)
+                 })
+
+
+             },that.errorCB, function () {
+                 console.log("Transaction is now finished");
+                 console.log("Processing completed");
+
+                // that.closeDatabase();
+             });*/
+         });
 
 
 
          console.log("all config SQL done");
      }
-     loadAndQueryDB(){
+     openDatabase(){
          console.log("Opening database ...");
 
-         db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
-         this.populateDatabase(db);
+         this.db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB.bind(this), this.errorCB);
+
      }
      deleteDatabase(){
          console.log("Deleting database");
@@ -277,11 +292,10 @@ let instance=null;
      }
      closeDatabase(){
          let that = this;
-         if (db) {
+         if (this.db) {
              console.log("Closing database ...");
-             console.log("Closing database");
 
-             db.close(that.closeCB,that.errorCB);
+             this.db.close(that.closeCB,that.errorCB);
          } else {
              console.log("Database was not OPENED");
 
@@ -292,7 +306,7 @@ let instance=null;
          console.log("getAllProducts sql...");
          let that=this;
          return new Promise((resolve, reject) => {
-             db.transaction((tx) => {
+             that.db.transaction((tx) => {
 
                  tx.executeSql('SELECT * FROM Products ORDER BY postedOn DESC', [],(tx,results)=>{
                      //that.getAllProductsSuccess(tx,results)
@@ -304,12 +318,12 @@ let instance=null;
 
                      }
                      resolve(products)
-                 },reject);
+                 },(res)=>{reject(res)});
 
              }, (error)=>{
                  reject(error)
              }, (res)=>{
-
+                 //that.closeDatabase();
                  console.log("Processing completed");
 
              });
@@ -331,9 +345,9 @@ let instance=null;
          return new Promise((resolve, reject) => {
              console.log("Database query ... executing  ...");
 
-             db.transaction((tx) => {
-                 tx.executeSql(sql, [], resolve, reject)
-             }, reject, that.successCB);
+             that.db.transaction((tx) => {
+                 tx.executeSql(sql, [], (res)=>{resolve(res)}, (res)=>{reject(res)})
+             }, (res)=>{reject(res)}, that.successCB);
          })
      }
 
@@ -341,7 +355,7 @@ let instance=null;
      addProduct(product){
          let that =this;
          return new Promise((resolve,reject)=>{
-             db.transaction((tx)=>{
+             that.db.transaction((tx)=>{
 
                  tx.executeSql('INSERT INTO Products (productID,title,currency,sellerID,price,postedOn,description,category,photos ) VALUES (?,?,?,?,?,?,?,?,?)',
                      [
@@ -353,35 +367,35 @@ let instance=null;
                          product.postedOn ,
                          product.description ,
                          product.category,
-                         JSON.stringify(product.photos)],resolve, reject)
+                         JSON.stringify(product.photos)],(res)=>{resolve(res)}, (res)=>{reject(res)})
 
 
 
 
 
-             }, reject,that.successCB)
+             }, (res)=>{reject(res)},that.successCB)
          })
      }
      deleteProduct(id){
          let that =this;
          return new Promise((resolve,reject)=>{
-             db.transaction((tx)=>{
+             that.db.transaction((tx)=>{
 
                  tx.executeSql('DELETE FROM Products WHERE productID=(?)',
-                     [id],resolve, reject)
+                     [id],(res)=>{resolve(res)}, (res)=>{reject(res)})
 
 
 
 
 
-             }, reject,that.successCB)
+             }, (res)=>{reject(res)},that.successCB)
          })
      }
      searchProducts(keyword="*" ,category="*"){
          let that = this;
          return new Promise((resolve, reject) => {
 
-             db.transaction((tx) => {
+             that.db.transaction((tx) => {
 
                  tx.executeSql(' SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword,category], (tx,results)=>{
                      let len = results.rows.length;
@@ -391,16 +405,16 @@ let instance=null;
 
                      }
                      resolve(res)
-                 }, reject)
+                 }, (res)=>{reject(res)})
 
-             }, reject, that.successCB)
+             }, (res)=>{reject(res)}, that.successCB)
          })
      }
      updateProduct(product){
 
          let that =this;
          return new Promise((resolve,reject)=>{
-             db.transaction((tx)=>{
+            that.db.transaction((tx)=>{
 
                  tx.executeSql('UPDATE Products SET title=(?),currency=(?),price=(?),postedOn=(?),description=(?),category=(?),photos=(?)'+
                      ' WHERE productID=(?) AND sellerID=(?)',
@@ -413,17 +427,21 @@ let instance=null;
                          JSON.stringify(product.photos),
                          product.productID,
                          product.sellerID
-                     ],resolve, reject)
+                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})
 
 
 
 
 
-             }, reject,that.successCB)
+             }, (res)=>{reject(res)},that.successCB)
          })
      }
 
 
 }
-
-export const DB =new DBwrapper
+export  class D{
+    constructor(){
+        console.log("am a class")
+    }
+}
+export const DB = new DBwrapper();

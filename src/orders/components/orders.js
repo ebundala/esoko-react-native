@@ -29,7 +29,7 @@ import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 SQLite.enablePromise(false);
 
-const database_name = "Test.db";
+const database_name = "esoko.db";
 const database_version = "1.0";
 const database_displayname = "SQLite Test Database";
 const database_size = 200000;
@@ -49,6 +49,7 @@ const SQLiteDemo = React.createClass({
     openCB() {
         this.state.progress.push("Database OPEN");
         this.setState(this.state);
+
     },
     closeCB() {
         this.state.progress.push("Database CLOSED");
@@ -718,6 +719,7 @@ class AllView extends Component{
         <View style={{flex:1,justifyContent:"space-around"}}>
             <SQLiteDemo style={[styles.flex1]}/>
             {false&&<View>
+
                 <Button title="Orders One" onPress={()=>navigate("singleOrder",{title:"Orders one"})}/>
                 <Button title="Orders two" onPress={()=>navigate("singleOrder",{title:"Orders two"})}/>
                 <Button title="Orders three" onPress={()=>navigate("singleOrder",{title:"Orders three"})}/>
