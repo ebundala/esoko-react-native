@@ -57,13 +57,15 @@ export const queryProducts=(filter,navigate)=>{
     "use strict";
     return(dispatch)=>{
 
-        //TODO query products from local database here
+
 
 
 
         DB.getProducts(filter).then((products) => {
             dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
-            navigate("products", {title: filter,products})
+           navigate("products", {title: filter,products})
+
+
 
         }).catch((e)=>{
             alert("error occured");

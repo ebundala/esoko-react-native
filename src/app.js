@@ -21,7 +21,7 @@ import {StackNavigator, NavigationActions, TabNavigator, addNavigationHelpers,} 
 import {TabViewPagerAndroid} from 'react-native-tab-view';
 
 import Oauth from "./user/components/loginPage"
-import Products from "./products/components/products"
+import Products,{SingleProductView} from "./products/components/products"
 import Orders from "./orders/components/orders"
 import Bids from "./bids/components/bids"
 import Reviews from "./reviews/components/reviews"
@@ -41,6 +41,7 @@ Activity.navigationOptions = {
 const StackHome = {
     Home: {screen:Home},
     products: {screen: Products},
+    singleProduct:{screen:SingleProductView},
     orders: {screen: Orders},
     bids: {screen: Bids},
     reviews: {screen: Reviews},

@@ -89,7 +89,7 @@ let ctx;
                          <View style={[{marginVertical:16}]}>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
-                         <Text style={[typographyStyle.paperFontTitle,styles.title]}>POPULAR PRODUCTS</Text>
+                         <Text style={[styles.title]}>POPULAR PRODUCTS</Text>
                          </View>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          </View>
@@ -99,9 +99,11 @@ let ctx;
                                    enableEmptySections={true}
                                    horizontal={true}
                                    renderRow={(data) =>
-                                       <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
+                                       <TouchableNativeFeedback onPress={() => {
+
+                                           navigate("singleProduct", {
                                            data: data
-                                       })}>
+                                       })}}>
                                            <View style={[,{
                                                height: 220,
                                                width:180
@@ -203,7 +205,7 @@ let ctx;
                          <View style={[{marginVertical:16}]}>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
-                             <Text style={[typographyStyle.paperFontTitle,styles.title]}>NEWEST PRODUCTS</Text>
+                             <Text style={[styles.title]}>NEWEST PRODUCTS</Text>
                          </View>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          </View>
@@ -317,7 +319,7 @@ let ctx;
                          <View style={[{marginVertical:16}]}>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
-                             <Text style={[typographyStyle.paperFontTitle,styles.title]}>CHEAPEST PRODUCTS</Text>
+                             <Text style={[styles.title]}>CHEAPEST PRODUCTS</Text>
                          </View>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          </View>

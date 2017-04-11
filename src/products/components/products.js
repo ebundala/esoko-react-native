@@ -30,8 +30,8 @@ class ProductsList extends Component {
             );
             let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>
             );
-
-            return { right ,left};
+            let style={backgroundColor:colours.paperTeal600.color,}
+            return {style};
         },
 
     };
@@ -202,19 +202,17 @@ class ProductsList extends Component {
     }
 }
 
-class SingleProductView extends Component {
+export class SingleProductView extends Component {
     static navigationOptions = {
         title: ({state, setParams, navigate}) => {
             return state.params.data.title
         },
-        /*header: ({ state, setParams ,navigate}) => {
-         let  right=(<Statuses navigate={navigate}/>
-         );
-         let  left=(<Menu navigate={navigate}/>
-         );
-
-         return { right ,left};
-         },*/
+        header: ({ state, setParams ,navigate}) => {
+       //  let  right=(<Statuses navigate={navigate}/>);
+         //let  left=(<Menu navigate={navigate}/>);
+let style={backgroundColor:colours.paperTeal500.color,}
+         return { style};
+         },
 
     };
 
@@ -353,7 +351,7 @@ class SingleProductView extends Component {
 
 const productsStack = StackNavigator({
     allProducts: {screen: ProductsList},
-    singleProduct: {screen: SingleProductView},
+    //singleProduct: {screen: SingleProductView},
     // productReviews:{screen:Reviews},
     //productBids:{screen:Bids},
     // productChats:{screen:Chats},
