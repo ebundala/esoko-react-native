@@ -77,5 +77,5 @@ gulp.task('default',function(cb) {
 
 
 gulp.task("serveFiles",function(){
-    spwner('cd src/pngs && http-server -a localhost -p 3000');
+    spwner('cd ../../jpgs && http-server -a localhost -p 3000');
 })

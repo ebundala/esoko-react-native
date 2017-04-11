@@ -10,9 +10,9 @@ export default productsReducer=(state=initialState,action)=>{
 
     switch (action.type){
 
-        case REHYDRATE:
+       /* case REHYDRATE:
 
-            if (action.hasOwnProperty("payload"))
+           /!* if (action.hasOwnProperty("payload"))
                if (action.payload.hasOwnProperty("nav")) {
                    let route = action.payload.nav.routes[action.payload.nav.index];
                    let routeName = route.hasOwnProperty("routes") ? route.routes[route.index].routeName : route.routeName;
@@ -70,7 +70,7 @@ export default productsReducer=(state=initialState,action)=>{
                     }
                     else {
                         return {...state};
-                    }
+                    }*!/
 
 
                     //
@@ -83,7 +83,7 @@ export default productsReducer=(state=initialState,action)=>{
 
 
 
-            return state;
+            return state;*/
 
         case PRODUCTS_ACTIONS.GET:
             if(action.data)

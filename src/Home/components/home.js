@@ -36,7 +36,7 @@ let ctx;
             );
             let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>
             );
-
+          //let style={backgroundColor:colours.paperBlue500.color,color:"#323c3f"}
             return { right ,left};
         },
 
@@ -54,12 +54,12 @@ let ctx;
 
              <View style={[styles.flex1]}>
                  <ScrollView contentContainerStyle={[]}>
-                     <Card style={[{height:160,marginHorizontal:0}]}>
-                         <View>
+                     <View style={[{height:160,marginHorizontal:0,padding:0,elevation:5}]}>
+                         <Image style={[styles.flex1,{resizeMode:Image.resizeMode.cover,margin:0}]} source={{uri:"http://10.0.2.2:3000/grandcanyon.png"}}>
 
-                         </View>
-                     </Card>
-                     <View style={[{}]}>
+                         </Image>
+                     </View>
+                     <View style={[{marginVertical:8}]}>
                          <Card style={[{height:50}]} >
                              <View style={[styles.horizontal]}>
                                  <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
@@ -86,11 +86,13 @@ let ctx;
                                  </View>
                              </View>
                          </Card>
-                         <Divider style={[{marginHorizontal:120}]}/>
+                         <View style={[{marginVertical:16}]}>
+                         <Divider style={[{marginHorizontal:140,height:2}]}/>
                          <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
-                         <Text style={[typographyStyle.paperFontTitle]}>Popular</Text>
+                         <Text style={[typographyStyle.paperFontTitle,styles.title]}>POPULAR PRODUCTS</Text>
                          </View>
-                         <Divider style={[{marginHorizontal:120}]}/>
+                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         </View>
                          <ListView dataSource={this.ds.cloneWithRows(products)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                                    scrollRenderAheadDistance={640}
@@ -114,12 +116,17 @@ let ctx;
 
                                                        </Image>
                                                        <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
-                                                           <View style={[]}>
-                                                               <Text>{data.title}</Text>
+                                                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                               <Text style={[styles.productTitle]}>
+                                                                   {data.title}
+                                                                   </Text>
                                                            </View>
-                                                           <View style={[]}>
-                                                               <Text>
-                                                                   {data.currency} {data.price}
+                                                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                               <Text style={[styles.currency]}>
+                                                                   {data.currency}
+                                                               </Text>
+                                                               <Text style={[styles.price]}>
+                                                                   {data.price}
                                                                </Text>
                                                            </View>
                                                        </View>
@@ -193,11 +200,13 @@ let ctx;
                                            </View>
                                        </TouchableNativeFeedback>}
                          />
-                         <Divider style={[{marginHorizontal:120}]}/>
+                         <View style={[{marginVertical:16}]}>
+                         <Divider style={[{marginHorizontal:140,height:2}]}/>
                          <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
-                             <Text style={[typographyStyle.paperFontTitle]}>Newest</Text>
+                             <Text style={[typographyStyle.paperFontTitle,styles.title]}>NEWEST PRODUCTS</Text>
                          </View>
-                         <Divider style={[{marginHorizontal:120}]}/>
+                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         </View>
                          <ListView dataSource={this.ds.cloneWithRows(products)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                                    scrollRenderAheadDistance={640}
@@ -221,12 +230,17 @@ let ctx;
 
                                                        </Image>
                                                        <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
-                                                           <View style={[]}>
-                                                               <Text>{data.title}</Text>
+                                                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                               <Text style={[styles.productTitle]}>
+                                                                   {data.title}
+                                                               </Text>
                                                            </View>
-                                                           <View style={[]}>
-                                                               <Text>
-                                                                   {data.currency} {data.price}
+                                                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                               <Text style={[styles.currency]}>
+                                                                   {data.currency}
+                                                               </Text>
+                                                               <Text style={[styles.price]}>
+                                                                   {data.price}
                                                                </Text>
                                                            </View>
                                                        </View>
@@ -300,11 +314,13 @@ let ctx;
                                            </View>
                                        </TouchableNativeFeedback>}
                          />
-                         <Divider style={[{marginHorizontal:120}]}/>
+                         <View style={[{marginVertical:16}]}>
+                         <Divider style={[{marginHorizontal:140,height:2}]}/>
                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
-                             <Text style={[typographyStyle.paperFontTitle]}>Cheapest</Text>
+                             <Text style={[typographyStyle.paperFontTitle,styles.title]}>CHEAPEST PRODUCTS</Text>
                          </View>
-                         <Divider style={[{marginHorizontal:120}]}/>
+                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         </View>
                          <ListView dataSource={this.ds.cloneWithRows(products)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                                    scrollRenderAheadDistance={640}
@@ -328,12 +344,17 @@ let ctx;
 
                                                        </Image>
                                                        <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
-                                                           <View style={[]}>
-                                                               <Text>{data.title}</Text>
+                                                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                               <Text style={[styles.productTitle]}>
+                                                                   {data.title}
+                                                               </Text>
                                                            </View>
-                                                           <View style={[]}>
-                                                               <Text>
-                                                                   {data.currency} {data.price}
+                                                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                               <Text style={[styles.currency]}>
+                                                                   {data.currency}
+                                                               </Text>
+                                                               <Text style={[styles.price]}>
+                                                                   {data.price}
                                                                </Text>
                                                            </View>
                                                        </View>

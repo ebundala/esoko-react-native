@@ -122,9 +122,7 @@ red:{backgroundColor:"red"},
     },*/
 
     //children properties
-    /*order:{
-        order:1
-    },*/
+
     flexWrap:{
         flexWrap:"wrap"
     },
@@ -160,9 +158,30 @@ red:{backgroundColor:"red"},
         // height:40,
     },
     title:{
-        fontSize:16,
+        fontSize:14,
         fontWeight:"bold",
-        color:"grey"
+        color:"rgb(50,60,63)",
+        textAlign:"center"
+    },
+productTitle:{
+        textAlign:"center",
+    marginHorizontal:4,
+    fontSize:12,
+    fontWeight:"bold",
+    color:"rgb(50,60,63)",
+    overflow:"hidden"
+    },
+    currency:{
+        textAlign:"center",
+        marginHorizontal:4,
+        fontSize:10,
+        color:"rgb(50,60,63)"
+    },
+    price:{
+        textAlign:"center",
+        marginHorizontal:4,
+        fontSize:10,
+        color:"rgb(50,60,63)"
     },
     google:{
         backgroundColor:'red',

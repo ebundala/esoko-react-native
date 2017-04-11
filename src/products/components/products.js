@@ -105,81 +105,86 @@ class ProductsList extends Component {
 
                                               </Image>
                                               <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
-                                                  <View style={[]}>
-                                                      <Text>{data.title}</Text>
+                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                      <Text style={[styles.productTitle]}>
+                                                          {data.title}
+                                                      </Text>
                                                   </View>
-                                                  <View style={[]}>
-                                                      <Text>
-                                                          {data.currency} {data.price}
-                                                          </Text>
+                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                      <Text style={[styles.currency]}>
+                                                          {data.currency}
+                                                      </Text>
+                                                      <Text style={[styles.price]}>
+                                                          {data.price}
+                                                      </Text>
                                                   </View>
                                               </View>
                                           </View>
 
                                           {false&& <View>
-                                      <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
-                                          <Icon size={14} name="update"  />
-                                          <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
+                                              <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
+                                                  <Icon size={14} name="update"  />
+                                                  <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
 
-                                      </View>
-                                      <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
-
-                                          <View ref="detail" style={[styles.flex8,]}>
-                                              <View style={[styles.horizontal,]}>
-                                                  <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
                                               </View>
-                                              <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
-                                                  <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
-                                              </View>
-                                              <View >
-                                                  <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
-                                              </View>
+                                              <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
 
-                                          </View>
-                                          <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
+                                                  <View ref="detail" style={[styles.flex8,]}>
+                                                      <View style={[styles.horizontal,]}>
+                                                          <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
+                                                      </View>
+                                                      <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
+                                                          <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
+                                                      </View>
+                                                      <View >
+                                                          <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
+                                                      </View>
 
-                                          </View>
-                                      </View>
-                                      <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
+                                                  </View>
+                                                  <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
 
-                                          <TouchableNativeFeedback  title={"review "}
-                                                  onPress={() => props.reviewProduct(data,navigate)}>
-                                              <View>
-                                                  <Text>
-                                                      review
-                                                  </Text>
+                                                  </View>
                                               </View>
-                                          </TouchableNativeFeedback>
-                                          <TouchableNativeFeedback  title={"Bids "}
-                                                  onPress={() => props.placeBid(data,navigate)}>
-                                              <View>
-                                                  <Text>
-                                                      Bids
-                                                  </Text>
-                                              </View>
-                                          </TouchableNativeFeedback>
-                                          <TouchableNativeFeedback
-                                                  onPress={() =>props.startChat(data,navigate)}>
-                                              <View>
-                                                  <Text>
-                                                      Chats
-                                                  </Text>
-                                              </View>
-                                          </TouchableNativeFeedback>
+                                              <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
+
+                                                  <TouchableNativeFeedback  title={"review "}
+                                                                            onPress={() => props.reviewProduct(data,navigate)}>
+                                                      <View>
+                                                          <Text>
+                                                              review
+                                                          </Text>
+                                                      </View>
+                                                  </TouchableNativeFeedback>
+                                                  <TouchableNativeFeedback  title={"Bids "}
+                                                                            onPress={() => props.placeBid(data,navigate)}>
+                                                      <View>
+                                                          <Text>
+                                                              Bids
+                                                          </Text>
+                                                      </View>
+                                                  </TouchableNativeFeedback>
+                                                  <TouchableNativeFeedback
+                                                      onPress={() =>props.startChat(data,navigate)}>
+                                                      <View>
+                                                          <Text>
+                                                              Chats
+                                                          </Text>
+                                                      </View>
+                                                  </TouchableNativeFeedback>
 
 
-                                      </View>
+                                              </View>
                                           </View>}
 
-                                      {false&&<View style={[styles.horizontal]}>
+                                          {false&&<View style={[styles.horizontal]}>
 
 
-                                          <Button title={"add Product "}
-                                                  onPress={() =>props.addProduct(data,navigate)}/>
-                                          <Button title={"edit Product "}
-                                                  onPress={() =>props.editProduct(data,navigate)}/>
+                                              <Button title={"add Product "}
+                                                      onPress={() =>props.addProduct(data,navigate)}/>
+                                              <Button title={"edit Product "}
+                                                      onPress={() =>props.editProduct(data,navigate)}/>
 
-                                      </View>}
+                                          </View>}
                                       </Card>
                                   </View>
                               </TouchableNativeFeedback>}
