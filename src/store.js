@@ -23,7 +23,7 @@ const store = createStore(rootReducer,
     )
 );
     {}
-persistStore(store, {storage: AsyncStorage,blacklist: ['activity','products',"nav"]});
+persistStore(store, {storage: AsyncStorage,blacklist: ['activity',"nav"]});
 return store
 }
 export default configStore;

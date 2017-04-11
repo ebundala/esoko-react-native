@@ -116,8 +116,6 @@ class navigationViewContainer extends Component {
             "Mobile Phones",
             "Accessories",
             "Jewelry",
-
-
             "electronics",
             "Furniture",
             "Women's Apparel",

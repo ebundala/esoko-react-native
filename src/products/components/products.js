@@ -17,7 +17,7 @@ import Bids from "../../bids/components/bids"
 import Chats from "../../chats/components/chats"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import * as actions from  "../products.actions"
-//import {DB} from "../../utils/database"
+
 let ctx;
 import {IMAGES} from "../products.actions"
 class ProductsList extends Component {
@@ -51,9 +51,9 @@ class ProductsList extends Component {
     render() {
         ctx=this;
         let navigate = this.props.navigation.navigate;
-        let {title}=this.props.navigation.state.params;
+        let {title,products}=this.props.navigation.state.params;
         let props=this.props.screenProps;
-        let {products}=this.props.screenProps
+       // let {products}=this.props.screenProps
         return (
             <View style={[styles.flex1]}>
                 <Card style={[{height:50}]} >
@@ -67,13 +67,15 @@ class ProductsList extends Component {
 
                             <TextInput
                                 ref={component => this.searchInput = component}
-                                keyboardType="email-address"
+                                keyboardType="web-search"
                                 style={styles.input}
                                 autoCorrect={true}
                                 autoCapitalize="none"
                                 placeholderTextColor='#a8aAeC'
                                 placeholder={"Search "+title}
-                                onSubmitEditing={() => {}}
+                                onSubmitEditing={(query) => {
+                                    props.searchProducts(this.state.query,title,navigate)
+                                }}
                                 onChangeText={query => this.setState({query})}
                             />
 

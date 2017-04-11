@@ -7,20 +7,25 @@ import {
     Text,
     View,
     TouchableNativeFeedback,
-    Button,
-    ScrollView
+    ScrollView,
+    TextInput,
+    ListView,
+    Image
 } from 'react-native';
+import {Icon,Card ,Button,Divider} from 'react-native-material-design';
+
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as actions from  "../../products/products.actions"
 import {Statuses,Menu}  from "../../statuses/components/statuses"
 
-import styles from "../../styles/styles"
+import styles, {typographyStyle,colorStyle,colours} from "../../styles/styles"
 let ctx;
- class homeComponent extends Component{
+ class homeComponent extends Component {
 
    constructor(props){
     super(props);
+       this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
 
 }
     static navigationOptions = {
@@ -42,106 +47,374 @@ let ctx;
     render(){
         ctx=this;
         let {navigate}=this.props.navigation;
-        let {queryProducts}=this.props;
+        let {queryProducts,products}=this.props;
+
       return(
 
 
-             <View >
-                 <ScrollView contentContainerStyle={[{flexWrap:"wrap"},styles.horizontal,styles.spaceAround]}>
-                 {this.catergories().map((child,i)=>
-                 <TouchableNativeFeedback key={i} onPress={() =>queryProducts(child, navigate)}>
-                 <View style={[{
-                     width:100,
-                     height:100,
-                     marginVertical:8,
-                     borderRadius:5,
-                     elevation:2,
-                    // backgroundColor:"blue"
-                 },
-                     //styles.yellow,
-                     styles.alignItemsCenter,
-                     styles.centerJustified
-                 ]}>
-                     <Text style={[{width:100,fontSize:12,textAlign:"center"}]}>{child+i}</Text>
-                 </View>
-                 </TouchableNativeFeedback>
-                 )}
+             <View style={[styles.flex1]}>
+                 <ScrollView contentContainerStyle={[]}>
+                     <Card style={[{height:160,marginHorizontal:0}]}>
+                         <View>
+
+                         </View>
+                     </Card>
+                     <View style={[{}]}>
+                         <Card style={[{height:50}]} >
+                             <View style={[styles.horizontal]}>
+                                 <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
+                                     <Icon name="search" />
+                                 </View>
+
+                                 <View style={[styles.flex9]}>
+
+
+                                     <TextInput
+                                         ref={component => this.searchInput = component}
+                                         keyboardType="web-search"
+                                         style={styles.input}
+                                         autoCorrect={true}
+                                         autoCapitalize="none"
+                                         placeholderTextColor='#a8aAeC'
+                                         placeholder={"Search "}
+                                         onSubmitEditing={(query) => {
+                                             //props.searchProducts(this.state.query,title,navigate)
+                                         }}
+                                         onChangeText={query => this.setState({query})}
+                                     />
+
+                                 </View>
+                             </View>
+                         </Card>
+                         <Divider style={[{marginHorizontal:120}]}/>
+                         <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
+                         <Text style={[typographyStyle.paperFontTitle]}>Popular</Text>
+                         </View>
+                         <Divider style={[{marginHorizontal:120}]}/>
+                         <ListView dataSource={this.ds.cloneWithRows(products)}
+                                   contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
+                                   scrollRenderAheadDistance={640}
+                                   enableEmptySections={true}
+                                   horizontal={true}
+                                   renderRow={(data) =>
+                                       <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
+                                           data: data
+                                       })}>
+                                           <View style={[,{
+                                               height: 220,
+                                               width:180
+                                           },
+
+                                           ]}>
+                                               <Card style={[styles.flex1]}>
+
+                                                   <View style={[styles.flex1]}>
+                                                       <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                                               source={{uri:data.photos[0].url}}>
+
+                                                       </Image>
+                                                       <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
+                                                           <View style={[]}>
+                                                               <Text>{data.title}</Text>
+                                                           </View>
+                                                           <View style={[]}>
+                                                               <Text>
+                                                                   {data.currency} {data.price}
+                                                               </Text>
+                                                           </View>
+                                                       </View>
+                                                   </View>
+
+                                                   {false&& <View>
+                                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
+                                                           <Icon size={14} name="update"  />
+                                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
+
+                                                       </View>
+                                                       <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
+
+                                                           <View ref="detail" style={[styles.flex8,]}>
+                                                               <View style={[styles.horizontal,]}>
+                                                                   <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
+                                                               </View>
+                                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
+                                                                   <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
+                                                               </View>
+                                                               <View >
+                                                                   <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
+                                                               </View>
+
+                                                           </View>
+                                                           <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
+
+                                                           </View>
+                                                       </View>
+                                                       <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
+
+                                                           <TouchableNativeFeedback  title={"review "}
+                                                                                     onPress={() => props.reviewProduct(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       review
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+                                                           <TouchableNativeFeedback  title={"Bids "}
+                                                                                     onPress={() => props.placeBid(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       Bids
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+                                                           <TouchableNativeFeedback
+                                                               onPress={() =>props.startChat(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       Chats
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+
+
+                                                       </View>
+                                                   </View>}
+
+                                                   {false&&<View style={[styles.horizontal]}>
+
+
+                                                       <Button title={"add Product "}
+                                                               onPress={() =>props.addProduct(data,navigate)}/>
+                                                       <Button title={"edit Product "}
+                                                               onPress={() =>props.editProduct(data,navigate)}/>
+
+                                                   </View>}
+                                               </Card>
+                                           </View>
+                                       </TouchableNativeFeedback>}
+                         />
+                         <Divider style={[{marginHorizontal:120}]}/>
+                         <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
+                             <Text style={[typographyStyle.paperFontTitle]}>Newest</Text>
+                         </View>
+                         <Divider style={[{marginHorizontal:120}]}/>
+                         <ListView dataSource={this.ds.cloneWithRows(products)}
+                                   contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
+                                   scrollRenderAheadDistance={640}
+                                   enableEmptySections={true}
+                                   horizontal={true}
+                                   renderRow={(data) =>
+                                       <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
+                                           data: data
+                                       })}>
+                                           <View style={[,{
+                                               height: 220,
+                                               width:180
+                                           },
+
+                                           ]}>
+                                               <Card style={[styles.flex1]}>
+
+                                                   <View style={[styles.flex1]}>
+                                                       <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                                               source={{uri:data.photos[0].url}}>
+
+                                                       </Image>
+                                                       <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
+                                                           <View style={[]}>
+                                                               <Text>{data.title}</Text>
+                                                           </View>
+                                                           <View style={[]}>
+                                                               <Text>
+                                                                   {data.currency} {data.price}
+                                                               </Text>
+                                                           </View>
+                                                       </View>
+                                                   </View>
+
+                                                   {false&& <View>
+                                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
+                                                           <Icon size={14} name="update"  />
+                                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
+
+                                                       </View>
+                                                       <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
+
+                                                           <View ref="detail" style={[styles.flex8,]}>
+                                                               <View style={[styles.horizontal,]}>
+                                                                   <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
+                                                               </View>
+                                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
+                                                                   <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
+                                                               </View>
+                                                               <View >
+                                                                   <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
+                                                               </View>
+
+                                                           </View>
+                                                           <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
+
+                                                           </View>
+                                                       </View>
+                                                       <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
+
+                                                           <TouchableNativeFeedback  title={"review "}
+                                                                                     onPress={() => props.reviewProduct(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       review
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+                                                           <TouchableNativeFeedback  title={"Bids "}
+                                                                                     onPress={() => props.placeBid(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       Bids
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+                                                           <TouchableNativeFeedback
+                                                               onPress={() =>props.startChat(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       Chats
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+
+
+                                                       </View>
+                                                   </View>}
+
+                                                   {false&&<View style={[styles.horizontal]}>
+
+
+                                                       <Button title={"add Product "}
+                                                               onPress={() =>props.addProduct(data,navigate)}/>
+                                                       <Button title={"edit Product "}
+                                                               onPress={() =>props.editProduct(data,navigate)}/>
+
+                                                   </View>}
+                                               </Card>
+                                           </View>
+                                       </TouchableNativeFeedback>}
+                         />
+                         <Divider style={[{marginHorizontal:120}]}/>
+                          <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
+                             <Text style={[typographyStyle.paperFontTitle]}>Cheapest</Text>
+                         </View>
+                         <Divider style={[{marginHorizontal:120}]}/>
+                         <ListView dataSource={this.ds.cloneWithRows(products)}
+                                   contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
+                                   scrollRenderAheadDistance={640}
+                                   enableEmptySections={true}
+                                   horizontal={true}
+                                   renderRow={(data) =>
+                                       <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
+                                           data: data
+                                       })}>
+                                           <View style={[,{
+                                               height: 220,
+                                               width:180
+                                           },
+
+                                           ]}>
+                                               <Card style={[styles.flex1]}>
+
+                                                   <View style={[styles.flex1]}>
+                                                       <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                                               source={{uri:data.photos[0].url}}>
+
+                                                       </Image>
+                                                       <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
+                                                           <View style={[]}>
+                                                               <Text>{data.title}</Text>
+                                                           </View>
+                                                           <View style={[]}>
+                                                               <Text>
+                                                                   {data.currency} {data.price}
+                                                               </Text>
+                                                           </View>
+                                                       </View>
+                                                   </View>
+
+                                                   {false&& <View>
+                                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
+                                                           <Icon size={14} name="update"  />
+                                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
+
+                                                       </View>
+                                                       <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
+
+                                                           <View ref="detail" style={[styles.flex8,]}>
+                                                               <View style={[styles.horizontal,]}>
+                                                                   <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
+                                                               </View>
+                                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
+                                                                   <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
+                                                               </View>
+                                                               <View >
+                                                                   <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
+                                                               </View>
+
+                                                           </View>
+                                                           <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
+
+                                                           </View>
+                                                       </View>
+                                                       <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
+
+                                                           <TouchableNativeFeedback  title={"review "}
+                                                                                     onPress={() => props.reviewProduct(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       review
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+                                                           <TouchableNativeFeedback  title={"Bids "}
+                                                                                     onPress={() => props.placeBid(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       Bids
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+                                                           <TouchableNativeFeedback
+                                                               onPress={() =>props.startChat(data,navigate)}>
+                                                               <View>
+                                                                   <Text>
+                                                                       Chats
+                                                                   </Text>
+                                                               </View>
+                                                           </TouchableNativeFeedback>
+
+
+                                                       </View>
+                                                   </View>}
+
+                                                   {false&&<View style={[styles.horizontal]}>
+
+
+                                                       <Button title={"add Product "}
+                                                               onPress={() =>props.addProduct(data,navigate)}/>
+                                                       <Button title={"edit Product "}
+                                                               onPress={() =>props.editProduct(data,navigate)}/>
+
+                                                   </View>}
+                                               </Card>
+                                           </View>
+                                       </TouchableNativeFeedback>}
+                         />
+
+                     </View>
                  </ScrollView>
 
              </View>
 
 
       )
-    }
-    catergories(){
-        return[]
-        /*[
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
-
-
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
-
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
-
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
-        ]*/
-
     }
 
 }
@@ -150,7 +423,7 @@ let ctx;
 const mapStateToProps=(state)=>{
     "use strict";
     return{
-
+products:state.products
     }
 }
 
@@ -160,7 +433,18 @@ const mapDispatchToProps=(dispatch)=>{
     "use strict";
     return bindActionCreators(actions,dispatch)
 }
-const mergeProps=()=>{}
+const mergeProps = (stateProps, dispatchProp, ownProps) => {
+
+    return {
+        ...ownProps,
+        screenProps: {
+            ...ownProps.screenProps,
+            ...stateProps,
+            ...dispatchProp,
+
+        }
+    }
+}
 
 
 export default home=connect(mapStateToProps,mapDispatchToProps)(homeComponent)

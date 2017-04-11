@@ -22,22 +22,21 @@ export const PRODUCTS_ACTIONS = {
     START_CHAT:"START_CHAT"
 };
 export const IMAGES=[
-    "http://10.0.2.2 :3000/baseball.png",
-    "http://10.0.2.2 :3000/bear.png",
-    "http://10.0.2.2 :3000/bison.png",
-    "http://10.0.2.2 :3000/brooklyn.png",
-    "http://10.0.2.2 :3000/delaware.png",
-    "http://10.0.2.2 :3000/goldengate.png",
-    "http://10.0.2.2 :3000/goldengate2.png",
-    "http://10.0.2.2 :3000/grandcanyon.png",
-    "http://10.0.2.2 :3000/leonardo_da_vinci_52027-1400x1050.png",
-    "http://10.0.2.2 :3000/liberty2.png",
-    "http://10.0.2.2 :3000/rockies-1.png",
-    "http://10.0.2.2 :3000/rushmore.png",
-    "http://10.0.2.2 :3000/salmoncreek.png",
-    "http://10.0.2.2 :3000/shuttle.png",
-    "http://10.0.2.2 :3000/teton.png",
-
+    "http://10.0.2.2:3000/baseball.png",
+    "http://10.0.2.2:3000/bear.png",
+    "http://10.0.2.2:3000/bison.png",
+    "http://10.0.2.2:3000/brooklyn.png",
+    "http://10.0.2.2:3000/delaware.png",
+    "http://10.0.2.2:3000/goldengate.png",
+    "http://10.0.2.2:3000/goldengate2.png",
+    "http://10.0.2.2:3000/grandcanyon.png",
+    "http://10.0.2.2:3000/leonardo_da_vinci_52027-1400x1050.png",
+    "http://10.0.2.2:3000/liberty2.png",
+    "http://10.0.2.2:3000/rockies-1.png",
+    "http://10.0.2.2:3000/rushmore.png",
+    "http://10.0.2.2:3000/salmoncreek.png",
+    "http://10.0.2.2:3000/shuttle.png",
+    "http://10.0.2.2:3000/teton.png",
 ]
 
 export const queryProducts=(filter,navigate)=>{
@@ -47,53 +46,18 @@ export const queryProducts=(filter,navigate)=>{
         //TODO query products from local database here
 
 
-        //console.log(DB)
-         /*   let product=[];
-            // dispatch({type:PRODUCTS_ACTIONS.ADD,data:Products})
 
-            let products=[];
-            for(let i=0,n=5;i<n;i++){
-                let UID=Math.ceil(Math.random()*100000)
-                products.push({
-                    ID:UID,
-                    title:"product "+UID,
-                    description:"React Native JS code runs inside this Chrome tab.Press Ctrl⇧J to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session"+UID,
-                    price:UID,
-                    sellerID:"xxxxx",
-                    catergory:filter,
-                    postedOn:new Date().getTime(),
-                    currency:"TZS",
-                    photos:[
-                        {name:"one",
-                            url:IMAGES[Math.ceil(Math.random()*10)],
-                            type:"jpg"},
-                        {name:"two",
-                            url:IMAGES[Math.ceil(Math.random()*10)],
-                            type:"jpg"},
-                        {name:"three",
-                            url:IMAGES[Math.ceil(Math.random()*10)],
-                            type:"jpg"},
-                        {name:"four",
-                            url:IMAGES[Math.ceil(Math.random()*10)],
-                            type:"jpg"},
-                        {name:"five",
-                            url:IMAGES[Math.ceil(Math.random()*10)],
-                            type:"jpg"}
-                    ]
-
-                })
-            }
-
-
-           */
-        DB.getAllProducts().then((products) => {
+        DB.getProducts(filter).then((products) => {
             dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
+            navigate("products", {title: filter,products})
 
-
+        }).catch((e)=>{
+            alert("error occured");
+            console.log(e)
         })
 
 
-        navigate("products", {title: filter})
+
 
 
 
@@ -104,7 +68,20 @@ export const queryProducts=(filter,navigate)=>{
 
 }
 
+export const searchProducts = (keyword,catergory, navigate) => {
+    "use strict";
+    return (dispatch) => {
 
+        DB.searchProducts(keyword,catergory).then((products)=>{
+            navigate("products", {title: catergory,products})
+
+        }).catch(()=>{
+            alert("error occured");
+        })
+
+    }
+
+}
 
 export const  addProduct = (product, navigate) => {
     "use strict";

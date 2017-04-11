@@ -211,17 +211,86 @@ export class DBwrapper{
 
         // let products=[];
         //
-         for(let i=0,n=50;i<n;i++) {
+
+
+          let category=   [
+             "electronics",
+                 "Furniture",
+                 "Women's Apparel",
+                 "Women's shoes",
+                 "Men's shoes",
+                 "Men's Apparel",
+                 "Men's Watches",
+                 "Women's Watches",
+                 "Back Packs",
+                 "Books",
+                 "Automotive",
+                 "Computers",
+                 "Mobile Phones",
+                 "Accessories",
+                 "Jewelry",
+                 "electronics",
+                 "Furniture",
+                 "Women's Apparel",
+                 "Women's shoes",
+                 "Men's shoes",
+                 "Men's Apparel",
+                 "Men's Watches",
+                 "Women's Watches",
+                 "Back Packs",
+                 "Books",
+                 "Automotive",
+                 "Computers",
+                 "Mobile Phones",
+                 "Accessories",
+                 "Jewelry",
+
+                 "electronics",
+                 "Furniture",
+                 "Women's Apparel",
+                 "Women's shoes",
+                 "Men's shoes",
+                 "Men's Apparel",
+                 "Men's Watches",
+                 "Women's Watches",
+                 "Back Packs",
+                 "Books",
+                 "Automotive",
+                 "Computers",
+                 "Mobile Phones",
+                 "Accessories",
+                 "Jewelry",
+                 "electronics",
+                 "Furniture",
+                 "Women's Apparel",
+                 "Women's shoes",
+                 "Men's shoes",
+                 "Men's Apparel",
+                 "Men's Watches",
+                 "Women's Watches",
+                 "Back Packs",
+                 "Books",
+                 "Automotive",
+                 "Computers",
+                 "Mobile Phones",
+                 "Accessories",
+                 "Jewelry",
+             ];
+         let catLen=category.length;
+
+
+         for(let i=0,n=500;i<n;i++) {
              let UID = Math.ceil(Math.random() * 100000);
+             let cat =category[Math.floor(Math.random()*catLen)]
 
 
              that.addProduct({
                  productID: UID,
-                 title: "title"+UID,
+                 title: cat+" "+i,
                  description: "React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
-                 price: 900000,
+                 price: UID,
                  sellerID: "xxxxx",
-                 category: "electronics",
+                 category: cat,
                  postedOn: new Date().getTime()/Math.ceil(Math.random() * 10),
                  currency: "TZS",
                  photos: [
@@ -301,24 +370,31 @@ export class DBwrapper{
 
          }
      }
-     getAllProducts() {
+     getProducts(category=null) {
 
          console.log("getAllProducts sql...");
          let that=this;
+
+         if(category){
+             return new Promise((resolve, reject) => {
+
+                 that.db.transaction((tx) => {
+
+                     tx.executeSql(' SELECT * FROM Products WHERE category=(?) ORDER BY postedOn DESC', [category],(tx,res)=>{
+                         return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
+
+                 }, (res)=>{reject(res)}, that.successCB)
+             })
+         }
+
+
+
+
          return new Promise((resolve, reject) => {
              that.db.transaction((tx) => {
 
-                 tx.executeSql('SELECT * FROM Products ORDER BY postedOn DESC', [],(tx,results)=>{
-                     //that.getAllProductsSuccess(tx,results)
-
-                     let len = results.rows.length;
-                     let products=[];
-                     for (let i = 0; i < len; i++) {
-                         products.push(results.rows.item(i));
-
-                     }
-                     resolve(products)
-                 },(res)=>{reject(res)});
+                 tx.executeSql('SELECT * FROM Products ORDER BY postedOn DESC', [],(tx,res)=>{
+                     return that.formatResults(tx,res,resolve)},(res)=>{reject(res)});
 
              }, (error)=>{
                  reject(error)
@@ -328,7 +404,10 @@ export class DBwrapper{
 
              });
          })
+
+
      }
+
      getAllProductsSuccess(results) {
          console.log("results\n"+JSON.stringify(results))
          console.log("Query completed");
@@ -397,15 +476,8 @@ export class DBwrapper{
 
              that.db.transaction((tx) => {
 
-                 tx.executeSql(' SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword,category], (tx,results)=>{
-                     let len = results.rows.length;
-                     let res=[];
-                     for (let i = 0; i < len; i++) {
-                         res.push(results.rows.item(i));
-
-                     }
-                     resolve(res)
-                 }, (res)=>{reject(res)})
+                 tx.executeSql(' SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword,category],(tx,res)=>{
+                     return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
 
              }, (res)=>{reject(res)}, that.successCB)
          })
@@ -436,12 +508,24 @@ export class DBwrapper{
              }, (res)=>{reject(res)},that.successCB)
          })
      }
+     formatResults(tx,results,resolve){
+
+             //that.getAllProductsSuccess(tx,results)
+
+             let len = results.rows.length;
+             let products=[];
+             for (let i = 0; i < len; i++) {
+                 let row=results.rows.item(i);
+                 row.photos=JSON.parse(row.photos)
+                 products.push(row);
+                 //console.log(JSON.parse(products[i].photos)[0].url)
+
+             }
+             resolve(products)
+
+     }
 
 
 }
-export  class D{
-    constructor(){
-        console.log("am a class")
-    }
-}
+
 export const DB = new DBwrapper();

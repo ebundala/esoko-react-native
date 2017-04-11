@@ -39,7 +39,7 @@ Activity.navigationOptions = {
 
 
 const StackHome = {
-    Home: {screen: Home},
+    Home: {screen:Home},
     products: {screen: Products},
     orders: {screen: Orders},
     bids: {screen: Bids},
