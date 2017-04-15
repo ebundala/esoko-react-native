@@ -47,7 +47,7 @@ const StackHome = {
     bids: {screen:BidsList},
     singleBid: {screen:SingleBidView},
     reviews: {screen:ReviewsList},
-    singleReviews: {screen:SingleBidView},
+    singleReview: {screen:SingleBidView},
     chats: {screen: ChatsList},
     singleChat: {screen: ChatsList},
 

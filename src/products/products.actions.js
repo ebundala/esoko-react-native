@@ -158,11 +158,11 @@ export const  placeOrder = (product, navigate) => {
 export const reviewProduct = (product, navigate) => {
     "use strict";
     return (dispatch) => {
-        const reviews=["c","b","d"]//TODO fetch reviews here
 
 
 
-        navigate("reviews",{product,reviews})
+
+        navigate("reviews",{product,reviews:product.reviews})
     }
 
 }

@@ -306,7 +306,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
                             </Text>
                             <Divider/>
-                            <Text style={[typographyStyle.paperFontBody1]}>
+                            <Text style={[typographyStyle.paperFontBody1,{padding:8}]}>
                                 {data.description}
 
                             </Text>
@@ -371,27 +371,17 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
 
 
-                        <Button text={"Review "} overrides={{
+                        <Button raised={true} text={"Review "} overrides={{
                             textColor:colours.paperPinkA700.color,
                             backgroundColor:colours.paperDeepOrangeA700.color,
-                            rippleColor:colours.paperPinkA700.color
+                           // rippleColor:colours.paperPinkA700.color
                         }}
-                                onPress={() => props.reviewProduct(data,navigate)}/>
 
-                        {false&&<View>
-                            <Text style={[typographyStyle.paperFontBody1]}>
-                                {data.description}
+                                onPress={() => {
+                                    data.reviews=reviews;
+                                    props.reviewProduct(data,navigate)}}/>
 
-                            </Text>
-                            <Text style={[typographyStyle.paperFontBody1]}>
-                                {data.description}
 
-                            </Text>
-                            <Text style={[typographyStyle.paperFontBody1]}>
-                                {data.description}
-
-                            </Text>
-                        </View>}
                             <Divider/>
                         </Card>
 

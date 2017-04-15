@@ -7,9 +7,11 @@ import {
     Text,
     View,
     Button,
-    ListView
+    ListView,
+    TouchableNativeFeedback,
+    Image
 } from 'react-native';
-
+import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import { StackNavigator } from 'react-navigation';
 
 
@@ -31,21 +33,49 @@ export class ReviewsList extends Component{
     };
     constructor(props){
         super(props)
-        const ds = new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
-        let {reviews}=this.props.navigation.state.params;
-        this.state={
-            dataSource:ds.cloneWithRows(reviews)
+        this.ds = new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
+
         }
-    }
     render(){
         let navigate=this.props.navigation.navigate;
-        let {product}=this.props.navigation.state.params;
-        //alert(product)
+        let {product,reviews}=this.props.navigation.state.params;
+
+
         let title=product.title;
         return(
-            <View style={{flex:1,justifyContent:"space-around"}}>
-           <ListView dataSource={this.state.dataSource}
-          renderRow={(rowData)=><Button title={"Review "+title+" "+rowData} onPress={()=>navigate("singleReview",{title:title+" "+rowData})}/>}
+            <View style={{flex:1}}>
+           <ListView dataSource={this.ds.cloneWithRows(reviews||[])}
+                     renderRow={(review)=><TouchableNativeFeedback title={"Review "+title+" "} onPress={()=>navigate("singleReview",{data:review})}>
+
+                         <View style={[styles.horizontal,{paddingTop:8}]}>
+                             <View style={[styles.flex2]}>
+                                 <Image  style={[{width:50,height:50,borderRadius:50,resizeMode:Image.resizeMode.cover}]}
+                                         source={{uri:review.reviewerAvator}}>
+
+                                 </Image>
+                             </View>
+
+                             <View style={[styles.flex8]}>
+                                 <View style={[styles.horizontal,]}>
+                                     <Text style={[styles.productTitle]}>
+                                         {review.reviewerName}
+                                     </Text>
+                                 </View>
+                                 <View style={[styles.horizontal,]}>
+                                     <Text style={[]}>
+                                         {review.rating}
+                                     </Text>
+                                 </View>
+                                 <View style={[]}>
+                                     <Text style={[]}>
+                                         {review.body}
+                                     </Text>
+                                 </View>
+                             </View>
+                         </View>
+
+
+                     </TouchableNativeFeedback>}
           />
 
 

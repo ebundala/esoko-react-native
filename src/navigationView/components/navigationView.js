@@ -68,8 +68,8 @@ class navigationViewContainer extends Component {
                                 ]}>
                                     <Text style={[{
                                         fontSize: 14,
-                                        marginHorizontal: 16,
-                                        fontWeight: "bold",
+                                        paddingHorizontal: 16,
+                                        fontWeight:"400",
                                     }]}>{child}</Text>
                                 </View>
                             </TouchableNativeFeedback>
@@ -82,12 +82,12 @@ class navigationViewContainer extends Component {
                 <View style={[styles.flex3, styles.spaceAround, {}]}>
                     <TouchableNativeFeedback onPress={() => {root.closeDrawer();}}>
                     <View style={[]}>
-                         <Text style={[{fontSize: 16, marginHorizontal: 16, fontWeight: "bold",}]}>Settings</Text>
+                         <Text style={[{fontSize: 16, paddingHorizontal: 16, fontWeight: "bold",}]}>Settings</Text>
                     </View>
                 </TouchableNativeFeedback>
                     <TouchableNativeFeedback onPress={() => {root.goToAccount();}}>
                     <View style={[]}>
-                     <Text style={[{fontSize: 16, marginHorizontal: 16, fontWeight: "bold",}]}>Account</Text>
+                     <Text style={[{fontSize: 16, paddingHorizontal: 16, fontWeight: "bold",}]}>Account</Text>
                     </View>
                     </TouchableNativeFeedback>
 
