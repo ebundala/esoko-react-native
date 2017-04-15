@@ -328,7 +328,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                                   enableEmptySections={true}
                                   renderRow={(review) =>
 
-
+                                      <TouchableNativeFeedback title={"Review"} onPress={()=>navigate("singleReview",{data:review})}>
 
 
                                                   <View style={[styles.horizontal,{paddingTop:8}]}>
@@ -358,7 +358,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                                                       </View>
                                                   </View>
 
-
+                                      </TouchableNativeFeedback>
 
 
 
