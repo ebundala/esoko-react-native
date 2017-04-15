@@ -71,7 +71,7 @@ gulp.task('default',function(cb) {
 
   return download({
     file:"index.android.bundle",
-    url:"http://localhost:8081/index.android.bundle?platform=android"})
+    url:"http://localhost:8081/index.android.bundle?platform=android&dev=false&hot=false&minify=true"})
   .pipe(gulp.dest(DIST))
 });
 

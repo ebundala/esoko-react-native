@@ -16,7 +16,7 @@ import { StackNavigator } from 'react-navigation';
 import { GiftedChat } from 'react-native-gifted-chat';
 
 
-class AllView extends Component{
+export class ChatsList extends Component{
     static navigationOptions = {
         title: 'Chats',
         /*header: ({ state, setParams ,navigate}) => {
@@ -52,7 +52,7 @@ class AllView extends Component{
     }
 }
 
-class SingleView extends Component{
+export class SingleChat extends Component{
     static navigationOptions = {
         title: ({ state, setParams ,navigate}) => {
             return state.params.title
@@ -152,10 +152,11 @@ class SingleView extends Component{
         );
     }
 }
+/*
 
 const chats=StackNavigator({
     allChats:{screen:AllView}  ,
     singleChat:{screen:SingleView}
 },{headerMode:"none"})
 
-export default chats;
+export default chats;*/

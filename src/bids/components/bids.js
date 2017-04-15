@@ -13,7 +13,7 @@ import { StackNavigator } from 'react-navigation';
 
 
 
-class AllView extends Component{
+export class BidsList extends Component{
     static navigationOptions = {
         title:({ state, setParams ,navigate}) => {
             return state.params.product.title+" Bids"
@@ -42,7 +42,7 @@ class AllView extends Component{
     }
 }
 
-class SingleView extends Component{
+export class SingleBidView extends Component{
     static navigationOptions = {
         title: ({ state, setParams ,navigate}) => {
             return state.params.title
@@ -65,10 +65,11 @@ class SingleView extends Component{
         )
     }
 }
+/*
 
 const bids=StackNavigator({
     allBids:{screen:AllView}  ,
     singleBid:{screen:SingleView}
 },{headerMode:"none"})
 
-export default bids;
+export default bids;*/

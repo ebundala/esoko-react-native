@@ -14,7 +14,7 @@ import { StackNavigator } from 'react-navigation';
 
 
 
-class AllView extends Component{
+export class ReviewsList extends Component{
     static navigationOptions = {
         title:({ state, setParams ,navigate}) => {
             return  state.params.product.title+' Reviews'
@@ -54,7 +54,7 @@ class AllView extends Component{
     }
 }
 
-class SingleView extends Component{
+export class SingleReviewView extends Component{
     static navigationOptions = {
         title: ({ state, setParams ,navigate}) => {
             return state.params.title
@@ -79,9 +79,9 @@ class SingleView extends Component{
     }
 }
 
-const reviews=StackNavigator({
-    allReviews:{screen:AllView}  ,
+/*const reviews=StackNavigator({
+    allReviews:{screen:AllReviews}  ,
     singleReview:{screen:SingleView}
 },{headerMode:"none"});
 
-export default reviews;
+export default reviews;*/

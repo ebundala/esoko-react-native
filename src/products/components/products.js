@@ -8,19 +8,12 @@ import { StyleSheet,
     TouchableNativeFeedback
 } from "react-native";
 import {Icon,Card ,Button,Divider} from 'react-native-material-design';
-import {StackNavigator} from "react-navigation";
-import {bindActionCreators} from "redux"
-import {connect} from "react-redux"
+
 import {Statuses,Menu}  from "../../statuses/components/statuses"
-import Reviews from "../../reviews/components/reviews";
-import Bids from "../../bids/components/bids"
-import Chats from "../../chats/components/chats"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
-import * as actions from  "../products.actions"
 
 let ctx;
-import {IMAGES} from "../products.actions"
-class ProductsList extends Component {
+export class ProductsList extends Component {
     static navigationOptions = {
         title: ({state, setParams, navigate}) => {
             return state.params.title
@@ -215,24 +208,48 @@ let style={backgroundColor:colours.paperTeal500.color,}
          },
 
     };
+    constructor(){
+        super();
+        this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
+
+    }
 
     render() {
         let navigate = this.props.navigation.navigate;
         let {data}=this.props.navigation.state.params;
         let props=this.props.screenProps;
+        let reviews=[];
+        for(let i=0;i<9;i++){
+        reviews.push({
+            reviewerName:"Elias Bundala",
+            rating:5,
+            body:"hello this is a terible product dont buy it an way too expensive",
+            reviewerAvator:data.photos[Math.floor(Math.random()*5)].url
+        })
+        }
         return (
             <View style={[styles.flex1]}>
 
-                <Card ref="CTA" style={[styles.horizontal,styles.spaceAround]}>
+                <View ref="CTA" style={[styles.horizontal,styles.spaceBetween,{margin:0,elevation:0,backgroundColor:"transparent"}]}>
 
-                    <Button text={"Review "}
-                            onPress={() => props.reviewProduct(data,navigate)}/>
-                    <Button text={"Bids "}
-                            onPress={() => props.placeBid(data,navigate)}/>
-                    <Button text={"Chats "}
-                            onPress={() =>props.startChat(data,navigate)}/>
 
-                </Card>
+                    <View style={[styles.flex2]}>
+                        <Button  raised={true} text={"PLACE YOUR BID"} overrides={{
+                            textColor: colours.paperGrey50.color,
+                            backgroundColor: colours.paperDeepOrange300.color,
+                            //rippleColor: colours.paperPinkA700.color
+                        }}
+                                onPress={() => props.placeBid(data, navigate)}/>
+                    </View>
+                    <View style={[styles.flex2]}>
+                        <Button raised={true} text={"MESSAGE SELLER"} overrides={{
+                            textColor: colours.paperGrey50.color,
+                            backgroundColor: colours.paperGrey700.color,
+                            //rippleColor: colours.paperPinkA700.color
+                        }}
+                                onPress={() => props.startChat(data, navigate)}/>
+                    </View>
+                </View>
 
 
 
@@ -254,7 +271,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                                     style={[styles.flex1,{backgroundColor:"rgb("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+")"}]}>
                                     <Image  style={[styles.flex1,{width:null,height:null,resizeMode:Image.resizeMode.cover}]}
                                             source={{uri:data.photos[i].url}}>
-                                        <Text>{child.name}</Text>
+                                        <Text style={[{position:"absolute",bottom:8,left:8}]}>{i+1+"/"+data.photos.length}</Text>
                                     </Image>
                                 </View>
                             ))}
@@ -263,7 +280,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                         <View style={[styles.flex2,styles.horizontal,]}>
                             <View style={[styles.flex8,styles.centerJustified]}>
                                 <View style={[styles.horizontal]}>
-                                    <Text style={[colorStyle.paperGrey800,{fontSize:14,fontWeight:"bold"}]}>
+                                    <Text style={[colorStyle.paperGrey900,{fontSize:14,fontWeight:"bold"}]}>
                                         {data.title}
                                     </Text>
                                 </View>
@@ -305,18 +322,76 @@ let style={backgroundColor:colours.paperTeal500.color,}
                                 Reviews
                             </Text>
                         <Divider/>
-                        <Text style={[typographyStyle.paperFontBody1]}>
-                            {data.description}
+                        <ListView dataSource={this.ds.cloneWithRows(reviews)}
+                                  contentContainerStyle={[styles.spaceAround,styles.flexWrap]}
+                                  scrollRenderAheadDistance={640}
+                                  enableEmptySections={true}
+                                  renderRow={(review) =>
 
-                        </Text>
-                        <Text style={[typographyStyle.paperFontBody1]}>
-                            {data.description}
 
-                        </Text>
-                        <Text style={[typographyStyle.paperFontBody1]}>
-                            {data.description}
 
-                        </Text>
+
+                                                  <View style={[styles.horizontal,{paddingTop:8}]}>
+                                                      <View style={[styles.flex2]}>
+                                                      <Image  style={[{width:50,height:50,borderRadius:50,resizeMode:Image.resizeMode.cover}]}
+                                                              source={{uri:review.reviewerAvator}}>
+
+                                                      </Image>
+                                                      </View>
+
+                                                      <View style={[styles.flex8]}>
+                                                          <View style={[styles.horizontal,]}>
+                                                              <Text style={[styles.productTitle]}>
+                                                                  {review.reviewerName}
+                                                              </Text>
+                                                          </View>
+                                                          <View style={[styles.horizontal,]}>
+                                                              <Text style={[]}>
+                                                                  {review.rating}
+                                                              </Text>
+                                                          </View>
+                                                          <View style={[]}>
+                                                              <Text style={[]}>
+                                                                  {review.body}
+                                                              </Text>
+                                                          </View>
+                                                      </View>
+                                                  </View>
+
+
+
+
+
+
+                                      }
+                        />
+
+
+
+
+
+
+                        <Button text={"Review "} overrides={{
+                            textColor:colours.paperPinkA700.color,
+                            backgroundColor:colours.paperDeepOrangeA700.color,
+                            rippleColor:colours.paperPinkA700.color
+                        }}
+                                onPress={() => props.reviewProduct(data,navigate)}/>
+
+                        {false&&<View>
+                            <Text style={[typographyStyle.paperFontBody1]}>
+                                {data.description}
+
+                            </Text>
+                            <Text style={[typographyStyle.paperFontBody1]}>
+                                {data.description}
+
+                            </Text>
+                            <Text style={[typographyStyle.paperFontBody1]}>
+                                {data.description}
+
+                            </Text>
+                        </View>}
                             <Divider/>
                         </Card>
 
@@ -349,49 +424,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
     }
 }
 
-const productsStack = StackNavigator({
-    allProducts: {screen: ProductsList},
-    //singleProduct: {screen: SingleProductView},
-    // productReviews:{screen:Reviews},
-    //productBids:{screen:Bids},
-    // productChats:{screen:Chats},
-    addProduct: {screen: ProductsList},
-    editProduct: {screen: ProductsList}
-}, {headerMode: "none"})
 
-const mapDispatchToProps=(dispatch)=>{
 
-    "use strict";
-    return bindActionCreators(actions,dispatch)
-
-}
-
-const mapStateToProps=(state)=>{
-    "use strict";
-    return{
-        products:state.products
-    }
-
-}
-
-const mergeProps = (stateProps, dispatchProp, ownProps) => {
-
-    return {
-        ...ownProps,
-        screenProps: {
-            ...ownProps.screenProps,
-            ...stateProps,
-            ...dispatchProp,
-
-        }
-    }
-}
-
-const products=connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-)(productsStack);
-export default products;
 
 

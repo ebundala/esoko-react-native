@@ -698,7 +698,7 @@ var styles = StyleSheet.create({
 
 
 
-class AllView extends Component{
+export class OrdersList extends Component{
     static navigationOptions = {
         title: 'Orders',
         /*header: ({ state, setParams ,navigate}) => {
@@ -730,7 +730,7 @@ class AllView extends Component{
     }
 }
 
-class SingleView extends Component{
+export class SingleOrderView extends Component{
     static navigationOptions = {
         title: ({ state, setParams ,navigate}) => {
             return state.params.title
@@ -754,13 +754,13 @@ class SingleView extends Component{
     }
 }
 
- const orders=StackNavigator({
-    allOrders:{screen:AllView}  ,
-    singleOrder:{screen:SingleView}
+ /*const orders=StackNavigator({
+    allOrders:{screen:OrdersList}  ,
+    singleOrder:{screen:SingleOrder}
 },{headerMode:"none"})
 
 
 
 
 
-export default orders;
+export default orders;*/

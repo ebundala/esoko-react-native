@@ -29,15 +29,19 @@ let ctx;
 
 }
     static navigationOptions = {
-        title: 'Home',
-
+        title:({ state, setParams ,navigate}) => {
+           return 'Home'
+        }
+,
         header: ({ state, setParams ,navigate}) => {
-            let  right=(<Statuses navigate={navigate}/>
+            let  right=(<Statuses  navigate={navigate}/>
             );
-            let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>
+            let  left=(<Menu   onPress={()=>ctx.openDrawer()}/>
             );
+            let style={backgroundColor:colours.paperTeal600.color,}
+
           //let style={backgroundColor:colours.paperBlue500.color,color:"#323c3f"}
-            return { right ,left};
+            return { right ,left,style};
         },
 
     };
@@ -47,7 +51,7 @@ let ctx;
     render(){
         ctx=this;
         let {navigate}=this.props.navigation;
-        let {queryProducts,products}=this.props;
+        let {queryProducts,products,popular,newest,cheapest}=this.props;
 
       return(
 
@@ -93,7 +97,7 @@ let ctx;
                          </View>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          </View>
-                         <ListView dataSource={this.ds.cloneWithRows(products)}
+                         <ListView dataSource={this.ds.cloneWithRows(popular)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                                    scrollRenderAheadDistance={640}
                                    enableEmptySections={true}
@@ -209,7 +213,7 @@ let ctx;
                          </View>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          </View>
-                         <ListView dataSource={this.ds.cloneWithRows(products)}
+                         <ListView dataSource={this.ds.cloneWithRows(newest)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                                    scrollRenderAheadDistance={640}
                                    enableEmptySections={true}
@@ -323,7 +327,7 @@ let ctx;
                          </View>
                          <Divider style={[{marginHorizontal:140,height:2}]}/>
                          </View>
-                         <ListView dataSource={this.ds.cloneWithRows(products)}
+                         <ListView dataSource={this.ds.cloneWithRows(cheapest)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                                    scrollRenderAheadDistance={640}
                                    enableEmptySections={true}
@@ -446,7 +450,11 @@ let ctx;
 const mapStateToProps=(state)=>{
     "use strict";
     return{
-products:state.products
+popular:state.products,
+cheapest:state.products,
+newest:state.products
+
+
     }
 }
 

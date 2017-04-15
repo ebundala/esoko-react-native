@@ -15,42 +15,53 @@ import {
     ViewPagerAndroid,
     Modal
 } from 'react-native';
-import {connect} from 'react-redux'
+import {connect,} from 'react-redux'
+import {bindActionCreators} from "redux"
 import {REHYDRATE} from 'redux-persist/constants'
 import {StackNavigator, NavigationActions, TabNavigator, addNavigationHelpers,} from 'react-navigation';
 import {TabViewPagerAndroid} from 'react-native-tab-view';
 
 import Oauth from "./user/components/loginPage"
-import Products,{SingleProductView} from "./products/components/products"
-import Orders from "./orders/components/orders"
-import Bids from "./bids/components/bids"
-import Reviews from "./reviews/components/reviews"
-import Chats from "./chats/components/chats"
+import {SingleProductView,ProductsList} from "./products/components/products"
+import {OrdersList,SingleOrderView} from "./orders/components/orders"
+import {BidsList,SingleBidView} from "./bids/components/bids"
+import {SingleReviewView,ReviewsList} from "./reviews/components/reviews"
+import {ChatsList,SingleChat} from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
 import Home from  "./Home/components/home"
 import {IntroOne, IntroTwo} from "./intro/components/intro"
 import NavigationView from "./navigationView/components/navigationView"
 import {styles} from "./styles/styles"
+import * as actions from  "./products/products.actions"
 
 
-Activity.navigationOptions = {
-    title: 'Activity',
-};
+
 
 
 const StackHome = {
     Home: {screen:Home},
-    products: {screen: Products},
+    products: {screen: ProductsList},
     singleProduct:{screen:SingleProductView},
-    orders: {screen: Orders},
-    bids: {screen: Bids},
-    reviews: {screen: Reviews},
-    chats: {screen: Chats},
+    orders: {screen:OrdersList},
+    singleOrder: {screen:SingleOrderView},
+    bids: {screen:BidsList},
+    singleBid: {screen:SingleBidView},
+    reviews: {screen:ReviewsList},
+    singleReviews: {screen:SingleBidView},
+    chats: {screen: ChatsList},
+    singleChat: {screen: ChatsList},
 
 };
 
 
 const Main = StackNavigator(StackHome)
+
+
+
+
+
+
+
 
 
 
@@ -71,6 +82,7 @@ class root extends Component {
 
 
         const {dispatch, nav, user, activity,navOauth}=this.props;
+        console.log(this.props)
 
         return (
 
@@ -86,7 +98,7 @@ class root extends Component {
 
                 <Modal
                            animationType={"slide"}
-                           transparent={false}
+                           transparent={true}
                            visible={activity.isLoading}
                            onRequestClose={() => {alert("Modal has been closed.")}}
                           >
@@ -119,7 +131,7 @@ class root extends Component {
 
 
     _renderScene = () => {
-        const {dispatch, nav, user, activity,navOauth}=this.props;
+        const {dispatch, nav, user, screenProps,navOauth}=this.props;
 
 
         return [
@@ -131,7 +143,7 @@ class root extends Component {
                    navigation={addNavigationHelpers({dispatch, state:navOauth})}
             />,
 
-            <Main screenProps={{drawer: this.drawer, user, activity, setPage: this._setPage}}
+            <Main screenProps={{drawer: this.drawer,setPage: this._setPage,...screenProps}}
                   ref={component => {
                       this.main = component
                   }}
@@ -276,20 +288,31 @@ const mapStateToProps = (state) => {
         activity: state.activity
     }
 }
+const mapDispatchToProps=(dispatch)=>{
 
+    "use strict";
+    return {...bindActionCreators(actions,dispatch),dispatch}
 
-const mapDispatchToProps = (dispatch) => {
+}
+const mergeProps = (stateProps, dispatchProp, ownProps) => {
+
     return {
-        dispatch: (cmd) => {
-            "use strict";
-            dispatch(cmd)
+        ...ownProps,
+        ...stateProps,
+        dispatch:dispatchProp.dispatch,
+        screenProps: {
+            activity:stateProps.activity,
+            user:stateProps.user,
+            ...dispatchProp,
+
         }
     }
 }
 
 const App = connect(
-    mapStateToProps//,
-    //mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps
 )(root);
 export default App
 

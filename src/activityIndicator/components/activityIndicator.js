@@ -14,7 +14,7 @@ Button,
     ActivityIndicator
 } from 'react-native';
 
-//import { Button, Card } from 'react-native-material-design';
+import { Card } from 'react-native-material-design';
 
 import styles from '../../styles/styles'
 import * as actions from '../activitIndicatorAction'
@@ -24,7 +24,7 @@ export class ActivityWrapper extends Component{
         return(
 
             <View style={[styles.flex1,styles.alignItemsCenter,styles.centerJustified]}>
-                <View style={{backgroundColor:"white"}}>
+                <Card style={[{height:160,margin:16}]}>
                 {!this.props.isError&&
 
                     <ActivityIndicator ></ActivityIndicator>
@@ -40,7 +40,7 @@ export class ActivityWrapper extends Component{
 
                 <Button color="red" title="OK" onPress={()=>this.props.endActivity()}></Button>
                 </View>}
-                </View>
+                </Card>
             </View>
 
         )

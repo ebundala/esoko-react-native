@@ -24,7 +24,7 @@ class Badge extends Component
             style={{
                 minWidth: 16, minHeight: 16,
                 position: "absolute",
-                top: 0, right: 0,
+                top: 8, right: 0,
                 borderRadius: 8,
 
                 backgroundColor: "red",
@@ -44,32 +44,32 @@ export  class StatusesComponet extends Component{
 
 
     render(){
-        let {navigate}=this.props;
+        let {navigate,color}=this.props;
         return(
             <View style={styles.horizontal}>
                 <TouchableNativeFeedback
                     onPress={()=>{this.props.placeBid({title:'my bids',uid:'all'},navigate);this.props.changeBids(58)}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View style={{marginLeft:16,marginRight:4,marginVertical:16}}>
+                    <View style={{paddingLeft:8,paddingRight:8,paddingVertical:16}}>
 
-                       <Badge count={this.props.bids}/>
-                        <Icon size={24} name="notifications"  />
+                       <Badge  count={this.props.bids}/>
+                        <Icon style={{color:color||"black"}} size={24} name="notifications"  />
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
                     onPress={()=>{this.props.startChat({title:'my chats',uid:'all'},navigate),this.props.changeMessages(78);}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View style={{marginLeft:4,marginRight:4,marginVertical:16}}>
+                    <View style={{paddingLeft:8,paddingRight:8,paddingVertical:16}}>
                         <Badge count={this.props.messages}/>
-                        <Icon size={24} name="message"  />
+                        <Icon style={{color:color||"black"}} size={24} name="message"  />
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
                     onPress={()=>{this.props.placeOrder({title:'my chats',uid:'all'},navigate),this.props.changeOrders(776)}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View style={{marginLeft:4,marginRight:16,marginVertical:16}}>
+                    <View style={{paddingLeft:8,paddingRight:8,paddingVertical:16}}>
                         <Badge count={this.props.orders}/>
-                        <Icon size={24} name="shopping-cart"  />
+                        <Icon style={{color:color||"black"}} size={24} name="shopping-cart"  />
                     </View>
                 </TouchableNativeFeedback>
             </View>
@@ -134,13 +134,14 @@ export  class Menu extends Component{
 
 
     render(){
+        let{color}=this.props;
         return(
             <View style={styles.horizontal}>
                 <TouchableNativeFeedback
                     onPress={this.props.onPress}
                     background={TouchableNativeFeedback.SelectableBackground()}>
-                    <View style={{width:24,height:24,margin:16}}>
-                        <Icon size={24} name="menu"  />
+                    <View >
+                        <Icon  style={{color:color||"black",padding:16}} size={24} name="menu"  />
                     </View>
                 </TouchableNativeFeedback>
 
