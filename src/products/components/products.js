@@ -219,6 +219,8 @@ let style={backgroundColor:colours.paperTeal500.color,}
         let {data}=this.props.navigation.state.params;
         let props=this.props.screenProps;
         let reviews=[];
+
+
         for(let i=0;i<9;i++){
         reviews.push({
             reviewerName:"Elias Bundala",
@@ -227,6 +229,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
             reviewerAvator:data.photos[Math.floor(Math.random()*5)].url
         })
         }
+
         return (
             <View style={[styles.flex1]}>
 

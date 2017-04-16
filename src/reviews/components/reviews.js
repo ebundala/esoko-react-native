@@ -12,7 +12,6 @@ import {
     Image
 } from 'react-native';
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
-import { StackNavigator } from 'react-navigation';
 
 
 

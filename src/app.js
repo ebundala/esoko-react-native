@@ -26,7 +26,7 @@ import {SingleProductView,ProductsList} from "./products/components/products"
 import {OrdersList,SingleOrderView} from "./orders/components/orders"
 import {BidsList,SingleBidView} from "./bids/components/bids"
 import {SingleReviewView,ReviewsList} from "./reviews/components/reviews"
-import {ChatsList,SingleChat} from "./chats/components/chats"
+import {ChatsList,SingleChatView} from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
 import Home from  "./Home/components/home"
 import {IntroOne, IntroTwo} from "./intro/components/intro"
@@ -49,7 +49,7 @@ const StackHome = {
     reviews: {screen:ReviewsList},
     singleReview: {screen:SingleBidView},
     chats: {screen: ChatsList},
-    singleChat: {screen: ChatsList},
+    singleChat: {screen: SingleChatView},
 
 };
 
