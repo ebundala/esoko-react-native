@@ -107,7 +107,7 @@ export class ChatsList extends Component{
 export class SingleChatView extends Component{
     static navigationOptions = {
         title: ({ state, setParams ,navigate}) => {
-            return state.params.title
+            return state.params.data.userName
         },
         /*header: ({ state, setParams ,navigate}) => {
          let  right=(<Statuses navigate={navigate}/>

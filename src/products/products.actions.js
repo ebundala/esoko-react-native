@@ -169,9 +169,9 @@ export const reviewProduct = (product, navigate) => {
 export const startChat = (product, navigate) => {
     "use strict";
     return (dispatch) => {
-        const chats=['John', 'Joel', 'James', /*'Jimmy', 'Jackson', 'Jillian', 'Julie', 'Devin'*/]//Todo fetch previus chats here
+        //const chats=['John', 'Joel', 'James', /*'Jimmy', 'Jackson', 'Jillian', 'Julie', 'Devin'*/]//Todo fetch previus chats here
 
-        navigate("chats",{product,chats})
+        navigate("singleChat",{data:{userName:"Elias"}})
     }
 
 }
