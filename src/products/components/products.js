@@ -8,7 +8,7 @@ import { StyleSheet,
     TouchableNativeFeedback
 } from "react-native";
 import {Icon,Card ,Button,Divider} from 'react-native-material-design';
-
+import Accordion from "react-native-accordion"
 import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 
@@ -32,7 +32,7 @@ export class ProductsList extends Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-        let {title}=this.props.navigation.state.params;
+        //let {title}=this.props.navigation.state.params;
 
         /*let {products}=this.props.screenProps;
         this.state = {
@@ -229,21 +229,37 @@ let style={backgroundColor:colours.paperTeal500.color,}
             reviewerAvator:data.photos[Math.floor(Math.random()*5)].url
         })
         }
+        let desHeader=(
+            <View ref="description" style={[styles.flex1,{height:50}]}>
+
+            <View style={[styles.flex1,styles.horizontal]}>
+                <View style={[styles.centerJustified]}>
+                    <Icon name="add" />
+                </View>
+                <View style={[styles.centerJustified]}>
+                <Text style={[styles.title,{fontSize:14}]}>
+                    DESCRIPTION
+
+                </Text>
+                </View>
+
+
+            </View>
+
+            </View>)
+        let desc=( <View>
+            <Divider/>
+            <Text style={[typographyStyle.paperFontBody1,{padding:8}]}>
+            {data.description}
+            </Text>
+            </View>)
+
 
         return (
             <View style={[styles.flex1]}>
 
                 <View ref="CTA" style={[styles.horizontal,styles.spaceBetween,{margin:0,elevation:0,backgroundColor:"transparent"}]}>
 
-
-                    <View style={[styles.flex2]}>
-                        <Button  raised={true} text={"PLACE YOUR BID"} overrides={{
-                            textColor: colours.paperGrey50.color,
-                            backgroundColor: colours.paperDeepOrange300.color,
-                            //rippleColor: colours.paperPinkA700.color
-                        }}
-                                onPress={() => props.placeBid(data, navigate)}/>
-                    </View>
                     <View style={[styles.flex2]}>
                         <Button raised={true} text={"MESSAGE SELLER"} overrides={{
                             textColor: colours.paperGrey50.color,
@@ -252,6 +268,15 @@ let style={backgroundColor:colours.paperTeal500.color,}
                         }}
                                 onPress={() => props.startChat(data, navigate)}/>
                     </View>
+                    <View style={[styles.flex2]}>
+                        <Button  raised={true} text={"PLACE YOUR BID"} overrides={{
+                            textColor: colours.paperGrey50.color,
+                            backgroundColor: colours.paperDeepOrange300.color,
+                            //rippleColor: colours.paperPinkA700.color
+                        }}
+                                onPress={() => props.placeBid(data, navigate)}/>
+                    </View>
+
                 </View>
 
 
@@ -301,25 +326,12 @@ let style={backgroundColor:colours.paperTeal500.color,}
                         </View>
 
                     </Card>
-                    <Card ref="description" style={[styles.flex1,{minHeight:50}]}>
-
-                        <View style={[styles.flex1]}>
-                            <Text style={[typographyStyle.paperFontTitle]}>
-                                Description
-
-                            </Text>
-                            <Divider/>
-                            <Text style={[typographyStyle.paperFontBody1,{padding:8}]}>
-                                {data.description}
-
-                            </Text>
-
-                        </View>
-
-
-
-
-                    </Card>
+                        <Card>
+                  <Accordion
+                  header={desHeader}
+                  content={desc}
+                  />
+                        </Card>
                     <Card ref="reviews" style={[{minHeight:50}]}>
                             <Text style={[typographyStyle.paperFontTitle]}>
                                 Reviews

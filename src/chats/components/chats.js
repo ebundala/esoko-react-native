@@ -8,11 +8,11 @@ import {IMAGES} from "../../products/products.actions"
 import {
     Text,
     View,
-    Button,
     ListView,
     TouchableNativeFeedback,
     Image
 } from 'react-native';
+import {Icon,Card ,Button,Divider} from 'react-native-material-design';
 
 import { GiftedChat } from 'react-native-gifted-chat';
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
@@ -40,18 +40,7 @@ export class ChatsList extends Component{
 
     render(){
         let navigate=this.props.navigation.navigate;
-        //let {chats}=this.props.navigation.state.params
-        let chats=[];
-        for(let i=0;i<9;i++){
-            chats.push({
-                userName:"Elias Bundala",
-                time:new Date().getTime(),
-                body:"hello this is a terible product dont buy it an way too expensive",
-                userAvator:IMAGES[Math.floor(Math.random()*31)]
-            })
-        }
-
-
+        let {chats}=this.props.navigation.state.params
 
         return(
             <View style={{flex:1}}>
@@ -60,40 +49,45 @@ export class ChatsList extends Component{
                           scrollRenderAheadDistance={640}
                           enableEmptySections={true}
                           renderRow={(chat) =>
+                              <Card>
+                                  <TouchableNativeFeedback onPress={() => navigate("singleChat", {data: chat})}>
 
-                              <TouchableNativeFeedback onPress={()=>navigate("singleChat",{data:chat})}>
 
+                                      <View style={[styles.horizontal, {paddingTop: 8}]}>
+                                          <View style={[styles.flex2]}>
+                                              <Image style={[{
+                                                  width: 50,
+                                                  height: 50,
+                                                  borderRadius: 50,
+                                                  resizeMode: Image.resizeMode.cover
+                                              }]}
+                                                     source={{uri: chat.userAvator}}>
 
-                                  <View style={[styles.horizontal,{paddingTop:8}]}>
-                                      <View style={[styles.flex2]}>
-                                          <Image  style={[{width:50,height:50,borderRadius:50,resizeMode:Image.resizeMode.cover}]}
-                                                  source={{uri:chat.userAvator}}>
+                                              </Image>
+                                          </View>
 
-                                          </Image>
+                                          <View style={[styles.flex8]}>
+                                              <View style={[styles.horizontal,]}>
+                                                  <Text style={[styles.productTitle]}>
+                                                      {chat.userName}
+                                                  </Text>
+                                              </View>
+                                              <View style={[styles.horizontal,]}>
+                                                  <Text style={[]}>
+                                                      {new Date(chat.time).getFullYear()}
+                                                  </Text>
+                                              </View>
+                                              <View style={[]}>
+                                                  <Text style={[]}>
+                                                      {chat.body}
+                                                  </Text>
+                                              </View>
+                                          </View>
                                       </View>
 
-                                      <View style={[styles.flex8]}>
-                                          <View style={[styles.horizontal,]}>
-                                              <Text style={[styles.productTitle]}>
-                                                  {chat.userName}
-                                              </Text>
-                                          </View>
-                                          <View style={[styles.horizontal,]}>
-                                              <Text style={[]}>
-                                                  {chat.time}
-                                              </Text>
-                                          </View>
-                                          <View style={[]}>
-                                              <Text style={[]}>
-                                                  {chat.body}
-                                              </Text>
-                                          </View>
-                                      </View>
-                                  </View>
+                                  </TouchableNativeFeedback>
 
-                              </TouchableNativeFeedback>
-
-
+                              </Card>
 
 
                           }

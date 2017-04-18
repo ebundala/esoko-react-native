@@ -166,12 +166,30 @@ export const reviewProduct = (product, navigate) => {
     }
 
 }
-export const startChat = (product, navigate) => {
+export const startChat = (data, navigate) => {
     "use strict";
     return (dispatch) => {
         //const chats=['John', 'Joel', 'James', /*'Jimmy', 'Jackson', 'Jillian', 'Julie', 'Devin'*/]//Todo fetch previus chats here
 
+    if(data.hasOwnProperty("uid")?data.uid==="all":false){
+
+        let chats=[];
+        for(let i=0;i<9;i++){
+            chats.push({
+                userName:"Elias Bundala",
+                time:new Date().getTime(),
+                body:"hello this is a terible product dont buy it an way too expensive",
+                userAvator:IMAGES[Math.floor(Math.random()*31)]
+            })
+        }
+
+
+        navigate("chats",{chats})
+    }else {
         navigate("singleChat",{data:{userName:"Elias"}})
     }
+}
+
+
 
 }

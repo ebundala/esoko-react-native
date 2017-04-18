@@ -57,7 +57,7 @@ export  class StatusesComponet extends Component{
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
-                    onPress={()=>{this.props.startChat({title:'my chats',uid:'all'},navigate),this.props.changeMessages(78);}}
+                    onPress={()=>{this.props.startChat({uid:'all'},navigate),this.props.changeMessages(78);}}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View style={{paddingLeft:8,paddingRight:8,paddingVertical:16}}>
                         <Badge count={this.props.messages}/>
