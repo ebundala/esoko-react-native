@@ -22,7 +22,7 @@ import {StackNavigator, NavigationActions, TabNavigator, addNavigationHelpers,} 
 import {TabViewPagerAndroid} from 'react-native-tab-view';
 
 import Oauth from "./user/components/loginPage"
-import {SingleProductView,ProductsList} from "./products/components/products"
+import {SingleProductView,ProductsList,CreateProduct} from "./products/components/products"
 import {OrdersList,SingleOrderView} from "./orders/components/orders"
 import {BidsList,SingleBidView} from "./bids/components/bids"
 import {SingleReviewView,ReviewsList} from "./reviews/components/reviews"
@@ -42,6 +42,7 @@ const StackHome = {
     Home: {screen:Home},
     products: {screen: ProductsList},
     singleProduct:{screen:SingleProductView},
+    createProduct:{screen:CreateProduct},
     orders: {screen:OrdersList},
     singleOrder: {screen:SingleOrderView},
     bids: {screen:BidsList},

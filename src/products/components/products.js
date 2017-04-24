@@ -7,7 +7,8 @@ import { StyleSheet,
      ViewPagerAndroid,
     TouchableNativeFeedback
 } from "react-native";
-import {Icon,Card ,Button,Divider} from 'react-native-material-design';
+import {Icon,Card ,Divider} from 'react-native-material-design';
+import Button from 'apsl-react-native-button'
 import Accordion from "react-native-accordion"
 import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
@@ -229,30 +230,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
             reviewerAvator:data.photos[Math.floor(Math.random()*5)].url
         })
         }
-        let desHeader=(
-            <View ref="description" style={[styles.flex1,{height:50}]}>
 
-            <View style={[styles.flex1,styles.horizontal]}>
-                <View style={[styles.centerJustified]}>
-                    <Icon name="add" />
-                </View>
-                <View style={[styles.centerJustified]}>
-                <Text style={[styles.title,{fontSize:14}]}>
-                    DESCRIPTION
-
-                </Text>
-                </View>
-
-
-            </View>
-
-            </View>)
-        let desc=( <View>
-            <Divider/>
-            <Text style={[typographyStyle.paperFontBody1,{padding:8}]}>
-            {data.description}
-            </Text>
-            </View>)
 
 
         return (
@@ -261,20 +239,29 @@ let style={backgroundColor:colours.paperTeal500.color,}
                 <View ref="CTA" style={[styles.horizontal,styles.spaceBetween,{margin:0,elevation:0,backgroundColor:"transparent"}]}>
 
                     <View style={[styles.flex2]}>
-                        <Button raised={true} text={"MESSAGE SELLER"} overrides={{
-                            textColor: colours.paperGrey50.color,
-                            backgroundColor: colours.paperGrey700.color,
+                        <Button style={{
+                           // textColor: colours.paperGrey50.color,
+                           // backgroundColor: colours.paperGrey700.color,
                             //rippleColor: colours.paperPinkA700.color
+                            margin:8,
+                            borderRadius:50
                         }}
-                                onPress={() => props.startChat(data, navigate)}/>
+                                onPress={() => props.startChat(data, navigate)}>
+                            <Text>{"MESSAGE SELLER"}</Text>
+                        </Button>
                     </View>
                     <View style={[styles.flex2]}>
-                        <Button  raised={true} text={"PLACE YOUR BID"} overrides={{
-                            textColor: colours.paperGrey50.color,
-                            backgroundColor: colours.paperDeepOrange300.color,
+                        <Button   style={{
+                           // textColor: colours.paperGrey50.color,
+                            //backgroundColor: colours.paperDeepOrange300.color,
                             //rippleColor: colours.paperPinkA700.color
+
+                            margin:8,
+                            borderRadius:50
                         }}
-                                onPress={() => props.placeBid(data, navigate)}/>
+                                onPress={() => props.placeBid(data, navigate)}>
+                            <Text>{"PLACE YOUR BID"}</Text>
+                        </Button>
                     </View>
 
                 </View>
@@ -296,7 +283,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                                 <View
                                     key={"key" + i}
                                     testID={"test" + i}
-                                    style={[styles.flex1,{backgroundColor:"rgb("+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+","+Math.ceil(Math.random()*255)+")"}]}>
+                                    style={[styles.flex1,{backgroundColor:colours.paperTeal50.color}]}>
                                     <Image  style={[styles.flex1,{width:null,height:null,resizeMode:Image.resizeMode.cover}]}
                                             source={{uri:data.photos[i].url}}>
                                         <Text style={[{position:"absolute",bottom:8,left:8}]}>{i+1+"/"+data.photos.length}</Text>
@@ -308,15 +295,15 @@ let style={backgroundColor:colours.paperTeal500.color,}
                         <View style={[styles.flex2,styles.horizontal,]}>
                             <View style={[styles.flex8,styles.centerJustified]}>
                                 <View style={[styles.horizontal]}>
-                                    <Text style={[colorStyle.paperGrey900,{fontSize:14,fontWeight:"bold"}]}>
+                                    <Text style={[colorStyle.paperGrey900,{fontSize:14,fontWeight:"500"}]}>
                                         {data.title}
                                     </Text>
                                 </View>
 
                             </View>
-                            <View style={[styles.flex4,styles.centerJustified,styles.alignItemsCenter,{backgroundColor:colours.paperYellow400.color,borderRadius:8,margin:8}]}>
+                            <View style={[styles.flex4,styles.centerJustified,styles.alignItemsCenter,{margin:8}]}>
                                 < View style={[styles.horizontal]}>
-                                    <Text style={[colorStyle.paperBlue900,{fontSize:14,fontWeight:"bold",textAlign:"center"}]}>
+                                    <Text style={[colorStyle.paperGrey900,{fontSize:14,fontWeight:"500",textAlign:"center"}]}>
                                         {data.currency} {data.price}
 
                                     </Text>
@@ -328,14 +315,54 @@ let style={backgroundColor:colours.paperTeal500.color,}
                     </Card>
                         <Card>
                   <Accordion
-                  header={desHeader}
-                  content={desc}
+                  header={
+                      <View ref="description" style={[styles.flex1,{height:50}]}>
+
+                      <View style={[styles.flex1,styles.horizontal]}>
+                          <View style={[styles.centerJustified]}>
+                              <Icon name="add" size={24}/>
+                          </View>
+                          <View style={[styles.centerJustified]}>
+                              <Text style={[styles.title,{fontSize:12}]}>
+                                  DESCRIPTION
+
+                              </Text>
+                          </View>
+
+
+                      </View>
+
+                  </View>
+                  }
+                  content={
+                      <View>
+                      <Divider/>
+                      <Text style={[typographyStyle.paperFontBody1,{padding:8}]}>
+                          {data.description}
+                      </Text>
+                  </View>
+                  }
                   />
                         </Card>
-                    <Card ref="reviews" style={[{minHeight:50}]}>
-                            <Text style={[typographyStyle.paperFontTitle]}>
-                                Reviews
-                            </Text>
+                    <Card  >
+                        <Accordion
+                        header={
+                            <View ref="reviews" style={[styles.flex1,{height:50}]}>
+                            <View style={[styles.flex1,styles.horizontal]}>
+
+                                <View style={[styles.centerJustified]}>
+                                    <Text style={[styles.title,{fontSize:12}]}>
+                                        REVIEWS
+
+                                    </Text>
+                                </View>
+
+                                <View style={[styles.centerJustified]}>
+                                    <Icon name="add" size={24}/>
+                                </View>
+                            </View>
+                            </View>}
+                       content={<View>
                         <Divider/>
                         <ListView dataSource={this.ds.cloneWithRows(reviews)}
                                   contentContainerStyle={[styles.spaceAround,styles.flexWrap]}
@@ -380,13 +407,13 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
                                       }
                         />
+                        </View>}
+                         />
 
 
 
 
-
-
-                        <Button raised={true} text={"Review "} overrides={{
+                        {false&&<Button raised={true} text={"Review "} overrides={{
                             textColor:colours.paperPinkA700.color,
                             backgroundColor:colours.paperDeepOrangeA700.color,
                            // rippleColor:colours.paperPinkA700.color
@@ -394,7 +421,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
                                 onPress={() => {
                                     data.reviews=reviews;
-                                    props.reviewProduct(data,navigate)}}/>
+                                    props.reviewProduct(data,navigate)}}/>}
 
 
                             <Divider/>
@@ -429,7 +456,126 @@ let style={backgroundColor:colours.paperTeal500.color,}
     }
 }
 
+export class CreateProduct extends Component{
+    static navigationOptions = {
+        title: ({state, setParams, navigate}) => {
+            return "NEW PRODUCT"/*state.params.data.title*/
+        },
+        header: ({ state, setParams ,navigate}) => {
+            //  let  right=(<Statuses navigate={navigate}/>);
+            //let  left=(<Menu navigate={navigate}/>);
+            let style={backgroundColor:colours.paperTeal500.color,}
+            return { style};
+        },
 
+    };
+    constructor(props){
+        super(props)
+        let {user}=this.props.screenProps;
+        this.state={
+            product:{
+                uid:null,
+                title:null,
+                discription:null,
+                price:null,
+                sellerID:"xxxxx",
+            }
+        }
+    }
+    render(){
+
+        let navigate = this.props.navigation.navigate;
+        //let {data}=this.props.navigation.state.params;
+        let props=this.props.screenProps;
+
+        return(
+        <View style={[styles.flex1]}>
+            <TextInput
+                ref={component => this.searchInput = component}
+                keyboardType="default"
+                numberOfLines = {4}
+                autoCorrect={true}
+                autoCapitalize="sentences"
+                placeholderTextColor='#a8aAeC'
+                placeholder={"Product title"}
+                multline={true}
+                onSubmitEditing={(query) => {
+                    props.searchProducts(this.state.query,"",navigate)
+                }}
+                onChangeText={query => this.setState({query})}
+            />
+
+        </View>)
+    }
+    schema(){
+        return{
+            "type": "Product",
+            "description": {"type":"description"},
+            "name": {"type":"name"},
+            "image": {"type":"image"},
+            "itemCondition":{"type":"itemCondition"},
+            "model":{"type":"model"},
+            "category":{"type":"category"},
+            "brand":{"type":"brand"},
+            "color":{"type":"color"},
+            "height":{"type":"height"},
+            "width":{"type":"width"},
+            "weight":{"type":"weight"},
+            "sku":{"type":"sku"},
+            "manufacturer":{"type":"manufacturer"},
+
+            "offers": {
+                "type": "Offer",
+                "availability": "InStock",
+                "price": {"type":"price"},
+                "priceCurrency": {"type":"currency"},
+                "acceptedPaymentMethod":{"type":"acceptedPaymentMethod"},
+                "areaServed":{"type":"areaServed"},
+                "availableDeliveryMethod":{"type":"availableDeliveryMethod"},
+                "warranty":{"type":"warranty"}
+            },
+            "additionalProperty":{"type":"additionalProperty"}
+           /*
+            "aggregateRating": {
+            "type": "AggregateRating",
+            "ratingValue": "3.5",
+            "reviewCount": "11"
+            },
+
+           "review": [
+                {
+                    "@type": "Review",
+                    "author": "Ellie",
+                    "datePublished": "2011-04-01",
+                    "description": "The lamp burned out and now I have to replace it.",
+                    "name": "Not a happy camper",
+                    "reviewRating": {
+                        "@type": "Rating",
+                        "bestRating": "5",
+                        "ratingValue": "1",
+                        "worstRating": "1"
+                    }
+                },
+                {
+                    "@type": "Review",
+                    "author": "Lucas",
+                    "datePublished": "2011-03-25",
+                    "description": "Great microwave for the price. It is small and fits in my apartment.",
+                    "name": "Value purchase",
+                    "reviewRating": {
+                        "@type": "Rating",
+                        "bestRating": "5",
+                        "ratingValue": "4",
+                        "worstRating": "1"
+                    }
+                }
+            ]*/
+        }
+    }
+
+
+
+}
 
 
 

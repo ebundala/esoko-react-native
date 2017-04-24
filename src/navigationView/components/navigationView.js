@@ -80,6 +80,16 @@ class navigationViewContainer extends Component {
                 </View>
                 <Divider/>
                 <View style={[styles.flex3, styles.spaceAround, {}]}>
+                    <TouchableNativeFeedback onPress={() => {
+                        root.closeDrawer();
+
+                        navigate("createProduct")
+                    }}>
+                        <View style={[]}>
+                            <Text style={[{fontSize: 16, paddingHorizontal: 16, fontWeight: "bold",}]}>Sell product</Text>
+                        </View>
+                    </TouchableNativeFeedback>
+
                     <TouchableNativeFeedback onPress={() => {root.closeDrawer();}}>
                     <View style={[]}>
                          <Text style={[{fontSize: 16, paddingHorizontal: 16, fontWeight: "bold",}]}>Settings</Text>
