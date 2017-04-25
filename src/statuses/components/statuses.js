@@ -53,7 +53,7 @@ export  class StatusesComponet extends Component{
                     <View style={{paddingLeft:8,paddingRight:8,paddingVertical:16}}>
 
                        <Badge  count={this.props.bids}/>
-                        <Icon style={{color:color||"black"}} size={24} name="notifications"  />
+                        <Icon styleh={{color:color||"black"}} size={24} name="notifications"  />
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
@@ -61,7 +61,7 @@ export  class StatusesComponet extends Component{
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View style={{paddingLeft:8,paddingRight:8,paddingVertical:16}}>
                         <Badge count={this.props.messages}/>
-                        <Icon style={{color:color||"black"}} size={24} name="message"  />
+                        <Icon styleh={{color:color||"black"}} size={24} name="message"  />
                     </View>
                 </TouchableNativeFeedback>
                 <TouchableNativeFeedback
@@ -69,7 +69,7 @@ export  class StatusesComponet extends Component{
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View style={{paddingLeft:8,paddingRight:8,paddingVertical:16}}>
                         <Badge count={this.props.orders}/>
-                        <Icon style={{color:color||"black"}} size={24} name="shopping-cart"  />
+                        <Icon styleh={{color:color||"black"}} size={24} name="shopping-cart"  />
                     </View>
                 </TouchableNativeFeedback>
             </View>
@@ -141,7 +141,7 @@ export  class Menu extends Component{
                     onPress={this.props.onPress}
                     background={TouchableNativeFeedback.SelectableBackground()}>
                     <View >
-                        <Icon  style={{color:color||"black",padding:16}} size={24} name="menu"  />
+                        <Icon  styleh={{color:color||"black",padding:16}} size={24} name="menu"  />
                     </View>
                 </TouchableNativeFeedback>
 

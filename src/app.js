@@ -42,7 +42,9 @@ const StackHome = {
     Home: {screen:Home},
     products: {screen: ProductsList},
     singleProduct:{screen:SingleProductView},
-    createProduct:{screen:CreateProduct},
+    createProduct:{screen:CreateProduct,navigationOptions: ({navigation}) => ({
+        headerVisible:false,
+    })},
     orders: {screen:OrdersList},
     singleOrder: {screen:SingleOrderView},
     bids: {screen:BidsList},
@@ -53,21 +55,11 @@ const StackHome = {
     singleChat: {screen: SingleChatView},
 
 };
+const stackConfig = {
+    headerMode: "screen"
+}
 
-
-const Main = StackNavigator(StackHome)
-
-
-
-
-
-
-
-
-
-
-
-
+const Main = StackNavigator(StackHome,stackConfig)
 
 
 

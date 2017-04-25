@@ -2,9 +2,16 @@
  * Created by ebundala on 3/11/2017.
  */
 import React, {Component} from "react";
-import { StyleSheet,
-    Text, View, ListView,Image,ScrollView, TextInput,
-     ViewPagerAndroid,
+import {
+    StyleSheet,
+    Text,
+    View,
+    ListView,
+    Image,
+    ScrollView,
+    TextInput,
+   // Navigator,
+    ViewPagerAndroid,
     TouchableNativeFeedback
 } from "react-native";
 import {Icon,Card ,Divider} from 'react-native-material-design';
@@ -12,7 +19,9 @@ import Button from 'apsl-react-native-button'
 import Accordion from "react-native-accordion"
 import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
-
+import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
+import ExNavigator from '@expo/react-native-navigator';
+var moment = require('moment');
 let ctx;
 export class ProductsList extends Component {
     static navigationOptions = {
@@ -456,19 +465,44 @@ let style={backgroundColor:colours.paperTeal500.color,}
     }
 }
 
+
+
+
+
+
+const MyRouter = {
+    getStateForAction: (action, state) => {
+
+
+    },
+    getActionForPathAndParams: (path, params) => null,
+    getPathAndParamsForState: (state) => null,
+    getComponentForState: (state) => {},
+    getComponentForRouteName: (routeName) => {},
+};
+
+
+
+
+
+
+
 export class CreateProduct extends Component{
     static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
-            return "NEW PRODUCT"/*state.params.data.title*/
-        },
+       /* title: ({state, setParams, navigate}) => {
+            return "NEW PRODUCT"||state.params.title
+        },*/
         header: ({ state, setParams ,navigate}) => {
             //  let  right=(<Statuses navigate={navigate}/>);
             //let  left=(<Menu navigate={navigate}/>);
-            let style={backgroundColor:colours.paperTeal500.color,}
-            return { style};
+            let style={backgroundColor:colours.paperTeal500.color,height:0};
+            return {style};
         },
+        headerVisible: false,
 
     };
+
+    //static router = MyRouter;
     constructor(props){
         super(props)
         let {user}=this.props.screenProps;
@@ -488,25 +522,430 @@ export class CreateProduct extends Component{
         //let {data}=this.props.navigation.state.params;
         let props=this.props.screenProps;
 
-        return(
-        <View style={[styles.flex1]}>
-            <TextInput
-                ref={component => this.searchInput = component}
-                keyboardType="default"
-                numberOfLines = {4}
-                autoCorrect={true}
-                autoCapitalize="sentences"
-                placeholderTextColor='#a8aAeC'
-                placeholder={"Product title"}
-                multline={true}
-                onSubmitEditing={(query) => {
-                    props.searchProducts(this.state.query,"",navigate)
-                }}
-                onChangeText={query => this.setState({query})}
-            />
+        let routes = {
+            getHomeRoute() {
+                return {
+                    // Return a React component class for the scene. It receives a prop
+                    // called `navigator` that you can use to push on more routes.
 
-        </View>)
-    }
+                    renderScene(navigator) {
+                        let form=(<View>
+                                <GiftedForm
+                                    formName='signupForm' // GiftedForm instances that use the same name will also share the same states
+
+                                    openModal={(route) => {
+                                        // console.log(route.getTitle())
+                                        navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
+                                    }}
+
+                                    clearOnClose={false} // delete the values of the form when unmounted
+
+                                    defaults={{
+                                        /*
+                                         username: 'Farid',
+                                         'gender{M}': true,
+                                         password: 'abcdefg',
+                                         country: 'FR',
+                                         birthday: new Date(((new Date()).getFullYear() - 18)+''),
+                                         */
+                                    }}
+
+                                    validators={{
+                                        fullName: {
+                                            title: 'Full name',
+                                            validate: [{
+                                                validator: 'isLength',
+                                                arguments: [1, 23],
+                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                            }]
+                                        },
+                                        username: {
+                                            title: 'Username',
+                                            validate: [{
+                                                validator: 'isLength',
+                                                arguments: [3, 16],
+                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                            },{
+                                                validator: 'matches',
+                                                arguments: /^[a-zA-Z0-9]*$/,
+                                                message: '{TITLE} can contains only alphanumeric characters'
+                                            }]
+                                        },
+                                        password: {
+                                            title: 'Password',
+                                            validate: [{
+                                                validator: 'isLength',
+                                                arguments: [6, 16],
+                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                            }]
+                                        },
+                                        emailAddress: {
+                                            title: 'Email address',
+                                            validate: [{
+                                                validator: 'isLength',
+                                                arguments: [6, 255],
+                                            },{
+                                                validator: 'isEmail',
+                                            }]
+                                        },
+                                        bio: {
+                                            title: 'Biography',
+                                            validate: [{
+                                                validator: 'isLength',
+                                                arguments: [0, 512],
+                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                            }]
+                                        },
+                                        gender: {
+                                            title: 'Gender',
+                                            validate: [{
+                                                validator: (...args) => {
+                                                    if (args[0] === undefined) {
+                                                        return false;
+                                                    }
+                                                    return true;
+                                                },
+                                                message: '{TITLE} is required',
+                                            }]
+                                        },
+                                        birthday: {
+                                            title: 'Birthday',
+                                            validate: [{
+                                                validator: 'isBefore',
+                                                arguments:[moment().utc().subtract(18, 'years').format('YYYY-MM-DD')],
+                                                message: 'You must be at least 18 years old'
+                                            }, {
+                                                validator: 'isAfter',
+                                                arguments:[moment().utc().subtract(100, 'years').format('YYYY-MM-DD')],
+                                                message: '{TITLE} is not valid'
+                                            }]
+                                        },
+                                        country: {
+                                            title: 'Country',
+                                            validate: [{
+                                                validator: 'isLength',
+                                                arguments: [2],
+                                                message: '{TITLE} is required'
+                                            }]
+                                        },
+                                    }}
+                                >
+
+                                    <GiftedForm.SeparatorWidget />
+                                    <GiftedForm.TextInputWidget
+                                        name='fullName' // mandatory
+                                        title='Full name'
+
+
+
+                                        placeholder='Marco Polo'
+                                        clearButtonMode='while-editing'
+                                    />
+
+
+                                    <GiftedForm.TextInputWidget
+                                        name='username'
+                                        title='Username'
+
+
+                                        placeholder='MarcoPolo'
+                                        clearButtonMode='while-editing'
+
+                                        onTextInputFocus={(currentText = '') => {
+                                            if (!currentText) {
+                                                let fullName = GiftedFormManager.getValue('signupForm', 'fullName');
+                                                if (fullName) {
+                                                    return fullName.replace(/[^a-zA-Z0-9-_]/g, '');
+                                                }
+                                            }
+                                            return currentText;
+                                        }}
+                                    />
+
+                                    <GiftedForm.TextInputWidget
+                                        name='password' // mandatory
+                                        title='Password'
+
+                                        placeholder='******'
+
+
+                                        clearButtonMode='while-editing'
+                                        secureTextEntry={true}
+
+                                    />
+
+                                    <GiftedForm.TextInputWidget
+                                        name='emailAddress' // mandatory
+                                        title='Email address'
+                                        placeholder='example@nomads.ly'
+
+                                        keyboardType='email-address'
+
+                                        clearButtonMode='while-editing'
+
+
+                                    />
+
+                                    <GiftedForm.SeparatorWidget />
+
+                                    <GiftedForm.ModalWidget
+                                        title='Gender'
+                                        displayValue='gender'
+
+                                    >
+                                        <GiftedForm.SeparatorWidget />
+
+                                        <GiftedForm.SelectWidget name='gender' title='Gender' multiple={false}>
+                                            <GiftedForm.OptionWidget  title='Female' value='F'/>
+                                            <GiftedForm.OptionWidget  title='Male' value='M'/>
+                                        </GiftedForm.SelectWidget>
+
+
+
+                                    </GiftedForm.ModalWidget>
+
+                                    <GiftedForm.ModalWidget
+                                        title='Birthday'
+                                        displayValue='birthday'
+
+
+                                        scrollEnabled={false}
+                                    >
+                                        <GiftedForm.SeparatorWidget/>
+
+                                    </GiftedForm.ModalWidget>
+                                    <GiftedForm.ModalWidget
+                                        title='Country'
+                                        displayValue='country'
+
+                                        scrollEnabled={false}
+
+                                    >
+                                        <GiftedForm.SeparatorWidget />
+                                        <GiftedForm.SelectCountryWidget
+                                            code='alpha2'
+                                            name='country'
+                                            title='Country'
+                                            autoFocus={true}
+                                        />
+                                    </GiftedForm.ModalWidget>
+
+
+                                    <GiftedForm.ModalWidget
+                                        title='Biography'
+                                        displayValue='bio'
+
+
+
+                                        scrollEnabled={true} // true by default
+                                    >
+                                        <GiftedForm.SeparatorWidget/>
+                                        <GiftedForm.TextAreaWidget
+                                            name='bio'
+
+                                            autoFocus={true}
+
+                                            placeholder='Something interesting about yourself'
+                                        />
+                                    </GiftedForm.ModalWidget>
+
+
+
+                                    <GiftedForm.SubmitWidget
+                                        title='Sign up'
+                                        widgetStyles={{
+                                            submitButton: {
+                                                backgroundColor:"red" //themes.mainColor,
+                                            }
+                                        }}
+                                        onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
+                                            if (isValid === true) {
+                                                // prepare object
+                                                values.gender = values.gender[0];
+                                                // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
+
+                                                /* Implement the request to your server using values variable
+                                                 ** then you can do:
+                                                 ** postSubmit(); // disable the loader
+                                                 ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
+                                                 ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
+                                                 ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
+                                                 */
+                                            }
+                                        }}
+
+                                    />
+
+                                    <GiftedForm.NoticeWidget
+                                        title='By signing up, you agree to the Terms of Service and Privacy Policity.'
+                                    />
+
+                                    <GiftedForm.HiddenWidget name='tos' value={true} />
+
+                                </GiftedForm>
+                            </View>
+
+                        );
+                        return (
+                            <GiftedForm
+                                formName='newProduct' // GiftedForm instances that use the same name will also share the same states
+
+                                openModal={(route) => {
+                                    // console.log(route.getTitle())
+                                    navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
+                                }}
+
+                                clearOnClose={false} // delete the values of the form when unmounted
+
+                                defaults={{
+
+                                   /* "description": "",
+                                    "name": "",
+                                    "image":[],
+                                    "itemCondition":"",
+                                    "model":"",
+                                    "category":"",
+                                    "brand":"",
+                                    "color":"",
+                                    "height":"",
+                                    "width":"",
+                                    "weight":"",
+                                    "sku":"",
+                                    "manufacturer":"",
+
+                                    "offers": {
+                                        "type": "Offer",
+                                        "availability": "InStock",
+                                        "price": {"type":"price"},
+                                        "priceCurrency": {"type":"currency"},
+                                        "acceptedPaymentMethod":{"type":"acceptedPaymentMethod"},
+                                        "areaServed":{"type":"areaServed"},
+                                        "availableDeliveryMethod":{"type":"availableDeliveryMethod"},
+                                        "warranty":{"type":"warranty"}
+                                    },
+                                    "additionalProperty":{"type":"additionalProperty"}*/
+                                }}
+                            >
+                                <View style={[{marginTop:50}]}/>
+                                <GiftedForm.SeparatorWidget  />
+                                <GiftedForm.TextInputWidget
+                                    name='name' // mandatory
+                                    title='Product'
+
+
+
+                                    placeholder='HP pavilion notebook'
+                                    clearButtonMode='while-editing'
+                                />
+                                <GiftedForm.TextInputWidget
+                                    name='brand'
+                                    title='Brand'
+
+
+                                    placeholder='HP'
+                                    clearButtonMode='while-editing'
+
+                                    onTextInputFocus={(currentText = '') => {
+                                        if (!currentText) {
+                                            let brand = GiftedFormManager.getValue('newProduct', 'brand');
+                                            if (brand) {
+                                                return brand.replace(/[^a-zA-Z0-9-_]/g, '');
+                                            }
+                                        }
+                                        return currentText;
+                                    }}
+                                />
+
+                                <GiftedForm.TextInputWidget
+                                    name='model' // mandatory
+                                    title='Model'
+
+                                    placeholder='DV6'
+
+
+                                    clearButtonMode='while-editing'
+
+
+                                />
+
+                                <GiftedForm.TextInputWidget
+                                    name='manufacturer' // mandatory
+                                    title='Manufacturer'
+                                    placeholder='HP'
+                                    clearButtonMode='while-editing'
+
+
+                                />
+
+                                <GiftedForm.SeparatorWidget />
+
+                                <GiftedForm.ModalWidget
+                                    title='Item Condition'
+                                    displayValue='Condition'>
+                                    <GiftedForm.SeparatorWidget />
+
+                                    <GiftedForm.SelectWidget name='itemCondition' title='Item Condition' multiple={false}>
+                                        <GiftedForm.OptionWidget  title='Brand New' value='New'/>
+                                        <GiftedForm.OptionWidget  title='Refurbished' value='Refurbished'/>
+                                        <GiftedForm.OptionWidget  title='Used' value='used'/>
+
+                                    </GiftedForm.SelectWidget>
+
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Description'
+                                    displayValue='Description'
+
+
+
+                                    scrollEnabled={true} // true by default
+                                >
+                                    <View style={[{marginTop:50}]}/>
+                                    <GiftedForm.SeparatorWidget/>
+                                    <GiftedForm.TextAreaWidget
+                                        name='description'
+                                        autoFocus={true}
+                                        placeholder='Short description of the product'
+                                    />
+                                </GiftedForm.ModalWidget>
+                            </GiftedForm>
+
+                        );
+                    },
+
+                    // When this scene receives focus, you can run some code. We're just
+                    // proxying the `didfocus` event that Navigator emits, so refer to
+                    // Navigator's source code for the semantics.
+                    onDidFocus(event) {
+                        console.log('Home Scene received focus.');
+                    },
+
+                    // Return a string to display in the title section of the navigation bar.
+                    // This route's title is displayed next to the back button when you push
+                    // a new route on top of this one.
+                    getTitle() {
+                        return 'New product';
+                    },
+
+
+                    renderLeftButton() {
+                        return (
+                            <View></View>
+                        );
+                    },
+                };
+            }
+        }
+
+            return (
+                <ExNavigator
+        initialRoute={routes.getHomeRoute()}
+                />
+
+            );
+        }
     schema(){
         return{
             "type": "Product",
@@ -576,6 +1015,7 @@ export class CreateProduct extends Component{
 
 
 }
+
 
 
 
