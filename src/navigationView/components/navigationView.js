@@ -47,7 +47,7 @@ class navigationViewContainer extends Component {
                 <View style={[styles.flex8]}>
                     <ScrollView contentContainerStyle={[styles.spaceAround]}>
 
-                        {this.catergories().map((child, i) =>
+                        {this.categories().map((child, i) =>
                             <TouchableNativeFeedback key={i} onPress={() => {
                                 root.closeDrawer();
                                 setTimeout(()=>{
@@ -109,7 +109,7 @@ class navigationViewContainer extends Component {
         )
     }
 
-    catergories() {
+    categories() {
         return [
             "electronics",
             "Furniture",

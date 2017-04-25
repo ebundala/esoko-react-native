@@ -783,10 +783,10 @@ export class CreateProduct extends Component{
                                     <GiftedForm.HiddenWidget name='tos' value={true} />
 
                                 </GiftedForm>
-                            </View>
+                            </View>);
 
-                        );
                         return (
+
                             <GiftedForm
                                 formName='newProduct' // GiftedForm instances that use the same name will also share the same states
 
@@ -879,12 +879,30 @@ export class CreateProduct extends Component{
 
                                 <GiftedForm.SeparatorWidget />
 
-                                <GiftedForm.ModalWidget
-                                    title='Item Condition'
-                                    displayValue='Condition'>
-                                    <GiftedForm.SeparatorWidget />
 
+                                <GiftedForm.ModalWidget
+                                    title='Category'
+                                    displayValue='category'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
+
+                                    <GiftedForm.SelectWidget name='Category' title='Category' multiple={false}>
+                                        {this.categories().map((child, i)=>{
+                                            //alert(child)
+                                            return(<GiftedForm.OptionWidget key={i} title={child} value={child}/>)})}
+
+
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Condition'
+                                    displayValue='condition'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
                                     <GiftedForm.SelectWidget name='itemCondition' title='Item Condition' multiple={false}>
+
                                         <GiftedForm.OptionWidget  title='Brand New' value='New'/>
                                         <GiftedForm.OptionWidget  title='Refurbished' value='Refurbished'/>
                                         <GiftedForm.OptionWidget  title='Used' value='used'/>
@@ -895,8 +913,108 @@ export class CreateProduct extends Component{
 
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
+                                    title='Availability'
+                                    displayValue='availability'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
+
+                                    <GiftedForm.SelectWidget name='availability' title='Availability' multiple={false}>
+
+                                         <GiftedForm.OptionWidget  title="In Stock" value="InStock"/>
+                                        <GiftedForm.OptionWidget  title="Out Of Stock" value="OutOfStock"/>
+                                        <GiftedForm.OptionWidget  title="Sold Out" value="SoldOut"/>
+                                        <GiftedForm.OptionWidget  title="Pre Order" value="PreOrder"/>
+
+
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Area Served'
+                                    displayValue='areaServed'
+
+
+
+                                    scrollEnabled={true} // true by default
+                                >
+                                    <View style={[{marginTop:50}]}/>
+                                    <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={true}>
+                                        <GiftedForm.OptionWidget  title="Main Campus" value="MAIN"/>
+                                        <GiftedForm.OptionWidget  title="Mazimbu Campus" value="SMC"/>
+
+                                    </GiftedForm.SelectWidget>
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Delivery Methods'
+                                    displayValue='availableDeliveryMethod'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
+
+                                    <GiftedForm.SelectWidget name='availableDeliveryMethod' title='Delivery Methods' multiple={false}>
+                                        <GiftedForm.OptionWidget  title="Pick up" value="pickUp"/>
+                                        <GiftedForm.OptionWidget  title="Postal Shipping" value="Shipping"/>
+
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.SeparatorWidget />
+                                <GiftedForm.ModalWidget
+                                    title='Price'
+                                    displayValue='price'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
+
+                                    <GiftedForm.TextInputWidget
+                                        name='Price' // mandatory
+                                        title='Price'
+
+                                        placeholder='price'
+
+                                        keyboardType='numeric'
+
+                                        clearButtonMode='while-editing'
+
+
+                                    />
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Currency'
+                                    displayValue='currency'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
+
+                                    <GiftedForm.SelectWidget name='currency' title='Currency' multiple={false}>
+                                        <GiftedForm.OptionWidget  title="Tanzania Shilling's" value="TZS"/>
+                                        <GiftedForm.OptionWidget  title="US Dollar's" value="USD"/>
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Payment Methods'
+                                    displayValue='acceptedPaymentMethod'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
+
+                                    <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods' multiple={true}>
+                                        <GiftedForm.OptionWidget  title="On Delivery" value="OnDelivery"/>
+                                        <GiftedForm.OptionWidget  title="Tigo Pesa" value="TigoPesa"/>
+
+
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.SeparatorWidget />
+
+                                <GiftedForm.ModalWidget
                                     title='Description'
-                                    displayValue='Description'
+                                    displayValue='description'
 
 
 
@@ -910,6 +1028,56 @@ export class CreateProduct extends Component{
                                         placeholder='Short description of the product'
                                     />
                                 </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Warranty'
+                                    displayValue='warranty'>
+                                    <GiftedForm.SeparatorWidget />
+                                    <View style={[{marginTop:50}]}/>
+
+                                    <GiftedForm.SeparatorWidget/>
+                                    <GiftedForm.TextAreaWidget
+                                        name='warranty'
+                                        autoFocus={true}
+                                        placeholder='Any product warranty'
+                                    />
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.SeparatorWidget />
+
+                                <GiftedForm.SubmitWidget
+                                    title='post'
+                                    widgetStyles={{
+                                        submitButton: {
+                                            backgroundColor:"red" //themes.mainColor,
+                                        }
+                                    }}
+                                    onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
+                                        if (isValid === true) {
+
+                                            console.log(values);
+                                            // prepare object
+                                            //values.gender = values.gender[0];
+                                            // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
+
+                                            /* Implement the request to your server using values variable
+                                             ** then you can do:
+                                             ** postSubmit(); // disable the loader
+                                             ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
+                                             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
+                                             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
+                                             */
+                                        }
+                                    }}
+
+                                />
+
+                                <GiftedForm.NoticeWidget
+                                    title='By posting, you agree to the Terms of Service and Privacy Policy.'
+                                />
+
+                                <GiftedForm.HiddenWidget name='userID' value={"xxxx"} />
+
                             </GiftedForm>
 
                         );
@@ -935,11 +1103,79 @@ export class CreateProduct extends Component{
                             <View></View>
                         );
                     },
+
+                    categories() {
+                        return [
+                            "electronics",
+                            "Furniture",
+                            "Women's Apparel",
+                            "Women's shoes",
+                            "Men's shoes",
+                            "Men's Apparel",
+                            "Men's Watches",
+                            "Women's Watches",
+                            "Back Packs",
+                            "Books",
+                            "Automotive",
+                            "Computers",
+                            "Mobile Phones",
+                            "Accessories",
+                            "Jewelry",
+                            "electronics",
+                            "Furniture",
+                            "Women's Apparel",
+                            "Women's shoes",
+                            "Men's shoes",
+                            "Men's Apparel",
+                            "Men's Watches",
+                            "Women's Watches",
+                            "Back Packs",
+                            "Books",
+                            "Automotive",
+                            "Computers",
+                            "Mobile Phones",
+                            "Accessories",
+                            "Jewelry",
+
+                            "electronics",
+                            "Furniture",
+                            "Women's Apparel",
+                            "Women's shoes",
+                            "Men's shoes",
+                            "Men's Apparel",
+                            "Men's Watches",
+                            "Women's Watches",
+                            "Back Packs",
+                            "Books",
+                            "Automotive",
+                            "Computers",
+                            "Mobile Phones",
+                            "Accessories",
+                            "Jewelry",
+
+                            "electronics",
+                            "Furniture",
+                            "Women's Apparel",
+                            "Women's shoes",
+                            "Men's shoes",
+                            "Men's Apparel",
+                            "Men's Watches",
+                            "Women's Watches",
+                            "Back Packs",
+                            "Books",
+                            "Automotive",
+                            "Computers",
+                            "Mobile Phones",
+                            "Accessories",
+                            "Jewelry",
+                        ]
+                    }
                 };
             }
         }
 
             return (
+
                 <ExNavigator
         initialRoute={routes.getHomeRoute()}
                 />
