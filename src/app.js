@@ -25,7 +25,7 @@ import Oauth from "./user/components/loginPage"
 import {SingleProductView,ProductsList,CreateProduct} from "./products/components/products"
 import {OrdersList,SingleOrderView} from "./orders/components/orders"
 import {BidsList,SingleBidView} from "./bids/components/bids"
-import {SingleReviewView,ReviewsList} from "./reviews/components/reviews"
+import {SingleReviewView,ReviewsList,CreateReview} from "./reviews/components/reviews"
 import {ChatsList,SingleChatView} from "./chats/components/chats"
 import Activity from "./activityIndicator/components/activityIndicator"
 import Home from  "./Home/components/home"
@@ -50,7 +50,8 @@ const StackHome = {
     bids: {screen:BidsList},
     singleBid: {screen:SingleBidView},
     reviews: {screen:ReviewsList},
-    singleReview: {screen:SingleBidView},
+    singleReview: {screen:SingleReviewView},
+    createReview: {screen:CreateReview},
     chats: {screen: ChatsList},
     singleChat: {screen: SingleChatView},
 

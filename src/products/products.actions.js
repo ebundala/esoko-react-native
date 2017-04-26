@@ -162,6 +162,17 @@ export const reviewProduct = (product, navigate) => {
 
 
 
+        navigate("createReview",{product,reviews:product.reviews})
+    }
+
+}
+export const allReviews = (product, navigate) => {
+    "use strict";
+    return (dispatch) => {
+
+
+//todo fetch reviews here for a product
+
         navigate("reviews",{product,reviews:product.reviews})
     }
 

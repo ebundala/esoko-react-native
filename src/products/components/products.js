@@ -21,7 +21,7 @@ import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
-var moment = require('moment');
+let moment = require('moment');
 let ctx;
 export class ProductsList extends Component {
     static navigationOptions = {
@@ -323,14 +323,14 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
                     </Card>
                         <Card>
-                  <Accordion
-                  header={
+
+
                       <View ref="description" style={[styles.flex1,{height:50}]}>
 
                       <View style={[styles.flex1,styles.horizontal]}>
-                          <View style={[styles.centerJustified]}>
+                          {false&&<View style={[styles.centerJustified]}>
                               <Icon name="add" size={24}/>
-                          </View>
+                          </View>}
                           <View style={[styles.centerJustified]}>
                               <Text style={[styles.title,{fontSize:12}]}>
                                   DESCRIPTION
@@ -342,21 +342,20 @@ let style={backgroundColor:colours.paperTeal500.color,}
                       </View>
 
                   </View>
-                  }
-                  content={
+
+
                       <View>
                       <Divider/>
                       <Text style={[typographyStyle.paperFontBody1,{padding:8}]}>
                           {data.description}
                       </Text>
                   </View>
-                  }
-                  />
+
                         </Card>
                     <Card  >
-                        <Accordion
-                        header={
-                            <View ref="reviews" style={[styles.flex1,{height:50}]}>
+
+
+                        <View ref="reviews" style={[styles.flex1,{height:50}]}>
                             <View style={[styles.flex1,styles.horizontal]}>
 
                                 <View style={[styles.centerJustified]}>
@@ -366,16 +365,22 @@ let style={backgroundColor:colours.paperTeal500.color,}
                                     </Text>
                                 </View>
 
-                                <View style={[styles.centerJustified]}>
-                                    <Icon name="add" size={24}/>
-                                </View>
+
                             </View>
-                            </View>}
-                       content={<View>
-                        <Divider/>
-                        <ListView dataSource={this.ds.cloneWithRows(reviews)}
+                            </View>
+
+
+                           <View style={[{paddingVertical:8}]}>
+
+                           <Button  onPress={() => {
+                                       data.reviews=reviews;
+                                       props.reviewProduct(data,navigate)}}>
+                               <Text>{"Rate this"}</Text>
+                           </Button>
+
+                               <ListView dataSource={this.ds.cloneWithRows(this.renderReview(reviews))}
                                   contentContainerStyle={[styles.spaceAround,styles.flexWrap]}
-                                  scrollRenderAheadDistance={640}
+
                                   enableEmptySections={true}
                                   renderRow={(review) =>
 
@@ -416,21 +421,16 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
                                       }
                         />
-                        </View>}
-                         />
+                        </View>
 
 
 
 
-                        {false&&<Button raised={true} text={"Review "} overrides={{
-                            textColor:colours.paperPinkA700.color,
-                            backgroundColor:colours.paperDeepOrangeA700.color,
-                           // rippleColor:colours.paperPinkA700.color
-                        }}
-
-                                onPress={() => {
+                        <Button onPress={() => {
                                     data.reviews=reviews;
-                                    props.reviewProduct(data,navigate)}}/>}
+                                    props.allReviews(data,navigate)}}>
+                            <Text>{"ALL REVIEWS"}</Text>
+                        </Button>
 
 
                             <Divider/>
@@ -462,6 +462,23 @@ let style={backgroundColor:colours.paperTeal500.color,}
             "youi",
             "alt"
         ]
+    }
+    renderReview(reviews){
+        let rev=[];
+        if(reviews instanceof Array){
+
+        if(reviews.length>3)
+        {
+        for(let i=0;i<3;i++){
+            rev.push(reviews[i])
+        }
+
+        }else {
+        return reviews;
+        }
+        }
+
+        return rev
     }
 }
 
@@ -886,7 +903,7 @@ export class CreateProduct extends Component{
                                     <GiftedForm.SeparatorWidget />
                                     <View style={[{marginTop:50}]}/>
 
-                                    <GiftedForm.SelectWidget name='Category' title='Category' multiple={false}>
+                                    <GiftedForm.SelectWidget name='category' title='Category' multiple={false}>
                                         {this.categories().map((child, i)=>{
                                             //alert(child)
                                             return(<GiftedForm.OptionWidget key={i} title={child} value={child}/>)})}
@@ -898,7 +915,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Condition'
-                                    displayValue='condition'>
+                                    displayValue='itemCondition'>
                                     <GiftedForm.SeparatorWidget />
                                     <View style={[{marginTop:50}]}/>
                                     <GiftedForm.SelectWidget name='itemCondition' title='Item Condition' multiple={false}>
@@ -939,7 +956,7 @@ export class CreateProduct extends Component{
                                     scrollEnabled={true} // true by default
                                 >
                                     <View style={[{marginTop:50}]}/>
-                                    <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={true}>
+                                    <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={false}>
                                         <GiftedForm.OptionWidget  title="Main Campus" value="MAIN"/>
                                         <GiftedForm.OptionWidget  title="Mazimbu Campus" value="SMC"/>
 
@@ -968,10 +985,10 @@ export class CreateProduct extends Component{
                                     <View style={[{marginTop:50}]}/>
 
                                     <GiftedForm.TextInputWidget
-                                        name='Price' // mandatory
-                                        title='Price'
+                                        name='price' // mandatory
+                                        title='Price per Item'
 
-                                        placeholder='price'
+                                        placeholder='price of single unit'
 
                                         keyboardType='numeric'
 
@@ -1001,7 +1018,7 @@ export class CreateProduct extends Component{
                                     <GiftedForm.SeparatorWidget />
                                     <View style={[{marginTop:50}]}/>
 
-                                    <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods' multiple={true}>
+                                    <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods' multiple={false}>
                                         <GiftedForm.OptionWidget  title="On Delivery" value="OnDelivery"/>
                                         <GiftedForm.OptionWidget  title="Tigo Pesa" value="TigoPesa"/>
 
