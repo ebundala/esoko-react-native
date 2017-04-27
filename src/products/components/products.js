@@ -103,7 +103,11 @@ export class ProductsList extends Component {
                                       <Card style={[styles.flex1]}>
 
                                           <View style={[styles.flex1]}>
-                                              <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                              <Image  style={[{marginTop:16,marginBottom:8,
+                                                  width:132,height:132,
+                                                  resizeMode:Image.resizeMode.stretch,
+                                                  backgroundColor:colours.paperGrey300.color
+                                              }]}
                                                       source={{uri:data.photos[0].url}}>
 
                                               </Image>
@@ -245,7 +249,14 @@ let style={backgroundColor:colours.paperTeal500.color,}
         return (
             <View style={[styles.flex1]}>
 
-                <View ref="CTA" style={[styles.horizontal,styles.spaceBetween,{margin:0,elevation:0,backgroundColor:"transparent"}]}>
+                <Card ref="CTA" style={[
+                    styles.horizontal,
+                    styles.spaceBetween,
+                    {
+                        margin:0,
+                        elevation:0,
+                        backgroundColor:colours.paperTeal400.color
+                    }]}>
 
                     <View style={[styles.flex2]}>
                         <Button style={{
@@ -253,7 +264,8 @@ let style={backgroundColor:colours.paperTeal500.color,}
                            // backgroundColor: colours.paperGrey700.color,
                             //rippleColor: colours.paperPinkA700.color
                             margin:8,
-                            borderRadius:50
+                            borderRadius:34,
+                            height:34
                         }}
                                 onPress={() => props.startChat(data, navigate)}>
                             <Text>{"MESSAGE SELLER"}</Text>
@@ -266,17 +278,18 @@ let style={backgroundColor:colours.paperTeal500.color,}
                             //rippleColor: colours.paperPinkA700.color
 
                             margin:8,
-                            borderRadius:50
+                            borderRadius:34,
+                            height:34
                         }}
                                 onPress={() => props.placeBid(data, navigate)}>
                             <Text>{"PLACE YOUR BID"}</Text>
                         </Button>
                     </View>
 
-                </View>
+                </Card>
 
 
-
+   <Divider style={{marginHorizontal:75}}/>
                 <ScrollView >
                     <View >
                     <Card ref="mainCard" style={[{height:360}]}>
@@ -454,14 +467,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                 return data.photos;
             }
         }
-        return[
-            "hello",
-            "world",
-            "mick",
-            "mill",
-            "youi",
-            "alt"
-        ]
+      return[]
     }
     renderReview(reviews){
         let rev=[];
@@ -487,16 +493,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
 
 
-const MyRouter = {
-    getStateForAction: (action, state) => {
 
-
-    },
-    getActionForPathAndParams: (path, params) => null,
-    getPathAndParamsForState: (state) => null,
-    getComponentForState: (state) => {},
-    getComponentForRouteName: (routeName) => {},
-};
 
 
 
@@ -546,261 +543,7 @@ export class CreateProduct extends Component{
                     // called `navigator` that you can use to push on more routes.
 
                     renderScene(navigator) {
-                        let form=(<View>
-                                <GiftedForm
-                                    formName='signupForm' // GiftedForm instances that use the same name will also share the same states
 
-                                    openModal={(route) => {
-                                        // console.log(route.getTitle())
-                                        navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
-                                    }}
-
-                                    clearOnClose={false} // delete the values of the form when unmounted
-
-                                    defaults={{
-                                        /*
-                                         username: 'Farid',
-                                         'gender{M}': true,
-                                         password: 'abcdefg',
-                                         country: 'FR',
-                                         birthday: new Date(((new Date()).getFullYear() - 18)+''),
-                                         */
-                                    }}
-
-                                    validators={{
-                                        fullName: {
-                                            title: 'Full name',
-                                            validate: [{
-                                                validator: 'isLength',
-                                                arguments: [1, 23],
-                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                                            }]
-                                        },
-                                        username: {
-                                            title: 'Username',
-                                            validate: [{
-                                                validator: 'isLength',
-                                                arguments: [3, 16],
-                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                                            },{
-                                                validator: 'matches',
-                                                arguments: /^[a-zA-Z0-9]*$/,
-                                                message: '{TITLE} can contains only alphanumeric characters'
-                                            }]
-                                        },
-                                        password: {
-                                            title: 'Password',
-                                            validate: [{
-                                                validator: 'isLength',
-                                                arguments: [6, 16],
-                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                                            }]
-                                        },
-                                        emailAddress: {
-                                            title: 'Email address',
-                                            validate: [{
-                                                validator: 'isLength',
-                                                arguments: [6, 255],
-                                            },{
-                                                validator: 'isEmail',
-                                            }]
-                                        },
-                                        bio: {
-                                            title: 'Biography',
-                                            validate: [{
-                                                validator: 'isLength',
-                                                arguments: [0, 512],
-                                                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                                            }]
-                                        },
-                                        gender: {
-                                            title: 'Gender',
-                                            validate: [{
-                                                validator: (...args) => {
-                                                    if (args[0] === undefined) {
-                                                        return false;
-                                                    }
-                                                    return true;
-                                                },
-                                                message: '{TITLE} is required',
-                                            }]
-                                        },
-                                        birthday: {
-                                            title: 'Birthday',
-                                            validate: [{
-                                                validator: 'isBefore',
-                                                arguments:[moment().utc().subtract(18, 'years').format('YYYY-MM-DD')],
-                                                message: 'You must be at least 18 years old'
-                                            }, {
-                                                validator: 'isAfter',
-                                                arguments:[moment().utc().subtract(100, 'years').format('YYYY-MM-DD')],
-                                                message: '{TITLE} is not valid'
-                                            }]
-                                        },
-                                        country: {
-                                            title: 'Country',
-                                            validate: [{
-                                                validator: 'isLength',
-                                                arguments: [2],
-                                                message: '{TITLE} is required'
-                                            }]
-                                        },
-                                    }}
-                                >
-
-                                    <GiftedForm.SeparatorWidget />
-                                    <GiftedForm.TextInputWidget
-                                        name='fullName' // mandatory
-                                        title='Full name'
-
-
-
-                                        placeholder='Marco Polo'
-                                        clearButtonMode='while-editing'
-                                    />
-
-
-                                    <GiftedForm.TextInputWidget
-                                        name='username'
-                                        title='Username'
-
-
-                                        placeholder='MarcoPolo'
-                                        clearButtonMode='while-editing'
-
-                                        onTextInputFocus={(currentText = '') => {
-                                            if (!currentText) {
-                                                let fullName = GiftedFormManager.getValue('signupForm', 'fullName');
-                                                if (fullName) {
-                                                    return fullName.replace(/[^a-zA-Z0-9-_]/g, '');
-                                                }
-                                            }
-                                            return currentText;
-                                        }}
-                                    />
-
-                                    <GiftedForm.TextInputWidget
-                                        name='password' // mandatory
-                                        title='Password'
-
-                                        placeholder='******'
-
-
-                                        clearButtonMode='while-editing'
-                                        secureTextEntry={true}
-
-                                    />
-
-                                    <GiftedForm.TextInputWidget
-                                        name='emailAddress' // mandatory
-                                        title='Email address'
-                                        placeholder='example@nomads.ly'
-
-                                        keyboardType='email-address'
-
-                                        clearButtonMode='while-editing'
-
-
-                                    />
-
-                                    <GiftedForm.SeparatorWidget />
-
-                                    <GiftedForm.ModalWidget
-                                        title='Gender'
-                                        displayValue='gender'
-
-                                    >
-                                        <GiftedForm.SeparatorWidget />
-
-                                        <GiftedForm.SelectWidget name='gender' title='Gender' multiple={false}>
-                                            <GiftedForm.OptionWidget  title='Female' value='F'/>
-                                            <GiftedForm.OptionWidget  title='Male' value='M'/>
-                                        </GiftedForm.SelectWidget>
-
-
-
-                                    </GiftedForm.ModalWidget>
-
-                                    <GiftedForm.ModalWidget
-                                        title='Birthday'
-                                        displayValue='birthday'
-
-
-                                        scrollEnabled={false}
-                                    >
-                                        <GiftedForm.SeparatorWidget/>
-
-                                    </GiftedForm.ModalWidget>
-                                    <GiftedForm.ModalWidget
-                                        title='Country'
-                                        displayValue='country'
-
-                                        scrollEnabled={false}
-
-                                    >
-                                        <GiftedForm.SeparatorWidget />
-                                        <GiftedForm.SelectCountryWidget
-                                            code='alpha2'
-                                            name='country'
-                                            title='Country'
-                                            autoFocus={true}
-                                        />
-                                    </GiftedForm.ModalWidget>
-
-
-                                    <GiftedForm.ModalWidget
-                                        title='Biography'
-                                        displayValue='bio'
-
-
-
-                                        scrollEnabled={true} // true by default
-                                    >
-                                        <GiftedForm.SeparatorWidget/>
-                                        <GiftedForm.TextAreaWidget
-                                            name='bio'
-
-                                            autoFocus={true}
-
-                                            placeholder='Something interesting about yourself'
-                                        />
-                                    </GiftedForm.ModalWidget>
-
-
-
-                                    <GiftedForm.SubmitWidget
-                                        title='Sign up'
-                                        widgetStyles={{
-                                            submitButton: {
-                                                backgroundColor:"red" //themes.mainColor,
-                                            }
-                                        }}
-                                        onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
-                                            if (isValid === true) {
-                                                // prepare object
-                                                values.gender = values.gender[0];
-                                                // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
-
-                                                /* Implement the request to your server using values variable
-                                                 ** then you can do:
-                                                 ** postSubmit(); // disable the loader
-                                                 ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
-                                                 ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
-                                                 ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
-                                                 */
-                                            }
-                                        }}
-
-                                    />
-
-                                    <GiftedForm.NoticeWidget
-                                        title='By signing up, you agree to the Terms of Service and Privacy Policity.'
-                                    />
-
-                                    <GiftedForm.HiddenWidget name='tos' value={true} />
-
-                                </GiftedForm>
-                            </View>);
 
                         return (
 
@@ -843,7 +586,7 @@ export class CreateProduct extends Component{
                                     "additionalProperty":{"type":"additionalProperty"}*/
                                 }}
                             >
-                                <View style={[{marginTop:50}]}/>
+
                                 <GiftedForm.SeparatorWidget  />
                                 <GiftedForm.TextInputWidget
                                     name='name' // mandatory
@@ -872,7 +615,6 @@ export class CreateProduct extends Component{
                                         return currentText;
                                     }}
                                 />
-
                                 <GiftedForm.TextInputWidget
                                     name='model' // mandatory
                                     title='Model'
@@ -884,7 +626,6 @@ export class CreateProduct extends Component{
 
 
                                 />
-
                                 <GiftedForm.TextInputWidget
                                     name='manufacturer' // mandatory
                                     title='Manufacturer'
@@ -896,93 +637,11 @@ export class CreateProduct extends Component{
 
                                 <GiftedForm.SeparatorWidget />
 
-
-                                <GiftedForm.ModalWidget
-                                    title='Category'
-                                    displayValue='category'>
-                                    <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
-
-                                    <GiftedForm.SelectWidget name='category' title='Category' multiple={false}>
-                                        {this.categories().map((child, i)=>{
-                                            //alert(child)
-                                            return(<GiftedForm.OptionWidget key={i} title={child} value={child}/>)})}
-
-
-                                    </GiftedForm.SelectWidget>
-
-
-                                </GiftedForm.ModalWidget>
-                                <GiftedForm.ModalWidget
-                                    title='Condition'
-                                    displayValue='itemCondition'>
-                                    <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
-                                    <GiftedForm.SelectWidget name='itemCondition' title='Item Condition' multiple={false}>
-
-                                        <GiftedForm.OptionWidget  title='Brand New' value='New'/>
-                                        <GiftedForm.OptionWidget  title='Refurbished' value='Refurbished'/>
-                                        <GiftedForm.OptionWidget  title='Used' value='used'/>
-
-                                    </GiftedForm.SelectWidget>
-
-
-
-                                </GiftedForm.ModalWidget>
-                                <GiftedForm.ModalWidget
-                                    title='Availability'
-                                    displayValue='availability'>
-                                    <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
-
-                                    <GiftedForm.SelectWidget name='availability' title='Availability' multiple={false}>
-
-                                         <GiftedForm.OptionWidget  title="In Stock" value="InStock"/>
-                                        <GiftedForm.OptionWidget  title="Out Of Stock" value="OutOfStock"/>
-                                        <GiftedForm.OptionWidget  title="Sold Out" value="SoldOut"/>
-                                        <GiftedForm.OptionWidget  title="Pre Order" value="PreOrder"/>
-
-
-                                    </GiftedForm.SelectWidget>
-
-
-                                </GiftedForm.ModalWidget>
-                                <GiftedForm.ModalWidget
-                                    title='Area Served'
-                                    displayValue='areaServed'
-
-
-
-                                    scrollEnabled={true} // true by default
-                                >
-                                    <View style={[{marginTop:50}]}/>
-                                    <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={false}>
-                                        <GiftedForm.OptionWidget  title="Main Campus" value="MAIN"/>
-                                        <GiftedForm.OptionWidget  title="Mazimbu Campus" value="SMC"/>
-
-                                    </GiftedForm.SelectWidget>
-
-                                </GiftedForm.ModalWidget>
-                                <GiftedForm.ModalWidget
-                                    title='Delivery Methods'
-                                    displayValue='availableDeliveryMethod'>
-                                    <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
-
-                                    <GiftedForm.SelectWidget name='availableDeliveryMethod' title='Delivery Methods' multiple={false}>
-                                        <GiftedForm.OptionWidget  title="Pick up" value="pickUp"/>
-                                        <GiftedForm.OptionWidget  title="Postal Shipping" value="Shipping"/>
-
-                                    </GiftedForm.SelectWidget>
-
-
-                                </GiftedForm.ModalWidget>
-                                <GiftedForm.SeparatorWidget />
                                 <GiftedForm.ModalWidget
                                     title='Price'
                                     displayValue='price'>
                                     <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
+
 
                                     <GiftedForm.TextInputWidget
                                         name='price' // mandatory
@@ -1003,7 +662,7 @@ export class CreateProduct extends Component{
                                     title='Currency'
                                     displayValue='currency'>
                                     <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
+
 
                                     <GiftedForm.SelectWidget name='currency' title='Currency' multiple={false}>
                                         <GiftedForm.OptionWidget  title="Tanzania Shilling's" value="TZS"/>
@@ -1016,7 +675,7 @@ export class CreateProduct extends Component{
                                     title='Payment Methods'
                                     displayValue='acceptedPaymentMethod'>
                                     <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
+
 
                                     <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods' multiple={false}>
                                         <GiftedForm.OptionWidget  title="On Delivery" value="OnDelivery"/>
@@ -1027,6 +686,111 @@ export class CreateProduct extends Component{
 
 
                                 </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Quantity'
+                                    displayValue='quantity'>
+                                    <GiftedForm.SeparatorWidget />
+
+
+                                    <GiftedForm.TextInputWidget
+                                        name='quantity' // mandatory
+                                        title='Quantity'
+
+                                        placeholder='item quantity'
+
+                                        keyboardType='numeric'
+
+                                        clearButtonMode='while-editing'
+
+
+                                    />
+
+
+                                </GiftedForm.ModalWidget>
+
+                                <GiftedForm.SeparatorWidget />
+
+                                <GiftedForm.ModalWidget
+                                    title='Category'
+                                    displayValue='category'>
+                                    <GiftedForm.SeparatorWidget />
+
+
+                                    <GiftedForm.SelectWidget name='category' title='Category' multiple={false}>
+                                        {this.categories().map((child, i)=>{
+                                            //alert(child)
+                                            return(<GiftedForm.OptionWidget key={i} title={child} value={child}/>)})}
+
+
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Condition'
+                                    displayValue='itemCondition'>
+                                    <GiftedForm.SeparatorWidget />
+
+                                    <GiftedForm.SelectWidget name='itemCondition' title='Item Condition' multiple={false}>
+
+                                        <GiftedForm.OptionWidget  title='Brand New' value='New'/>
+                                        <GiftedForm.OptionWidget  title='Refurbished' value='Refurbished'/>
+                                        <GiftedForm.OptionWidget  title='Used' value='used'/>
+
+                                    </GiftedForm.SelectWidget>
+
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Availability'
+                                    displayValue='availability'>
+                                    <GiftedForm.SeparatorWidget />
+
+
+                                    <GiftedForm.SelectWidget name='availability' title='Availability' multiple={false}>
+
+                                        <GiftedForm.OptionWidget  title="In Stock" value="InStock"/>
+                                        <GiftedForm.OptionWidget  title="Out Of Stock" value="OutOfStock"/>
+                                        <GiftedForm.OptionWidget  title="Sold Out" value="SoldOut"/>
+                                        <GiftedForm.OptionWidget  title="Pre Order" value="PreOrder"/>
+
+
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Area Served'
+                                    displayValue='areaServed'
+
+
+
+                                    scrollEnabled={true} // true by default
+                                >
+
+                                    <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={false}>
+                                        <GiftedForm.OptionWidget  title="Main Campus" value="MAIN"/>
+                                        <GiftedForm.OptionWidget  title="Mazimbu Campus" value="SMC"/>
+
+                                    </GiftedForm.SelectWidget>
+
+                                </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Delivery Methods'
+                                    displayValue='availableDeliveryMethod'>
+                                    <GiftedForm.SeparatorWidget />
+
+
+                                    <GiftedForm.SelectWidget name='availableDeliveryMethod' title='Delivery Methods' multiple={false}>
+                                        <GiftedForm.OptionWidget  title="Pick up" value="pickUp"/>
+                                        <GiftedForm.OptionWidget  title="Postal Shipping" value="Shipping"/>
+
+                                    </GiftedForm.SelectWidget>
+
+
+                                </GiftedForm.ModalWidget>
+
                                 <GiftedForm.SeparatorWidget />
 
                                 <GiftedForm.ModalWidget
@@ -1037,7 +801,7 @@ export class CreateProduct extends Component{
 
                                     scrollEnabled={true} // true by default
                                 >
-                                    <View style={[{marginTop:50}]}/>
+
                                     <GiftedForm.SeparatorWidget/>
                                     <GiftedForm.TextAreaWidget
                                         name='description'
@@ -1049,7 +813,7 @@ export class CreateProduct extends Component{
                                     title='Warranty'
                                     displayValue='warranty'>
                                     <GiftedForm.SeparatorWidget />
-                                    <View style={[{marginTop:50}]}/>
+
 
                                     <GiftedForm.SeparatorWidget/>
                                     <GiftedForm.TextAreaWidget
@@ -1103,23 +867,25 @@ export class CreateProduct extends Component{
                     // When this scene receives focus, you can run some code. We're just
                     // proxying the `didfocus` event that Navigator emits, so refer to
                     // Navigator's source code for the semantics.
-                    onDidFocus(event) {
+                   /*  onDidFocus(event) {
                         console.log('Home Scene received focus.');
-                    },
+                     },*/
 
                     // Return a string to display in the title section of the navigation bar.
                     // This route's title is displayed next to the back button when you push
                     // a new route on top of this one.
                     getTitle() {
-                        return 'New product';
+                        return 'New listing';
                     },
 
 
-                    renderLeftButton() {
+                    /*renderLeftButton() {
                         return (
-                            <View></View>
+                            <View>
+                                <Text>back</Text>
+                            </View>
                         );
-                    },
+                    },*/
 
                     categories() {
                         return [
@@ -1195,6 +961,8 @@ export class CreateProduct extends Component{
 
                 <ExNavigator
         initialRoute={routes.getHomeRoute()}
+        sceneStyle={{ paddingTop:56 }}
+        style={[styles.flex1]}
                 />
 
             );

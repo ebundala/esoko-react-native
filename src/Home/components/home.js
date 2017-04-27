@@ -34,9 +34,9 @@ let ctx;
         }
 ,
         header: ({ state, setParams ,navigate}) => {
-            let  right=(<Statuses  navigate={navigate}/>
+            let  right=(<Statuses color={colours.paperGrey900.color} navigate={navigate}/>
             );
-            let  left=(<Menu   onPress={()=>ctx.openDrawer()}/>
+            let  left=(<Menu color={colours.paperGrey900.color}  onPress={()=>ctx.openDrawer()}/>
             );
             let style={backgroundColor:colours.paperTeal600.color,}
 
@@ -59,7 +59,7 @@ let ctx;
              <View style={[styles.flex1]}>
                  <ScrollView contentContainerStyle={[]}>
                      <View style={[{height:160,marginHorizontal:0,padding:0,elevation:5}]}>
-                         <Image style={[styles.flex1,{resizeMode:Image.resizeMode.cover,margin:0}]} source={{uri:"http://10.0.2.2:3000/grandcanyon.png"}}>
+                         <Image style={[styles.flex1,{resizeMode:Image.resizeMode.cover,margin:0}]} source={require("../../pngs/background.png")}>
 
                          </Image>
                      </View>
@@ -117,7 +117,14 @@ let ctx;
                                                <Card style={[styles.flex1]}>
 
                                                    <View style={[styles.flex1]}>
-                                                       <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                                       <Image  style={[{
+                                                           marginTop:16
+                                                           ,marginBottom:8,
+                                                           width:132,
+                                                           height:132,
+                                                           resizeMode:Image.resizeMode.stretch,
+                                                           backgroundColor:colours.paperGrey300.color
+                                                       }]}
                                                                source={{uri:data.photos[0].url}}>
 
                                                        </Image>

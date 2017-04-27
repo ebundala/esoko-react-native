@@ -79,3 +79,10 @@ gulp.task('default',function(cb) {
 gulp.task("serveFiles",function(){
     spwner('cd ../../jpgs && http-server -a localhost -p 3000');
 })
+
+gulp.task("bundle",function () {
+  spwner('react-native bundle --platform android --dev false --entry-file index.android.js \
+--bundle-output android/app/src/main/assets/index.android.bundle \
+--assets-dest android/app/src/main/res/')
+
+})

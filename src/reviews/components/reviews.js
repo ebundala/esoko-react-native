@@ -195,10 +195,12 @@ export class CreateReview extends Component{
                                      "additionalProperty":{"type":"additionalProperty"}*/
                                 }}
                             >
-                                <View style={[{marginTop:50}]}/>
+
                                 <GiftedForm.SeparatorWidget  />
                                 <GiftedForm.SelectWidget name='rating' title='Star Rating' multiple={false}>
-                                    <GiftedForm.OptionWidget  title="5 Stars" value="5"/>
+                                    <GiftedForm.OptionWidget  title="5 Stars" value="5">
+
+                                    </GiftedForm.OptionWidget>
                                     <GiftedForm.OptionWidget  title="4 Stars" value="4"/>
                                     <GiftedForm.OptionWidget  title="3 Stars" value="3"/>
                                     <GiftedForm.OptionWidget  title="2 Stars" value="2"/>
@@ -209,12 +211,9 @@ export class CreateReview extends Component{
                                 <GiftedForm.ModalWidget
                                     title='Review'
                                     displayValue='review'
-
-
-
                                     scrollEnabled={true} // true by default
                                 >
-                                    <View style={[{marginTop:50}]}/>
+
                                 <GiftedForm.TextAreaWidget
                                     name='review'
                                     autoFocus={true}
@@ -358,6 +357,8 @@ export class CreateReview extends Component{
 
             <ExNavigator
                 initialRoute={routes.getHomeRoute()}
+                sceneStyle={{ paddingTop: 56 }}
+                style={[styles.flex1]}
             />
 
         );
