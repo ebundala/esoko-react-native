@@ -11,6 +11,7 @@ import {
     TouchableNativeFeedback,
     Image
 } from 'react-native';
+import {Icon} from 'react-native-material-design';
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
@@ -141,7 +142,7 @@ export class CreateReview extends Component{
     }
     render(){
 
-        let navigate = this.props.navigation.navigate;
+        let {navigate,goBack} = this.props.navigation;
         //let {data}=this.props.navigation.state.params;
         let props=this.props.screenProps;
 
@@ -211,6 +212,7 @@ export class CreateReview extends Component{
                                 <GiftedForm.ModalWidget
                                     title='Review'
                                     displayValue='review'
+                                    cancelable={true}
                                     scrollEnabled={true} // true by default
                                 >
 
@@ -277,11 +279,20 @@ export class CreateReview extends Component{
                     },
 
 
-                    /*renderLeftButton() {
+                    renderLeftButton() {
                         return (
-                            <View></View>
+                            <View style={styles.horizontal}>
+                                <TouchableNativeFeedback
+                                    onPress={()=>{goBack()}}
+                                    background={TouchableNativeFeedback.SelectableBackground()}>
+                                    <View >
+
+                                        <Icon color={colours.paperGrey900.color} style={{padding: 16}} size={24} name="arrow-back"/>
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
                         );
-                    },*/
+                    },
 
                     categories() {
                         return [
@@ -358,6 +369,8 @@ export class CreateReview extends Component{
             <ExNavigator
                 initialRoute={routes.getHomeRoute()}
                 sceneStyle={{ paddingTop: 56 }}
+                navigationBarStyle={[{backgroundColor:colours.paperTeal500.color}]}
+                titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
                 style={[styles.flex1]}
             />
 

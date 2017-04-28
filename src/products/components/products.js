@@ -59,7 +59,12 @@ export class ProductsList extends Component {
        // let {products}=this.props.screenProps
         return (
             <View style={[styles.flex1]}>
-                <Card style={[{height:50}]} >
+                <Card style={[{height:50,
+                    margin:0,
+                    elevation:4,
+                    borderRadius:0,
+                    //backgroundColor:colours.paperTeal500.color
+                }]} >
                     <View style={[styles.horizontal]}>
                     <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
                         <Icon name="search" />
@@ -85,7 +90,7 @@ export class ProductsList extends Component {
                         </View>
                     </View>
                 </Card>
-
+                <Divider style={{marginHorizontal:0}}/>
                 <ListView dataSource={this.ds.cloneWithRows(products)}
                           contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                           scrollRenderAheadDistance={640}
@@ -254,8 +259,9 @@ let style={backgroundColor:colours.paperTeal500.color,}
                     styles.spaceBetween,
                     {
                         margin:0,
-                        elevation:0,
-                        backgroundColor:colours.paperTeal400.color
+                        elevation:4,
+                        borderRadius:0,
+                        //backgroundColor:colours.paperTeal500.color
                     }]}>
 
                     <View style={[styles.flex2]}>
@@ -289,7 +295,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                 </Card>
 
 
-   <Divider style={{marginHorizontal:75}}/>
+   <Divider style={{marginHorizontal:0}}/>
                 <ScrollView >
                     <View >
                     <Card ref="mainCard" style={[{height:360}]}>
@@ -532,8 +538,8 @@ export class CreateProduct extends Component{
     }
     render(){
 
-        let navigate = this.props.navigation.navigate;
-        //let {data}=this.props.navigation.state.params;
+        let {navigate,goBack} = this.props.navigation;
+
         let props=this.props.screenProps;
 
         let routes = {
@@ -639,7 +645,11 @@ export class CreateProduct extends Component{
 
                                 <GiftedForm.ModalWidget
                                     title='Price'
-                                    displayValue='price'>
+                                    displayValue='price'
+                                    cancelable={true}
+
+                                >
+
                                     <GiftedForm.SeparatorWidget />
 
 
@@ -660,7 +670,9 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Currency'
-                                    displayValue='currency'>
+                                    displayValue='currency'
+                                    cancelable={true}
+                                >
                                     <GiftedForm.SeparatorWidget />
 
 
@@ -673,7 +685,10 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Payment Methods'
-                                    displayValue='acceptedPaymentMethod'>
+                                    displayValue='acceptedPaymentMethod'
+                                    cancelable={true}
+                                >
+
                                     <GiftedForm.SeparatorWidget />
 
 
@@ -688,7 +703,9 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Quantity'
-                                    displayValue='quantity'>
+                                    displayValue='quantity'
+                                    cancelable={true}
+                                >
                                     <GiftedForm.SeparatorWidget />
 
 
@@ -712,7 +729,9 @@ export class CreateProduct extends Component{
 
                                 <GiftedForm.ModalWidget
                                     title='Category'
-                                    displayValue='category'>
+                                    displayValue='category'
+                                    cancelable={true}
+                                >
                                     <GiftedForm.SeparatorWidget />
 
 
@@ -728,6 +747,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Condition'
+                                    cancelable={true}
                                     displayValue='itemCondition'>
                                     <GiftedForm.SeparatorWidget />
 
@@ -744,6 +764,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Availability'
+                                    cancelable={true}
                                     displayValue='availability'>
                                     <GiftedForm.SeparatorWidget />
 
@@ -762,6 +783,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Area Served'
+                                    cancelable={true}
                                     displayValue='areaServed'
 
 
@@ -778,6 +800,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Delivery Methods'
+                                    cancelable={true}
                                     displayValue='availableDeliveryMethod'>
                                     <GiftedForm.SeparatorWidget />
 
@@ -795,6 +818,7 @@ export class CreateProduct extends Component{
 
                                 <GiftedForm.ModalWidget
                                     title='Description'
+                                    cancelable={true}
                                     displayValue='description'
 
 
@@ -811,11 +835,9 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Warranty'
+                                    cancelable={true}
                                     displayValue='warranty'>
                                     <GiftedForm.SeparatorWidget />
-
-
-                                    <GiftedForm.SeparatorWidget/>
                                     <GiftedForm.TextAreaWidget
                                         name='warranty'
                                         autoFocus={true}
@@ -879,13 +901,20 @@ export class CreateProduct extends Component{
                     },
 
 
-                    /*renderLeftButton() {
+                    renderLeftButton() {
                         return (
-                            <View>
-                                <Text>back</Text>
+                            <View style={styles.horizontal}>
+                                <TouchableNativeFeedback
+                                    onPress={()=>{goBack()}}
+                                    background={TouchableNativeFeedback.SelectableBackground()}>
+                                <View >
+
+                                    <Icon color={colours.paperGrey900.color} style={{padding: 16}} size={24} name="arrow-back"/>
+                                </View>
+                            </TouchableNativeFeedback>
                             </View>
                         );
-                    },*/
+                    },
 
                     categories() {
                         return [
@@ -962,6 +991,9 @@ export class CreateProduct extends Component{
                 <ExNavigator
         initialRoute={routes.getHomeRoute()}
         sceneStyle={{ paddingTop:56 }}
+        navigationBarStyle={[{backgroundColor:colours.paperTeal500.color}]}
+        titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
+
         style={[styles.flex1]}
                 />
 
