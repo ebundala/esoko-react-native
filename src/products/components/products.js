@@ -16,11 +16,13 @@ import {
 } from "react-native";
 import {Icon,Card ,Divider} from 'react-native-material-design';
 import Button from 'apsl-react-native-button'
-import Accordion from "react-native-accordion"
-import {Statuses,Menu}  from "../../statuses/components/statuses"
+import StarRating from 'react-native-star-rating';
+//import Accordion from "react-native-accordion"
+//import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
+import {shortenText} from '../../utils/utils'
 let moment = require('moment');
 let ctx;
 export class ProductsList extends Component {
@@ -29,11 +31,9 @@ export class ProductsList extends Component {
             return state.params.title
         },
         header: ({ state, setParams ,navigate}) => {
-            let  right=(<Statuses navigate={navigate}/>
-            );
-            let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>
-            );
-            let style={backgroundColor:colours.paperTeal600.color,}
+           // let  right=(<Statuses navigate={navigate}/>);
+            //let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>);
+            let style=styles.navBarBackground
             return {style};
         },
 
@@ -42,12 +42,7 @@ export class ProductsList extends Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-        //let {title}=this.props.navigation.state.params;
-
-        /*let {products}=this.props.screenProps;
-        this.state = {
-            dataSource: this.ds.cloneWithRows(products)
-        }*/
+        this.state={query:null}
 
     }
 
@@ -66,9 +61,6 @@ export class ProductsList extends Component {
                     //backgroundColor:colours.paperTeal500.color
                 }]} >
                     <View style={[styles.horizontal]}>
-                    <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
-                        <Icon name="search" />
-                    </View>
 
                         <View style={[styles.flex9]}>
 
@@ -79,15 +71,33 @@ export class ProductsList extends Component {
                                 style={styles.input}
                                 autoCorrect={true}
                                 autoCapitalize="none"
-                                placeholderTextColor='#a8aAeC'
                                 placeholder={"Search "+title}
-                                onSubmitEditing={(query) => {
-                                    props.searchProducts(this.state.query,title,navigate)
+                                placeholderTextColor={colours.paperGrey500.color}
+
+                                onSubmitEditing={(e) => {
+                                    if(this.state.query) {
+                                        this.searchInput.blur();
+                                        props.searchProducts(this.state.query, title, navigate)
+                                    }
+                                    else
+                                        this.searchInput.focus();
                                 }}
                                 onChangeText={query => this.setState({query})}
                             />
 
                         </View>
+                        <TouchableNativeFeedback onPress={()=>{
+                            if(this.state.query) {
+                                this.searchInput.blur();
+                                props.searchProducts(this.state.query, title, navigate)
+                            }
+                            else
+                                this.searchInput.focus();
+                        }}>
+                            <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
+                                <Icon name="search" />
+                            </View>
+                        </TouchableNativeFeedback>
                     </View>
                 </Card>
                 <Divider style={{marginHorizontal:0}}/>
@@ -119,7 +129,7 @@ export class ProductsList extends Component {
                                               <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
                                                   <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
                                                       <Text style={[styles.productTitle]}>
-                                                          {data.title}
+                                                          {shortenText(data.title)}
                                                       </Text>
                                                   </View>
                                                   <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
@@ -133,60 +143,7 @@ export class ProductsList extends Component {
                                               </View>
                                           </View>
 
-                                          {false&& <View>
-                                              <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
-                                                  <Icon size={14} name="update"  />
-                                                  <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
 
-                                              </View>
-                                              <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
-
-                                                  <View ref="detail" style={[styles.flex8,]}>
-                                                      <View style={[styles.horizontal,]}>
-                                                          <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
-                                                      </View>
-                                                      <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
-                                                          <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
-                                                      </View>
-                                                      <View >
-                                                          <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
-                                                      </View>
-
-                                                  </View>
-                                                  <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
-
-                                                  </View>
-                                              </View>
-                                              <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
-
-                                                  <TouchableNativeFeedback  title={"review "}
-                                                                            onPress={() => props.reviewProduct(data,navigate)}>
-                                                      <View>
-                                                          <Text>
-                                                              review
-                                                          </Text>
-                                                      </View>
-                                                  </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback  title={"Bids "}
-                                                                            onPress={() => props.placeBid(data,navigate)}>
-                                                      <View>
-                                                          <Text>
-                                                              Bids
-                                                          </Text>
-                                                      </View>
-                                                  </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback
-                                                      onPress={() =>props.startChat(data,navigate)}>
-                                                      <View>
-                                                          <Text>
-                                                              Chats
-                                                          </Text>
-                                                      </View>
-                                                  </TouchableNativeFeedback>
-
-
-                                              </View>
-                                          </View>}
 
                                           {false&&<View style={[styles.horizontal]}>
 
@@ -222,7 +179,7 @@ export class SingleProductView extends Component {
         header: ({ state, setParams ,navigate}) => {
        //  let  right=(<Statuses navigate={navigate}/>);
          //let  left=(<Menu navigate={navigate}/>);
-let style={backgroundColor:colours.paperTeal500.color,}
+let style=styles.navBarBackground
          return { style};
          },
 
@@ -230,7 +187,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
     constructor(){
         super();
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-
+        this.state={starCount:5}
     }
 
     render() {
@@ -243,7 +200,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
         for(let i=0;i<9;i++){
         reviews.push({
             reviewerName:"Elias Bundala",
-            rating:5,
+            rating:Math.random()*5,
             body:"hello this is a terible product dont buy it an way too expensive",
             reviewerAvator:data.photos[Math.floor(Math.random()*5)].url
         })
@@ -347,9 +304,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
                       <View ref="description" style={[styles.flex1,{height:50}]}>
 
                       <View style={[styles.flex1,styles.horizontal]}>
-                          {false&&<View style={[styles.centerJustified]}>
-                              <Icon name="add" size={24}/>
-                          </View>}
+
                           <View style={[styles.centerJustified]}>
                               <Text style={[styles.title,{fontSize:12}]}>
                                   DESCRIPTION
@@ -387,8 +342,21 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
                             </View>
                             </View>
+                        <View style={[styles.horizontal,styles.alignItemsCenter]}>
+
+                            <StarRating
+                                starSize={20}
+                                starColor={colours.paperOrange500.color}
+                                disabled={true}
+                                maxStars={5}
+
+                                rating={3.3}
+                                selectedStar={(rating) => this.onStarRatingPress(rating)}
+                            />
+                            <Text style={[styles.productTitle]}>86789</Text>
 
 
+                        </View>
                            <View style={[{paddingVertical:8}]}>
 
                            <Button  onPress={() => {
@@ -408,7 +376,7 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
                                                   <View style={[styles.horizontal,{paddingTop:8}]}>
                                                       <View style={[styles.flex2]}>
-                                                      <Image  style={[{width:50,height:50,borderRadius:50,resizeMode:Image.resizeMode.cover}]}
+                                                      <Image  style={[{backgroundColor:colours.paperGrey200.color,width:50,height:50,borderRadius:50,resizeMode:Image.resizeMode.cover}]}
                                                               source={{uri:review.reviewerAvator}}>
 
                                                       </Image>
@@ -420,10 +388,17 @@ let style={backgroundColor:colours.paperTeal500.color,}
                                                                   {review.reviewerName}
                                                               </Text>
                                                           </View>
-                                                          <View style={[styles.horizontal,]}>
-                                                              <Text style={[]}>
-                                                                  {review.rating}
-                                                              </Text>
+                                                          <View style={[styles.horizontal,{width:90}]}>
+                                                              <StarRating
+                                                                  starSize={15}
+                                                                  starColor={colours.paperOrange500.color}
+                                                                  disabled={true}
+                                                                  maxStars={5}
+
+                                                                  rating={review.rating}
+                                                                  selectedStar={(rating) => this.onStarRatingPress(rating)}
+                                                              />
+
                                                           </View>
                                                           <View style={[]}>
                                                               <Text style={[]}>
@@ -492,9 +467,159 @@ let style={backgroundColor:colours.paperTeal500.color,}
 
         return rev
     }
+    onStarRatingPress(rating) {
+        this.setState({
+            starCount: rating
+        });
+    }
 }
 
 
+export class searchResultsProductsList extends Component {
+    static navigationOptions = {
+        title: ({state, setParams, navigate}) => {
+            return state.params.title
+        },
+        header: ({ state, setParams ,navigate}) => {
+            // let  right=(<Statuses navigate={navigate}/>);
+            //let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>);
+            let style=styles.navBarBackground;
+            return {style};
+        },
+
+    };
+
+    constructor(props) {
+        super(props);
+        this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
+        this.state={query:null}
+
+    }
+
+    render() {
+        ctx=this;
+        let navigate = this.props.navigation.navigate;
+        let {title,products}=this.props.navigation.state.params;
+        let props=this.props.screenProps;
+        // let {products}=this.props.screenProps
+        return (
+            <View style={[styles.flex1]}>
+                {false&&<Card style={[{height:50,
+                    margin:0,
+                    elevation:4,
+                    borderRadius:0,
+                    //backgroundColor:colours.paperTeal500.color
+                }]} >
+                    <View style={[styles.horizontal]}>
+
+                        <View style={[styles.flex9]}>
+
+
+                            <TextInput
+                                ref={component => this.searchInput = component}
+                                keyboardType="web-search"
+                                style={styles.input}
+                                autoCorrect={true}
+                                autoCapitalize="none"
+                                placeholder={"Search "+title}
+                                placeholderTextColor={colours.paperGrey500.color}
+
+                                onSubmitEditing={(query) => {
+                                    if(query) {
+                                        this.searchInput.blur();
+                                        props.searchProducts(query, title, navigate)
+                                    }
+                                    else
+                                        this.searchInput.focus();
+                                }}
+                                onChangeText={query => this.setState({query})}
+                            />
+
+                        </View>
+                        <TouchableNativeFeedback onPress={()=>{
+                            if(this.state.query) {
+                                this.searchInput.blur();
+                                props.searchProducts(this.state.query, title, navigate)
+                            }
+                            else
+                                this.searchInput.focus();
+                        }}>
+                            <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
+                                <Icon name="search" />
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>
+                </Card>}
+                <Divider style={{marginHorizontal:0}}/>
+                <ListView dataSource={this.ds.cloneWithRows(products)}
+                          contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
+                          scrollRenderAheadDistance={640}
+                          enableEmptySections={true}
+                          renderRow={(data) =>
+                              <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
+                                  data: data
+                              })}>
+                                  <View style={[,{
+                                      height: 220,
+                                      width:180
+                                  },
+
+                                  ]}>
+                                      <Card style={[styles.flex1]}>
+
+                                          <View style={[styles.flex1]}>
+                                              <Image  style={[{marginTop:16,marginBottom:8,
+                                                  width:132,height:132,
+                                                  resizeMode:Image.resizeMode.stretch,
+                                                  backgroundColor:colours.paperGrey300.color
+                                              }]}
+                                                      source={{uri:data.photos[0].url}}>
+
+                                              </Image>
+                                              <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
+                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                      <Text style={[styles.productTitle]}>
+                                                          {shortenText(data.title)}
+                                                      </Text>
+                                                  </View>
+                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                      <Text style={[styles.currency]}>
+                                                          {data.currency}
+                                                      </Text>
+                                                      <Text style={[styles.price]}>
+                                                          {data.price}
+                                                      </Text>
+                                                  </View>
+                                              </View>
+                                          </View>
+
+
+
+                                          {false&&<View style={[styles.horizontal]}>
+
+
+                                              <Button title={"add Product "}
+                                                      onPress={() =>props.addProduct(data,navigate)}/>
+                                              <Button title={"edit Product "}
+                                                      onPress={() =>props.editProduct(data,navigate)}/>
+
+                                          </View>}
+                                      </Card>
+                                  </View>
+                              </TouchableNativeFeedback>}
+                />
+
+
+            </View>
+        )
+    }
+    componentWillUpdate(){
+
+    }
+    openDrawer(){
+        this.props.screenProps.drawer.openDrawer()
+    }
+}
 
 
 
@@ -515,7 +640,7 @@ export class CreateProduct extends Component{
         header: ({ state, setParams ,navigate}) => {
             //  let  right=(<Statuses navigate={navigate}/>);
             //let  left=(<Menu navigate={navigate}/>);
-            let style={backgroundColor:colours.paperTeal500.color,height:0};
+            let style={height:0};
             return {style};
         },
         headerVisible: false,
@@ -659,8 +784,8 @@ export class CreateProduct extends Component{
 
                                         placeholder='price of single unit'
 
-                                        keyboardType='numeric'
-
+                                        keyboardType="numeric"
+                                        returnKeyLabel="done"
                                         clearButtonMode='while-editing'
 
 
@@ -715,10 +840,10 @@ export class CreateProduct extends Component{
 
                                         placeholder='item quantity'
 
-                                        keyboardType='numeric'
+                                        keyboardType='number-pad'
 
                                         clearButtonMode='while-editing'
-
+                                        returnKeyLabel="done"
 
                                     />
 
@@ -897,7 +1022,7 @@ export class CreateProduct extends Component{
                     // This route's title is displayed next to the back button when you push
                     // a new route on top of this one.
                     getTitle() {
-                        return 'New listing';
+                        return 'New item';
                     },
 
 
@@ -991,7 +1116,7 @@ export class CreateProduct extends Component{
                 <ExNavigator
         initialRoute={routes.getHomeRoute()}
         sceneStyle={{ paddingTop:56 }}
-        navigationBarStyle={[{backgroundColor:colours.paperTeal500.color}]}
+        navigationBarStyle={[styles.navBarBackground]}
         titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
 
         style={[styles.flex1]}

@@ -26,7 +26,7 @@ let ctx;
    constructor(props){
     super(props);
        this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-
+       this.state={query:null}
 }
     static navigationOptions = {
         title:({ state, setParams ,navigate}) => {
@@ -38,7 +38,7 @@ let ctx;
             );
             let  left=(<Menu color={colours.paperGrey900.color}  onPress={()=>ctx.openDrawer()}/>
             );
-            let style={backgroundColor:colours.paperTeal600.color,}
+            let style=styles.navBarBackground;
 
           //let style={backgroundColor:colours.paperBlue500.color,color:"#323c3f"}
             return { right ,left,style};
@@ -51,7 +51,7 @@ let ctx;
     render(){
         ctx=this;
         let {navigate}=this.props.navigation;
-        let {queryProducts,products,popular,newest,cheapest}=this.props;
+        let {queryProducts,searchProducts,products,popular,newest,cheapest}=this.props;
 
       return(
 
@@ -66,10 +66,6 @@ let ctx;
                      <View style={[{marginVertical:8}]}>
                          <Card style={[{height:50}]} >
                              <View style={[styles.horizontal]}>
-                                 <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
-                                     <Icon name="search" />
-                                 </View>
-
                                  <View style={[styles.flex9]}>
 
 
@@ -79,15 +75,33 @@ let ctx;
                                          style={styles.input}
                                          autoCorrect={true}
                                          autoCapitalize="none"
-                                         placeholderTextColor='#a8aAeC'
+                                         placeholderTextColor={colours.paperGrey500.color}
                                          placeholder={"Search "}
-                                         onSubmitEditing={(query) => {
-                                             //props.searchProducts(this.state.query,title,navigate)
+                                         onSubmitEditing={(e) => {
+                                             if(this.state.query) {
+                                                 this.searchInput.blur();
+                                                 searchProducts(this.state.query, "all", navigate)
+                                             }
+                                             else
+                                                 this.searchInput.focus();
                                          }}
                                          onChangeText={query => this.setState({query})}
                                      />
 
                                  </View>
+                                 <TouchableNativeFeedback onPress={()=>{
+                                     if(this.state.query) {
+                                         this.searchInput.blur();
+                                         searchProducts(this.state.query,"all",navigate)
+
+                                     }
+                                     else
+                                         this.searchInput.focus();
+                                 }}>
+                                     <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
+                                         <Icon name="search" />
+                                     </View>
+                                 </TouchableNativeFeedback>
                              </View>
                          </Card>
                          <View style={[{marginVertical:16}]}>

@@ -470,15 +470,29 @@ export class DBwrapper{
              }, (res)=>{reject(res)},that.successCB)
          })
      }
-     searchProducts(keyword="*" ,category="*"){
+     searchProducts(keyword ,category){
          let that = this;
+
          return new Promise((resolve, reject) => {
 
              that.db.transaction((tx) => {
+                 if (category === "all")
+                 {
 
-                 tx.executeSql(' SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword,category],(tx,res)=>{
-                     return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
+                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) ORDER BY postedOn DESC', [keyword], (tx, res) => {
+                         return that.formatResults(tx, res, resolve)
+                     }, (res) => {
+                         reject(res)
+                     })
 
+                 }
+                 else {
+                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword, category], (tx, res) => {
+                         return that.formatResults(tx, res, resolve)
+                     }, (res) => {
+                         reject(res)
+                     })
+                 }
              }, (res)=>{reject(res)}, that.successCB)
          })
      }

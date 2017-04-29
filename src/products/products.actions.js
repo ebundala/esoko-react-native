@@ -89,7 +89,7 @@ export const searchProducts = (keyword,catergory, navigate) => {
     return (dispatch) => {
 
         DB.searchProducts(keyword,catergory).then((products)=>{
-            navigate("products", {title: catergory,products})
+            navigate("searchResults", {title:"Results from "+catergory,products})
 
         }).catch(()=>{
             alert("error occured");

@@ -16,18 +16,18 @@ import {Icon,Card ,Button,Divider} from 'react-native-material-design';
 
 import { GiftedChat } from 'react-native-gifted-chat';
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
+import {shortenText} from "../../utils/utils"
+let moment = require('moment');
 
 export class ChatsList extends Component{
     static navigationOptions = {
-        title: 'Chats',
-        /*header: ({ state, setParams ,navigate}) => {
-         let  right=(<Statuses navigate={navigate}/>
-         );
-         let  left=(<Menu navigate={navigate}/>
-         );
-
-         return { right ,left};
-         },*/
+        title: 'Messages',
+        header: ({ state, setParams ,navigate}) => {
+        // let  right=(<Statuses navigate={navigate}/>);
+        // let  left=(<Menu navigate={navigate}/>);
+            let style=styles.navBarBackground
+         return { style};
+         },
 
     };
 
@@ -40,22 +40,22 @@ export class ChatsList extends Component{
 
     render(){
         let navigate=this.props.navigation.navigate;
-        let {chats}=this.props.navigation.state.params
+        let {chats}=this.props.navigation.state.params;
 
         return(
-            <View style={{flex:1}}>
+            <View style={[styles.flex1,{backgroundColor:"white"}]}>
                 <ListView dataSource={this.ds.cloneWithRows(chats)}
-                          contentContainerStyle={[styles.spaceAround,styles.flexWrap]}
-                          scrollRenderAheadDistance={640}
+                          renderSeparator={()=><Divider/>}
                           enableEmptySections={true}
                           renderRow={(chat) =>
-                              <Card>
+                              <View>
                                   <TouchableNativeFeedback onPress={() => navigate("singleChat", {data: chat})}>
 
 
                                       <View style={[styles.horizontal, {paddingTop: 8}]}>
-                                          <View style={[styles.flex2]}>
+                                          <View style={[styles.flex2,styles.alignItemsCenter]}>
                                               <Image style={[{
+                                                 // tintColor:colours.paperGrey200.color,
                                                   width: 50,
                                                   height: 50,
                                                   borderRadius: 50,
@@ -72,14 +72,15 @@ export class ChatsList extends Component{
                                                       {chat.userName}
                                                   </Text>
                                               </View>
-                                              <View style={[styles.horizontal,]}>
-                                                  <Text style={[]}>
-                                                      {new Date(chat.time).getFullYear()}
+
+                                              <View >
+                                                  <Text style={[{paddingVertical:4}]}>
+                                                      {shortenText(chat.body,50)}
                                                   </Text>
                                               </View>
-                                              <View style={[]}>
-                                                  <Text style={[]}>
-                                                      {chat.body}
+                                              <View style={[styles.horizontal,]}>
+                                                  <Text style={[{fontSize:10,paddingVertical:4}]}>
+                                                      {moment(chat.time).format('YYYY MM DD')}
                                                   </Text>
                                               </View>
                                           </View>
@@ -87,7 +88,7 @@ export class ChatsList extends Component{
 
                                   </TouchableNativeFeedback>
 
-                              </Card>
+                              </View>
 
 
                           }
@@ -103,14 +104,12 @@ export class SingleChatView extends Component{
         title: ({ state, setParams ,navigate}) => {
             return state.params.data.userName
         },
-        /*header: ({ state, setParams ,navigate}) => {
-         let  right=(<Statuses navigate={navigate}/>
-         );
-         let  left=(<Menu navigate={navigate}/>
-         );
-
-         return { right ,left};
-         },*/
+        header: ({ state, setParams ,navigate}) => {
+            // let  right=(<Statuses navigate={navigate}/>);
+            // let  left=(<Menu navigate={navigate}/>);
+            let style=styles.navBarBackground
+            return { style};
+         },
 
     };
     constructor(props) {

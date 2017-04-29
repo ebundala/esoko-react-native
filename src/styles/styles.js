@@ -13,6 +13,12 @@ export const typographyStyle = StyleSheet.create(typography);
 export const colorStyle=StyleSheet.create(color)
 export const colours=color
 const  styles=StyleSheet.create({
+    iconColor:{
+        color:color.paperTeal500.color
+    },
+    navBarBackground:{
+        backgroundColor:color.paperYellow400.color
+    },
     //layouts
     horizontal:{
         flexDirection:"row",

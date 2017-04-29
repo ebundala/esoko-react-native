@@ -11,10 +11,13 @@ import {
     TouchableNativeFeedback,
     Image
 } from 'react-native';
-import {Icon} from 'react-native-material-design';
+import {Icon,Divider} from 'react-native-material-design';
+import StarRating from 'react-native-star-rating';
+
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
+import {shortenText} from '../../utils/utils'
 let moment = require('moment');
 
 
@@ -23,14 +26,12 @@ export class ReviewsList extends Component{
         title:({ state, setParams ,navigate}) => {
             return  state.params.product.title+' Reviews'
         },
-        /*header: ({ state, setParams ,navigate}) => {
-         let  right=(<Statuses navigate={navigate}/>
-         );
-         let  left=(<Menu navigate={navigate}/>
-         );
-
-         return { right ,left};
-         },*/
+        header: ({ state, setParams ,navigate}) => {
+         //let  right=(<Statuses navigate={navigate}/>);
+         //let  left=(<Menu navigate={navigate}/>);
+            let style=styles.navBarBackground
+         return { style};
+         },
 
     };
     constructor(props){
@@ -46,13 +47,21 @@ export class ReviewsList extends Component{
         let title=product.title;
         return(
             <View style={{flex:1}}>
-           <ListView dataSource={this.ds.cloneWithRows(reviews||[])}
-                     renderRow={(review)=><TouchableNativeFeedback title={"Review "+title+" "} onPress={()=>navigate("singleReview",{data:review})}>
+           <ListView
+               renderSeparator={()=><Divider/>}
+               dataSource={this.ds.cloneWithRows(reviews||[])}
+                     renderRow={(review)=><TouchableNativeFeedback  onPress={()=>navigate("singleReview",{data:review})}>
 
-                         <View style={[styles.horizontal,{paddingTop:8}]}>
-                             <View style={[styles.flex2]}>
-                                 <Image  style={[{width:50,height:50,borderRadius:50,resizeMode:Image.resizeMode.cover}]}
-                                         source={{uri:review.reviewerAvator}}>
+                         <View style={[styles.horizontal, {paddingTop: 8}]}>
+                             <View style={[styles.flex2,styles.alignItemsCenter]}>
+                                 <Image style={[{
+                                     width: 50,
+                                     height: 50,
+                                     borderRadius: 50,
+                                     resizeMode: Image.resizeMode.cover
+
+                                 }]}
+                                        source={{uri: review.reviewerAvator}}>
 
                                  </Image>
                              </View>
@@ -64,13 +73,20 @@ export class ReviewsList extends Component{
                                      </Text>
                                  </View>
                                  <View style={[styles.horizontal,]}>
-                                     <Text style={[]}>
-                                         {review.rating}
-                                     </Text>
+                                     <StarRating
+                                         starSize={15}
+                                         starColor={colours.paperOrange500.color}
+                                         disabled={true}
+                                         maxStars={5}
+
+                                         rating={review.rating}
+                                         selectedStar={(rating) => this.onStarRatingPress(rating)}
+                                     />
+
                                  </View>
                                  <View style={[]}>
                                      <Text style={[]}>
-                                         {review.body}
+                                         {shortenText(review.body, 160)}
                                      </Text>
                                  </View>
                              </View>
@@ -91,14 +107,12 @@ export class SingleReviewView extends Component{
         title: ({ state, setParams ,navigate}) => {
             return state.params.title
         },
-        /*header: ({ state, setParams ,navigate}) => {
-         let  right=(<Statuses navigate={navigate}/>
-         );
-         let  left=(<Menu navigate={navigate}/>
-         );
-
-         return { right ,left};
-         },*/
+        header: ({ state, setParams ,navigate}) => {
+        // let  right=(<Statuses navigate={navigate}/>);
+        // let  left=(<Menu navigate={navigate}/>);
+            let style=styles.navBarBackground;
+         return { style};
+         },
 
     };
     render(){
@@ -369,7 +383,7 @@ export class CreateReview extends Component{
             <ExNavigator
                 initialRoute={routes.getHomeRoute()}
                 sceneStyle={{ paddingTop: 56 }}
-                navigationBarStyle={[{backgroundColor:colours.paperTeal500.color}]}
+                navigationBarStyle={[styles.navBarBackground]}
                 titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
                 style={[styles.flex1]}
             />
