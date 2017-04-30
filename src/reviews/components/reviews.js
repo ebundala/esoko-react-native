@@ -8,6 +8,7 @@ import {
     View,
     Button,
     ListView,
+    PixelRatio,
     TouchableNativeFeedback,
     Image
 } from 'react-native';
@@ -19,7 +20,190 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
 import {shortenText} from '../../utils/utils'
 let moment = require('moment');
+let WidgetMixin = require('react-native-gifted-form/mixins/WidgetMixin.js');
 
+const RatingWidget = React.createClass({
+    mixins: [WidgetMixin],
+
+    getDefaultProps() {
+        return {
+            inline: true,
+            // @todo type avec suffix Widget pour all
+            type: 'RatingWidget',
+
+        }
+    },
+
+    getInitialState() {
+        return {
+
+            value:0,
+        }
+    },
+
+    _renderTitle() {
+        if (this.props.title !== '') {
+            return (
+                <Text
+                    numberOfLines={1}
+                    style={this.getStyle(['ratingInputTitleInline'])}
+                >
+                    {this.props.title}
+                </Text>
+            );
+        }
+        return (
+            <View style={this.getStyle(['spacer'])}/>
+        );
+    },
+
+    _renderRow() {
+
+        if (this.props.inline === false) {
+            return (
+                <View style={this.getStyle(['rowContainer'])}>
+                    <View style={this.getStyle(['titleContainer'])}>
+                        {this._renderImage()}
+                        <Text numberOfLines={1} style={this.getStyle(['ratingInputTitle'])}>{this.props.title}</Text>
+                    </View>
+
+                    <TextInput
+                        ref='input'
+                        style={this.getStyle(['ratingInput'])}
+
+                        {...this.props}
+
+                        onFocus={this.onFocus}
+                        onBlur={this.onBlur}
+
+
+                        onChangeText={this._onChange}
+                        value={this.state.value}
+                    />
+                    {this._renderValidationError()}
+                    {this._renderUnderline()}
+                </View>
+            );
+        }
+        return (
+            <View style={this.getStyle(['rowContainer'])}>
+                <View style={this.getStyle(['row'])}>
+                    {this._renderImage()}
+                    {this._renderTitle()}
+
+                    <StarRating
+                        {...this.props}
+                        rating={this.state.value}
+                        selectedStar={(rating) => this.onStarRatingPress(rating)}
+                    />
+                </View>
+                {this._renderValidationError()}
+                {this._renderUnderline()}
+            </View>
+        );
+
+    },
+
+
+    onStarRatingPress(rating) {
+        let oldVal = this.state.value;
+        let newVal = rating;
+        if (newVal !== oldVal) {
+            this.setState({
+                value: rating
+            });
+            this._onChange(newVal);
+        }
+
+    },
+
+
+    _renderUnderline() {
+        if (this.props.underlined === true) {
+            if (this.state.focused === false) {
+                return (
+                    <View
+                        style={this.getStyle(['underline', 'underlineIdle'])}
+                    />
+                );
+            }
+            return (
+                <View
+                    style={this.getStyle(['underline', 'underlineFocused'])}
+                />
+            );
+        }
+        return null;
+    },
+
+    render() {
+        return this._renderRow();
+    },
+
+    defaultStyles: {
+        rowImage: {
+            height: 20,
+            width: 20,
+            marginLeft: 10,
+        },
+        underline: {
+            marginRight: 10,
+            marginLeft: 10,
+        },
+        underlineIdle: {
+            borderBottomWidth: 2,
+            borderColor: '#c8c7cc',
+        },
+        underlineFocused: {
+            borderBottomWidth: 2,
+            borderColor: '#3498db',
+        },
+        spacer: {
+            width: 10,
+        },
+        rowContainer: {
+            backgroundColor: '#FFF',
+            borderBottomWidth: 1 / PixelRatio.get(),
+            borderColor: '#c8c7cc',
+        },
+        row: {
+            flexDirection: 'row',
+            height: 44,
+            alignItems: 'center',
+        },
+        titleContainer: {
+            paddingTop: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            // selfAlign: 'center',
+            // backgroundColor: '#ff0000',
+        },
+        ratingInputInline: {
+            fontSize: 15,
+            flex: 1,
+            height: 40,// @todo should be changed if underlined
+            marginTop: 2,
+        },
+        ratingInputTitleInline: {
+            width: 110,
+            fontSize: 15,
+            color: '#000',
+            paddingLeft: 10,
+        },
+        ratingInputTitle: {
+            fontSize: 13,
+            color: '#333',
+            paddingLeft: 10,
+            flex: 1
+        },
+        ratingInput: {
+            fontSize: 15,
+            flex: 1,
+            height: 40,
+            marginLeft: 40,
+        },
+    },
+});
 
 export class ReviewsList extends Component{
     static navigationOptions = {
@@ -143,7 +327,7 @@ export class CreateReview extends Component{
     //static router = MyRouter;
     constructor(props){
         super(props)
-        let {user}=this.props.screenProps;
+
         this.state={
             product:{
                 uid:null,
@@ -157,9 +341,9 @@ export class CreateReview extends Component{
     render(){
 
         let {navigate,goBack} = this.props.navigation;
-        //let {data}=this.props.navigation.state.params;
+        let {product}=this.props.navigation.state.params;
         let props=this.props.screenProps;
-
+        let {user}=this.props.screenProps;
         let routes = {
             getHomeRoute() {
                 return {
@@ -212,34 +396,28 @@ export class CreateReview extends Component{
                             >
 
                                 <GiftedForm.SeparatorWidget  />
-                                <GiftedForm.SelectWidget name='rating' title='Star Rating' multiple={false}>
-                                    <GiftedForm.OptionWidget  title="5 Stars" value="5">
+                                <RatingWidget
+                                    title='Rate this'
+                                    name='rating'
+                                    starSize={24}
+                                    starStyle={{marginHorizontal:5}}
+                                    starColor={colours.paperOrange500.color}
+                                    disabled={false}
+                                    maxStars={5}
 
-                                    </GiftedForm.OptionWidget>
-                                    <GiftedForm.OptionWidget  title="4 Stars" value="4"/>
-                                    <GiftedForm.OptionWidget  title="3 Stars" value="3"/>
-                                    <GiftedForm.OptionWidget  title="2 Stars" value="2"/>
-                                    <GiftedForm.OptionWidget  title="1 Stars" value="1"/>
-                                </GiftedForm.SelectWidget>
-                                <GiftedForm.SeparatorWidget  />
-
-                                <GiftedForm.ModalWidget
-                                    title='Review'
-                                    displayValue='review'
-                                    cancelable={true}
-                                    scrollEnabled={true} // true by default
-                                >
-
+                                />
                                 <GiftedForm.TextAreaWidget
                                     name='review'
-                                    autoFocus={true}
-                                    placeholder='what do you think about this item'
+                                    autoFocus={false}
+                                    placeholder='What do you think about this item'
                                 />
-                                </GiftedForm.ModalWidget>
-                                <GiftedForm.SeparatorWidget />
+
+                                <GiftedForm.SeparatorWidget  />
+
+
 
                                 <GiftedForm.SubmitWidget
-                                    title='post'
+                                    title='Submit'
                                     widgetStyles={{
                                         submitButton: {
                                             backgroundColor:"blue" //themes.mainColor,
@@ -266,12 +444,13 @@ export class CreateReview extends Component{
                                 />
 
                                 <GiftedForm.NoticeWidget
-                                    title='By posting, you agree to the Terms of Service and Privacy Policy.'
+                                    title='By submitting a review, you agree to the Terms of Service and Privacy Policy.'
                                 />
 
-                                <GiftedForm.HiddenWidget name='userID' value={"xxxx"} />
-                                <GiftedForm.HiddenWidget name='productID' value={"xxxx"} />
-                                <GiftedForm.HiddenWidget name='userName' value={"xxxx"} />
+                                <GiftedForm.HiddenWidget name='userID' value={user.UID} />
+                                <GiftedForm.HiddenWidget name='productID' value={product.productID} />
+                                <GiftedForm.HiddenWidget name='userName' value={user.displayName} />
+                                <GiftedForm.HiddenWidget name='reviewerAvator' value={user.photoUrl} />
 
                             </GiftedForm>
 
@@ -289,7 +468,7 @@ export class CreateReview extends Component{
                     // This route's title is displayed next to the back button when you push
                     // a new route on top of this one.
                     getTitle() {
-                        return 'Review product';
+                        return 'Rate '+shortenText(product.title);
                     },
 
 

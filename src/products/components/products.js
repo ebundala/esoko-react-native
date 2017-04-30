@@ -10,7 +10,7 @@ import {
     Image,
     ScrollView,
     TextInput,
-   // Navigator,
+   //PixelRatio,
     ViewPagerAndroid,
     TouchableNativeFeedback
 } from "react-native";
@@ -245,7 +245,7 @@ let style=styles.navBarBackground
                             height:34
                         }}
                                 onPress={() => props.placeBid(data, navigate)}>
-                            <Text>{"PLACE YOUR BID"}</Text>
+                            <Text>{"PLACE BID"}</Text>
                         </Button>
                     </View>
 
@@ -665,7 +665,7 @@ export class CreateProduct extends Component{
 
         let {navigate,goBack} = this.props.navigation;
 
-        let props=this.props.screenProps;
+        let {user}=this.props.screenProps;
 
         let routes = {
             getHomeRoute() {
@@ -788,6 +788,9 @@ export class CreateProduct extends Component{
                                         returnKeyLabel="done"
                                         clearButtonMode='while-editing'
 
+                                        onSubmitEditing={(e) => {
+                                            navigator.pop();
+                                        }}
 
                                     />
 
@@ -840,11 +843,14 @@ export class CreateProduct extends Component{
 
                                         placeholder='item quantity'
 
-                                        keyboardType='number-pad'
+                                        keyboardType="numeric"
+
 
                                         clearButtonMode='while-editing'
                                         returnKeyLabel="done"
-
+                                        onSubmitEditing={(e) => {
+                                            navigator.pop();
+                                        }}
                                     />
 
 
@@ -977,7 +983,7 @@ export class CreateProduct extends Component{
                                     title='post'
                                     widgetStyles={{
                                         submitButton: {
-                                            backgroundColor:"red" //themes.mainColor,
+                                            backgroundColor:"blue" //themes.mainColor,
                                         }
                                     }}
                                     onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
@@ -1004,7 +1010,9 @@ export class CreateProduct extends Component{
                                     title='By posting, you agree to the Terms of Service and Privacy Policy.'
                                 />
 
-                                <GiftedForm.HiddenWidget name='userID' value={"xxxx"} />
+                                <GiftedForm.HiddenWidget name='userID' value={user.UID} />
+                                <GiftedForm.HiddenWidget name='userName' value={user.displayName} />
+                                <GiftedForm.HiddenWidget name='reviewerAvator' value={user.photoUrl} />
 
                             </GiftedForm>
 
@@ -1193,6 +1201,16 @@ export class CreateProduct extends Component{
 
 
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
