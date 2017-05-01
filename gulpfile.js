@@ -57,7 +57,7 @@ gulp.task("serve",function(){
   spwner('start react-native start');
 })
 gulp.task("log",function(){
-  spwner('start adb logcat com.eSoko:V ReactNativeJS:V Firestack:V *:S');
+  spwner('start adb logcat com.eSoko:V ReactNativeJS:V Firestack:V *:E');
 })
 gulp.task("run",function(){
   spwner('react-native run-android');

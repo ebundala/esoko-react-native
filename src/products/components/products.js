@@ -10,7 +10,8 @@ import {
     Image,
     ScrollView,
     TextInput,
-   //PixelRatio,
+    TouchableHighlight,
+    PixelRatio,
     ViewPagerAndroid,
     TouchableNativeFeedback
 } from "react-native";
@@ -22,9 +23,11 @@ import StarRating from 'react-native-star-rating';
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
+import Firestack from 'react-native-firestack'
 import {shortenText} from '../../utils/utils'
 let moment = require('moment');
 let ctx;
+const firestack = new Firestack();
 export class ProductsList extends Component {
     static navigationOptions = {
         title: ({state, setParams, navigate}) => {
@@ -179,7 +182,7 @@ export class SingleProductView extends Component {
         header: ({ state, setParams ,navigate}) => {
        //  let  right=(<Statuses navigate={navigate}/>);
          //let  left=(<Menu navigate={navigate}/>);
-let style=styles.navBarBackground
+let style=styles.navBarBackground;
          return { style};
          },
 
@@ -629,6 +632,162 @@ export class searchResultsProductsList extends Component {
 
 
 
+let WidgetMixin = require('react-native-gifted-form/mixins/WidgetMixin.js');
+
+
+
+const MultOptionWidget = React.createClass({
+    mixins: [WidgetMixin],
+
+    getDefaultProps() {
+
+        return ({
+            // onChange: null,
+            type: 'MultOptionWidget',
+
+        });
+    },
+
+    /* getInitialState(){
+     // return {preValue:false}
+     },*/
+    componentDidMount() {
+        // get value from prop
+       // if (typeof this.props.value !== 'undefined') {
+           // this._setValue(this.props.value);
+            //return;
+      //  }
+        // get value from store
+        let formState = GiftedFormManager.stores[this.props.formName];
+        if (typeof formState !== 'undefined') {
+            if (typeof formState.values[this.props.name] !== 'undefined') {
+               // console.log(this.props.name+" form "+formState.values[this.props.name])
+               // console.log(formState)
+                /*this.setState({
+                    value: formState.values[this.props.name],
+
+                });*/
+                //this._validate(formState.values[this.props.name]);
+            }
+        }
+    },
+
+    componentWillReceiveProps(nextProps) {
+        if (typeof nextProps.value !== 'undefined' && nextProps.value !== this.props.value) {
+           // this.onChange(nextProps.value);
+        }
+    },
+    setValue(value) {
+        this.setState({
+            value: value,
+        });
+        GiftedFormManager.updateValue(this.props.formName, this.props.name, value);
+    },
+
+    onChange(value, onChangeText = true) {
+        if (onChangeText === true) {
+            //should maintain similar API to core TextInput component
+            this.props.onChangeText && this.props.onChangeText(value);
+        }
+
+        this.setValue(value);
+        this._validate(value);
+
+        this.props.onValueChange && this.props.onValueChange();
+        // @todo modal widgets validation - the modalwidget row should inform about validation status
+    },
+
+
+    _renderCheckmark() {
+
+        if (this.state.value === true) {
+            return (
+                <Image
+                    style={this.getStyle('checkmark')}
+                    resizeMode={Image.resizeMode.contain}
+                    source={require('react-native-gifted-form/icons/check.png')}
+                />
+            );
+        }
+        return null;
+    },
+
+    _onClose() {
+
+        if (this.props.multiple === false) {
+            this.props.unSelectAll();
+            this._onChange(true);
+
+            if (typeof this.props.onSelect === 'function') {
+                // console.log('onSelect');
+                this.props.onSelect(this.props.value);
+            }
+
+            if (typeof this.props.onClose === 'function') {
+                this.props.onClose(this.props.title, this.props.navigator);
+            }
+        } else {
+            this.onChange(!!this.state.value);
+
+
+
+        }
+    },
+
+    render() {
+
+        return (
+            <View style={this.getStyle('rowContainer')}>
+                <TouchableHighlight
+                    onPress={this._onClose}
+                    underlayColor={this.getStyle('underlayColor').pop()}
+                    {...this.props} // mainly for underlayColor
+                >
+                    <View style={this.getStyle('row')}>
+                        {this._renderImage()}
+                        <Text numberOfLines={1} style={this.getStyle('switchTitle')}>
+                            {this.props.title}
+                        </Text>
+                        {this._renderCheckmark()}
+                    </View>
+                </TouchableHighlight>
+            </View>
+        );
+    },
+
+    defaultStyles: {
+        rowImage: {
+            height: 20,
+            width: 20,
+            marginLeft: 10,
+        },
+        checkmark: {
+            width: 23,
+            marginRight: 10,
+            marginLeft: 10,
+        },
+        rowContainer: {
+            backgroundColor: '#FFF',
+            borderBottomWidth: 1 / PixelRatio.get(),
+            borderColor: '#c8c7cc',
+        },
+        row: {
+            flexDirection: 'row',
+            height: 44,
+            alignItems: 'center',
+        },
+        underlayColor: '#c7c7cc',
+        switchTitle: {
+            fontSize: 15,
+            color: '#000',
+            flex: 0.7,
+            paddingLeft: 10,
+        },
+    },
+});
+
+
+
 
 
 
@@ -650,7 +809,7 @@ export class CreateProduct extends Component{
     //static router = MyRouter;
     constructor(props){
         super(props)
-        let {user}=this.props.screenProps;
+        //let {user}=this.props.screenProps;
         this.state={
             product:{
                 uid:null,
@@ -716,6 +875,181 @@ export class CreateProduct extends Component{
                                     },
                                     "additionalProperty":{"type":"additionalProperty"}*/
                                 }}
+
+
+                                validators={{
+
+
+                                  //  userID: 789098090,
+                                   // userName: 'Anonymous user',
+                                   // reviewerAvator: 1,
+                                    /*name: 'hp',
+                                    brand: 'on',
+                                    model: 'vb',
+                                    manufacturer: 'gh',
+                                    price: '258',
+                                    currency: [ 'TZS' ],
+                                    acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
+                                    quantity: '789',
+                                    category: [ 'electronics' ],
+                                    itemCondition: [ 'New' ],
+                                    availability: [ 'InStock' ],
+                                    areaServed: [ 'MAIN', 'SMC' ],
+                                    availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
+                                    description: 'fggfhgf',
+                                    warranty: 'gfhgfhgfh',*/
+
+                                    name: {
+                                        title: 'Product',
+                                        validate: [{
+                                            validator: 'isLength',
+                                            arguments: [3, 50],
+                                            message: '{TITLE} name must be between {ARGS[0]} and {ARGS[1]} characters'
+                                        }]
+                                    },
+                                    brand: {
+                                        title: 'Brand',
+                                        validate: [{
+                                            validator: 'isLength',
+                                            arguments: [2, 16],
+                                            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                        },{
+                                            validator: 'matches',
+                                            arguments: /^[a-zA-Z0-9]*$/,
+                                            message: '{TITLE} can contains only alphanumeric characters'
+                                        }]
+                                    },
+                                    model: {
+                                        title: 'Model',
+                                        validate: [{
+                                            validator: 'isLength',
+                                            arguments: [2, 16],
+                                            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                        },{
+                                            validator: 'matches',
+                                            arguments: /^[a-zA-Z0-9]*$/,
+                                            message: '{TITLE} can contains only alphanumeric characters'
+                                        }]
+                                    },
+                                    manufacturer: {
+                                        title: 'Manufacturer',
+                                        validate: [{
+                                            validator: 'isLength',
+                                            arguments: [0, 16],
+                                            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                        },{
+                                            validator: 'matches',
+                                            arguments: /^[a-zA-Z0-9]*$/,
+                                            message: '{TITLE} can contains only alphanumeric characters'
+                                        }]
+                                    },
+                                   /*price: {
+                                        title: 'Price',
+                                        validate: [{
+                                            //validation: "isInt",
+                                            arguments: [100, 100000000],
+                                            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]}'
+                                        }]
+                                    },*/
+                                    currency: {
+                                        title: 'Currency',
+                                        validate: [{
+                                            validator: (...args) => {
+                                                if (args[0] === undefined) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            },
+                                            message: '{TITLE} is required',
+                                        }]
+
+                                    },
+                                    acceptedPaymentMethod: {
+                                        title: 'Payment Methods',
+                                        validate: [{
+                                            validator: (...args) => {
+                                                if (args[0] === undefined) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            }}]
+                                    },
+                                  /*  quantityg: {
+                                        title: 'Quantityg',
+                                        validate: [{
+                                            validator: 'isInt',
+                                            arguments: [1, 100],
+                                            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                        }]
+                                    },*/
+                                    itemCondition: {
+                                        title: 'Condition',
+                                        validate: [{
+                                            validator: (...args) => {
+                                                if (args[0] === undefined) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            },
+                                            message: '{TITLE} is required',
+                                        }]
+                                    },
+                                    category: {
+                                        title: 'Category',
+                                        validate: [{
+                                            validator: (...args) => {
+                                                if (args[0] === undefined) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            },
+                                            message: '{TITLE} is required',
+                                        }]
+                                    },
+                                    areaServed: {
+                                        title: 'Availability',
+                                        validate: [{
+                                            validator: (...args) => {
+                                                if (args[0] === undefined) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            },
+                                            message: '{TITLE} is required',
+                                        }]
+                                    },
+                                    availableDeliveryMethod: {
+                                        title: 'Availability',
+                                        validate: [{
+                                            validator: (...args) => {
+                                                if (args[0] === undefined) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            },
+                                            message: '{TITLE} is required',
+                                        }]
+                                    },
+                                    /*descriptionf: {
+                                        title: 'Availabilityg',
+                                        validate: [{
+                                            validator: 'isLength',
+                                            arguments: [0, 150],
+                                            message: '{TITLE} name must be between {ARGS[0]} and {ARGS[1]} characters'
+                                        }],
+                                    },
+                                    warrantyg: {
+                                        title: 'Warrantyb',
+                                        validate: [{
+                                            validator: 'isLengthb',
+                                            arguments: [0, 150],
+                                            message: '{TITLE} name must be between {ARGS[0]} and {ARGS[1]} characters'
+                                        }],
+
+                                    },*/
+
+                                }}
+
                             >
 
                                 <GiftedForm.SeparatorWidget  />
@@ -820,9 +1154,9 @@ export class CreateProduct extends Component{
                                     <GiftedForm.SeparatorWidget />
 
 
-                                    <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods' multiple={false}>
-                                        <GiftedForm.OptionWidget  title="On Delivery" value="OnDelivery"/>
-                                        <GiftedForm.OptionWidget  title="Tigo Pesa" value="TigoPesa"/>
+                                    <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods' multiple={true}>
+                                        <MultOptionWidget  title="On Delivery" value="OnDelivery"/>
+                                        <MultOptionWidget  title="Tigo Pesa" value="TigoPesa"/>
 
 
                                     </GiftedForm.SelectWidget>
@@ -922,9 +1256,9 @@ export class CreateProduct extends Component{
                                     scrollEnabled={true} // true by default
                                 >
 
-                                    <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={false}>
-                                        <GiftedForm.OptionWidget  title="Main Campus" value="MAIN"/>
-                                        <GiftedForm.OptionWidget  title="Mazimbu Campus" value="SMC"/>
+                                    <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={true}>
+                                        <MultOptionWidget  title="Main Campus" value="MAIN"/>
+                                        <MultOptionWidget  title="Mazimbu Campus" value="SMC"/>
 
                                     </GiftedForm.SelectWidget>
 
@@ -936,9 +1270,9 @@ export class CreateProduct extends Component{
                                     <GiftedForm.SeparatorWidget />
 
 
-                                    <GiftedForm.SelectWidget name='availableDeliveryMethod' title='Delivery Methods' multiple={false}>
-                                        <GiftedForm.OptionWidget  title="Pick up" value="pickUp"/>
-                                        <GiftedForm.OptionWidget  title="Postal Shipping" value="Shipping"/>
+                                    <GiftedForm.SelectWidget name='availableDeliveryMethod' title='Delivery Methods' multiple={true}>
+                                        <MultOptionWidget  title="Pick up" value="pickUp"/>
+                                        <MultOptionWidget  title="Postal Shipping" value="Shipping"/>
 
                                     </GiftedForm.SelectWidget>
 
@@ -986,11 +1320,51 @@ export class CreateProduct extends Component{
                                             backgroundColor:"blue" //themes.mainColor,
                                         }
                                     }}
-                                    onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
+                                    onSubmit={(isValid, values, validationResults, postSubmit=null, modalNavigator = null) => {
                                         if (isValid === true) {
 
-                                            console.log(values);
-                                            // prepare object
+
+
+
+                                            let   prod={
+                                                userID: values.hasOwnProperty("userID")? values.userID:postSubmit(["it seams your not logged in"]),
+                                                userName:values.hasOwnProperty("userName")? values.userName:postSubmit(["it seams your not logged in"]),
+                                                name: values.hasOwnProperty("name")?values.name:postSubmit(["product name is required"]),
+                                                brand: values.hasOwnProperty("brand")?values.brand:"",
+                                                model:values.hasOwnProperty("model")?values.model:"",
+                                                manufacturer:values.hasOwnProperty("manufacturer")?values.manufacturer:"",
+                                               price:parseInt(values.price)?parseInt(values.price):postSubmit(["price is not valid"]),
+                                                   currency:values.hasOwnProperty("currency")?values.currency[0]:postSubmit(["currency is not valid"]),
+                                                   acceptedPaymentMethod:values.acceptedPaymentMethod instanceof Array?values.acceptedPaymentMethod.reduce(function(acc, cur, i) {
+                                                       acc[cur] = true;
+                                                       return acc;
+                                                   }, {}):null,
+                                                quantity:parseInt(values.quantity)?parseInt(values.quantity):postSubmit(["quantity is not valid"]) ,
+                                                   category:values.hasOwnProperty("category")?values.category[0]:postSubmit(["category is required"]),
+                                                   itemCondition:values.hasOwnProperty("itemCondition")?values.itemCondition[0]:postSubmit(["Item condition is required"]),
+                                                   availability:values.hasOwnProperty("availability")?values.availability[0]:postSubmit(["Item Availability is required"]),
+                                                   areaServed:values.areaServed instanceof Array?values.areaServed.reduce(function(acc, cur, i) {
+                                                           acc[cur] = true;
+                                                           return acc;
+                                                       }, {}):null,
+                                                   availableDeliveryMethod:values.availableDeliveryMethod instanceof Array?values.availableDeliveryMethod.reduce(function(acc, cur, i) {
+                                                       acc[cur] = true;
+                                                       return acc;
+                                                   }, {}):null,
+                                                 description: values.hasOwnProperty("userID")? values.description:postSubmit(["it seams your not logged in"]),
+                                                warranty: values.hasOwnProperty("userID")? values.warranty:postSubmit(["it seams your not logged in"])
+                                            };
+                                            console.log(prod);
+                                            this.submitForm(prod).then((res) => {
+                                                console.log(res);
+                                                postSubmit();
+                                                // GiftedFormManager.reset('newProduct')
+                                            }).catch((e) =>{
+                                                console.log(e)
+                                                postSubmit([e.message||"error occured"]);
+                                                // GiftedFormManager.reset('newProduct')
+                                            })
+                                               // prepare object
                                             //values.gender = values.gender[0];
                                             // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
 
@@ -1001,7 +1375,10 @@ export class CreateProduct extends Component{
                                              ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
                                              ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
                                              */
+                                          //  postSubmit();
+                                           // GiftedFormManager.reset('newProduct')
                                         }
+                                        postSubmit(["error invalid field detected"])
                                     }}
 
                                 />
@@ -1114,6 +1491,30 @@ export class CreateProduct extends Component{
                             "Accessories",
                             "Jewelry",
                         ]
+                    },
+                    submitForm(data){
+                        return new Promise((resolve,reject)=>{
+                            firestack.database.ref("products").push().then((res) => {
+                                let newPostKey = res.key;
+
+                                firestack.ServerValue.then(map => {
+
+
+                                    data={...data,timestamp:map.TIMESTAMP,productID:newPostKey}
+
+
+                                    let updates = {};
+                                    updates['/products/'+newPostKey] = data;
+                                    firestack.database.ref().update(updates).then((resp) => {
+                                        resolve(resp)
+
+                                    }).catch((e) => {
+                                        reject(e)
+
+                                    })
+                                })
+                            }).catch(reject)
+                        })
                     }
                 };
             }
@@ -1132,7 +1533,30 @@ export class CreateProduct extends Component{
 
             );
         }
+
+
     schema(){
+
+
+        /* let prod={
+         userID: 789098090,
+         userName: 'Anonymous user',
+         reviewerAvator: 1,
+         name: 'hp',
+         brand: 'on',
+         model: 'vb',
+         manufacturer: 'gh',
+         price: '258',
+         currency: [ 'TZS' ],
+         acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
+         quantity: '789',
+         category: [ 'electronics' ],
+         itemCondition: [ 'New' ],
+         availability: [ 'InStock' ],
+         areaServed: [ 'MAIN', 'SMC' ],
+         availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
+         description: 'fggfhgf',
+         warranty: 'gfhgfhgfh' }*/
         return{
             "type": "Product",
             "description": {"type":"description"},

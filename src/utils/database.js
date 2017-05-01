@@ -279,7 +279,7 @@ export class DBwrapper{
          let catLen=category.length;
 
 
-         for(let i=0,n=500;i<n;i++) {
+         for(let i=0,n=5;i<n;i++) {
              let UID = Math.ceil(Math.random() * 100000);
              let cat =category[Math.floor(Math.random()*catLen)]
 

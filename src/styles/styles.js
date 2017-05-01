@@ -17,7 +17,7 @@ const  styles=StyleSheet.create({
         color:color.paperTeal500.color
     },
     navBarBackground:{
-        backgroundColor:color.paperYellow400.color
+        backgroundColor:color.paperBlue400.color
     },
     //layouts
     horizontal:{

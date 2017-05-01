@@ -20,6 +20,7 @@ import { StackNavigator } from 'react-navigation';
 
 import {IMAGES} from "../../products/products.actions"
 
+import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 
 
 
@@ -608,15 +609,15 @@ const SQLiteDemo = React.createClass({
 
     render(){
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        return (<View style={styles.mainContainer}>
-            <View style={styles.toolbar}>
-                <Text style={styles.toolbarButton} onPress={this.runDemo}>
+        return (<View style={st.mainContainer}>
+            <View style={st.toolbar}>
+                <Text style={st.toolbarButton} onPress={this.runDemo}>
                     Run Demo
                 </Text>
-                <Text style={styles.toolbarButton} onPress={this.closeDatabase}>
+                <Text style={st.toolbarButton} onPress={this.closeDatabase}>
                     Close DB
                 </Text>
-                <Text style={styles.toolbarButton} onPress={this.deleteDatabase}>
+                <Text style={st.toolbarButton} onPress={this.deleteDatabase}>
                     Delete DB
                 </Text>
             </View>
@@ -654,7 +655,7 @@ var listStyles = StyleSheet.create({
     },
 });
 
-var styles = StyleSheet.create({
+var st = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -703,8 +704,8 @@ export class OrdersList extends Component{
         title: 'Orders',
         header: ({ state, setParams ,navigate}) => {
         // let  right=(<Statuses navigate={navigate}/>);
-//            let style=styles.navBarBackground
-         return { style};
+           let style=styles.navBarBackground;
+         return {style};
          },
 
     };
@@ -733,11 +734,11 @@ export class SingleOrderView extends Component{
             return state.params.title
         },
         header: ({ state, setParams ,navigate}) => {
-         //let  right=(<Statuses navigate={navigate}/>);
-         //let  left=(<Menu navigate={navigate}/>);
-            let style=styles.navBarBackground
-         return { style};
-         },
+            // let  right=(<Statuses navigate={navigate}/>);
+            //let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>);
+            let style=styles.navBarBackground;
+            return {style};
+        },
 
     };
     render(){
