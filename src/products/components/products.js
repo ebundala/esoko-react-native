@@ -1105,6 +1105,7 @@ export class CreateProduct extends Component{
                                 <GiftedForm.ModalWidget
                                     title='Price'
                                     displayValue='price'
+                                    name='price'
                                     cancelable={true}
 
                                 >
@@ -1117,7 +1118,7 @@ export class CreateProduct extends Component{
                                         title='Price per Item'
 
                                         placeholder='price of single unit'
-
+                                        autoFocus={true}
                                         keyboardType="numeric"
                                         returnKeyLabel="done"
                                         clearButtonMode='while-editing'
@@ -1133,6 +1134,7 @@ export class CreateProduct extends Component{
                                 <GiftedForm.ModalWidget
                                     title='Currency'
                                     displayValue='currency'
+                                    name='currency'
                                     cancelable={true}
                                 >
                                     <GiftedForm.SeparatorWidget />
@@ -1148,6 +1150,7 @@ export class CreateProduct extends Component{
                                 <GiftedForm.ModalWidget
                                     title='Payment Methods'
                                     displayValue='acceptedPaymentMethod'
+                                    name='acceptedPaymentMethod'
                                     cancelable={true}
                                 >
 
@@ -1165,6 +1168,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Quantity'
+                                    name='quantity'
                                     displayValue='quantity'
                                     cancelable={true}
                                 >
@@ -1179,7 +1183,7 @@ export class CreateProduct extends Component{
 
                                         keyboardType="numeric"
 
-
+                                        autoFocus={true}
                                         clearButtonMode='while-editing'
                                         returnKeyLabel="done"
                                         onSubmitEditing={(e) => {
@@ -1194,6 +1198,7 @@ export class CreateProduct extends Component{
 
                                 <GiftedForm.ModalWidget
                                     title='Category'
+                                    name='category'
                                     displayValue='category'
                                     cancelable={true}
                                 >
@@ -1212,6 +1217,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Condition'
+                                    name='itemCondition'
                                     cancelable={true}
                                     displayValue='itemCondition'>
                                     <GiftedForm.SeparatorWidget />
@@ -1229,6 +1235,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Availability'
+                                    name='availability'
                                     cancelable={true}
                                     displayValue='availability'>
                                     <GiftedForm.SeparatorWidget />
@@ -1248,6 +1255,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Area Served'
+                                    name='areaServed'
                                     cancelable={true}
                                     displayValue='areaServed'
 
@@ -1265,6 +1273,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Delivery Methods'
+                                    name='availableDeliveryMethod'
                                     cancelable={true}
                                     displayValue='availableDeliveryMethod'>
                                     <GiftedForm.SeparatorWidget />
@@ -1285,7 +1294,7 @@ export class CreateProduct extends Component{
                                     title='Description'
                                     cancelable={true}
                                     displayValue='description'
-
+                                    name='description'
 
 
                                     scrollEnabled={true} // true by default
@@ -1300,6 +1309,7 @@ export class CreateProduct extends Component{
                                 </GiftedForm.ModalWidget>
                                 <GiftedForm.ModalWidget
                                     title='Warranty'
+                                    name='warranty'
                                     cancelable={true}
                                     displayValue='warranty'>
                                     <GiftedForm.SeparatorWidget />
@@ -1320,13 +1330,14 @@ export class CreateProduct extends Component{
                                             backgroundColor:"blue" //themes.mainColor,
                                         }
                                     }}
+
                                     onSubmit={(isValid, values, validationResults, postSubmit=null, modalNavigator = null) => {
                                         if (isValid === true) {
 
 
+                                            console.log(values)
 
-
-                                            let   prod={
+                                            /*let   prod={
                                                 userID: values.hasOwnProperty("userID")? values.userID:postSubmit(["it seams your not logged in"]),
                                                 userName:values.hasOwnProperty("userName")? values.userName:postSubmit(["it seams your not logged in"]),
                                                 name: values.hasOwnProperty("name")?values.name:postSubmit(["product name is required"]),
@@ -1361,9 +1372,9 @@ export class CreateProduct extends Component{
                                                 // GiftedFormManager.reset('newProduct')
                                             }).catch((e) =>{
                                                 console.log(e)
-                                                postSubmit([e.message||"error occured"]);
+                                                postSubmit(["error",e.message||"error occured"]);
                                                 // GiftedFormManager.reset('newProduct')
-                                            })
+                                            });*/
                                                // prepare object
                                             //values.gender = values.gender[0];
                                             // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
@@ -1377,8 +1388,9 @@ export class CreateProduct extends Component{
                                              */
                                           //  postSubmit();
                                            // GiftedFormManager.reset('newProduct')
+                                     //  return;
                                         }
-                                        postSubmit(["error invalid field detected"])
+                                        postSubmit(['error', 'invalid field detected']);
                                     }}
 
                                 />
@@ -1387,9 +1399,7 @@ export class CreateProduct extends Component{
                                     title='By posting, you agree to the Terms of Service and Privacy Policy.'
                                 />
 
-                                <GiftedForm.HiddenWidget name='userID' value={user.UID} />
-                                <GiftedForm.HiddenWidget name='userName' value={user.displayName} />
-                                <GiftedForm.HiddenWidget name='reviewerAvator' value={user.photoUrl} />
+                                <GiftedForm.HiddenWidget name='userID' value={user.user.uid} />
 
                             </GiftedForm>
 

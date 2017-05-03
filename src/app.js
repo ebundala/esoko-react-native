@@ -92,7 +92,7 @@ class root extends Component {
 
 
                 <Modal
-                           animationType={"slide"}
+                           animationType={"fade"}
                            transparent={true}
                            visible={activity.isLoading}
                            onRequestClose={() => {alert("Modal has been closed.")}}
@@ -103,7 +103,7 @@ class root extends Component {
                 <ViewPagerAndroid
                     keyboardDismissMode='on-drag'
                     initialPage={3}
-                    scrollEnabled={false}
+                    scrollEnabled={true}
 
                     style={{flex: 1}}
                     ref={(el) => this._viewPager = el}>
@@ -127,14 +127,14 @@ class root extends Component {
 
     _renderScene = () => {
         const {dispatch, nav, user, screenProps,navOauth}=this.props;
-
+      let openDrawer=this.openDrawer;
 
         return [
             <IntroOne setPage={this._setPage}/>,
 
             <IntroTwo setPage={this._setPage}/>,
 
-            <Oauth screenProps={{setPage: this._setPage, user, drawer: this.drawer}}
+            <Oauth screenProps={{setPage:this._setPage, user, openDrawer}}
                    navigation={addNavigationHelpers({dispatch, state:navOauth})}
             />,
 
@@ -198,19 +198,22 @@ class root extends Component {
          return true
          })
 
+
         //const res = user.isNewUser ? this._setPage("IntroOne") : !user.isAuthenticated ? this._setPage("Oauth"):null /*this._setPage("app")*/
     }
+     setInitialScreen(){
+    if(this.seInitialtPage)
+    {
+        const {user} = this.props;
+        user.isNewUser ? this._setPage("IntroOne") : !user.authenticated ? this._setPage("Oauth") : null;
+        /*this._setPage("app")*/
+    }
+    this.seInitialtPage=false;
 
+}
     componentDidUpdate() {
         //alert("seInitialtPage "+this.seInitialtPage)
-        if(this.seInitialtPage)
-        {
-            const {user} = this.props;
-             user.isNewUser ? this._setPage("IntroOne") : !user.isAuthenticated ? this._setPage("Oauth") : null;
-            /*this._setPage("app")*/
-        }
-
-        this.seInitialtPage=false;
+        this.setInitialScreen()
     }
 
     shouldCloseApp(nav) {
@@ -429,7 +432,7 @@ export const oauthRouteReducers = (state = initialOauthNavState, action) => {
                     if (action.payload.hasOwnProperty("user")) {
                         const user = action.payload.user;
 
-                        if (user.isAuthenticated) {
+                        if (user.authenticated) {
 
                             return {...initialOauthNavState, ...action.payload.navOauth}
                         }

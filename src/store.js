@@ -18,12 +18,12 @@ const logger = createLogger();
 //console.warn(INITIAL_STATE)
 const store = createStore(rootReducer,
     compose(
-    applyMiddleware(/*clearBodyMiddleware, apiCallMiddleware,*/ thunk, /*logger*/),
+    applyMiddleware(/*clearBodyMiddleware, apiCallMiddleware,*/ thunk, logger),
     autoRehydrate()
     )
 );
     {}
-persistStore(store, {storage: AsyncStorage,blacklist: ['activity',"nav"]});
+persistStore(store, {storage:AsyncStorage,blacklist: ['activity',"nav"]});
 return store
 }
 export default configStore;

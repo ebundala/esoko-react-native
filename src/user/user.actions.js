@@ -22,13 +22,13 @@ export const USER_ACTIONS={
 
         return this.auth.signInWithEmail(email, password)
         .then((user) => {
-            //console.log('User successfully logged in', user)
+            console.log('User successfully logged in\n', user);
             dispatch(activity.endActivity("User successfully logged in "+email))
                 dispatch({
                     type:USER_ACTIONS.LOGIN,
                     status:"OK",
                     data:{
-                        //user
+                        ...user
                     }})
             navigate("account")
             if(setPage){
@@ -54,7 +54,7 @@ export const USER_ACTIONS={
     {
         return this.auth.signOut()
         .then(res =>{
-                //console.log('You have been signed out')
+                console.log('You have been signed out\n',res)
                 dispatch(
                     {
                         type:USER_ACTIONS.LOGOUT,
@@ -153,19 +153,31 @@ export const USER_ACTIONS={
             dispatch(activity.startActivity("Creating User "))
   return this.auth.createUserWithEmail(email, password)
         .then((user) => {
-           // console.log('user created', user)
-            dispatch(activity.endActivity("User Account Created "))
-        dispatch({
-            type:USER_ACTIONS.CREATED,
-            status:"OK",
-            data:{
-                //user
-            }
-        })
-            navigate("account")
-            if(setPage){
-                setPage("app")
-            }
+            console.log('user created', user)
+
+            //if(!!user.authenticated&&!!user.user){
+
+            return  this.database.ref("/users/"+user.user.uid).set({type:"normal"}).then(res=>{
+
+                    console.log("user profile created\n",res)
+
+                    dispatch(activity.endActivity("User Account Created "))
+                    dispatch({
+                        type:USER_ACTIONS.CREATED,
+                        status:"OK",
+                        data:{
+                            ...user
+                        }
+                    })
+                    navigate("account")
+                    if(setPage){
+                        setPage("app")
+                    }
+                })
+           // }
+
+
+
 
         })
         .catch((err) => {

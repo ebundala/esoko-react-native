@@ -3,13 +3,25 @@
  */
 
 
+
+
+
+
+
 const INITIAL_STATE ={
-    UID:789098090,
-    isNewUser:true,
-    displayName:"Anonymous user",
-    photoUrl:require("./images/background.png"),
-    isAuthenticated:false,
+      authenticated: false,
+         user:
+         {
+             anonymous: false,
+             emailVerified: false,
+             providerId:'',
+             uid:'',
+             token:'',
+             email:''
+
+         }
 }
+
 import {USER_ACTIONS} from "./user.actions"
 
 export default function userReducer(state= INITIAL_STATE, action)
@@ -19,33 +31,32 @@ export default function userReducer(state= INITIAL_STATE, action)
             if(action.status==="OK"){
 
                 return {
-                    ...state,
-                    isAuthenticated:true,
-                    ///isNewUser:true
+                    ...INITIAL_STATE,
+                    ...action.data,
+                    isNewUser:false
                 }
             }
             else
-                return state;
+                return INITIAL_STATE;
         case USER_ACTIONS.LOGIN:
            // console.log(action.type);
             if(action.status==="OK"){
 
             return {
-               ...state,
-                isAuthenticated:true,
+               ...INITIAL_STATE,
+                ...action.data,
                 isNewUser:false
                 }
              }
              else
-   return state;
+   return INITIAL_STATE;
         case USER_ACTIONS.LOGOUT:
            // console.log(action.type)
     if(action.status==="OK"){
 
         return {
-            ...state,
-            isAuthenticated:false,
-            isNewUser:true
+            ...INITIAL_STATE,
+            isNewUser:false
         }
     }
     else

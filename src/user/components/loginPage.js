@@ -18,10 +18,10 @@ import {
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
 //import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
-
-import {Button, Card, Icon} from 'react-native-material-design';
+import Button from 'apsl-react-native-button'
+import {Card, Icon} from 'react-native-material-design';
 import {connect} from 'react-redux'
-import styles from '../../styles/styles'
+import styles,{colours} from '../../styles/styles'
 import actions from "../user.actions"
 import * as activity from "../../activityIndicator/activitIndicatorAction"
 
@@ -86,10 +86,10 @@ class LoginSection extends Component {
                     <View style={styles.row}>
 
                         <Button disabled={!(this.state.email && this.state.password)}
-                                raised={true}
-                                text="Log In"
-                                onPress={() => onSubmit(this.state.email, this.state.password, navigate, setPage)}>
 
+
+                                onPress={() => onSubmit(this.state.email, this.state.password, navigate, setPage)}>
+                            <Text>{"Log In"}</Text>
                         </Button>
 
                     </View>
@@ -193,7 +193,7 @@ class SignUpSection extends Component {
                                 raised={true}
                                 text="sign up"
                                 onPress={() => this.props.onSubmit(this.state.email, this.state.retypedPassword, setPage)}>
-
+                            <Text>{"Sign up"}</Text>
                         </Button>
 
                     </View>
@@ -234,6 +234,7 @@ class OauthSection extends Component {
                             raised={true}
                             text="LOGIN WITH FACEBOOK"
                             onPress={() => oAuth("FACEBOOK", navigate, setPage)}>
+                        <Text>{"LOGIN WITH FACEBOOK"}</Text>
 
                     </Button>
                 </View>
@@ -242,7 +243,7 @@ class OauthSection extends Component {
                             raised={true}
                             text="LOGIN WITH GOOGLE"
                             onPress={() => oAuth("GOOGLE", navigate, setPage)}>
-
+                        <Text>{"LOGIN WITH GOOGLE"}</Text>
                     </Button>
                 </View>
 
@@ -255,14 +256,22 @@ class OauthSection extends Component {
 
 //screens
 class startScreen extends Component {
+    static navigationOptions = {
 
+        header: ({ state, setParams ,navigate}) => {
+
+            let style={height:0};
+            return { style};
+        },
+
+    };
     render() {
         let {navigate}=this.props.navigation;
         let {setPage, user}=this.props.screenProps;
         return (
 
-            <View style={styles.flex1}>
-                <Text>{JSON.stringify(user)}</Text>
+            <Card style={styles.flex1}>
+
                 <View
                     style={[styles.horizontal,
                         styles.flex1,
@@ -276,7 +285,7 @@ class startScreen extends Component {
                             raised={true}
                             onPress={() => navigate("login")
                             }>
-
+                            <Text>{"Log in"}</Text>
                         </Button>
 
                     </View>
@@ -287,7 +296,7 @@ class startScreen extends Component {
                         <Button text="Sign Up"
                                 raised={true}
                                 onPress={() => navigate("signup")}>
-
+                            <Text>{"Sign up"}</Text>
                         </Button>
 
                     </View>
@@ -295,7 +304,7 @@ class startScreen extends Component {
 
                 </View>
                 <View style={styles.row}/>
-            </View>
+            </Card>
 
         )
     }
@@ -306,17 +315,27 @@ class LoginScreen extends Component {
         // screenProps: PropTypes.Object.isRequired,
         //navigation:PropTypes.Object.isRequired
     }
+    static navigationOptions = {
+        title: ({state, setParams, navigate}) => {
+            return "Login to your account"
+        },
+        header: ({ state, setParams ,navigate}) => {
 
+            let style=styles.navBarBackground;
+            return { style};
+        },
+
+    };
     render() {
         let {navigate}=this.props.navigation;
         let {setPage, user,oAuth,login,validateEmail}=this.props.screenProps;
         return (
-            <View>
-                <Text>{JSON.stringify(user)}</Text>
+            <Card style={[styles.flex1,styles.centerJustified]}>
+
                 <OauthSection oAuth={oAuth} setPage={setPage} navigate={navigate}/>
                 <LoginSection onSubmit={login} setPage={setPage} navigate={navigate}
                               validateEmail={validateEmail}/>
-            </View>
+            </Card>
         )
     }
 }
@@ -328,18 +347,28 @@ class SignUpScreen extends Component {
         // navigation:PropTypes.Object.isRequired
 
     }
+    static navigationOptions = {
+        title: ({state, setParams, navigate}) => {
+            return "Create New Account"
+        },
+        header: ({ state, setParams ,navigate}) => {
 
+            let style=styles.navBarBackground;
+            return { style};
+        },
+
+    };
     render() {
         let {navigate}=this.props.navigation;
         let {setPage, user,oAuth,signUp,validateEmail}=this.props.screenProps;
         return (
-            <View>
-                <Text>{JSON.stringify(user)}</Text>
+            <Card style={[styles.flex1,styles.centerJustified]}>
+
                 <OauthSection oAuth={oAuth} setPage={setPage} navigate={navigate}/>
                 <SignUpSection onSubmit={signUp} setPage={setPage} validateEmail={validateEmail}
                                navigate={navigate}/>
 
-            </View>
+            </Card>
         )
     }
 }
@@ -349,6 +378,18 @@ class resetPasswordScreen extends Component {
         // screenProps: PropTypes.Object.isRequired,
         //  navigation:PropTypes.Object.isRequired
     }
+    static navigationOptions = {
+        title: ({state, setParams, navigate}) => {
+            return "Reset Password"
+        },
+
+        header: ({ state, setParams ,navigate}) => {
+
+            let style=styles.navBarBackground;
+            return { style};
+        },
+
+    };
 
     constructor(props) {
         super(props)
@@ -362,8 +403,8 @@ class resetPasswordScreen extends Component {
         let {setPage, user,resetPasswordWithEmail,validateEmail}=this.props.screenProps;
         return (
 
-            <View style={[styles.flex1, styles.centerJustified]}>
-                <Text>{JSON.stringify(user)}</Text>
+            <Card style={[styles.flex1, styles.centerJustified]}>
+
                 <View style={styles.row}>
 
                     <View style={styles.row}>
@@ -389,11 +430,11 @@ class resetPasswordScreen extends Component {
                             raised={true}
                             text="Send Reset link"
                             onPress={() => resetPasswordWithEmail(this.state.email, navigate, setPage)}>
-
+                        <Text>{"Send Reset link"}</Text>
                     </Button>
 
                 </View>
-            </View>
+            </Card>
 
         )
     }
@@ -404,22 +445,46 @@ class AccountScreen extends Component {
         // screenProps: PropTypes.Object.isRequired,
         // navigation:PropTypes.Object.isRequired
     }
+    static navigationOptions = {
+        title: ({state, setParams, navigate}) => {
+            return "User Account"
+        },
+        header: ({ state, setParams ,navigate}) => {
+            let  right=(
+                <TouchableNativeFeedback onPress={()=>{
+                    if(state.params){
+                        state.params.hasOwnProperty("setPage")?state.params.setPage("app"):null;
+                    }}}>
+                <View styled={{padding:16}} navigate={navigate}>
+                <Icon color={colours.paperGrey900.color} name="arrow-forward" />
+            </View>
+                </TouchableNativeFeedback>);
+            let  left=(<View/>);
+            let style=styles.navBarBackground;
+            return { left,right,style};
+        },
 
+    };
     render() {
         let {navigate}=this.props.navigation;
         let {user, setPage,logout}=this.props.screenProps;
+
         return (
-            <View style={[styles.flex1, styles.centerJustified]}>
+            <Card style={[styles.flex1, styles.centerJustified]}>
                 <Text>{JSON.stringify(user)}</Text>
                 <View style={styles.row}>
                     <Button text="logout"
                             raised={true}
                             onPress={() => logout(navigate, setPage)}>
-
+                        <Text>{"Logout"}</Text>
                     </Button>
                 </View>
-            </View>
+            </Card>
         )
+    }
+    componentDidMount(){
+        let {setPage}=this.props.screenProps;
+        this.props.navigation.setParams({setPage})
     }
 }
 
@@ -431,12 +496,12 @@ const routes = {
     account: {screen: AccountScreen}
 }
 const stackConfig = {
-    headerMode: "none"
+    //headerMode: "none"
 }
 const LoginPage = StackNavigator(routes, stackConfig);
 
 const mapStateToProps = (state) => {
-    return {...state.user}
+    return {...state}
 }
 const mapDispatchToProps = (dispatch) => {
     return {

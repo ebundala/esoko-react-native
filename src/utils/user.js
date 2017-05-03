@@ -28,7 +28,16 @@ export default class User extends Database {
   	return this.auth.createUserWithEmail(email, password)
 		
 
-	} 
+	}
+	createProfile(user){
+	     /*if(!!user.authenticated&&!!user.user){
+	        this.database.ref("/users/"${user.user.uid}).set(user).then(res=>{
+
+	            console.log("user profile created")
+            })
+         }*/
+
+    }
 	listProduct(){}
 	placeBid(){}
 	pay(){}

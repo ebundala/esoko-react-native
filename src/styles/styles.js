@@ -13,6 +13,9 @@ export const typographyStyle = StyleSheet.create(typography);
 export const colorStyle=StyleSheet.create(color)
 export const colours=color
 const  styles=StyleSheet.create({
+    transparent:{
+        backgroundColor:"rgba(0,0,0,0.5)"
+    },
     iconColor:{
         color:color.paperTeal500.color
     },
@@ -190,7 +193,7 @@ productTitle:{
         color:"rgb(50,60,63)"
     },
     google:{
-        backgroundColor:'red',
+       // backgroundColor:'red',
     },
     facebook:{
         // backgroundColor:'green',
