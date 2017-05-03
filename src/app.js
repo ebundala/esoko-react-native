@@ -77,7 +77,7 @@ class root extends Component {
 
 
         const {dispatch, nav, user, activity,navOauth}=this.props;
-        console.log(this.props)
+        //console.log(this.props)
 
         return (
 
@@ -103,7 +103,7 @@ class root extends Component {
                 <ViewPagerAndroid
                     keyboardDismissMode='on-drag'
                     initialPage={3}
-                    scrollEnabled={true}
+                    scrollEnabled={false}
 
                     style={{flex: 1}}
                     ref={(el) => this._viewPager = el}>
