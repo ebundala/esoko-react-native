@@ -57,53 +57,8 @@ export class ProductsList extends Component {
        // let {products}=this.props.screenProps
         return (
             <View style={[styles.flex1]}>
-                <Card style={[{height:50,
-                    margin:0,
-                    elevation:4,
-                    borderRadius:0,
-                    //backgroundColor:colours.paperTeal500.color
-                }]} >
-                    <View style={[styles.horizontal]}>
-
-                        <View style={[styles.flex9]}>
 
 
-                            <TextInput
-                                ref={component => this.searchInput = component}
-                                keyboardType="web-search"
-                                style={styles.input}
-                                autoCorrect={true}
-                                autoCapitalize="none"
-                                placeholder={"Search "+title}
-                                placeholderTextColor={colours.paperGrey500.color}
-
-                                onSubmitEditing={(e) => {
-                                    if(this.state.query) {
-                                        this.searchInput.blur();
-                                        props.searchProducts(this.state.query, title, navigate)
-                                    }
-                                    else
-                                        this.searchInput.focus();
-                                }}
-                                onChangeText={query => this.setState({query})}
-                            />
-
-                        </View>
-                        <TouchableNativeFeedback onPress={()=>{
-                            if(this.state.query) {
-                                this.searchInput.blur();
-                                props.searchProducts(this.state.query, title, navigate)
-                            }
-                            else
-                                this.searchInput.focus();
-                        }}>
-                            <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
-                                <Icon name="search" />
-                            </View>
-                        </TouchableNativeFeedback>
-                    </View>
-                </Card>
-                <Divider style={{marginHorizontal:0}}/>
                 <ListView dataSource={this.ds.cloneWithRows(products)}
                           contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
                           scrollRenderAheadDistance={640}
@@ -161,7 +116,53 @@ export class ProductsList extends Component {
                                   </View>
                               </TouchableNativeFeedback>}
                 />
+                <Divider style={{marginHorizontal:0}}/>
+                <Card style={[{height:50,
+                    margin:0,
+                    elevation:4,
+                    borderRadius:0,
+                    //backgroundColor:colours.paperTeal500.color
+                }]} >
+                    <View style={[styles.horizontal]}>
 
+                        <View style={[styles.flex9]}>
+
+
+                            <TextInput
+                                ref={component => this.searchInput = component}
+                                keyboardType="web-search"
+                                style={styles.input}
+                                autoCorrect={true}
+                                autoCapitalize="none"
+                                placeholder={"Search "+title}
+                                placeholderTextColor={colours.paperGrey500.color}
+                                underlineColorAndroid="transparent"
+                                onSubmitEditing={(e) => {
+                                    if(this.state.query) {
+                                        this.searchInput.blur();
+                                        props.searchProducts(this.state.query, title, navigate)
+                                    }
+                                    else
+                                        this.searchInput.focus();
+                                }}
+                                onChangeText={query => this.setState({query})}
+                            />
+
+                        </View>
+                        <TouchableNativeFeedback onPress={()=>{
+                            if(this.state.query) {
+                                this.searchInput.blur();
+                                props.searchProducts(this.state.query, title, navigate)
+                            }
+                            else
+                                this.searchInput.focus();
+                        }}>
+                            <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
+                                <Icon name="search" />
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>
+                </Card>
 
             </View>
         )
@@ -214,48 +215,10 @@ let style=styles.navBarBackground;
         return (
             <View style={[styles.flex1]}>
 
-                <Card ref="CTA" style={[
-                    styles.horizontal,
-                    styles.spaceBetween,
-                    {
-                        margin:0,
-                        elevation:4,
-                        borderRadius:0,
-                        //backgroundColor:colours.paperTeal500.color
-                    }]}>
-
-                    <View style={[styles.flex2]}>
-                        <Button style={{
-                           // textColor: colours.paperGrey50.color,
-                           // backgroundColor: colours.paperGrey700.color,
-                            //rippleColor: colours.paperPinkA700.color
-                            margin:8,
-                            borderRadius:34,
-                            height:34
-                        }}
-                                onPress={() => props.startChat(data, navigate)}>
-                            <Text>{"MESSAGE SELLER"}</Text>
-                        </Button>
-                    </View>
-                    <View style={[styles.flex2]}>
-                        <Button   style={{
-                           // textColor: colours.paperGrey50.color,
-                            //backgroundColor: colours.paperDeepOrange300.color,
-                            //rippleColor: colours.paperPinkA700.color
-
-                            margin:8,
-                            borderRadius:34,
-                            height:34
-                        }}
-                                onPress={() => props.placeBid(data, navigate)}>
-                            <Text>{"PLACE BID"}</Text>
-                        </Button>
-                    </View>
-
-                </Card>
 
 
-   <Divider style={{marginHorizontal:0}}/>
+
+
                 <ScrollView >
                     <View >
                     <Card ref="mainCard" style={[{height:360}]}>
@@ -437,8 +400,46 @@ let style=styles.navBarBackground;
                 </ScrollView>
 
 
+                <Divider style={{marginHorizontal:0}}/>
+                <Card ref="CTA" style={[
+                    styles.horizontal,
+                    styles.spaceBetween,
+                    {
+                        margin:0,
+                        elevation:4,
+                        borderRadius:0,
+                        //backgroundColor:colours.paperTeal500.color
+                    }]}>
 
+                    <View style={[styles.flex2]}>
+                        <Button style={{
+                            // textColor: colours.paperGrey50.color,
+                            // backgroundColor: colours.paperGrey700.color,
+                            //rippleColor: colours.paperPinkA700.color
+                            margin:8,
+                            borderRadius:34,
+                            height:34
+                        }}
+                                onPress={() => props.startChat(data, navigate)}>
+                            <Text>{"MESSAGE SELLER"}</Text>
+                        </Button>
+                    </View>
+                    <View style={[styles.flex2]}>
+                        <Button   style={{
+                            // textColor: colours.paperGrey50.color,
+                            //backgroundColor: colours.paperDeepOrange300.color,
+                            //rippleColor: colours.paperPinkA700.color
 
+                            margin:8,
+                            borderRadius:34,
+                            height:34
+                        }}
+                                  onPress={() => props.placeBid(data, navigate)}>
+                            <Text>{"PLACE BID"}</Text>
+                        </Button>
+                    </View>
+
+                </Card>
 
 
             </View>
@@ -526,7 +527,7 @@ export class searchResultsProductsList extends Component {
                                 autoCapitalize="none"
                                 placeholder={"Search "+title}
                                 placeholderTextColor={colours.paperGrey500.color}
-
+                                underlineColorAndroid="transparent"
                                 onSubmitEditing={(query) => {
                                     if(query) {
                                         this.searchInput.blur();
@@ -1057,19 +1058,18 @@ export class CreateProduct extends Component{
                                     name='name' // mandatory
                                     title='Product'
 
-
-
+                                    placeholderTextColor={colours.paperGrey500.color}
+                                    underlineColorAndroid="transparent"
                                     placeholder='HP pavilion notebook'
                                     clearButtonMode='while-editing'
                                 />
                                 <GiftedForm.TextInputWidget
                                     name='brand'
                                     title='Brand'
-
-
+                                    placeholderTextColor={colours.paperGrey500.color}
+                                    underlineColorAndroid="transparent"
                                     placeholder='HP'
                                     clearButtonMode='while-editing'
-
                                     onTextInputFocus={(currentText = '') => {
                                         if (!currentText) {
                                             let brand = GiftedFormManager.getValue('newProduct', 'brand');
@@ -1085,7 +1085,8 @@ export class CreateProduct extends Component{
                                     title='Model'
 
                                     placeholder='DV6'
-
+                                    placeholderTextColor={colours.paperGrey500.color}
+                                    underlineColorAndroid="transparent"
 
                                     clearButtonMode='while-editing'
 
@@ -1096,7 +1097,8 @@ export class CreateProduct extends Component{
                                     title='Manufacturer'
                                     placeholder='HP'
                                     clearButtonMode='while-editing'
-
+                                    underlineColorAndroid="transparent"
+                                    placeholderTextColor={colours.paperGrey500.color}
 
                                 />
 
@@ -1116,7 +1118,8 @@ export class CreateProduct extends Component{
                                     <GiftedForm.TextInputWidget
                                         name='price' // mandatory
                                         title='Price per Item'
-
+                                        underlineColorAndroid="transparent"
+                                        placeholderTextColor={colours.paperGrey500.color}
                                         placeholder='price of single unit'
                                         autoFocus={true}
                                         keyboardType="numeric"
@@ -1178,11 +1181,13 @@ export class CreateProduct extends Component{
                                     <GiftedForm.TextInputWidget
                                         name='quantity' // mandatory
                                         title='Quantity'
+                                        underlineColorAndroid="transparent"
 
                                         placeholder='item quantity'
 
                                         keyboardType="numeric"
 
+                                        placeholderTextColor={colours.paperGrey500.color}
                                         autoFocus={true}
                                         clearButtonMode='while-editing'
                                         returnKeyLabel="done"

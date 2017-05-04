@@ -56,7 +56,9 @@ class LoginSection extends Component {
                                 style={styles.input}
                                 autoCorrect={true}
                                 autoCapitalize="none"
-                                placeholderTextColor='#a8aAeC'
+                                placeholderTextColor={colours.paperGrey500.color}
+                                underlineColorAndroid="transparent"
+
                                 placeholder="Email"
                                 onSubmitEditing={() => validateEmail(this.state.email, navigate) ?
                                     this.passwordInput.focus() : this.emailInput.focus()}
@@ -69,6 +71,8 @@ class LoginSection extends Component {
                     <View style={styles.row}>
 
                         <TextInput
+                            underlineColorAndroid="transparent"
+
                             ref={component => this.passwordInput = component}
                             style={styles.input}
                             maxLength={16}
@@ -76,7 +80,7 @@ class LoginSection extends Component {
                             onSubmitEditing={() => alert("submiting")}
                             autoCorrect={false}
                             autoCapitalize="none"
-                            placeholderTextColor='#a8aAeC'
+                            placeholderTextColor={colours.paperGrey500.color}
                             placeholder="Password"
 
                             onChangeText={password => this.setState({password})}
@@ -135,12 +139,14 @@ class SignUpSection extends Component {
 
                         <View style={styles.row}>
                             <TextInput
+                                underlineColorAndroid="transparent"
+
                                 ref={component => this.emailInput = component}
                                 keyboardType="email-address"
                                 style={styles.input}
                                 autoCorrect={true}
                                 autoCapitalize="none"
-                                placeholderTextColor='#a8aAeC'
+                                placeholderTextColor={colours.paperGrey500.color}
                                 placeholder="Email"
                                 onSubmitEditing={() => validateEmail(this.state.email, navigate) ? this.passwordInput.focus() : this.emailInput.focus()}
                                 onChangeText={email => this.setState({email})}
@@ -152,6 +158,8 @@ class SignUpSection extends Component {
                     <View style={styles.row}>
 
                         <TextInput
+                            underlineColorAndroid="transparent"
+
                             ref={component => this.passwordInput = component}
                             style={styles.input}
                             maxLength={16}
@@ -159,7 +167,7 @@ class SignUpSection extends Component {
                             onSubmitEditing={() => this.retypedPassword.focus()}
                             autoCorrect={true}
                             autoCapitalize="none"
-                            placeholderTextColor='#a8aAeC'
+                            placeholderTextColor={colours.paperGrey500.color}
                             placeholder="Password"
 
                             onChangeText={password => this.setState({password})}
@@ -170,6 +178,8 @@ class SignUpSection extends Component {
                     <View style={styles.row}>
 
                         <TextInput
+                            underlineColorAndroid="transparent"
+
                             ref={component => this.retypedPassword = component}
                             style={styles.input}
                             maxLength={16}
@@ -178,7 +188,7 @@ class SignUpSection extends Component {
                                 : alert("password didn't match")}
                             autoCorrect={false}
                             autoCapitalize="none"
-                            placeholderTextColor='#a8aAeC'
+                            placeholderTextColor={colours.paperGrey500.color}
                             placeholder="Re-type Password"
 
                             onChangeText={retypedPassword => this.setState({retypedPassword})}
@@ -409,12 +419,14 @@ class resetPasswordScreen extends Component {
 
                     <View style={styles.row}>
                         <TextInput
+                            underlineColorAndroid="transparent"
+
                             ref={component => this.emailReset = component}
                             keyboardType="email-address"
                             style={styles.input}
                             autoCorrect={true}
                             autoCapitalize="none"
-                            placeholderTextColor='#a8aAeC'
+                            placeholderTextColor={colours.paperGrey500.color}
                             placeholder="Enter Email to receive reset link"
                             onSubmitEditing={() => validateEmail(this.state.email, navigate)}
                             onChangeText={email => this.setState({email})}

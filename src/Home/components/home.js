@@ -77,6 +77,7 @@ let ctx;
                                          autoCapitalize="none"
                                          placeholderTextColor={colours.paperGrey500.color}
                                          placeholder={"Search "}
+                                         underlineColorAndroid="transparent"
                                          onSubmitEditing={(e) => {
                                              if(this.state.query) {
                                                  this.searchInput.blur();
