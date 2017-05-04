@@ -18,7 +18,7 @@ import {
 import {connect,} from 'react-redux'
 import {bindActionCreators} from "redux"
 import {REHYDRATE} from 'redux-persist/constants'
-import {StackNavigator, NavigationActions, TabNavigator, addNavigationHelpers,} from 'react-navigation';
+import {StackNavigator, NavigationActions,addNavigationHelpers,} from 'react-navigation';
 import {TabViewPagerAndroid} from 'react-native-tab-view';
 
 import Oauth from "./user/components/loginPage"
@@ -33,11 +33,11 @@ import {IntroOne, IntroTwo} from "./intro/components/intro"
 import NavigationView from "./navigationView/components/navigationView"
 import {styles} from "./styles/styles"
 import * as actions from  "./products/products.actions"
+import {USER_ACTIONS} from "./user/user.actions"
+import Firestack from "react-native-firestack"
 
 
-
-
-
+const firestack=new Firestack();
 const StackHome = {
     Home: {screen:Home},
     products: {screen: ProductsList},
@@ -129,12 +129,14 @@ class root extends Component {
         const {dispatch, nav, user, screenProps,navOauth}=this.props;
       let openDrawer=this.openDrawer;
 
+///this.Oauth=
+      let that=this;
         return [
             <IntroOne setPage={this._setPage}/>,
 
             <IntroTwo setPage={this._setPage}/>,
 
-            <Oauth screenProps={{setPage:this._setPage, user, openDrawer}}
+            <Oauth ref={(el)=>{that.oauth=el}} screenProps={{setPage:this._setPage, user, openDrawer}}
                    navigation={addNavigationHelpers({dispatch, state:navOauth})}
             />,
 
@@ -176,10 +178,51 @@ class root extends Component {
         }
     }
 
-    componentWillMount() {
-        //const {user}=this.props;
+    componentWillMountT() {
+        const {userLoggedOut,userLoggedIn}=this.props.screenProps;
+        const {dispatch,navOauth}=this.props;
+        const setPage=this._setPage;
+       let NavigationOauth=addNavigationHelpers({dispatch, state:navOauth});
+
+console.log("will mount",NavigationOauth)
+        firestack.auth.listenForAuth(function(evt) {
+            // evt is the authentication event
+            // it contains an `error` key for carrying the
+            // error message in case of an error
+            // and a `user` key upon successful authentication
+            if (!evt.authenticated) {
+                // There was an error or there is no user
+                console.log(evt)
+                NavigationOauth.navigate("start")
+                setPage("Oauth")
+                dispatch(
+                    {
+                        type: USER_ACTIONS.LOGOUT,
+                        status: "OK"
+                        //data:null
+                    }
+                )
+                //userLoggedOut(evt,NavigationOauth.navigate,setPage,dispatch)
+
+            } else {
+                // evt.user contains the user details
+                console.log('User details', evt.user);
+                NavigationOauth.navigate("account")
+                setPage("app")
+                dispatch({
+                    type: USER_ACTIONS.LOGIN,
+                    status: "OK",
+                    data: {
+                        ...evt
+                    }
+                });
+                //userLoggedIn(evt,NavigationOauth.navigate,setPage,dispatch)
 
 
+
+            }
+        })
+            .then(() => console.log('Listening for authentication changes'))
     }
 
     componentDidMount(){
@@ -198,7 +241,7 @@ class root extends Component {
          return true
          })
 
-
+this.componentWillMountT();
         //const res = user.isNewUser ? this._setPage("IntroOne") : !user.isAuthenticated ? this._setPage("Oauth"):null /*this._setPage("app")*/
     }
      setInitialScreen(){
@@ -246,7 +289,8 @@ class root extends Component {
     }
 
     componentWillUnmount() {
-        BackAndroid.removeEventListener('backPress')
+        BackAndroid.removeEventListener('backPress');
+        firestack.auth.unlistenForAuth();
     }
 
     goToAccount() {
@@ -278,6 +322,8 @@ class root extends Component {
 }
 
 
+
+
 const mapStateToProps = (state) => {
     return {
         navOauth:state.navOauth,
@@ -289,7 +335,45 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps=(dispatch)=>{
 
     "use strict";
-    return {...bindActionCreators(actions,dispatch),dispatch}
+    return {...bindActionCreators(actions,dispatch),
+        userLoggedIn:(user, navigate, setPage,dispatch)=>{
+            return (dispatch) => {
+                console.log('User successfully logged in\n', user);
+                // dispatch(activity.endActivity("User successfully logged in "+email))
+                dispatch({
+                    type: USER_ACTIONS.LOGIN,
+                    status: "OK",
+                    data: {
+                        ...user
+                    }
+                });
+
+
+
+                navigate("account");
+                if (setPage) {
+                    setPage("app")
+                }
+            }
+        },
+        userLoggedOut:(user,navigate,setPage,dispatch)=> {
+            return(dispatch)=>{
+                console.log('You have been signed out\n', res);
+
+
+
+                dispatch(
+                    {
+                        type: USER_ACTIONS.LOGOUT,
+                        status: "OK"
+                        //data:null
+                    }
+                )
+                setPage("Oauth")
+                navigate("start")
+            }
+        },
+        dispatch}
 
 }
 const mergeProps = (stateProps, dispatchProp, ownProps) => {
