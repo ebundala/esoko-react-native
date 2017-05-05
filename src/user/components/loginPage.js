@@ -266,15 +266,7 @@ class OauthSection extends Component {
 
 //screens
 class startScreen extends Component {
-    static navigationOptions = {
 
-        header: ({ state, setParams ,navigate}) => {
-
-            let style={height:0};
-            return { style};
-        },
-
-    };
     render() {
         let {navigate}=this.props.navigation;
         let {setPage, user}=this.props.screenProps;
@@ -322,21 +314,7 @@ class startScreen extends Component {
 }
 
 class LoginScreen extends Component {
-    static   propTypes = {
-        // screenProps: PropTypes.Object.isRequired,
-        //navigation:PropTypes.Object.isRequired
-    }
-    static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
-            return "Login to your account"
-        },
-        header: ({ state, setParams ,navigate}) => {
 
-            let style=styles.navBarBackground;
-            return { style};
-        },
-
-    };
     render() {
         let {navigate,goBack}=this.props.navigation;
         let {setPage, user,oAuth,login,validateEmail}=this.props.screenProps;
@@ -361,23 +339,7 @@ class LoginScreen extends Component {
 }
 
 class SignUpScreen extends Component {
-    static   propTypes = {
 
-        // screenProps: PropTypes.Object.isRequired,
-        // navigation:PropTypes.Object.isRequired
-
-    }
-    static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
-            return "Create New Account"
-        },
-        header: ({ state, setParams ,navigate}) => {
-
-            let style=styles.navBarBackground;
-            return { style};
-        },
-
-    };
     render() {
         let {navigate,goBack}=this.props.navigation;
         let {setPage, user,oAuth,signUp,validateEmail}=this.props.screenProps;
@@ -404,22 +366,7 @@ class SignUpScreen extends Component {
 }
 
 class resetPasswordScreen extends Component {
-    static  propTypes = {
-        // screenProps: PropTypes.Object.isRequired,
-        //  navigation:PropTypes.Object.isRequired
-    }
-    static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
-            return "Reset Password"
-        },
 
-        header: ({ state, setParams ,navigate}) => {
-
-            let style=styles.navBarBackground;
-            return { style};
-        },
-
-    };
 
     constructor(props) {
         super(props)
@@ -483,30 +430,8 @@ class resetPasswordScreen extends Component {
 }
 
 class AccountScreen extends Component {
-    static   propTypes = {
-        // screenProps: PropTypes.Object.isRequired,
-        // navigation:PropTypes.Object.isRequired
-    }
-    static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
-            return "User Account"
-        },
-        header: ({ state, setParams ,navigate}) => {
-            let  right=(
-                <TouchableNativeFeedback onPress={()=>{
-                    if(state.params){
-                        state.params.hasOwnProperty("setPage")?state.params.setPage("app"):null;
-                    }}}>
-                <View styled={{padding:16}} navigate={navigate}>
-                <Icon color={colours.paperGrey900.color} name="arrow-forward" />
-            </View>
-                </TouchableNativeFeedback>);
-            let  left=(<View/>);
-            let style=styles.navBarBackground;
-            return { left,right,style};
-        },
 
-    };
+
     render() {
         let {navigate,goBack}=this.props.navigation;
 
@@ -516,7 +441,7 @@ class AccountScreen extends Component {
             <View style={[styles.flex1]}>
                 <Toolbar
                     rightElement="arrow-forward"
-                    rightElementPress={()=>{
+                    onRightElementPress={()=>{
                         alert("clicked")
                         setPage("app")
                     }}
