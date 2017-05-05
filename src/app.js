@@ -13,7 +13,8 @@ import {
     ToastAndroid,
     Button,
     ViewPagerAndroid,
-    Modal
+    Modal,
+    NativeModules
 } from 'react-native';
 import {connect,} from 'react-redux'
 import {bindActionCreators} from "redux"
@@ -31,12 +32,21 @@ import Activity from "./activityIndicator/components/activityIndicator"
 import Home from  "./Home/components/home"
 import {IntroOne, IntroTwo} from "./intro/components/intro"
 import NavigationView from "./navigationView/components/navigationView"
-import {styles} from "./styles/styles"
+//import {styles} from "./styles/styles"
 import * as actions from  "./products/products.actions"
 import {USER_ACTIONS} from "./user/user.actions"
 import Firestack from "react-native-firestack"
+import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
 
+
+export const uiTheme = {
+    palette: {
+        primaryColor: COLOR.green500,
+        accentColor: COLOR.pink500,
+    },
+};
+const UIManager = NativeModules.UIManager;
 const firestack=new Firestack();
 const StackHome = {
     Home: {screen:Home},
@@ -58,7 +68,7 @@ const StackHome = {
 
 };
 const stackConfig = {
-    headerMode: "screen"
+    headerMode: "none"
 }
 
 const Main = StackNavigator(StackHome,stackConfig)
@@ -80,7 +90,7 @@ class root extends Component {
         //console.log(this.props)
 
         return (
-
+            <ThemeProvider uiTheme={uiTheme}>
             <DrawerLayoutAndroid ref={component => {this.drawer = component}}
                                  drawerWidth={300}
                                  drawerPosition={DrawerLayoutAndroid.positions.Left}
@@ -119,7 +129,7 @@ class root extends Component {
 
 
             </DrawerLayoutAndroid>
-
+            </ThemeProvider>
 
         )
     }
@@ -179,12 +189,17 @@ class root extends Component {
     }
 
     componentWillMountT() {
+
         const {userLoggedOut,userLoggedIn}=this.props.screenProps;
         const {dispatch,navOauth}=this.props;
         const setPage=this._setPage;
        let NavigationOauth=addNavigationHelpers({dispatch, state:navOauth});
 
-console.log("will mount",NavigationOauth)
+         //console.log("will mount",NavigationOauth)
+        if (UIManager.setLayoutAnimationEnabledExperimental) {
+            UIManager.setLayoutAnimationEnabledExperimental(true);
+        }
+
         firestack.auth.listenForAuth(function(evt) {
             // evt is the authentication event
             // it contains an `error` key for carrying the
@@ -289,7 +304,7 @@ this.componentWillMountT();
     }
 
     componentWillUnmount() {
-        BackAndroid.removeEventListener('backPress');
+        //BackAndroid.removeEventListener('backPress');
         firestack.auth.unlistenForAuth();
     }
 

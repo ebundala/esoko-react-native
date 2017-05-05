@@ -1,7 +1,7 @@
 /**
  * Created by ebundala on 3/11/2017.
  */
-import React, {Component} from "react";
+import React, {Component,PropTypes} from "react";
 import {
     StyleSheet,
     Text,
@@ -16,6 +16,8 @@ import {
     TouchableNativeFeedback
 } from "react-native";
 import {Icon,Card ,Divider} from 'react-native-material-design';
+import { Toolbar} from 'react-native-material-ui';
+
 import Button from 'apsl-react-native-button'
 import StarRating from 'react-native-star-rating';
 //import Accordion from "react-native-accordion"
@@ -25,18 +27,22 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
 import Firestack from 'react-native-firestack'
 import {shortenText} from '../../utils/utils'
+import {uiTheme} from "../../app"
 let moment = require('moment');
 let ctx;
 const firestack = new Firestack();
+
+
+
 export class ProductsList extends Component {
     static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
+        /*title: ({state, setParams, navigate}) => {
             return state.params.title
-        },
+        },*/
         header: ({ state, setParams ,navigate}) => {
            // let  right=(<Statuses navigate={navigate}/>);
             //let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>);
-            let style=styles.navBarBackground
+            let style={height:0}//styles.navBarBackground;
             return {style};
         },
 
@@ -51,13 +57,32 @@ export class ProductsList extends Component {
 
     render() {
         ctx=this;
-        let navigate = this.props.navigation.navigate;
+        let {navigate,goBack} = this.props.navigation;
         let {title,products}=this.props.navigation.state.params;
         let props=this.props.screenProps;
        // let {products}=this.props.screenProps
         return (
             <View style={[styles.flex1]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement={title}
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                        onSubmitEditing:e=> {
+                        if(this.state.query) {
 
+                        props.searchProducts(this.state.query, title, navigate)
+                    }
+
+                    },
+                        onChangeText:query => this.setState({query})
+                    }
+                    }
+                />
 
                 <ListView dataSource={this.ds.cloneWithRows(products)}
                           contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
@@ -116,8 +141,8 @@ export class ProductsList extends Component {
                                   </View>
                               </TouchableNativeFeedback>}
                 />
-                <Divider style={{marginHorizontal:0}}/>
-                <Card style={[{height:50,
+
+                {false&&<Card style={[{height:50,
                     margin:0,
                     elevation:4,
                     borderRadius:0,
@@ -162,7 +187,7 @@ export class ProductsList extends Component {
                             </View>
                         </TouchableNativeFeedback>
                     </View>
-                </Card>
+                </Card>}
 
             </View>
         )
@@ -195,7 +220,7 @@ let style=styles.navBarBackground;
     }
 
     render() {
-        let navigate = this.props.navigation.navigate;
+        let {navigate,goBack} = this.props.navigation;
         let {data}=this.props.navigation.state.params;
         let props=this.props.screenProps;
         let reviews=[];
@@ -215,7 +240,14 @@ let style=styles.navBarBackground;
         return (
             <View style={[styles.flex1]}>
 
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement={data.title}
 
+                />
 
 
 
@@ -400,7 +432,7 @@ let style=styles.navBarBackground;
                 </ScrollView>
 
 
-                <Divider style={{marginHorizontal:0}}/>
+
                 <Card ref="CTA" style={[
                     styles.horizontal,
                     styles.spaceBetween,
@@ -417,7 +449,7 @@ let style=styles.navBarBackground;
                             // backgroundColor: colours.paperGrey700.color,
                             //rippleColor: colours.paperPinkA700.color
                             margin:8,
-                            borderRadius:34,
+                           // borderRadius:34,
                             height:34
                         }}
                                 onPress={() => props.startChat(data, navigate)}>
@@ -431,7 +463,7 @@ let style=styles.navBarBackground;
                             //rippleColor: colours.paperPinkA700.color
 
                             margin:8,
-                            borderRadius:34,
+                           // borderRadius:34,
                             height:34
                         }}
                                   onPress={() => props.placeBid(data, navigate)}>
@@ -793,21 +825,9 @@ const MultOptionWidget = React.createClass({
 
 
 export class CreateProduct extends Component{
-    static navigationOptions = {
-       /* title: ({state, setParams, navigate}) => {
-            return "NEW PRODUCT"||state.params.title
-        },*/
-        header: ({ state, setParams ,navigate}) => {
-            //  let  right=(<Statuses navigate={navigate}/>);
-            //let  left=(<Menu navigate={navigate}/>);
-            let style={height:0};
-            return {style};
-        },
-        headerVisible: false,
 
-    };
 
-    //static router = MyRouter;
+
     constructor(props){
         super(props)
         //let {user}=this.props.screenProps;
@@ -826,7 +846,7 @@ export class CreateProduct extends Component{
         let {navigate,goBack} = this.props.navigation;
 
         let {user}=this.props.screenProps;
-
+        const { primaryColor } = uiTheme.palette;
         let routes = {
             getHomeRoute() {
                 return {
@@ -1540,7 +1560,7 @@ export class CreateProduct extends Component{
                 <ExNavigator
         initialRoute={routes.getHomeRoute()}
         sceneStyle={{ paddingTop:56 }}
-        navigationBarStyle={[styles.navBarBackground]}
+        navigationBarStyle={{backgroundColor:primaryColor}}
         titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
 
         style={[styles.flex1]}

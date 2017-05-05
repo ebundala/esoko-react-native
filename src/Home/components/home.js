@@ -13,6 +13,7 @@ import {
     Image
 } from 'react-native';
 import {Icon,Card ,Button,Divider} from 'react-native-material-design';
+import { Toolbar} from 'react-native-material-ui';
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -57,6 +58,18 @@ let ctx;
 
 
              <View style={[styles.flex1]}>
+                 <Toolbar
+                     leftElement="menu"
+                     onLeftElementPress={()=>{
+                         this.openDrawer();
+                     }}
+                     centerElement="Home"
+                     rightElement={<Statuses
+                             color={colours.paperGrey50.color} navigate={navigate}/>
+                         }
+                 />
+
+
                  <ScrollView contentContainerStyle={[]}>
                      <View style={[{height:160,marginHorizontal:0,padding:0,elevation:5}]}>
                          <Image style={[styles.flex1,{resizeMode:Image.resizeMode.cover,margin:0}]} source={require("../../pngs/background.png")}>

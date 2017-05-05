@@ -16,7 +16,8 @@ import {
     TouchableNativeFeedback
 } from 'react-native';
 
-import { StackNavigator } from 'react-navigation';
+//import { StackNavigator } from 'react-navigation';
+import { Toolbar} from 'react-native-material-ui';
 
 import {IMAGES} from "../../products/products.actions"
 
@@ -710,11 +711,22 @@ export class OrdersList extends Component{
 
     };
     render(){
-        let navigate=this.props.navigation.navigate;
+        let {navigate,goBack}=this.props.navigation;
         return(
 
 
-        <View style={{flex:1,justifyContent:"space-around"}}>
+        <View style={{flex:1}}>
+            <Toolbar
+                leftElement="arrow-back"
+                onLeftElementPress={()=>{
+                    goBack();
+                }}
+                centerElement="Orders"
+                searchable={{
+                    autoFocus: true,
+                    placeholder: 'Search',
+                }}
+            />
             <SQLiteDemo style={[styles.flex1]}/>
             {false&&<View>
 
@@ -742,9 +754,21 @@ export class SingleOrderView extends Component{
 
     };
     render(){
+        let {navigate,goBack}=this.props.navigation;
         return(
             <View style={{flex:1}}>
-                <Text>singleView</Text>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement="Orders"
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                    }}
+                />
+                <Text>single order View</Text>
             </View>
         )
     }

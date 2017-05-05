@@ -13,6 +13,8 @@ import {
     Image
 } from 'react-native';
 import {Icon,Divider} from 'react-native-material-design';
+import { Toolbar} from 'react-native-material-ui';
+
 import StarRating from 'react-native-star-rating';
 
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
@@ -224,13 +226,24 @@ export class ReviewsList extends Component{
 
         }
     render(){
-        let navigate=this.props.navigation.navigate;
+        let {navigate,goBack}=this.props.navigation;
         let {product,reviews}=this.props.navigation.state.params;
 
 
-        let title=product.title;
+
         return(
             <View style={{flex:1}}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement={product.title}
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                    }}
+                />
            <ListView
                renderSeparator={()=><Divider/>}
                dataSource={this.ds.cloneWithRows(reviews||[])}
@@ -301,8 +314,17 @@ export class SingleReviewView extends Component{
     };
     render(){
         let{title}=this.props.navigation.state.params
+        let {navigate,goBack}=this.props.navigation;
         return(
             <View style={{flex:1}}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement={title}
+
+                />
                 <Text>{title}</Text>
             </View>
         )

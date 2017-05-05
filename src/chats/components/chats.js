@@ -13,7 +13,7 @@ import {
     Image
 } from 'react-native';
 import {Icon,Card ,Button,Divider} from 'react-native-material-design';
-
+import { Toolbar} from 'react-native-material-ui';
 import { GiftedChat } from 'react-native-gifted-chat';
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import {shortenText} from "../../utils/utils"
@@ -39,16 +39,27 @@ export class ChatsList extends Component{
     }
 
     render(){
-        let navigate=this.props.navigation.navigate;
+        let {navigate,goBack}=this.props.navigation;
         let {chats}=this.props.navigation.state.params;
 
         return(
             <View style={[styles.flex1,{backgroundColor:"white"}]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement="Messages"
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                    }}
+                />
                 <ListView dataSource={this.ds.cloneWithRows(chats)}
                           renderSeparator={()=><Divider/>}
                           enableEmptySections={true}
-                          renderRow={(chat) =>
-                              <View>
+                          renderRow={(chat,sectionID, rowID, highlightRow) =>
+                              <View key={rowID}>
                                   <TouchableNativeFeedback onPress={() => navigate("singleChat", {data: chat})}>
 
 
@@ -183,8 +194,18 @@ export class SingleChatView extends Component{
     }
     render() {
 
-
+        let {navigate,goBack}=this.props.navigation;
+        let title=this.props.navigation.state.params.data.userName;
         return (
+        <View style={[styles.flex1]}>
+            <Toolbar
+                leftElement="arrow-back"
+                onLeftElementPress={()=>{
+                    goBack();
+                }}
+                centerElement={title}
+
+            />
             <GiftedChat
                 messages={this.state.messages}
                 onSend={this.onSend}
@@ -194,6 +215,7 @@ export class SingleChatView extends Component{
                     avatar: 'https://facebook.github.io/react/img/logo_og.png',
                 }}
             />
+        </View>
         );
     }
 }

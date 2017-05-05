@@ -19,7 +19,9 @@ import {
 import {StackNavigator} from 'react-navigation';
 //import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import Button from 'apsl-react-native-button'
-import {Card, Icon} from 'react-native-material-design';
+//import {Card, Icon,} from 'react-native-material-design';
+import { Toolbar,Divider} from 'react-native-material-ui';
+
 import {connect} from 'react-redux'
 import styles,{colours} from '../../styles/styles'
 import actions from "../user.actions"
@@ -43,13 +45,11 @@ class LoginSection extends Component {
     }
 
     render() {
-        let {navigate, validateEmail, onSubmit, setPage}=this.props
+        let {navigate, validateEmail, onSubmit, setPage}=this.props;
         return (
             <View   >
                 <View section="email/pass input">
                     <View style={styles.row}>
-
-                        <View style={styles.row}>
                             <TextInput
                                 ref={component => this.emailInput = component}
                                 keyboardType="email-address"
@@ -64,10 +64,8 @@ class LoginSection extends Component {
                                     this.passwordInput.focus() : this.emailInput.focus()}
                                 onChangeText={email => this.setState({email})}
                             />
-
-                        </View>
-
                     </View>
+                    <Divider/>
                     <View style={styles.row}>
 
                         <TextInput
@@ -87,7 +85,8 @@ class LoginSection extends Component {
                         />
 
                     </View>
-                    <View style={styles.row}>
+                    <Divider/>
+                    <View style={[styles.row,{paddingTop:8}]}>
 
                         <Button disabled={!(this.state.email && this.state.password)}
 
@@ -98,7 +97,7 @@ class LoginSection extends Component {
 
                     </View>
 
-                    <View style={[styles.row, styles.alignItemsCenter]}>
+                    <View style={[styles.alignItemsCenter]}>
                         <TouchableNativeFeedback onPress={() => navigate("resetPassword")}>
                             <Text>
                                 Forgot password
@@ -137,7 +136,7 @@ class SignUpSection extends Component {
                 <View section="email/pass input">
                     <View style={styles.row}>
 
-                        <View style={styles.row}>
+
                             <TextInput
                                 underlineColorAndroid="transparent"
 
@@ -152,9 +151,10 @@ class SignUpSection extends Component {
                                 onChangeText={email => this.setState({email})}
                             />
 
-                        </View>
+
 
                     </View>
+                    <Divider/>
                     <View style={styles.row}>
 
                         <TextInput
@@ -174,7 +174,7 @@ class SignUpSection extends Component {
                         />
 
                     </View>
-
+                    <Divider/>
                     <View style={styles.row}>
 
                         <TextInput
@@ -195,8 +195,8 @@ class SignUpSection extends Component {
                         />
 
                     </View>
-
-                    <View style={styles.row}>
+                    <Divider/>
+                    <View style={[styles.row,{paddingVertical:16}]}>
 
                         <Button disabled={!this.comparePassword()}
 
@@ -257,7 +257,7 @@ class OauthSection extends Component {
                     </Button>
                 </View>
 
-                <View style={[styles.row, styles.alignItemsCenter]}><Text style={styles.title}>or</Text></View>
+                <View style={[styles.row, styles.alignItemsCenter,{paddingTop:16}]}><Text style={styles.title}>or</Text></View>
             </View>
 
         )
@@ -280,7 +280,7 @@ class startScreen extends Component {
         let {setPage, user}=this.props.screenProps;
         return (
 
-            <Card style={styles.flex1}>
+            <View style={[styles.flex1,{backgroundColor:"white",padding:16}]}>
 
                 <View
                     style={[styles.horizontal,
@@ -314,7 +314,8 @@ class startScreen extends Component {
 
                 </View>
                 <View style={styles.row}/>
-            </Card>
+
+            </View>
 
         )
     }
@@ -337,15 +338,24 @@ class LoginScreen extends Component {
 
     };
     render() {
-        let {navigate}=this.props.navigation;
+        let {navigate,goBack}=this.props.navigation;
         let {setPage, user,oAuth,login,validateEmail}=this.props.screenProps;
         return (
-            <Card style={[styles.flex1,styles.centerJustified]}>
+            <View style={[styles.flex1]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement="Login to your account"
 
+                />
+                <View style={[styles.flex1,styles.centerJustified,{backgroundColor:"white",padding:16}]}>
                 <OauthSection oAuth={oAuth} setPage={setPage} navigate={navigate}/>
                 <LoginSection onSubmit={login} setPage={setPage} navigate={navigate}
                               validateEmail={validateEmail}/>
-            </Card>
+                </View>
+            </View>
         )
     }
 }
@@ -369,16 +379,26 @@ class SignUpScreen extends Component {
 
     };
     render() {
-        let {navigate}=this.props.navigation;
+        let {navigate,goBack}=this.props.navigation;
         let {setPage, user,oAuth,signUp,validateEmail}=this.props.screenProps;
         return (
-            <Card style={[styles.flex1,styles.centerJustified]}>
+            <View style={[styles.flex1]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement="Create Account"
+
+                />
+                <View style={[styles.flex1,styles.centerJustified,{backgroundColor:"white",padding:16}]}>
 
                 <OauthSection oAuth={oAuth} setPage={setPage} navigate={navigate}/>
                 <SignUpSection onSubmit={signUp} setPage={setPage} validateEmail={validateEmail}
                                navigate={navigate}/>
+                </View>
 
-            </Card>
+            </View>
         )
     }
 }
@@ -409,11 +429,20 @@ class resetPasswordScreen extends Component {
     }
 
     render() {
-        let {navigate}=this.props.navigation;
+        let {navigate,goBack}=this.props.navigation;
         let {setPage, user,resetPasswordWithEmail,validateEmail}=this.props.screenProps;
         return (
 
-            <Card style={[styles.flex1, styles.centerJustified]}>
+            <View style={[styles.flex1]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={()=>{
+                        goBack();
+                    }}
+                    centerElement="Reset Password"
+
+                />
+                <View style={[styles.flex1,styles.centerJustified,{backgroundColor:"white",padding:16}]}>
 
                 <View style={styles.row}>
 
@@ -427,7 +456,7 @@ class resetPasswordScreen extends Component {
                             autoCorrect={true}
                             autoCapitalize="none"
                             placeholderTextColor={colours.paperGrey500.color}
-                            placeholder="Enter Email to receive reset link"
+                            placeholder="Email"
                             onSubmitEditing={() => validateEmail(this.state.email, navigate)}
                             onChangeText={email => this.setState({email})}
                         />
@@ -435,8 +464,8 @@ class resetPasswordScreen extends Component {
                     </View>
 
                 </View>
-
-                <View style={styles.row}>
+<Divider/>
+                <View style={[styles.row,{paddingVertical:16}]}>
 
                     <Button disabled={!(this.state.email)}
                             raised={true}
@@ -446,7 +475,8 @@ class resetPasswordScreen extends Component {
                     </Button>
 
                 </View>
-            </Card>
+                </View>
+            </View>
 
         )
     }
@@ -478,11 +508,23 @@ class AccountScreen extends Component {
 
     };
     render() {
-        let {navigate}=this.props.navigation;
+        let {navigate,goBack}=this.props.navigation;
+
         let {user, setPage,logout}=this.props.screenProps;
 
         return (
-            <Card style={[styles.flex1, styles.centerJustified]}>
+            <View style={[styles.flex1]}>
+                <Toolbar
+                    rightElement="arrow-forward"
+                    rightElementPress={()=>{
+                        alert("clicked")
+                        setPage("app")
+                    }}
+                    centerElement="User Account"
+
+                />
+                <View style={[styles.flex1,styles.centerJustified,{backgroundColor:"white",padding:16}]}>
+
                 <Text>{JSON.stringify(user)}</Text>
                 <View style={styles.row}>
                     <Button text="logout"
@@ -491,7 +533,8 @@ class AccountScreen extends Component {
                         <Text>{"Logout"}</Text>
                     </Button>
                 </View>
-            </Card>
+                </View>
+            </View>
         )
     }
     componentDidMount(){
@@ -508,7 +551,7 @@ const routes = {
     account: {screen: AccountScreen}
 }
 const stackConfig = {
-    //headerMode: "none"
+    headerMode: "none"
 }
 const LoginPage = StackNavigator(routes, stackConfig);
 
