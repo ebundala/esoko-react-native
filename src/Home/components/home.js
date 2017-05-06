@@ -12,8 +12,8 @@ import {
     ListView,
     Image
 } from 'react-native';
-import {Icon,Card ,Button,Divider} from 'react-native-material-design';
-import { Toolbar} from 'react-native-material-ui';
+import {Card} from 'react-native-material-design';
+import { Toolbar,Icon,Divider} from 'react-native-material-ui';
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -29,23 +29,7 @@ let ctx;
        this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
        this.state={query:null}
 }
-    static navigationOptions = {
-        title:({ state, setParams ,navigate}) => {
-           return 'Home'
-        }
-,
-        header: ({ state, setParams ,navigate}) => {
-            let  right=(<Statuses color={colours.paperGrey900.color} navigate={navigate}/>
-            );
-            let  left=(<Menu color={colours.paperGrey900.color}  onPress={()=>ctx.openDrawer()}/>
-            );
-            let style=styles.navBarBackground;
 
-          //let style={backgroundColor:colours.paperBlue500.color,color:"#323c3f"}
-            return { right ,left,style};
-        },
-
-    };
     openDrawer(){
         this.props.screenProps.drawer.openDrawer()
     }
@@ -72,7 +56,7 @@ let ctx;
 
                  <ScrollView contentContainerStyle={[]}>
                      <View style={[{height:160,marginHorizontal:0,padding:0,elevation:5}]}>
-                         <Image style={[styles.flex1,{resizeMode:Image.resizeMode.cover,margin:0}]} source={require("../../pngs/background.png")}>
+                         <Image style={[styles.flex1,{resizeMode:Image.resizeMode.stretch,margin:0}]} source={require("../../pngs/background.png")}>
 
                          </Image>
                      </View>
@@ -119,11 +103,11 @@ let ctx;
                              </View>
                          </Card>
                          <View style={[{marginVertical:16}]}>
-                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         <Divider style={{marginHorizontal:140,height:2}}/>
                          <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
                          <Text style={[styles.title]}>POPULAR PRODUCTS</Text>
                          </View>
-                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         <Divider style={{marginHorizontal:140,height:2}}/>
                          </View>
                          <ListView dataSource={this.ds.cloneWithRows(popular)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
@@ -228,25 +212,17 @@ let ctx;
                                                        </View>
                                                    </View>}
 
-                                                   {false&&<View style={[styles.horizontal]}>
 
-
-                                                       <Button title={"add Product "}
-                                                               onPress={() =>props.addProduct(data,navigate)}/>
-                                                       <Button title={"edit Product "}
-                                                               onPress={() =>props.editProduct(data,navigate)}/>
-
-                                                   </View>}
                                                </Card>
                                            </View>
                                        </TouchableNativeFeedback>}
                          />
                          <View style={[{marginVertical:16}]}>
-                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         <Divider style={{marginHorizontal:140,height:2}}/>
                          <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
                              <Text style={[styles.title]}>NEWEST PRODUCTS</Text>
                          </View>
-                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         <Divider style={{marginHorizontal:140,height:2}}/>
                          </View>
                          <ListView dataSource={this.ds.cloneWithRows(newest)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
@@ -342,25 +318,17 @@ let ctx;
                                                        </View>
                                                    </View>}
 
-                                                   {false&&<View style={[styles.horizontal]}>
 
-
-                                                       <Button title={"add Product "}
-                                                               onPress={() =>props.addProduct(data,navigate)}/>
-                                                       <Button title={"edit Product "}
-                                                               onPress={() =>props.editProduct(data,navigate)}/>
-
-                                                   </View>}
                                                </Card>
                                            </View>
                                        </TouchableNativeFeedback>}
                          />
                          <View style={[{marginVertical:16}]}>
-                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         <Divider style={{marginHorizontal:140,height:2}}/>
                           <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified,{padding:8}]}>
                              <Text style={[styles.title]}>CHEAPEST PRODUCTS</Text>
                          </View>
-                         <Divider style={[{marginHorizontal:140,height:2}]}/>
+                         <Divider style={{marginHorizontal:140,height:2}}/>
                          </View>
                          <ListView dataSource={this.ds.cloneWithRows(cheapest)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
@@ -456,15 +424,7 @@ let ctx;
                                                        </View>
                                                    </View>}
 
-                                                   {false&&<View style={[styles.horizontal]}>
 
-
-                                                       <Button title={"add Product "}
-                                                               onPress={() =>props.addProduct(data,navigate)}/>
-                                                       <Button title={"edit Product "}
-                                                               onPress={() =>props.editProduct(data,navigate)}/>
-
-                                                   </View>}
                                                </Card>
                                            </View>
                                        </TouchableNativeFeedback>}

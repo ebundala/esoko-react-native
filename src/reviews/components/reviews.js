@@ -209,18 +209,7 @@ const RatingWidget = React.createClass({
 });
 
 export class ReviewsList extends Component{
-    static navigationOptions = {
-        title:({ state, setParams ,navigate}) => {
-            return  state.params.product.title+' Reviews'
-        },
-        header: ({ state, setParams ,navigate}) => {
-         //let  right=(<Statuses navigate={navigate}/>);
-         //let  left=(<Menu navigate={navigate}/>);
-            let style=styles.navBarBackground
-         return { style};
-         },
 
-    };
     constructor(props){
         super(props)
         this.ds = new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
@@ -301,18 +290,7 @@ export class ReviewsList extends Component{
 }
 
 export class SingleReviewView extends Component{
-    static navigationOptions = {
-        title: ({ state, setParams ,navigate}) => {
-            return state.params.title
-        },
-        header: ({ state, setParams ,navigate}) => {
-        // let  right=(<Statuses navigate={navigate}/>);
-        // let  left=(<Menu navigate={navigate}/>);
-            let style=styles.navBarBackground;
-         return { style};
-         },
 
-    };
     render(){
         let{title}=this.props.navigation.state.params
         let {navigate,goBack}=this.props.navigation;
@@ -333,21 +311,7 @@ export class SingleReviewView extends Component{
 }
 
 export class CreateReview extends Component{
-    static navigationOptions = {
-        /* title: ({state, setParams, navigate}) => {
-         return "NEW PRODUCT"||state.params.title
-         },*/
-        header: ({ state, setParams ,navigate}) => {
-            //  let  right=(<Statuses navigate={navigate}/>);
-            //let  left=(<Menu navigate={navigate}/>);
-            let style={backgroundColor:colours.paperTeal500.color,height:0};
-            return {style};
-        },
-        headerVisible: false,
-
-    };
-
-    //static router = MyRouter;
+  
     constructor(props){
         super(props)
 

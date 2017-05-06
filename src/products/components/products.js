@@ -35,18 +35,7 @@ const firestack = new Firestack();
 
 
 export class ProductsList extends Component {
-    static navigationOptions = {
-        /*title: ({state, setParams, navigate}) => {
-            return state.params.title
-        },*/
-        header: ({ state, setParams ,navigate}) => {
-           // let  right=(<Statuses navigate={navigate}/>);
-            //let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>);
-            let style={height:0}//styles.navBarBackground;
-            return {style};
-        },
 
-    };
 
     constructor(props) {
         super(props);
@@ -422,17 +411,32 @@ export class SingleProductView extends Component {
 
 
                 <ActionButton
-                    actions={['gavel', 'email','favorite']}
-                    icon="store"
+                    actions={[
+                        {
+                            icon: 'gavel',
+                            label: "Place bid",
+                            name: "bid"
+                        },
+                        {
+                            icon: 'sms',
+                            label: "Message seller",
+                            name: "chat"
+                        },
+                        {
+                            icon: 'favorite',
+                            label: "Add to wishlist",
+                            name: "favorite"
+                        }]}
+                    icon="shop-two"
                     transition="speedDial"
                     onPress={(text)=>{
                         switch(text){
-                            case "email":
+                            case "chat":
                                 setTimeout(()=>{
                                 props.startChat(data, navigate);
                                 },16)
                                 break;
-                            case"gavel":
+                            case"bid":
                                 setTimeout(()=> {
                                     props.placeBid(data, navigate);
                                 },16)
@@ -524,18 +528,6 @@ export class SingleProductView extends Component {
 
 
 export class searchResultsProductsList extends Component {
-    static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
-            return state.params.title
-        },
-        header: ({ state, setParams ,navigate}) => {
-            // let  right=(<Statuses navigate={navigate}/>);
-            //let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>);
-            let style=styles.navBarBackground;
-            return {style};
-        },
-
-    };
 
     constructor(props) {
         super(props);

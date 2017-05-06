@@ -441,7 +441,7 @@ class AccountScreen extends Component {
                 <Toolbar
                     rightElement="arrow-forward"
                     onRightElementPress={()=>{
-                        alert("clicked")
+
                         setPage("app")
                     }}
                     centerElement="User Account"

@@ -701,15 +701,7 @@ var st = StyleSheet.create({
 
 
 export class OrdersList extends Component{
-    static navigationOptions = {
-        title: 'Orders',
-        header: ({ state, setParams ,navigate}) => {
-        // let  right=(<Statuses navigate={navigate}/>);
-           let style=styles.navBarBackground;
-         return {style};
-         },
 
-    };
     render(){
         let {navigate,goBack}=this.props.navigation;
         return(
@@ -741,18 +733,7 @@ export class OrdersList extends Component{
 }
 
 export class SingleOrderView extends Component{
-    static navigationOptions = {
-        title: ({ state, setParams ,navigate}) => {
-            return state.params.title
-        },
-        header: ({ state, setParams ,navigate}) => {
-            // let  right=(<Statuses navigate={navigate}/>);
-            //let  left=(<Menu  onPress={()=>ctx.openDrawer()}/>);
-            let style=styles.navBarBackground;
-            return {style};
-        },
 
-    };
     render(){
         let {navigate,goBack}=this.props.navigation;
         return(

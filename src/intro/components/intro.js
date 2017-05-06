@@ -13,17 +13,7 @@ import {
 //import {Statuses,Menu,DrawerIcon}  from "../../statuses/components/statuses"
 
 export class IntroOne extends Component{
-    static navigationOptions = {
-        title: 'introOne',
-       /* header: ({ state, setParams ,navigate}) => {
 
-            let  left=(<Menu navigate={navigate}/>
-            );
-
-            return { left};
-        },*/
-
-    };
     render(){
         let{setPage}=this.props;
         return(
@@ -42,17 +32,7 @@ export class IntroOne extends Component{
 
 
 export class IntroTwo extends Component{
-    static navigationOptions = {
-        title: 'introTwo',
-        /* header: ({ state, setParams ,navigate}) => {
 
-         let  left=(<Menu navigate={navigate}/>
-         );
-
-         return { left};
-         },*/
-
-    };
     render(){
         let{setPage}=this.props;
         return(
@@ -71,17 +51,7 @@ export class IntroTwo extends Component{
 
 
 export  class introThree extends Component{
-    static navigationOptions = {
-        title: 'introThree',
-        /* header: ({ state, setParams ,navigate}) => {
 
-         let  left=(<Menu navigate={navigate}/>
-         );
-
-         return { left};
-         },*/
-
-    };
     render(){
         return(
             <View style={{flex:1,justifyContent:'space-between'}}>

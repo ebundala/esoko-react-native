@@ -20,16 +20,7 @@ import {shortenText} from "../../utils/utils"
 let moment = require('moment');
 
 export class ChatsList extends Component{
-    static navigationOptions = {
-        title: 'Messages',
-        header: ({ state, setParams ,navigate}) => {
-        // let  right=(<Statuses navigate={navigate}/>);
-        // let  left=(<Menu navigate={navigate}/>);
-            let style=styles.navBarBackground
-         return { style};
-         },
 
-    };
 
     constructor(props){
         super(props)
@@ -111,18 +102,7 @@ export class ChatsList extends Component{
 }
 
 export class SingleChatView extends Component{
-    static navigationOptions = {
-        title: ({ state, setParams ,navigate}) => {
-            return state.params.data.userName
-        },
-        header: ({ state, setParams ,navigate}) => {
-            // let  right=(<Statuses navigate={navigate}/>);
-            // let  left=(<Menu navigate={navigate}/>);
-            let style=styles.navBarBackground
-            return { style};
-         },
 
-    };
     constructor(props) {
         super(props);
         this.state = {messages: []};

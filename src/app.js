@@ -42,8 +42,9 @@ import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
 export const uiTheme = {
     palette: {
-        primaryColor: COLOR.green500,
+        primaryColor: COLOR.blue500,
         accentColor: COLOR.pink500,
+        iconColor:COLOR.grey50
     },
 };
 const UIManager = NativeModules.UIManager;
@@ -52,9 +53,7 @@ const StackHome = {
     Home: {screen:Home},
     products: {screen: ProductsList},
     singleProduct:{screen:SingleProductView},
-    createProduct:{screen:CreateProduct,navigationOptions: ({navigation}) => ({
-        headerVisible:false,
-    })},
+    createProduct:{screen:CreateProduct},
     searchResults:{screen:searchResultsProductsList},
     orders: {screen:OrdersList},
     singleOrder: {screen:SingleOrderView},

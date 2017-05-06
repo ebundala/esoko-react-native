@@ -14,20 +14,7 @@ import { Toolbar} from 'react-native-material-ui';
 
 
 export class BidsList extends Component{
-    static navigationOptions = {
-        title:({ state, setParams ,navigate}) => {
-            return state.params.product.title+" Bids"
-        }
-        /*header: ({ state, setParams ,navigate}) => {
-         let  right=(<Statuses navigate={navigate}/>
-         );
-         let  left=(<Menu navigate={navigate}/>
-         );
 
-         return { right ,left};
-         },*/
-
-    };
     render(){
         let {navigate,goBack}=this.props.navigation;
         let {product}=this.props.navigation.state.params;
@@ -56,20 +43,7 @@ export class BidsList extends Component{
 }
 
 export class SingleBidView extends Component{
-    static navigationOptions = {
-        title: ({ state, setParams ,navigate}) => {
-            return state.params.title
-        },
-        /*header: ({ state, setParams ,navigate}) => {
-         let  right=(<Statuses navigate={navigate}/>
-         );
-         let  left=(<Menu navigate={navigate}/>
-         );
 
-         return { right ,left};
-         },*/
-
-    };
     render(){
         let {navigate,goBack}=this.props.navigation;
         let {title}=this.props.navigation.state.params
