@@ -5,6 +5,7 @@ import { persistStore, autoRehydrate } from 'redux-persist'
 import {applyMiddleware, createStore, compose} from 'redux';
 
 import thunk from 'redux-thunk';
+import screenTracker from './screenTracker/screenTracker';
 import createLogger from 'redux-logger';
 //import devTools from 'remote-redux-devtools';
 //import {apiCallMiddleware} from './utils/api/apiCallMiddleware';
@@ -18,7 +19,7 @@ const logger = createLogger();
 //console.warn(INITIAL_STATE)
 return createStore(rootReducer,
     compose(
-    applyMiddleware(/*clearBodyMiddleware, apiCallMiddleware,*/ thunk, /*logger*/),
+    applyMiddleware(screenTracker,/*clearBodyMiddleware, apiCallMiddleware,*/ thunk, /*logger*/),
     autoRehydrate()
     )
 );
