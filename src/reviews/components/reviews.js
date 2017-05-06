@@ -12,9 +12,9 @@ import {
     TouchableNativeFeedback,
     Image
 } from 'react-native';
-import {Icon,Divider} from 'react-native-material-design';
-import { Toolbar} from 'react-native-material-ui';
-
+//import {Icon,Divider} from 'react-native-material-design';
+import { Toolbar,Divider,Icon} from 'react-native-material-ui';
+import {uiTheme} from  "../../app"
 import StarRating from 'react-native-star-rating';
 
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
@@ -22,6 +22,7 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
 import {shortenText} from '../../utils/utils'
 let moment = require('moment');
+
 let WidgetMixin = require('react-native-gifted-form/mixins/WidgetMixin.js');
 
 const RatingWidget = React.createClass({
@@ -366,6 +367,7 @@ export class CreateReview extends Component{
         let {product}=this.props.navigation.state.params;
         let props=this.props.screenProps;
         let {user}=this.props.screenProps;
+        const { primaryColor } = uiTheme.palette;
         let routes = {
             getHomeRoute() {
                 return {
@@ -584,7 +586,7 @@ export class CreateReview extends Component{
             <ExNavigator
                 initialRoute={routes.getHomeRoute()}
                 sceneStyle={{ paddingTop: 56 }}
-                navigationBarStyle={[styles.navBarBackground]}
+                navigationBarStyle={{backgroundColor:primaryColor}}
                 titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
                 style={[styles.flex1]}
             />

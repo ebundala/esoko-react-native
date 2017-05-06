@@ -188,7 +188,7 @@ class root extends Component {
         }
     }
 
-    componentWillMountT() {
+    preConfig() {
 
         const {userLoggedOut,userLoggedIn}=this.props.screenProps;
         const {dispatch,navOauth}=this.props;
@@ -256,7 +256,7 @@ class root extends Component {
          return true
          })
 
-this.componentWillMountT();
+this.preConfig();
         //const res = user.isNewUser ? this._setPage("IntroOne") : !user.isAuthenticated ? this._setPage("Oauth"):null /*this._setPage("app")*/
     }
      setInitialScreen(){

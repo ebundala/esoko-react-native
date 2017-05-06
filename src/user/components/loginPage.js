@@ -18,10 +18,10 @@ import {
 } from 'react-native';
 import {StackNavigator} from 'react-navigation';
 //import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
-import Button from 'apsl-react-native-button'
+//import Button from 'apsl-react-native-button'
 //import {Card, Icon,} from 'react-native-material-design';
-import { Toolbar,Divider} from 'react-native-material-ui';
-
+import { Toolbar,Divider,Button} from 'react-native-material-ui';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux'
 import styles,{colours} from '../../styles/styles'
 import actions from "../user.actions"
@@ -89,10 +89,11 @@ class LoginSection extends Component {
                     <View style={[styles.row,{paddingTop:8}]}>
 
                         <Button disabled={!(this.state.email && this.state.password)}
-
-
+                                primary
+                                raised={true}
+                                text={"Log In"}
                                 onPress={() => onSubmit(this.state.email, this.state.password, navigate, setPage)}>
-                            <Text>{"Log In"}</Text>
+
                         </Button>
 
                     </View>
@@ -199,11 +200,11 @@ class SignUpSection extends Component {
                     <View style={[styles.row,{paddingVertical:16}]}>
 
                         <Button disabled={!this.comparePassword()}
-
+                                primary
                                 raised={true}
-                                text="sign up"
+                                text={"Sign up"}
                                 onPress={() => this.props.onSubmit(this.state.email, this.state.retypedPassword, setPage)}>
-                            <Text>{"Sign up"}</Text>
+
                         </Button>
 
                     </View>
@@ -240,21 +241,16 @@ class OauthSection extends Component {
         return (
             <View >
                 <View style={styles.row}>
-                    <Button style={styles.facebook}
-                            raised={true}
-                            text="LOGIN WITH FACEBOOK"
-                            onPress={() => oAuth("FACEBOOK", navigate, setPage)}>
-                        <Text>{"LOGIN WITH FACEBOOK"}</Text>
+                    <Icon.Button style={[styles.centerJustified]} name="google-plus" backgroundColor="#D84B37" onPress={() => oAuth("GOOGLE", navigate, setPage)}>
+                        Login with Google
+                    </Icon.Button>
 
-                    </Button>
                 </View>
                 <View style={styles.row}>
-                    <Button style={styles.google}
-                            raised={true}
-                            text="LOGIN WITH GOOGLE"
-                            onPress={() => oAuth("GOOGLE", navigate, setPage)}>
-                        <Text>{"LOGIN WITH GOOGLE"}</Text>
-                    </Button>
+                    <Icon.Button style={[styles.centerJustified]} name="facebook" backgroundColor="#3b5998" onPress={() => oAuth("GOOGLE", navigate, setPage)}>
+                        Login with Facebook
+                    </Icon.Button>
+
                 </View>
 
                 <View style={[styles.row, styles.alignItemsCenter,{paddingTop:16}]}><Text style={styles.title}>or</Text></View>
@@ -284,6 +280,7 @@ class startScreen extends Component {
 
                         <Button
                             text="Log In"
+                            accent
                             raised={true}
                             onPress={() => navigate("login")
                             }>
@@ -296,6 +293,7 @@ class startScreen extends Component {
 
                     <View style={[styles.row, styles.flex5]}>
                         <Button text="Sign Up"
+                                accent
                                 raised={true}
                                 onPress={() => navigate("signup")}>
                             <Text>{"Sign up"}</Text>
@@ -415,6 +413,7 @@ class resetPasswordScreen extends Component {
                 <View style={[styles.row,{paddingVertical:16}]}>
 
                     <Button disabled={!(this.state.email)}
+                            accent
                             raised={true}
                             text="Send Reset link"
                             onPress={() => resetPasswordWithEmail(this.state.email, navigate, setPage)}>

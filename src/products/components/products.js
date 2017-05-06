@@ -15,8 +15,8 @@ import {
     ViewPagerAndroid,
     TouchableNativeFeedback
 } from "react-native";
-import {Icon,Card ,Divider} from 'react-native-material-design';
-import { Toolbar} from 'react-native-material-ui';
+import {Card } from 'react-native-material-design';
+import { Toolbar,Divider,Icon,ActionButton} from 'react-native-material-ui';
 
 import Button from 'apsl-react-native-button'
 import StarRating from 'react-native-star-rating';
@@ -201,18 +201,7 @@ export class ProductsList extends Component {
 }
 
 export class SingleProductView extends Component {
-    static navigationOptions = {
-        title: ({state, setParams, navigate}) => {
-            return state.params.data.title
-        },
-        header: ({ state, setParams ,navigate}) => {
-       //  let  right=(<Statuses navigate={navigate}/>);
-         //let  left=(<Menu navigate={navigate}/>);
-let style=styles.navBarBackground;
-         return { style};
-         },
 
-    };
     constructor(){
         super();
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
@@ -296,7 +285,7 @@ let style=styles.navBarBackground;
                         </View>
 
                     </Card>
-                        <Card>
+                    <Card>
 
 
                       <View ref="description" style={[styles.flex1,{height:50}]}>
@@ -432,8 +421,31 @@ let style=styles.navBarBackground;
                 </ScrollView>
 
 
+                <ActionButton
+                    actions={['gavel', 'email','favorite']}
+                    icon="store"
+                    transition="speedDial"
+                    onPress={(text)=>{
+                        switch(text){
+                            case "email":
+                                setTimeout(()=>{
+                                props.startChat(data, navigate);
+                                },16)
+                                break;
+                            case"gavel":
+                                setTimeout(()=> {
+                                    props.placeBid(data, navigate);
+                                },16)
+                                break;
+                            case"favorite":
+                                break;
+                        }
 
-                <Card ref="CTA" style={[
+
+                    }}
+                />
+
+                {false&&<Card ref="CTA" style={[
                     styles.horizontal,
                     styles.spaceBetween,
                     {
@@ -471,7 +483,7 @@ let style=styles.navBarBackground;
                         </Button>
                     </View>
 
-                </Card>
+                </Card>}
 
 
             </View>
