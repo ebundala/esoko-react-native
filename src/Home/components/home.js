@@ -56,7 +56,7 @@ let ctx;
 
                  <ScrollView contentContainerStyle={[]}>
                      <View style={[{height:160,marginHorizontal:0,padding:0,elevation:5}]}>
-                         <Image style={[styles.flex1,{resizeMode:Image.resizeMode.stretch,margin:0}]} source={require("../../pngs/background.png")}>
+                         <Image style={[styles.flex1,{resizeMode:Image.resizeMode.cover,margin:0}]} source={require("../../pngs/background.png")}>
 
                          </Image>
                      </View>
@@ -111,7 +111,7 @@ let ctx;
                          </View>
                          <ListView dataSource={this.ds.cloneWithRows(popular)}
                                    contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
-                                   scrollRenderAheadDistance={640}
+                                   scrollRenderAheadDistanceh={640}
                                    enableEmptySections={true}
                                    horizontal={true}
                                    renderRow={(data) =>
@@ -242,7 +242,11 @@ let ctx;
                                                <Card style={[styles.flex1]}>
 
                                                    <View style={[styles.flex1]}>
-                                                       <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                                       <Image  style={[{marginTop:16,
+                                                           marginBottom:8,width:132,height:132,
+                                                           resizeMode:Image.resizeMode.stretch,
+                                                           backgroundColor:colours.paperGrey300.color
+                                                       }]}
                                                                source={{uri:data.photos[0].url}}>
 
                                                        </Image>
@@ -348,7 +352,11 @@ let ctx;
                                                <Card style={[styles.flex1]}>
 
                                                    <View style={[styles.flex1]}>
-                                                       <Image  style={[{marginTop:16,marginBottom:8,width:132,height:132,resizeMode:Image.resizeMode.stretch}]}
+                                                       <Image  style={[{marginTop:16,
+                                                           marginBottom:8,width:132,height:132,
+                                                           resizeMode:Image.resizeMode.stretch,
+                                                           backgroundColor:colours.paperGrey300.color
+                                                       }]}
                                                                source={{uri:data.photos[0].url}}>
 
                                                        </Image>

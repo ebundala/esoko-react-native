@@ -311,7 +311,7 @@ export class SingleReviewView extends Component{
 }
 
 export class CreateReview extends Component{
-  
+
     constructor(props){
         super(props)
 
