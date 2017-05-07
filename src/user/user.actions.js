@@ -29,11 +29,12 @@ export const USER_ACTIONS={
                              data: {
                                  ...user
                              }
-                         })
-                         navigate("account")
+                         })*/
+                       navigate("account")
                          if (setPage) {
                              setPage("app")
-                         }*/
+                         }
+
                      })
                      .catch((err) => {
                          // alert('User signin error', err.message);
@@ -62,8 +63,8 @@ export const USER_ACTIONS={
                              status: "OK"
                              //data:null
                          }
-                     )
-                     navigate("start")*/
+                     )*/
+                     navigate("start")
                  })
                  .catch(err => {
                      //console.error('Uh oh... something weird happened')

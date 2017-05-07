@@ -42,7 +42,7 @@ import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
 export const uiTheme = {
     palette: {
-        primaryColor: COLOR.blue500,
+        primaryColor: COLOR.red500,
         accentColor: COLOR.pink500,
         iconColor:COLOR.grey50
     },
@@ -112,7 +112,7 @@ class root extends Component {
                 <ViewPagerAndroid
                     keyboardDismissMode='on-drag'
                     initialPage={3}
-                    scrollEnabled={false}
+                    scrollEnabled={true}
 
                     style={{flex: 1}}
                     ref={(el) => this._viewPager = el}>
@@ -189,17 +189,31 @@ class root extends Component {
 
     preConfig() {
 
-        const {userLoggedOut,userLoggedIn}=this.props.screenProps;
+        const {userLoggedOut,userLoggedIn,user}=this.props.screenProps;
         const {dispatch,navOauth}=this.props;
-        const setPage=this._setPage;
+       // const setPage=this._setPage;
        let NavigationOauth=addNavigationHelpers({dispatch, state:navOauth});
-
+        console.log(user)
          //console.log("will mount",NavigationOauth)
         if (UIManager.setLayoutAnimationEnabledExperimental) {
             UIManager.setLayoutAnimationEnabledExperimental(true);
         }
+        if(user.isNewUser){
+            this._setPage("IntroOne")
 
-        firestack.auth.listenForAuth(function(evt) {
+        }
+        else if(user.authenticated){
+            this._setPage("app")
+            NavigationOauth.navigate("account")
+        }
+        else{
+            NavigationOauth.navigate("start")
+            this._setPage("Oauth")
+
+        }
+
+        /*firestack.auth.listenForAuth(function(evt) {
+            this.authCheked=true
             // evt is the authentication event
             // it contains an `error` key for carrying the
             // error message in case of an error
@@ -236,7 +250,7 @@ class root extends Component {
 
             }
         })
-            .then(() => console.log('Listening for authentication changes'))
+            .then(() => console.log('Listening for authentication changes'))*/
     }
 
     componentDidMount(){
@@ -270,7 +284,7 @@ this.preConfig();
 }
     componentDidUpdate() {
         //alert("seInitialtPage "+this.seInitialtPage)
-        this.setInitialScreen()
+        //this.setInitialScreen()
     }
 
     shouldCloseApp(nav) {
@@ -303,8 +317,8 @@ this.preConfig();
     }
 
     componentWillUnmount() {
-        //BackAndroid.removeEventListener('backPress');
-        firestack.auth.unlistenForAuth();
+        BackAndroid.removeEventListener('backPress');
+       // firestack.auth.unlistenForAuth();
     }
 
     goToAccount() {

@@ -1,7 +1,7 @@
 /**
  * Created by ebundala on 3/11/2017.
  */
-import React, {Component,PropTypes} from "react";
+import React, {Component, PropTypes} from "react";
 import {
     StyleSheet,
     Text,
@@ -12,17 +12,20 @@ import {
     TextInput,
     TouchableHighlight,
     PixelRatio,
+    Alert,
     ViewPagerAndroid,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    Navigator,
+    WebView
 } from "react-native";
-import {Card } from 'react-native-material-design';
-import { Toolbar,Divider,Icon,ActionButton} from 'react-native-material-ui';
+import {Card} from 'react-native-material-design';
+import {Toolbar, Divider, Icon, ActionButton,RippleFeedback} from 'react-native-material-ui';
 
 import Button from 'apsl-react-native-button'
 import StarRating from 'react-native-star-rating';
 //import Accordion from "react-native-accordion"
 //import {Statuses,Menu}  from "../../statuses/components/statuses"
-import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
+import styles, {typographyStyle, colorStyle, colours} from "../../styles/styles"
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
 import Firestack from 'react-native-firestack'
@@ -33,78 +36,80 @@ let ctx;
 const firestack = new Firestack();
 
 
-
 export class ProductsList extends Component {
 
 
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-        this.state={query:null}
+        this.state = {query: null}
 
     }
 
     render() {
-        ctx=this;
-        let {navigate,goBack} = this.props.navigation;
-        let {title,products}=this.props.navigation.state.params;
-        let props=this.props.screenProps;
-       // let {products}=this.props.screenProps
+        ctx = this;
+        let {navigate, goBack} = this.props.navigation;
+        let {title, products}=this.props.navigation.state.params;
+        let props = this.props.screenProps;
+        // let {products}=this.props.screenProps
         return (
             <View style={[styles.flex1]}>
                 <Toolbar
                     leftElement="arrow-back"
-                    onLeftElementPress={()=>{
+                    onLeftElementPress={() => {
                         goBack();
                     }}
                     centerElement={title}
                     searchable={{
                         autoFocus: true,
                         placeholder: 'Search',
-                        onSubmitEditing:e=> {
-                        if(this.state.query) {
+                        onSubmitEditing: e => {
+                            if (this.state.query) {
 
-                        props.searchProducts(this.state.query, title, navigate)
-                    }
+                                props.searchProducts(this.state.query, title, navigate)
+                            }
 
-                    },
-                        onChangeText:query => this.setState({query})
+                        },
+                        onChangeText: query => this.setState({query})
                     }
                     }
                 />
 
                 <ListView dataSource={this.ds.cloneWithRows(products)}
-                          contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
+                          contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
                           scrollRenderAheadDistance={640}
-                           enableEmptySections={true}
+                          enableEmptySections={true}
                           renderRow={(data) =>
                               <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
                                   data: data
                               })}>
-                                  <View style={[,{
+                                  <View style={[, {
                                       height: 220,
-                                      width:180
+                                      width: 180
                                   },
 
                                   ]}>
                                       <Card style={[styles.flex1]}>
 
                                           <View style={[styles.flex1]}>
-                                              <Image  style={[{marginTop:16,marginBottom:8,
-                                                  width:132,height:132,
-                                                  resizeMode:Image.resizeMode.stretch,
-                                                  backgroundColor:colours.paperGrey300.color
+                                              <Image style={[{
+                                                  marginTop: 16, marginBottom: 8,
+                                                  width: 132, height: 132,
+                                                  resizeMode: Image.resizeMode.stretch,
+                                                  backgroundColor: colours.paperGrey300.color
                                               }]}
-                                                      source={{uri:data.photos[0].url}}>
+                                                     source={{uri: data.photos[0].url}}>
 
                                               </Image>
-                                              <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
-                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                              <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
+                                                  <View
+                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
                                                       <Text style={[styles.productTitle]}>
                                                           {shortenText(data.title)}
                                                       </Text>
                                                   </View>
-                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                  <View
+                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
                                                       <Text style={[styles.currency]}>
                                                           {data.currency}
                                                       </Text>
@@ -116,14 +121,13 @@ export class ProductsList extends Component {
                                           </View>
 
 
-
-                                          {false&&<View style={[styles.horizontal]}>
+                                          {false && <View style={[styles.horizontal]}>
 
 
                                               <Button title={"add Product "}
-                                                      onPress={() =>props.addProduct(data,navigate)}/>
+                                                      onPress={() => props.addProduct(data, navigate)}/>
                                               <Button title={"edit Product "}
-                                                      onPress={() =>props.editProduct(data,navigate)}/>
+                                                      onPress={() => props.editProduct(data, navigate)}/>
 
                                           </View>}
                                       </Card>
@@ -131,12 +135,13 @@ export class ProductsList extends Component {
                               </TouchableNativeFeedback>}
                 />
 
-                {false&&<Card style={[{height:50,
-                    margin:0,
-                    elevation:4,
-                    borderRadius:0,
+                {false && <Card style={[{
+                    height: 50,
+                    margin: 0,
+                    elevation: 4,
+                    borderRadius: 0,
                     //backgroundColor:colours.paperTeal500.color
-                }]} >
+                }]}>
                     <View style={[styles.horizontal]}>
 
                         <View style={[styles.flex9]}>
@@ -148,11 +153,11 @@ export class ProductsList extends Component {
                                 style={styles.input}
                                 autoCorrect={true}
                                 autoCapitalize="none"
-                                placeholder={"Search "+title}
+                                placeholder={"Search " + title}
                                 placeholderTextColor={colours.paperGrey500.color}
                                 underlineColorAndroid="transparent"
                                 onSubmitEditing={(e) => {
-                                    if(this.state.query) {
+                                    if (this.state.query) {
                                         this.searchInput.blur();
                                         props.searchProducts(this.state.query, title, navigate)
                                     }
@@ -163,16 +168,16 @@ export class ProductsList extends Component {
                             />
 
                         </View>
-                        <TouchableNativeFeedback onPress={()=>{
-                            if(this.state.query) {
+                        <TouchableNativeFeedback onPress={() => {
+                            if (this.state.query) {
                                 this.searchInput.blur();
                                 props.searchProducts(this.state.query, title, navigate)
                             }
                             else
                                 this.searchInput.focus();
                         }}>
-                            <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
-                                <Icon name="search" />
+                            <View style={[styles.flex1, styles.centerJustified, styles.alignItemsCenter]}>
+                                <Icon name="search"/>
                             </View>
                         </TouchableNativeFeedback>
                     </View>
@@ -181,38 +186,39 @@ export class ProductsList extends Component {
             </View>
         )
     }
-    componentWillUpdate(){
+
+    componentWillUpdate() {
 
     }
-    openDrawer(){
+
+    openDrawer() {
         this.props.screenProps.drawer.openDrawer()
     }
 }
 
 export class SingleProductView extends Component {
 
-    constructor(){
+    constructor() {
         super();
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-        this.state={starCount:5}
+        this.state = {starCount: 5}
     }
 
     render() {
-        let {navigate,goBack} = this.props.navigation;
+        let {navigate, goBack} = this.props.navigation;
         let {data}=this.props.navigation.state.params;
-        let props=this.props.screenProps;
-        let reviews=[];
+        let props = this.props.screenProps;
+        let reviews = [];
 
 
-        for(let i=0;i<9;i++){
-        reviews.push({
-            reviewerName:"Elias Bundala",
-            rating:Math.random()*5,
-            body:"hello this is a terible product dont buy it an way too expensive",
-            reviewerAvator:data.photos[Math.floor(Math.random()*5)].url
-        })
+        for (let i = 0; i < 9; i++) {
+            reviews.push({
+                reviewerName: "Elias Bundala",
+                rating: Math.random() * 5,
+                body: "hello this is a terible product dont buy it an way too expensive",
+                reviewerAvator: data.photos[Math.floor(Math.random() * 5)].url
+            })
         }
-
 
 
         return (
@@ -220,7 +226,7 @@ export class SingleProductView extends Component {
 
                 <Toolbar
                     leftElement="arrow-back"
-                    onLeftElementPress={()=>{
+                    onLeftElementPress={() => {
                         goBack();
                     }}
                     centerElement={data.title}
@@ -228,134 +234,154 @@ export class SingleProductView extends Component {
                 />
 
 
-
                 <ScrollView >
                     <View >
-                    <Card ref="mainCard" style={[{height:360}]}>
-                        <View style={[styles.flex8,{marginVertical:16}]}>
-                        <ViewPagerAndroid
-                            keyboardDismissMode='on-drag'
-                            initialPage={0}
-                            scrollEnabled={true}
+                        <Card ref="mainCard" style={[{height: 360}]}>
+                            <View style={[styles.flex8, {marginVertical: 16}]}>
+                                <ViewPagerAndroid
+                                    keyboardDismissMode='on-drag'
+                                    initialPage={0}
+                                    scrollEnabled={true}
 
-                            style={{flex: 1}}
-                            ref={(el) => this._viewPager = el}>
-                            {this._renderImages().map((child, i) => (
+                                    style={{flex: 1}}
+                                    ref={(el) => this._viewPager = el}>
+                                    {this._renderImages().map((child, i) => (
+                                        <View
+                                            key={"key" + i}
+                                            testID={"test" + i}
+                                            style={[styles.flex1, {backgroundColor: colours.paperTeal50.color}]}>
+                                            <Image style={[styles.flex1, {
+                                                width: null,
+                                                height: null,
+                                                resizeMode: Image.resizeMode.cover
+                                            }]}
+                                                   source={{uri: data.photos[i].url}}>
+                                                <Text style={[{
+                                                    position: "absolute",
+                                                    bottom: 8,
+                                                    left: 8
+                                                }]}>{i + 1 + "/" + data.photos.length}</Text>
+                                            </Image>
+                                        </View>
+                                    ))}
+                                </ViewPagerAndroid>
+                            </View>
+                            <View style={[styles.flex2, styles.horizontal,]}>
+                                <View style={[styles.flex8, styles.centerJustified]}>
+                                    <View style={[styles.horizontal]}>
+                                        <Text style={[colorStyle.paperGrey900, {fontSize: 14, fontWeight: "500"}]}>
+                                            {data.title}
+                                        </Text>
+                                    </View>
+
+                                </View>
                                 <View
-                                    key={"key" + i}
-                                    testID={"test" + i}
-                                    style={[styles.flex1,{backgroundColor:colours.paperTeal50.color}]}>
-                                    <Image  style={[styles.flex1,{width:null,height:null,resizeMode:Image.resizeMode.cover}]}
-                                            source={{uri:data.photos[i].url}}>
-                                        <Text style={[{position:"absolute",bottom:8,left:8}]}>{i+1+"/"+data.photos.length}</Text>
-                                    </Image>
-                                </View>
-                            ))}
-                        </ViewPagerAndroid>
-                        </View>
-                        <View style={[styles.flex2,styles.horizontal,]}>
-                            <View style={[styles.flex8,styles.centerJustified]}>
-                                <View style={[styles.horizontal]}>
-                                    <Text style={[colorStyle.paperGrey900,{fontSize:14,fontWeight:"500"}]}>
-                                        {data.title}
-                                    </Text>
+                                    style={[styles.flex4, styles.centerJustified, styles.alignItemsCenter, {margin: 8}]}>
+                                    < View style={[styles.horizontal]}>
+                                        <Text style={[colorStyle.paperGrey900, {
+                                            fontSize: 14,
+                                            fontWeight: "500",
+                                            textAlign: "center"
+                                        }]}>
+                                            {data.currency} {data.price}
+
+                                        </Text>
+                                    </View>
                                 </View>
 
                             </View>
-                            <View style={[styles.flex4,styles.centerJustified,styles.alignItemsCenter,{margin:8}]}>
-                                < View style={[styles.horizontal]}>
-                                    <Text style={[colorStyle.paperGrey900,{fontSize:14,fontWeight:"500",textAlign:"center"}]}>
-                                        {data.currency} {data.price}
-
-                                    </Text>
-                                </View>
-                            </View>
-
-                        </View>
-
-                    </Card>
-                    <Card>
-
-
-                      <View ref="description" style={[styles.flex1,{height:50}]}>
-
-                      <View style={[styles.flex1,styles.horizontal]}>
-
-                          <View style={[styles.centerJustified]}>
-                              <Text style={[styles.title,{fontSize:12}]}>
-                                  DESCRIPTION
-
-                              </Text>
-                          </View>
-
-
-                      </View>
-
-                  </View>
-
-
-                      <View>
-                      <Divider/>
-                      <Text style={[typographyStyle.paperFontBody1,{padding:8}]}>
-                          {data.description}
-                      </Text>
-                  </View>
 
                         </Card>
-                    <Card  >
+                        <Card>
 
 
-                        <View ref="reviews" style={[styles.flex1,{height:50}]}>
-                            <View style={[styles.flex1,styles.horizontal]}>
+                            <View ref="description" style={[styles.flex1, {height: 50}]}>
 
-                                <View style={[styles.centerJustified]}>
-                                    <Text style={[styles.title,{fontSize:12}]}>
-                                        REVIEWS
+                                <View style={[styles.flex1, styles.horizontal]}>
 
-                                    </Text>
+                                    <View style={[styles.centerJustified]}>
+                                        <Text style={[styles.title, {fontSize: 12}]}>
+                                            DESCRIPTION
+
+                                        </Text>
+                                    </View>
+
+
                                 </View>
 
+                            </View>
+
+
+                            <View>
+                                <Divider/>
+                                <Text style={[typographyStyle.paperFontBody1, {padding: 8}]}>
+                                    {data.description}
+                                </Text>
+                            </View>
+
+                        </Card>
+                        <Card  >
+
+
+                            <View ref="reviews" style={[styles.flex1, {height: 50}]}>
+                                <View style={[styles.flex1, styles.horizontal]}>
+
+                                    <View style={[styles.centerJustified]}>
+                                        <Text style={[styles.title, {fontSize: 12}]}>
+                                            REVIEWS
+
+                                        </Text>
+                                    </View>
+
+
+                                </View>
+                            </View>
+                            <View style={[styles.horizontal, styles.alignItemsCenter]}>
+
+                                <StarRating
+                                    starSize={20}
+                                    starColor={colours.paperOrange500.color}
+                                    disabled={true}
+                                    maxStars={5}
+
+                                    rating={3.3}
+                                    selectedStar={(rating) => this.onStarRatingPress(rating)}
+                                />
+                                <Text style={[styles.productTitle]}>86789</Text>
+
 
                             </View>
-                            </View>
-                        <View style={[styles.horizontal,styles.alignItemsCenter]}>
+                            <View style={[{paddingVertical: 8}]}>
 
-                            <StarRating
-                                starSize={20}
-                                starColor={colours.paperOrange500.color}
-                                disabled={true}
-                                maxStars={5}
+                                <Button onPress={() => {
+                                    data.reviews = reviews;
+                                    props.reviewProduct(data, navigate)
+                                }}>
+                                    <Text>{"Rate this"}</Text>
+                                </Button>
 
-                                rating={3.3}
-                                selectedStar={(rating) => this.onStarRatingPress(rating)}
-                            />
-                            <Text style={[styles.productTitle]}>86789</Text>
+                                <ListView dataSource={this.ds.cloneWithRows(this.renderReview(reviews))}
+                                          contentContainerStyle={[styles.spaceAround, styles.flexWrap]}
 
+                                          enableEmptySections={true}
+                                          renderRow={(review) =>
 
-                        </View>
-                           <View style={[{paddingVertical:8}]}>
-
-                           <Button  onPress={() => {
-                                       data.reviews=reviews;
-                                       props.reviewProduct(data,navigate)}}>
-                               <Text>{"Rate this"}</Text>
-                           </Button>
-
-                               <ListView dataSource={this.ds.cloneWithRows(this.renderReview(reviews))}
-                                  contentContainerStyle={[styles.spaceAround,styles.flexWrap]}
-
-                                  enableEmptySections={true}
-                                  renderRow={(review) =>
-
-                                      <TouchableNativeFeedback title={"Review"} onPress={()=>navigate("singleReview",{data:review})}>
+                                              <TouchableNativeFeedback title={"Review"}
+                                                                       onPress={() => navigate("singleReview", {data: review})}>
 
 
-                                                  <View style={[styles.horizontal,{paddingTop:8}]}>
+                                                  <View style={[styles.horizontal, {paddingTop: 8}]}>
                                                       <View style={[styles.flex2]}>
-                                                      <Image  style={[{backgroundColor:colours.paperGrey200.color,width:50,height:50,borderRadius:50,resizeMode:Image.resizeMode.cover}]}
-                                                              source={{uri:review.reviewerAvator}}>
+                                                          <Image style={[{
+                                                              backgroundColor: colours.paperGrey200.color,
+                                                              width: 50,
+                                                              height: 50,
+                                                              borderRadius: 50,
+                                                              resizeMode: Image.resizeMode.cover
+                                                          }]}
+                                                                 source={{uri: review.reviewerAvator}}>
 
-                                                      </Image>
+                                                          </Image>
                                                       </View>
 
                                                       <View style={[styles.flex8]}>
@@ -364,7 +390,7 @@ export class SingleProductView extends Component {
                                                                   {review.reviewerName}
                                                               </Text>
                                                           </View>
-                                                          <View style={[styles.horizontal,{width:90}]}>
+                                                          <View style={[styles.horizontal, {width: 90}]}>
                                                               <StarRating
                                                                   starSize={15}
                                                                   starColor={colours.paperOrange500.color}
@@ -384,26 +410,26 @@ export class SingleProductView extends Component {
                                                       </View>
                                                   </View>
 
-                                      </TouchableNativeFeedback>
+                                              </TouchableNativeFeedback>
 
 
 
 
-                                      }
-                        />
-                        </View>
+                                          }
+                                />
+                            </View>
 
 
+                            <Button onPress={() => {
+                                data.reviews = reviews;
+                                props.allReviews(data, navigate)
+                            }}>
+                                <Text>{"ALL REVIEWS"}</Text>
+                            </Button>
 
 
-                        <Button onPress={() => {
-                                    data.reviews=reviews;
-                                    props.allReviews(data,navigate)}}>
-                            <Text>{"ALL REVIEWS"}</Text>
-                        </Button>
-
-
-                            <Divider/>
+                            <View style={{paddingBottom: 50, paddingTop: 16}}>
+                            </View>
                         </Card>
 
                     </View>
@@ -429,17 +455,17 @@ export class SingleProductView extends Component {
                         }]}
                     icon="shop-two"
                     transition="speedDial"
-                    onPress={(text)=>{
-                        switch(text){
+                    onPress={(text) => {
+                        switch (text) {
                             case "chat":
-                                setTimeout(()=>{
-                                props.startChat(data, navigate);
-                                },16)
+                                setTimeout(() => {
+                                    props.startChat(data, navigate);
+                                }, 16)
                                 break;
                             case"bid":
-                                setTimeout(()=> {
+                                setTimeout(() => {
                                     props.placeBid(data, navigate);
-                                },16)
+                                }, 16)
                                 break;
                             case"favorite":
                                 break;
@@ -449,76 +475,40 @@ export class SingleProductView extends Component {
                     }}
                 />
 
-                {false&&<Card ref="CTA" style={[
-                    styles.horizontal,
-                    styles.spaceBetween,
-                    {
-                        margin:0,
-                        elevation:4,
-                        borderRadius:0,
-                        //backgroundColor:colours.paperTeal500.color
-                    }]}>
 
-                    <View style={[styles.flex2]}>
-                        <Button style={{
-                            // textColor: colours.paperGrey50.color,
-                            // backgroundColor: colours.paperGrey700.color,
-                            //rippleColor: colours.paperPinkA700.color
-                            margin:8,
-                           // borderRadius:34,
-                            height:34
-                        }}
-                                onPress={() => props.startChat(data, navigate)}>
-                            <Text>{"MESSAGE SELLER"}</Text>
-                        </Button>
-                    </View>
-                    <View style={[styles.flex2]}>
-                        <Button   style={{
-                            // textColor: colours.paperGrey50.color,
-                            //backgroundColor: colours.paperDeepOrange300.color,
-                            //rippleColor: colours.paperPinkA700.color
-
-                            margin:8,
-                           // borderRadius:34,
-                            height:34
-                        }}
-                                  onPress={() => props.placeBid(data, navigate)}>
-                            <Text>{"PLACE BID"}</Text>
-                        </Button>
-                    </View>
-
-                </Card>}
 
 
             </View>
         )
     }
-    _renderImages(){
+
+    _renderImages() {
         let {data}=this.props.navigation.state.params
-        if(data.hasOwnProperty("photos")){
-            if(data.photos instanceof Array){
+        if (data.hasOwnProperty("photos")) {
+            if (data.photos instanceof Array) {
                 return data.photos;
             }
         }
-      return[]
+        return []
     }
-    renderReview(reviews){
-        let rev=[];
-        if(reviews instanceof Array){
 
-        if(reviews.length>3)
-        {
-        for(let i=0;i<3;i++){
-            rev.push(reviews[i])
-        }
+    renderReview(reviews) {
+        let rev = [];
+        if (reviews instanceof Array) {
 
-        }else {
-        return reviews;
-        }
+            if (reviews.length > 3) {
+                for (let i = 0; i < 3; i++) {
+                    rev.push(reviews[i])
+                }
+
+            } else {
+                return reviews;
+            }
         }
 
         return rev
     }
+
     onStarRatingPress(rating) {
         this.setState({
             starCount: rating
@@ -532,97 +522,62 @@ export class searchResultsProductsList extends Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-        this.state={query:null}
+        this.state = {query: null}
 
     }
 
     render() {
-        ctx=this;
-        let navigate = this.props.navigation.navigate;
-        let {title,products}=this.props.navigation.state.params;
-        let props=this.props.screenProps;
+        ctx = this;
+        let {navigate, goBack} = this.props.navigation;
+        let {title, products}=this.props.navigation.state.params;
+        let props = this.props.screenProps;
         // let {products}=this.props.screenProps
         return (
             <View style={[styles.flex1]}>
-                {false&&<Card style={[{height:50,
-                    margin:0,
-                    elevation:4,
-                    borderRadius:0,
-                    //backgroundColor:colours.paperTeal500.color
-                }]} >
-                    <View style={[styles.horizontal]}>
-
-                        <View style={[styles.flex9]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={() => {
+                        goBack();
+                    }}
+                    centerElement={title}
 
 
-                            <TextInput
-                                ref={component => this.searchInput = component}
-                                keyboardType="web-search"
-                                style={styles.input}
-                                autoCorrect={true}
-                                autoCapitalize="none"
-                                placeholder={"Search "+title}
-                                placeholderTextColor={colours.paperGrey500.color}
-                                underlineColorAndroid="transparent"
-                                onSubmitEditing={(query) => {
-                                    if(query) {
-                                        this.searchInput.blur();
-                                        props.searchProducts(query, title, navigate)
-                                    }
-                                    else
-                                        this.searchInput.focus();
-                                }}
-                                onChangeText={query => this.setState({query})}
-                            />
-
-                        </View>
-                        <TouchableNativeFeedback onPress={()=>{
-                            if(this.state.query) {
-                                this.searchInput.blur();
-                                props.searchProducts(this.state.query, title, navigate)
-                            }
-                            else
-                                this.searchInput.focus();
-                        }}>
-                            <View style={[styles.flex1,styles.centerJustified,styles.alignItemsCenter]}>
-                                <Icon name="search" />
-                            </View>
-                        </TouchableNativeFeedback>
-                    </View>
-                </Card>}
-                <Divider style={{marginHorizontal:0}}/>
+                />
                 <ListView dataSource={this.ds.cloneWithRows(products)}
-                          contentContainerStyle={[styles.horizontal,styles.spaceAround,styles.flexWrap]}
+                          contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
                           scrollRenderAheadDistance={640}
                           enableEmptySections={true}
                           renderRow={(data) =>
                               <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
                                   data: data
                               })}>
-                                  <View style={[,{
+                                  <View style={[, {
                                       height: 220,
-                                      width:180
+                                      width: 180
                                   },
 
                                   ]}>
                                       <Card style={[styles.flex1]}>
 
                                           <View style={[styles.flex1]}>
-                                              <Image  style={[{marginTop:16,marginBottom:8,
-                                                  width:132,height:132,
-                                                  resizeMode:Image.resizeMode.stretch,
-                                                  backgroundColor:colours.paperGrey300.color
+                                              <Image style={[{
+                                                  marginTop: 16, marginBottom: 8,
+                                                  width: 132, height: 132,
+                                                  resizeMode: Image.resizeMode.stretch,
+                                                  backgroundColor: colours.paperGrey300.color
                                               }]}
-                                                      source={{uri:data.photos[0].url}}>
+                                                     source={{uri: data.photos[0].url}}>
 
                                               </Image>
-                                              <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
-                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                              <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
+                                                  <View
+                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
                                                       <Text style={[styles.productTitle]}>
                                                           {shortenText(data.title)}
                                                       </Text>
                                                   </View>
-                                                  <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
+                                                  <View
+                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
                                                       <Text style={[styles.currency]}>
                                                           {data.currency}
                                                       </Text>
@@ -634,14 +589,13 @@ export class searchResultsProductsList extends Component {
                                           </View>
 
 
-
-                                          {false&&<View style={[styles.horizontal]}>
+                                          {false && <View style={[styles.horizontal]}>
 
 
                                               <Button title={"add Product "}
-                                                      onPress={() =>props.addProduct(data,navigate)}/>
+                                                      onPress={() => props.addProduct(data, navigate)}/>
                                               <Button title={"edit Product "}
-                                                      onPress={() =>props.editProduct(data,navigate)}/>
+                                                      onPress={() => props.editProduct(data, navigate)}/>
 
                                           </View>}
                                       </Card>
@@ -653,24 +607,18 @@ export class searchResultsProductsList extends Component {
             </View>
         )
     }
-    componentWillUpdate(){
+
+    componentWillUpdate() {
 
     }
-    openDrawer(){
+
+    openDrawer() {
         this.props.screenProps.drawer.openDrawer()
     }
 }
 
 
-
-
-
-
-
-
-
 let WidgetMixin = require('react-native-gifted-form/mixins/WidgetMixin.js');
-
 
 
 const MultOptionWidget = React.createClass({
@@ -690,20 +638,20 @@ const MultOptionWidget = React.createClass({
      },*/
     componentDidMount() {
         // get value from prop
-       // if (typeof this.props.value !== 'undefined') {
-           // this._setValue(this.props.value);
-            //return;
-      //  }
+        // if (typeof this.props.value !== 'undefined') {
+        // this._setValue(this.props.value);
+        //return;
+        //  }
         // get value from store
         let formState = GiftedFormManager.stores[this.props.formName];
         if (typeof formState !== 'undefined') {
             if (typeof formState.values[this.props.name] !== 'undefined') {
-               // console.log(this.props.name+" form "+formState.values[this.props.name])
-               // console.log(formState)
+                // console.log(this.props.name+" form "+formState.values[this.props.name])
+                // console.log(formState)
                 /*this.setState({
-                    value: formState.values[this.props.name],
+                 value: formState.values[this.props.name],
 
-                });*/
+                 });*/
                 //this._validate(formState.values[this.props.name]);
             }
         }
@@ -711,7 +659,7 @@ const MultOptionWidget = React.createClass({
 
     componentWillReceiveProps(nextProps) {
         if (typeof nextProps.value !== 'undefined' && nextProps.value !== this.props.value) {
-           // this.onChange(nextProps.value);
+            // this.onChange(nextProps.value);
         }
     },
     setValue(value) {
@@ -765,7 +713,6 @@ const MultOptionWidget = React.createClass({
             }
         } else {
             this.onChange(!!this.state.value);
-
 
 
         }
@@ -823,34 +770,306 @@ const MultOptionWidget = React.createClass({
     },
 });
 
+let ImagePicker = require('react-native-image-picker');
+const PhotoPickerWidget = React.createClass({
+    mixins: [WidgetMixin],
+
+    getDefaultProps() {
+
+        return ({
+            // onChange: null,
+            type: 'PhotoPickerWidget',
+
+        });
+    },
+
+     getInitialState(){
+      return {photos:[]}
+     },
+    componentWillMount(){
+
+        this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
+
+    },
+    componentDidMount() {
+        // get value from prop
+        // if (typeof this.props.value !== 'undefined') {
+        // this._setValue(this.props.value);
+        //return;
+        //  }
+        // get value from store
+        let formState = GiftedFormManager.stores[this.props.formName];
+        if (typeof formState !== 'undefined') {
+            if (typeof formState.values[this.props.name] !== 'undefined') {
+                // console.log(this.props.name+" form "+formState.values[this.props.name])
+                // console.log(formState)
+                /*this.setState({
+                 value: formState.values[this.props.name],
+
+                 });*/
+                //this._validate(formState.values[this.props.name]);
+            }
+        }
+    },
+
+    componentWillReceiveProps(nextProps) {
+        if (typeof nextProps.value !== 'undefined' && nextProps.value !== this.props.value) {
+            // this.onChange(nextProps.value);
+        }
+    },
+    setValue(value) {
+
+        GiftedFormManager.updateValue(this.props.formName, this.props.name, value);
+    },
+
+    onChange(value, onChangeText = true) {
+        if (onChangeText === true) {
+            //should maintain similar API to core TextInput component
+            this.props.onChangeText && this.props.onChangeText(value);
+        }
+
+        this.setValue(value);
+        this._validate(value);
+
+        this.props.onValueChange && this.props.onValueChange();
+        // @todo modal widgets validation - the modalwidget row should inform about validation status
+    },
+
+    _onClose() {
+
+            this._onChange(this.state.photos);
+
+            if (typeof this.props.onSelect === 'function') {
+                // console.log('onSelect');
+                this.props.onSelect(this.props.value);
+            }
+
+            if (typeof this.props.onClose === 'function') {
+                this.props.onClose(this.props.title, this.props.navigator);
+            }
+
+
+    },
+
+    render() {
+
+        return (
+            <View style={[{height:500}]}>
+
+                <View style={[styles.flex1]}>
+                <ListView dataSource={this.ds.cloneWithRows(this.state.photos)}
+                          contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
+
+                          enableEmptySections={true}
+                          renderRow={(photo) =>
+                                  <View style={[, {
+                                      height: 220,
+                                      width: 180
+                                  },
+
+                                  ]}>
+                                      <Card style={[styles.flex1]}>
+
+                                          <View style={[styles.flex1]}>
+                                              <Image style={[{
+                                                  marginTop: 16, marginBottom: 8,
+                                                  width: 132, height: 132,
+                                                  resizeMode: Image.resizeMode.stretch,
+                                                  backgroundColor: colours.paperGrey300.color
+                                              }]}
+                                                     source={{uri:photo.uri}}>
+
+                                              </Image>
+                                              <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
+                                                  <View
+                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
+                                                      <Text style={[styles.productTitle]}>
+                                                          {shortenText(photo.fileName)}
+                                                      </Text>
+                                                  </View>
+                                                  <View
+                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
+                                                      <Text style={[styles.currency]}>
+
+                                                      </Text>
+                                                      <Text style={[styles.price]}>
+                                                          {photo.width+"x"+photo.height}
+                                                      </Text>
+                                                  </View>
+                                              </View>
+                                          </View>
+                                      </Card>
+                                  </View>
+                              }
+                />
+
+                    <ActionButton style={{zIndex:9}}
+
+                        icon="add"
+                        onPress={(text) => {
+
+                            this.openPicker();
 
 
 
+                        }}
+                    />
+                </View>
+            </View>
+        );
+    },
+    openPicker(){
+
+        let options = {
+            title: 'Select product photos',
+            mediaType:"photo",
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
+        };
+
+        /**
+         * The first arg is the options object for customization (it can also be null or omitted for default options),
+         * The second arg is the callback which sends object: response (more info below in README)
+         */
+        ImagePicker.showImagePicker(options, (response) => {
+            //console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+                Alert.alert(response.error)
+            }
+            else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+                //let source = { uri: response.uri };
+
+                // You can also display the image using data:
+               // response = {...response,data: 'data:image/jpeg;base64,'+response.data };
+                let photos=this.state.photos;
+
+                photos.push(response);
+                this._onChange(photos);
+                this.setState({
+                    photos
+                });
+
+            }
+        });
+    }
 
 
-export class CreateProduct extends Component{
+});
+
+
+const COMPONENT_NAMES = ['Title', 'LeftButton', 'RightButton'];
+var navStatePresentedIndex = function(navState) {
+    if (navState.presentedIndex !== undefined) {
+        return navState.presentedIndex;
+    }
+    // TODO: rename `observedTopOfStack` to `presentedIndex` in `NavigatorIOS`
+    return navState.observedTopOfStack;
+};
+class NavigationBar extends Navigator.NavigationBar {
+
+    render() {
+
+        var navBarStyle = {
+            height: this.props.navigationStyles.General.TotalNavHeight,
+        };
+        var navState = this.props.navState;
+        var components = navState.routeStack.map((route, index) =>
+            COMPONENT_NAMES.map(componentName =>
+                this._getComponent(componentName, route, index)
+            )
+        );
+        let{routeStack,presentedIndex}= this.props.navState;
+        let {toolbarProps}=this.props;
+        let route=routeStack[presentedIndex];
+        return (
+
+
+                <View  style={[navBarStyle, this.props.style,{top:0,left:0,right:0,position:"absolute"}]}>
+                    <Toolbar
+                        leftElement={this._getComponent("LeftButton", route, presentedIndex)}
+                        rightElement={this._getComponent("RightButton", route, presentedIndex)}
+                        centerElement={this._getComponent("Title", route, presentedIndex)}
+
+
+                    />
+                </View>
+
+        );
+
+    }
+    _getComponent = (/*string*/componentName, /*object*/route, /*number*/index) => /*?Object*/ {
+        if (this._descriptors[componentName].includes(route)) {
+            return this._descriptors[componentName].get(route);
+        }
+
+        var rendered = null;
+
+        var content = this.props.routeMapper[componentName](
+            this.props.navState.routeStack[index],
+            this.props.navigator,
+            index,
+            this.props.navState
+        );
+        if (!content) {
+            return null;
+        }
+
+        var componentIsActive = index === navStatePresentedIndex(this.props.navState);
+        var initialStage = componentIsActive ?
+            this.props.navigationStyles.Stages.Center :
+            this.props.navigationStyles.Stages.Left;
+        rendered = (
+            <View
+                ref={(ref) => {
+                    this._components[componentName] = this._components[componentName].set(route, ref);
+                }}
+                pointerEventsj={componentIsActive ? 'box-none' : 'none'}
+                styleh={initialStage[componentName]}>
+                {content}
+            </View>
+        );
+
+       this._descriptors[componentName] = this._descriptors[componentName].set(route, rendered);
+        return rendered;
+    };
+
+}
 
 
 
-    constructor(props){
+export class CreateProduct extends Component {
+
+
+    constructor(props) {
         super(props)
         //let {user}=this.props.screenProps;
-        this.state={
-            product:{
-                uid:null,
-                title:null,
-                discription:null,
-                price:null,
-                sellerID:"xxxxx",
+        this.state = {
+            product: {
+                uid: null,
+                title: null,
+                discription: null,
+                price: null,
+                sellerID: "xxxxx",
             }
         }
     }
-    render(){
 
-        let {navigate,goBack} = this.props.navigation;
+    render() {
 
+        let {navigate, goBack} = this.props.navigation;
+        let title = "New item"
         let {user}=this.props.screenProps;
-        const { primaryColor } = uiTheme.palette;
+        const {primaryColor} = uiTheme.palette;
         let routes = {
             getHomeRoute() {
                 return {
@@ -874,55 +1093,48 @@ export class CreateProduct extends Component{
 
                                 defaults={{
 
-                                   /* "description": "",
-                                    "name": "",
-                                    "image":[],
-                                    "itemCondition":"",
-                                    "model":"",
-                                    "category":"",
-                                    "brand":"",
-                                    "color":"",
-                                    "height":"",
-                                    "width":"",
-                                    "weight":"",
-                                    "sku":"",
-                                    "manufacturer":"",
+                                      userID: "",
+                                     userName: 'Anonymous user',
 
-                                    "offers": {
-                                        "type": "Offer",
-                                        "availability": "InStock",
-                                        "price": {"type":"price"},
-                                        "priceCurrency": {"type":"currency"},
-                                        "acceptedPaymentMethod":{"type":"acceptedPaymentMethod"},
-                                        "areaServed":{"type":"areaServed"},
-                                        "availableDeliveryMethod":{"type":"availableDeliveryMethod"},
-                                        "warranty":{"type":"warranty"}
-                                    },
-                                    "additionalProperty":{"type":"additionalProperty"}*/
+                                    name: 'hp nm',
+                                     brand: 'onk',
+                                     model: 'vbklo',
+                                     manufacturer: 'jkgkl',
+                                    // price: 0,
+                                   //  currency: [ 'TZS' ],
+                                    // acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
+                                     quantity: '1',
+                                    // category: [ 'electronics' ],
+                                    // itemCondition: [ 'New' ],
+                                    // availability: [ 'InStock' ],
+                                    // areaServed: [ 'MAIN', 'SMC' ],
+                                   //  availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
+                                     description:'',
+                                     warranty:'',
                                 }}
 
 
                                 validators={{
 
 
-                                  //  userID: 789098090,
-                                   // userName: 'Anonymous user',
-                                   // reviewerAvator: 1,
+                                    //  userID: 789098090,
+                                    // userName: 'Anonymous user',
+                                    // reviewerAvator: 1,
                                     /*name: 'hp',
-                                    brand: 'on',
-                                    model: 'vb',
-                                    manufacturer: 'gh',
-                                    price: '258',
-                                    currency: [ 'TZS' ],
-                                    acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
-                                    quantity: '789',
-                                    category: [ 'electronics' ],
-                                    itemCondition: [ 'New' ],
-                                    availability: [ 'InStock' ],
-                                    areaServed: [ 'MAIN', 'SMC' ],
-                                    availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
-                                    description: 'fggfhgf',
-                                    warranty: 'gfhgfhgfh',*/
+                                     brand: 'on',
+                                     model: 'vb',
+                                     manufacturer: 'gh',
+                                     price: '258',
+                                     currency: [ 'TZS' ],
+                                     acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
+                                     quantity: '789',
+                                     category: [ 'electronics' ],
+                                     itemCondition: [ 'New' ],
+                                     availability: [ 'InStock' ],
+                                     areaServed: [ 'MAIN', 'SMC' ],
+                                     availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
+                                     description: 'fggfhgf',
+                                     warranty: 'gfhgfhgfh',*/
 
                                     name: {
                                         title: 'Product',
@@ -938,7 +1150,7 @@ export class CreateProduct extends Component{
                                             validator: 'isLength',
                                             arguments: [2, 16],
                                             message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                                        },{
+                                        }, {
                                             validator: 'matches',
                                             arguments: /^[a-zA-Z0-9]*$/,
                                             message: '{TITLE} can contains only alphanumeric characters'
@@ -950,7 +1162,7 @@ export class CreateProduct extends Component{
                                             validator: 'isLength',
                                             arguments: [2, 16],
                                             message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                                        },{
+                                        }, {
                                             validator: 'matches',
                                             arguments: /^[a-zA-Z0-9]*$/,
                                             message: '{TITLE} can contains only alphanumeric characters'
@@ -962,20 +1174,20 @@ export class CreateProduct extends Component{
                                             validator: 'isLength',
                                             arguments: [0, 16],
                                             message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                                        },{
+                                        }, {
                                             validator: 'matches',
                                             arguments: /^[a-zA-Z0-9]*$/,
                                             message: '{TITLE} can contains only alphanumeric characters'
                                         }]
                                     },
-                                   /*price: {
-                                        title: 'Price',
-                                        validate: [{
-                                            //validation: "isInt",
-                                            arguments: [100, 100000000],
-                                            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]}'
-                                        }]
-                                    },*/
+                                    /*price: {
+                                     title: 'Price',
+                                     validate: [{
+                                     //validation: "isInt",
+                                     arguments: [100, 100000000],
+                                     message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]}'
+                                     }]
+                                     },*/
                                     currency: {
                                         title: 'Currency',
                                         validate: [{
@@ -997,16 +1209,17 @@ export class CreateProduct extends Component{
                                                     return false;
                                                 }
                                                 return true;
-                                            }}]
-                                    },
-                                  /*  quantityg: {
-                                        title: 'Quantityg',
-                                        validate: [{
-                                            validator: 'isInt',
-                                            arguments: [1, 100],
-                                            message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                            }
                                         }]
-                                    },*/
+                                    },
+                                    /*  quantityg: {
+                                     title: 'Quantityg',
+                                     validate: [{
+                                     validator: 'isInt',
+                                     arguments: [1, 100],
+                                     message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                                     }]
+                                     },*/
                                     itemCondition: {
                                         title: 'Condition',
                                         validate: [{
@@ -1056,28 +1269,28 @@ export class CreateProduct extends Component{
                                         }]
                                     },
                                     /*descriptionf: {
-                                        title: 'Availabilityg',
-                                        validate: [{
-                                            validator: 'isLength',
-                                            arguments: [0, 150],
-                                            message: '{TITLE} name must be between {ARGS[0]} and {ARGS[1]} characters'
-                                        }],
-                                    },
-                                    warrantyg: {
-                                        title: 'Warrantyb',
-                                        validate: [{
-                                            validator: 'isLengthb',
-                                            arguments: [0, 150],
-                                            message: '{TITLE} name must be between {ARGS[0]} and {ARGS[1]} characters'
-                                        }],
+                                     title: 'Availabilityg',
+                                     validate: [{
+                                     validator: 'isLength',
+                                     arguments: [0, 150],
+                                     message: '{TITLE} name must be between {ARGS[0]} and {ARGS[1]} characters'
+                                     }],
+                                     },
+                                     warrantyg: {
+                                     title: 'Warrantyb',
+                                     validate: [{
+                                     validator: 'isLengthb',
+                                     arguments: [0, 150],
+                                     message: '{TITLE} name must be between {ARGS[0]} and {ARGS[1]} characters'
+                                     }],
 
-                                    },*/
+                                     },*/
 
                                 }}
 
                             >
 
-                                <GiftedForm.SeparatorWidget  />
+
                                 <GiftedForm.TextInputWidget
                                     name='name' // mandatory
                                     title='Product'
@@ -1168,8 +1381,8 @@ export class CreateProduct extends Component{
 
 
                                     <GiftedForm.SelectWidget name='currency' title='Currency' multiple={false}>
-                                        <GiftedForm.OptionWidget  title="Tanzania Shilling's" value="TZS"/>
-                                        <GiftedForm.OptionWidget  title="US Dollar's" value="USD"/>
+                                        <GiftedForm.OptionWidget title="Tanzania Shilling's" value="TZS"/>
+                                        <GiftedForm.OptionWidget title="US Dollar's" value="USD"/>
                                     </GiftedForm.SelectWidget>
 
 
@@ -1184,9 +1397,10 @@ export class CreateProduct extends Component{
                                     <GiftedForm.SeparatorWidget />
 
 
-                                    <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods' multiple={true}>
-                                        <MultOptionWidget  title="On Delivery" value="OnDelivery"/>
-                                        <MultOptionWidget  title="Tigo Pesa" value="TigoPesa"/>
+                                    <GiftedForm.SelectWidget name='acceptedPaymentMethod' title='Payment Methods'
+                                                             multiple={true}>
+                                        <MultOptionWidget title="On Delivery" value="OnDelivery"/>
+                                        <MultOptionWidget title="Tigo Pesa" value="TigoPesa"/>
 
 
                                     </GiftedForm.SelectWidget>
@@ -1216,7 +1430,7 @@ export class CreateProduct extends Component{
                                         clearButtonMode='while-editing'
                                         returnKeyLabel="done"
                                         onSubmitEditing={(e) => {
-                                            navigator.pop();
+                                            //navigator.pop();
                                         }}
                                     />
 
@@ -1235,9 +1449,10 @@ export class CreateProduct extends Component{
 
 
                                     <GiftedForm.SelectWidget name='category' title='Category' multiple={false}>
-                                        {this.categories().map((child, i)=>{
+                                        {this.categories().map((child, i) => {
                                             //alert(child)
-                                            return(<GiftedForm.OptionWidget key={i} title={child} value={child}/>)})}
+                                            return (<GiftedForm.OptionWidget key={i} title={child} value={child}/>)
+                                        })}
 
 
                                     </GiftedForm.SelectWidget>
@@ -1251,14 +1466,14 @@ export class CreateProduct extends Component{
                                     displayValue='itemCondition'>
                                     <GiftedForm.SeparatorWidget />
 
-                                    <GiftedForm.SelectWidget name='itemCondition' title='Item Condition' multiple={false}>
+                                    <GiftedForm.SelectWidget name='itemCondition' title='Item Condition'
+                                                             multiple={false}>
 
-                                        <GiftedForm.OptionWidget  title='Brand New' value='New'/>
-                                        <GiftedForm.OptionWidget  title='Refurbished' value='Refurbished'/>
-                                        <GiftedForm.OptionWidget  title='Used' value='used'/>
+                                        <GiftedForm.OptionWidget title='Brand New' value='New'/>
+                                        <GiftedForm.OptionWidget title='Refurbished' value='Refurbished'/>
+                                        <GiftedForm.OptionWidget title='Used' value='used'/>
 
                                     </GiftedForm.SelectWidget>
-
 
 
                                 </GiftedForm.ModalWidget>
@@ -1272,10 +1487,10 @@ export class CreateProduct extends Component{
 
                                     <GiftedForm.SelectWidget name='availability' title='Availability' multiple={false}>
 
-                                        <GiftedForm.OptionWidget  title="In Stock" value="InStock"/>
-                                        <GiftedForm.OptionWidget  title="Out Of Stock" value="OutOfStock"/>
-                                        <GiftedForm.OptionWidget  title="Sold Out" value="SoldOut"/>
-                                        <GiftedForm.OptionWidget  title="Pre Order" value="PreOrder"/>
+                                        <GiftedForm.OptionWidget title="In Stock" value="InStock"/>
+                                        <GiftedForm.OptionWidget title="Out Of Stock" value="OutOfStock"/>
+                                        <GiftedForm.OptionWidget title="Sold Out" value="SoldOut"/>
+                                        <GiftedForm.OptionWidget title="Pre Order" value="PreOrder"/>
 
 
                                     </GiftedForm.SelectWidget>
@@ -1289,13 +1504,12 @@ export class CreateProduct extends Component{
                                     displayValue='areaServed'
 
 
-
                                     scrollEnabled={true} // true by default
                                 >
 
                                     <GiftedForm.SelectWidget name='areaServed' title='Area Served' multiple={true}>
-                                        <MultOptionWidget  title="Main Campus" value="MAIN"/>
-                                        <MultOptionWidget  title="Mazimbu Campus" value="SMC"/>
+                                        <MultOptionWidget title="Main Campus" value="MAIN"/>
+                                        <MultOptionWidget title="Mazimbu Campus" value="SMC"/>
 
                                     </GiftedForm.SelectWidget>
 
@@ -1308,9 +1522,10 @@ export class CreateProduct extends Component{
                                     <GiftedForm.SeparatorWidget />
 
 
-                                    <GiftedForm.SelectWidget name='availableDeliveryMethod' title='Delivery Methods' multiple={true}>
-                                        <MultOptionWidget  title="Pick up" value="pickUp"/>
-                                        <MultOptionWidget  title="Postal Shipping" value="Shipping"/>
+                                    <GiftedForm.SelectWidget name='availableDeliveryMethod' title='Delivery Methods'
+                                                             multiple={true}>
+                                        <MultOptionWidget title="Pick up" value="pickUp"/>
+                                        <MultOptionWidget title="Postal Shipping" value="Shipping"/>
 
                                     </GiftedForm.SelectWidget>
 
@@ -1350,85 +1565,36 @@ export class CreateProduct extends Component{
 
 
                                 </GiftedForm.ModalWidget>
+                                <GiftedForm.ModalWidget
+                                    title='Photos'
+                                    name='photos'
+                                    cancelable={true}
+                                    displayValue='photos'>
+
+                                    <PhotoPickerWidget  title='Photos' name='photos' />
+
+
+                                </GiftedForm.ModalWidget>
                                 <GiftedForm.SeparatorWidget />
 
                                 <GiftedForm.SubmitWidget
                                     title='post'
                                     widgetStyles={{
                                         submitButton: {
-                                            backgroundColor:"blue" //themes.mainColor,
+                                            backgroundColor: "blue" //themes.mainColor,
                                         }
                                     }}
 
-                                    onSubmit={(isValid, values, validationResults, postSubmit=null, modalNavigator = null) => {
-                                        if (isValid === true) {
-
-
-                                            console.log(values)
-
-                                            /*let   prod={
-                                                userID: values.hasOwnProperty("userID")? values.userID:postSubmit(["it seams your not logged in"]),
-                                                userName:values.hasOwnProperty("userName")? values.userName:postSubmit(["it seams your not logged in"]),
-                                                name: values.hasOwnProperty("name")?values.name:postSubmit(["product name is required"]),
-                                                brand: values.hasOwnProperty("brand")?values.brand:"",
-                                                model:values.hasOwnProperty("model")?values.model:"",
-                                                manufacturer:values.hasOwnProperty("manufacturer")?values.manufacturer:"",
-                                               price:parseInt(values.price)?parseInt(values.price):postSubmit(["price is not valid"]),
-                                                   currency:values.hasOwnProperty("currency")?values.currency[0]:postSubmit(["currency is not valid"]),
-                                                   acceptedPaymentMethod:values.acceptedPaymentMethod instanceof Array?values.acceptedPaymentMethod.reduce(function(acc, cur, i) {
-                                                       acc[cur] = true;
-                                                       return acc;
-                                                   }, {}):null,
-                                                quantity:parseInt(values.quantity)?parseInt(values.quantity):postSubmit(["quantity is not valid"]) ,
-                                                   category:values.hasOwnProperty("category")?values.category[0]:postSubmit(["category is required"]),
-                                                   itemCondition:values.hasOwnProperty("itemCondition")?values.itemCondition[0]:postSubmit(["Item condition is required"]),
-                                                   availability:values.hasOwnProperty("availability")?values.availability[0]:postSubmit(["Item Availability is required"]),
-                                                   areaServed:values.areaServed instanceof Array?values.areaServed.reduce(function(acc, cur, i) {
-                                                           acc[cur] = true;
-                                                           return acc;
-                                                       }, {}):null,
-                                                   availableDeliveryMethod:values.availableDeliveryMethod instanceof Array?values.availableDeliveryMethod.reduce(function(acc, cur, i) {
-                                                       acc[cur] = true;
-                                                       return acc;
-                                                   }, {}):null,
-                                                 description: values.hasOwnProperty("userID")? values.description:postSubmit(["it seams your not logged in"]),
-                                                warranty: values.hasOwnProperty("userID")? values.warranty:postSubmit(["it seams your not logged in"])
-                                            };
-                                            console.log(prod);
-                                            this.submitForm(prod).then((res) => {
-                                                console.log(res);
-                                                postSubmit();
-                                                // GiftedFormManager.reset('newProduct')
-                                            }).catch((e) =>{
-                                                console.log(e)
-                                                postSubmit(["error",e.message||"error occured"]);
-                                                // GiftedFormManager.reset('newProduct')
-                                            });*/
-                                               // prepare object
-                                            //values.gender = values.gender[0];
-                                            // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
-
-                                            /* Implement the request to your server using values variable
-                                             ** then you can do:
-                                             ** postSubmit(); // disable the loader
-                                             ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
-                                             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
-                                             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
-                                             */
-                                          //  postSubmit();
-                                           // GiftedFormManager.reset('newProduct')
-                                     //  return;
-                                        }
-                                        postSubmit(['error', 'invalid field detected']);
-                                    }}
+                                    onSubmit={this.onSubmit}
 
                                 />
-
+                                <GiftedForm.ValidationErrorWidget/>
                                 <GiftedForm.NoticeWidget
                                     title='By posting, you agree to the Terms of Service and Privacy Policy.'
                                 />
 
-                                <GiftedForm.HiddenWidget name='userID' value={user.user.uid} />
+
+                                <GiftedForm.HiddenWidget name='userID' value={user.user.uid}/>
 
                             </GiftedForm>
 
@@ -1438,8 +1604,8 @@ export class CreateProduct extends Component{
                     // When this scene receives focus, you can run some code. We're just
                     // proxying the `didfocus` event that Navigator emits, so refer to
                     // Navigator's source code for the semantics.
-                   /*  onDidFocus(event) {
-                        console.log('Home Scene received focus.');
+                    /*  onDidFocus(event) {
+                     console.log('Home Scene received focus.');
                      },*/
 
                     // Return a string to display in the title section of the navigation bar.
@@ -1453,14 +1619,17 @@ export class CreateProduct extends Component{
                     renderLeftButton() {
                         return (
                             <View style={styles.horizontal}>
-                                <TouchableNativeFeedback
-                                    onPress={()=>{goBack()}}
-                                    background={TouchableNativeFeedback.SelectableBackground()}>
-                                <View >
+                                <RippleFeedback
+                                    onPress={() => {
+                                        goBack()
+                                    }}
+                                    >
+                                    <View >
 
-                                    <Icon color={colours.paperGrey900.color} style={{padding: 16}} size={24} name="arrow-back"/>
-                                </View>
-                            </TouchableNativeFeedback>
+                                        <Icon color={colours.paperGrey50.color} style={{padding: 16}} size={24}
+                                              name="arrow-back"/>
+                                    </View>
+                                </RippleFeedback>
                             </View>
                         );
                     },
@@ -1531,19 +1700,84 @@ export class CreateProduct extends Component{
                             "Jewelry",
                         ]
                     },
+                    onSubmit(isValid, values, validationResults, postSubmit = null, modalNavigator = null){
+                            if (isValid === true) {
+
+
+                                //console.log(values)
+
+                                let   prod={
+                                    userID: values.hasOwnProperty("userID")? values.userID:postSubmit(["it seams your not logged in"]),
+                                    userName:values.hasOwnProperty("userName")? values.userName:postSubmit(["it seams your not logged in"]),
+                                    name: values.hasOwnProperty("name")?values.name:postSubmit(["product name is required"]),
+                                    brand: values.hasOwnProperty("brand")?values.brand:"",
+                                    model:values.hasOwnProperty("model")?values.model:"",
+                                    manufacturer:values.hasOwnProperty("manufacturer")?values.manufacturer:"",
+                                    price:parseInt(values.price)?parseInt(values.price):postSubmit(["price is not valid"]),
+                                    currency:values.hasOwnProperty("currency")?values.currency[0]:postSubmit(["currency is not valid"]),
+                                    acceptedPaymentMethod:values.acceptedPaymentMethod instanceof Array?values.acceptedPaymentMethod.reduce(function(acc, cur, i) {
+                                            acc[cur] = true;
+                                            return acc;
+                                        }, {}):null,
+                                    quantity:parseInt(values.quantity)?parseInt(values.quantity):postSubmit(["quantity is not valid"]) ,
+                                    category:values.hasOwnProperty("category")?values.category[0]:postSubmit(["category is required"]),
+                                    itemCondition:values.hasOwnProperty("itemCondition")?values.itemCondition[0]:postSubmit(["Item condition is required"]),
+                                    availability:values.hasOwnProperty("availability")?values.availability[0]:postSubmit(["Item Availability is required"]),
+                                    areaServed:values.areaServed instanceof Array?values.areaServed.reduce(function(acc, cur, i) {
+                                            acc[cur] = true;
+                                            return acc;
+                                        }, {}):null,
+                                    availableDeliveryMethod:values.availableDeliveryMethod instanceof Array?values.availableDeliveryMethod.reduce(function(acc, cur, i) {
+                                            acc[cur] = true;
+                                            return acc;
+                                        }, {}):null,
+                                    description: values.hasOwnProperty("userID")? values.description:postSubmit(["it seams your not logged in"]),
+                                    warranty: values.hasOwnProperty("userID")? values.warranty:postSubmit(["it seams your not logged in"]),
+                                    photos:values.photos
+                                };
+                                console.log(prod);
+                                /*  this.submitForm(prod).then((res) => {
+                                 console.log(res);
+                                 postSubmit();
+                                 GiftedFormManager.reset('newProduct')
+                                 }).catch((e) =>{
+                                 console.log(e)
+                                 postSubmit(["error",e.message||"error occured"]);
+                                 // GiftedFormManager.reset('newProduct')
+                                 });*/
+                                // prepare object
+                                //values.gender = values.gender[0];
+                                // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
+
+                                /* Implement the request to your server using values variable
+                                 ** then you can do:
+                                 ** postSubmit(); // disable the loader
+                                 ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
+                                 ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
+                                 ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
+                                 */
+                                setTimeout(()=>{
+                                    postSubmit(['error', 'invalid field detected']);
+                                    // GiftedFormManager.reset('newProduct')
+                                },9000)
+                                //  return;
+                            }
+                            // postSubmit(['error', 'invalid field detected']);
+
+                    },
                     submitForm(data){
-                        return new Promise((resolve,reject)=>{
+                        return new Promise((resolve, reject) => {
                             firestack.database.ref("products").push().then((res) => {
                                 let newPostKey = res.key;
 
                                 firestack.ServerValue.then(map => {
 
 
-                                    data={...data,timestamp:map.TIMESTAMP,productID:newPostKey}
+                                    data = {...data, timestamp: map.TIMESTAMP, productID: newPostKey}
 
 
                                     let updates = {};
-                                    updates['/products/'+newPostKey] = data;
+                                    updates['/products/' + newPostKey] = data;
                                     firestack.database.ref().update(updates).then((resp) => {
                                         resolve(resp)
 
@@ -1559,22 +1793,34 @@ export class CreateProduct extends Component{
             }
         }
 
-            return (
+        return (
 
-                <ExNavigator
-        initialRoute={routes.getHomeRoute()}
-        sceneStyle={{ paddingTop:56 }}
-        navigationBarStyle={{backgroundColor:primaryColor}}
-        titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
+            <ExNavigator
+                initialRoute={routes.getHomeRoute()}
+                sceneStyle={{paddingTop: 56}}
+                navigationBarStyle={{backgroundColor: primaryColor}}
+                renderNavigationBarg={(props)=><NavigationBar
+                    routeMapperg={{
+                        LeftButton: (route, navigator, index, navState) =>
+                        { return (<Text>Cancel</Text>); },
+                        RightButton: (route, navigator, index, navState) =>
+                        { return (<Text>Done</Text>); },
+                        Title: (route, navigator, index, navState) =>
+                        { return (<Text>{route.getTitle()}</Text>); },
+                    }}
 
-        style={[styles.flex1]}
-                />
 
-            );
-        }
+                />}
+                titleStyle={[{color: colours.paperGrey50.color, marginTop: 16, fontWeight: "bold"}]}
+
+                style={[styles.flex1]}
+            />
+
+        );
+    }
 
 
-    schema(){
+    schema() {
 
 
         /* let prod={
@@ -1596,71 +1842,70 @@ export class CreateProduct extends Component{
          availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
          description: 'fggfhgf',
          warranty: 'gfhgfhgfh' }*/
-        return{
+        return {
             "type": "Product",
-            "description": {"type":"description"},
-            "name": {"type":"name"},
-            "image": {"type":"image"},
-            "itemCondition":{"type":"itemCondition"},
-            "model":{"type":"model"},
-            "category":{"type":"category"},
-            "brand":{"type":"brand"},
-            "color":{"type":"color"},
-            "height":{"type":"height"},
-            "width":{"type":"width"},
-            "weight":{"type":"weight"},
-            "sku":{"type":"sku"},
-            "manufacturer":{"type":"manufacturer"},
+            "description": {"type": "description"},
+            "name": {"type": "name"},
+            "image": {"type": "image"},
+            "itemCondition": {"type": "itemCondition"},
+            "model": {"type": "model"},
+            "category": {"type": "category"},
+            "brand": {"type": "brand"},
+            "color": {"type": "color"},
+            "height": {"type": "height"},
+            "width": {"type": "width"},
+            "weight": {"type": "weight"},
+            "sku": {"type": "sku"},
+            "manufacturer": {"type": "manufacturer"},
 
             "offers": {
                 "type": "Offer",
                 "availability": "InStock",
-                "price": {"type":"price"},
-                "priceCurrency": {"type":"currency"},
-                "acceptedPaymentMethod":{"type":"acceptedPaymentMethod"},
-                "areaServed":{"type":"areaServed"},
-                "availableDeliveryMethod":{"type":"availableDeliveryMethod"},
-                "warranty":{"type":"warranty"}
+                "price": {"type": "price"},
+                "priceCurrency": {"type": "currency"},
+                "acceptedPaymentMethod": {"type": "acceptedPaymentMethod"},
+                "areaServed": {"type": "areaServed"},
+                "availableDeliveryMethod": {"type": "availableDeliveryMethod"},
+                "warranty": {"type": "warranty"}
             },
-            "additionalProperty":{"type":"additionalProperty"}
-           /*
-            "aggregateRating": {
-            "type": "AggregateRating",
-            "ratingValue": "3.5",
-            "reviewCount": "11"
-            },
+            "additionalProperty": {"type": "additionalProperty"}
+            /*
+             "aggregateRating": {
+             "type": "AggregateRating",
+             "ratingValue": "3.5",
+             "reviewCount": "11"
+             },
 
-           "review": [
-                {
-                    "@type": "Review",
-                    "author": "Ellie",
-                    "datePublished": "2011-04-01",
-                    "description": "The lamp burned out and now I have to replace it.",
-                    "name": "Not a happy camper",
-                    "reviewRating": {
-                        "@type": "Rating",
-                        "bestRating": "5",
-                        "ratingValue": "1",
-                        "worstRating": "1"
-                    }
-                },
-                {
-                    "@type": "Review",
-                    "author": "Lucas",
-                    "datePublished": "2011-03-25",
-                    "description": "Great microwave for the price. It is small and fits in my apartment.",
-                    "name": "Value purchase",
-                    "reviewRating": {
-                        "@type": "Rating",
-                        "bestRating": "5",
-                        "ratingValue": "4",
-                        "worstRating": "1"
-                    }
-                }
-            ]*/
+             "review": [
+             {
+             "@type": "Review",
+             "author": "Ellie",
+             "datePublished": "2011-04-01",
+             "description": "The lamp burned out and now I have to replace it.",
+             "name": "Not a happy camper",
+             "reviewRating": {
+             "@type": "Rating",
+             "bestRating": "5",
+             "ratingValue": "1",
+             "worstRating": "1"
+             }
+             },
+             {
+             "@type": "Review",
+             "author": "Lucas",
+             "datePublished": "2011-03-25",
+             "description": "Great microwave for the price. It is small and fits in my apartment.",
+             "name": "Value purchase",
+             "reviewRating": {
+             "@type": "Rating",
+             "bestRating": "5",
+             "ratingValue": "4",
+             "worstRating": "1"
+             }
+             }
+             ]*/
         }
     }
-
 
 
 }

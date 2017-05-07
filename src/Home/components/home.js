@@ -12,13 +12,13 @@ import {
     ListView,
     Image
 } from 'react-native';
-import {Card} from 'react-native-material-design';
-import { Toolbar,Icon,Divider} from 'react-native-material-ui';
+import {Card,Divider} from 'react-native-material-design';
+import { Toolbar,Icon,} from 'react-native-material-ui';
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as actions from  "../../products/products.actions"
-import {Statuses,Menu}  from "../../statuses/components/statuses"
+import {Statuses}  from "../../statuses/components/statuses"
 
 import styles, {typographyStyle,colorStyle,colours} from "../../styles/styles"
 let ctx;
