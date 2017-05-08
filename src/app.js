@@ -141,9 +141,9 @@ class root extends Component {
 ///this.Oauth=
       let that=this;
         return [
-            <IntroOne setPage={this._setPage}/>,
+            <IntroOne setPage={this._setPage}nav={addNavigationHelpers({dispatch, state:navOauth})}/>,
 
-            <IntroTwo setPage={this._setPage}/>,
+            <IntroTwo setPage={this._setPage} nav={addNavigationHelpers({dispatch, state:navOauth})}/>,
 
             <Oauth ref={(el)=>{that.oauth=el}} screenProps={{setPage:this._setPage, user, openDrawer}}
                    navigation={addNavigationHelpers({dispatch, state:navOauth})}

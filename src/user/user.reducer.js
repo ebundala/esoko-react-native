@@ -10,6 +10,7 @@
 
 const INITIAL_STATE ={
       authenticated: false,
+    isNewUser:true,
          user:
          {
              anonymous: false,
@@ -57,6 +58,12 @@ export default function userReducer(state= INITIAL_STATE, action)
         return {
             ...INITIAL_STATE,
             isNewUser:false
+        }
+    }
+    else if(action.status==="Initial"){
+        return {
+            ...INITIAL_STATE,
+            isNewUser:true
         }
     }
     else

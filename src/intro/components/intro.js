@@ -34,14 +34,19 @@ export class IntroOne extends Component{
 export class IntroTwo extends Component{
 
     render(){
-        let{setPage}=this.props;
+        let{setPage,nav}=this.props;
         return(
             <View style={{flex:1,justifyContent:'space-between'}}>
                 <Text>intro two page</Text>
 
                     <View>
 
-                        <Button title="Next" onPress={()=>setPage("Oauth")}/>
+                        <Button title="Next" onPress={()=>{
+                            nav.navigate("signup");
+                            setTimeout(()=>{
+                            setPage("Oauth")
+                            },16)
+                        }}/>
                     </View>
 
             </View>

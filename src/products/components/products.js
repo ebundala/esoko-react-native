@@ -968,7 +968,7 @@ const PhotoPickerWidget = React.createClass({
 
 
 const COMPONENT_NAMES = ['Title', 'LeftButton', 'RightButton'];
-var navStatePresentedIndex = function(navState) {
+const navStatePresentedIndex = function(navState) {
     if (navState.presentedIndex !== undefined) {
         return navState.presentedIndex;
     }
@@ -1701,29 +1701,103 @@ export class CreateProduct extends Component {
                         ]
                     },
                     onSubmit(isValid, values, validationResults, postSubmit = null, modalNavigator = null){
-                            if (isValid === true) {
+                            if (isValid === true)
+                            {
+                                const uploadFile = (files,uid,links,i,retry,resolve,reject) => {
+                                    let len =files.length;
+                                    if (i < len)
+                                    {
+                                        firestack.storage.uploadFile(`photos/${uid}/${files[i].fileName}`, files[i].path, {
+                                            contentType: 'image/jpeg',
+                                            contentEncoding: 'base64',
+                                        }, (evt) => {
+                                            console.log('progress  '+i, evt);
+                                        }).then((res) => {
+                                            console.log('The file has been uploaded '+i);
+                                            i++;
+                                            links.push(res);
+                                            return  uploadFile(files, uid,links ,i,retry,resolve,reject)
+                                        }).catch(err => {
+                                            retry++;
+                                            console.log('There was an error uploading the file', err);
+                                            //Todo Retry here
+                                            if(retry>5){
+                                                i=i+2;
+                                                return uploadFile(files, uid,links ,i,retry);
+                                                //reject(err)
+                                                //todo delete photos on failed
+                                            }
+                                            return uploadFile(files, uid,links ,i++,retry)
+                                        })
+                                    }else {
+                                        resolve(links)
+                                    }
+                                }
+                               const uploadFiles=(files,uid,i,retry)=>{
+
+                                    return new Promise((resolve, reject) => {
+                                        let links=[];
+
+                                        //let retry=0;
+
+                                         uploadFile(files,uid,links,i,retry,resolve,reject)
+                                    })
+                                }
+                               const submitForm=(data)=>{
+                                   let i=0,retry=0;
+                                    return new Promise((resolve, reject) => {
+                                        firestack.database.ref("products").push().then((res) => {
+                                            let newPostKey = res.key;
+
+                                           return firestack.ServerValue.then(map => {
+
+                                            return uploadFiles(data.photos, newPostKey,i,retry).then((links) => {
+                                                    data = {...data, timestamp: map.TIMESTAMP, productID: newPostKey,photos:links};
+
+                                                    console.log(data);
+
+                                                    let updates = {};
+                                                    updates['/products/' + newPostKey] = data;
+                                                return firestack.database.ref().update(updates).then((resp) => {
+                                                        resolve(resp)
+
+                                                    }).catch((e) => {
+                                                        reject(e)
+
+                                                    })
+                                                })
+                                            })
+                                        }).catch(reject)
+                                    })
+                                }
+
+
+
+
+
 
 
                                 //console.log(values)
 
                                 let   prod={
                                     userID: values.hasOwnProperty("userID")? values.userID:postSubmit(["it seams your not logged in"]),
-                                    userName:values.hasOwnProperty("userName")? values.userName:postSubmit(["it seams your not logged in"]),
-                                    name: values.hasOwnProperty("name")?values.name:postSubmit(["product name is required"]),
+                                   userName:values.hasOwnProperty("userName")? values.userName:postSubmit(["it seams your not logged in"]),
+                                   name: values.hasOwnProperty("name")?values.name:postSubmit(["product name is required"]),
                                     brand: values.hasOwnProperty("brand")?values.brand:"",
                                     model:values.hasOwnProperty("model")?values.model:"",
                                     manufacturer:values.hasOwnProperty("manufacturer")?values.manufacturer:"",
+
                                     price:parseInt(values.price)?parseInt(values.price):postSubmit(["price is not valid"]),
-                                    currency:values.hasOwnProperty("currency")?values.currency[0]:postSubmit(["currency is not valid"]),
-                                    acceptedPaymentMethod:values.acceptedPaymentMethod instanceof Array?values.acceptedPaymentMethod.reduce(function(acc, cur, i) {
+                                   currency:values.hasOwnProperty("currency")?values.currency[0]:postSubmit(["currency is not valid"]),
+                                   acceptedPaymentMethod:values.acceptedPaymentMethod instanceof Array?values.acceptedPaymentMethod.reduce(function(acc, cur, i) {
                                             acc[cur] = true;
                                             return acc;
                                         }, {}):null,
-                                    quantity:parseInt(values.quantity)?parseInt(values.quantity):postSubmit(["quantity is not valid"]) ,
-                                    category:values.hasOwnProperty("category")?values.category[0]:postSubmit(["category is required"]),
+                                   quantity:parseInt(values.quantity)?parseInt(values.quantity):postSubmit(["quantity is not valid"]) ,
+                                   category:values.hasOwnProperty("category")?values.category[0]:postSubmit(["category is required"]),
                                     itemCondition:values.hasOwnProperty("itemCondition")?values.itemCondition[0]:postSubmit(["Item condition is required"]),
-                                    availability:values.hasOwnProperty("availability")?values.availability[0]:postSubmit(["Item Availability is required"]),
-                                    areaServed:values.areaServed instanceof Array?values.areaServed.reduce(function(acc, cur, i) {
+                                   availability:values.hasOwnProperty("availability")?values.availability[0]:postSubmit(["Item Availability is required"]),
+                                   areaServed:values.areaServed instanceof Array?values.areaServed.reduce(function(acc, cur, i) {
                                             acc[cur] = true;
                                             return acc;
                                         }, {}):null,
@@ -1733,21 +1807,21 @@ export class CreateProduct extends Component {
                                         }, {}):null,
                                     description: values.hasOwnProperty("userID")? values.description:postSubmit(["it seams your not logged in"]),
                                     warranty: values.hasOwnProperty("userID")? values.warranty:postSubmit(["it seams your not logged in"]),
+
+
                                     photos:values.photos
                                 };
-                                console.log(prod);
-                                /*  this.submitForm(prod).then((res) => {
+                                //console.log(prod);
+                                 submitForm(prod).then((res) => {
                                  console.log(res);
-                                 postSubmit();
-                                 GiftedFormManager.reset('newProduct')
+                                     GiftedFormManager.reset('newProduct');
+                                     postSubmit();
                                  }).catch((e) =>{
-                                 console.log(e)
+                                 console.log(e);
                                  postSubmit(["error",e.message||"error occured"]);
                                  // GiftedFormManager.reset('newProduct')
-                                 });*/
-                                // prepare object
-                                //values.gender = values.gender[0];
-                                // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
+                                 });
+
 
                                 /* Implement the request to your server using values variable
                                  ** then you can do:
@@ -1756,39 +1830,16 @@ export class CreateProduct extends Component {
                                  ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
                                  ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
                                  */
-                                setTimeout(()=>{
+                                /*setTimeout(()=>{
                                     postSubmit(['error', 'invalid field detected']);
                                     // GiftedFormManager.reset('newProduct')
-                                },9000)
+                                },9000);*/
                                 //  return;
                             }
-                            // postSubmit(['error', 'invalid field detected']);
+                           // postSubmit(['error', 'invalid field detected']);
 
                     },
-                    submitForm(data){
-                        return new Promise((resolve, reject) => {
-                            firestack.database.ref("products").push().then((res) => {
-                                let newPostKey = res.key;
 
-                                firestack.ServerValue.then(map => {
-
-
-                                    data = {...data, timestamp: map.TIMESTAMP, productID: newPostKey}
-
-
-                                    let updates = {};
-                                    updates['/products/' + newPostKey] = data;
-                                    firestack.database.ref().update(updates).then((resp) => {
-                                        resolve(resp)
-
-                                    }).catch((e) => {
-                                        reject(e)
-
-                                    })
-                                })
-                            }).catch(reject)
-                        })
-                    }
                 };
             }
         }
