@@ -299,31 +299,20 @@ export class DBwrapper{
                  "Jewelry",
              ];
          let catLen=category.length;
-
-
-         for(let i=0,n=50;i<n;i++) {
-             let UID = Math.ceil(Math.random() * 100000);
-             let cat =category[Math.floor(Math.random()*catLen)]
-
-
-
-
-
-
-         let scheme=    {
+             let scheme=    {
                  "acceptedPaymentMethod" : {
-                 "OnDelivery" : true,
+                     "OnDelivery" : true,
                      "TigoPesa" : true
-             },
+                 },
                  "areaServed" : {
-                 "MAIN" : true,
+                     "MAIN" : true,
                      "SMC" : true
-             },
+                 },
                  "availability" : "InStock",
                  "availableDeliveryMethod" : {
-                 "Shipping" : true,
+                     "Shipping" : true,
                      "pickUp" : true
-             },
+                 },
                  "brand" : "onk",
                  "category" : "electronics",
                  "currency" : "TZS",
@@ -333,26 +322,26 @@ export class DBwrapper{
                  "model" : "vbklo",
                  "name" : "hp nm",
                  "photos" : [ {
-                 "bucket" : "esoko-fc718.appspot.com",
-                 "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-ef001440-9b65-457b-86e5-28453294c7b9.jpg?alt=media&token=048431ba-702d-4a98-8622-b08cd8f1a51d",
-                 "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
-                 "metadata" : {
-                     "cacheControl" : "",
-                     "contentDisposition" : "inline; filename*=utf-8''image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
-                     "contentType" : "image/jpeg"
-                 },
-                 "name" : "image-ef001440-9b65-457b-86e5-28453294c7b9.jpg"
-             }, {
-                 "bucket" : "esoko-fc718.appspot.com",
-                 "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-7c11b60b-2680-4981-8f02-ae703f635b03.jpg?alt=media&token=a33e7661-b5af-4bb7-8aee-648be08d8d4b",
-                 "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
-                 "metadata" : {
-                     "cacheControl" : "",
-                     "contentDisposition" : "inline; filename*=utf-8''image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
-                     "contentType" : "image/jpeg"
-                 },
-                 "name" : "image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg"
-             } ],
+                     "bucket" : "esoko-fc718.appspot.com",
+                     "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-ef001440-9b65-457b-86e5-28453294c7b9.jpg?alt=media&token=048431ba-702d-4a98-8622-b08cd8f1a51d",
+                     "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                     "metadata" : {
+                         "cacheControl" : "",
+                         "contentDisposition" : "inline; filename*=utf-8''image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                         "contentType" : "image/jpeg"
+                     },
+                     "name" : "image-ef001440-9b65-457b-86e5-28453294c7b9.jpg"
+                 }, {
+                     "bucket" : "esoko-fc718.appspot.com",
+                     "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-7c11b60b-2680-4981-8f02-ae703f635b03.jpg?alt=media&token=a33e7661-b5af-4bb7-8aee-648be08d8d4b",
+                     "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                     "metadata" : {
+                         "cacheControl" : "",
+                         "contentDisposition" : "inline; filename*=utf-8''image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                         "contentType" : "image/jpeg"
+                     },
+                     "name" : "image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg"
+                 } ],
                  "price" : 258096,
                  "productID" : "-KjeGCFaV9sDHtFCzmHq",
                  "quantity" : 12,
@@ -362,16 +351,9 @@ export class DBwrapper{
                  "warranty" : "sdxz  fdfgdgfd hgfhgh"
              }
 
-
-
-
-
-
-
-
-
-
-
+         for(let i=0,n=500;i<n;i++) {
+             let UID = Math.ceil(Math.random() * 100000);
+             let cat =category[Math.floor(Math.random()*catLen)]
              that.addProduct({
                      ...scheme,
                  name :cat+" "+i,

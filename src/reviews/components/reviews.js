@@ -315,7 +315,7 @@ export class CreateReview extends Component{
     constructor(props){
         super(props)
 
-        this.state={
+        /*this.state={
             product:{
                 uid:null,
                 title:null,
@@ -323,7 +323,7 @@ export class CreateReview extends Component{
                 price:null,
                 sellerID:"xxxxx",
             }
-        }
+        }*/
     }
     render(){
 
@@ -456,7 +456,7 @@ export class CreateReview extends Component{
                     // This route's title is displayed next to the back button when you push
                     // a new route on top of this one.
                     getTitle() {
-                        return 'Rate '+shortenText(product.title);
+                        return 'Rate '+shortenText(product.name);
                     },
 
 

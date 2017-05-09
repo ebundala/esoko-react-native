@@ -216,7 +216,7 @@ let len=data.photos.length;
                 reviewerName: "Elias Bundala",
                 rating: Math.random() * 5,
                 body: "hello this is a terible product dont buy it an way too expensive",
-                reviewerAvator: data.photos["0"].downloadUrl
+                reviewerAvator: data.photos[Math.ceil(Math.random()*len)].downloadUrl
             })
         }
 
@@ -229,7 +229,7 @@ let len=data.photos.length;
                     onLeftElementPress={() => {
                         goBack();
                     }}
-                    centerElement={data.title}
+                    centerElement={data.name}
 
                 />
 
@@ -255,7 +255,7 @@ let len=data.photos.length;
                                                 height: null,
                                                 resizeMode: Image.resizeMode.cover
                                             }]}
-                                                   source={{uri: data.photos["0"].downloadUrl}}>
+                                                   source={{uri: data.photos[0].downloadUrl}}>
                                                 <Text style={[{
                                                     position: "absolute",
                                                     bottom: 8,
@@ -566,7 +566,7 @@ export class searchResultsProductsList extends Component {
                                                   resizeMode: Image.resizeMode.stretch,
                                                   backgroundColor: colours.paperGrey300.color
                                               }]}
-                                                     source={{uri: data.photos["0"].url}}>
+                                                     source={{uri: data.photos[0].downloadUrl}}>
 
                                               </Image>
                                               <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
@@ -589,15 +589,7 @@ export class searchResultsProductsList extends Component {
                                           </View>
 
 
-                                          {false && <View style={[styles.horizontal]}>
 
-
-                                              <Button title={"add Product "}
-                                                      onPress={() => props.addProduct(data, navigate)}/>
-                                              <Button title={"edit Product "}
-                                                      onPress={() => props.editProduct(data, navigate)}/>
-
-                                          </View>}
                                       </Card>
                                   </View>
                               </TouchableNativeFeedback>}

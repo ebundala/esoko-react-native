@@ -63,8 +63,8 @@ export const queryProducts=(filter,navigate)=>{
 
         DB.getProducts(filter).then((products) => {
             console.log(products)
-            //dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
-           //navigate("products", {title: filter,products})
+            dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
+           navigate("products", {title: filter,products})
 
 
 
