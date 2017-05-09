@@ -177,16 +177,38 @@ export class DBwrapper{
          tx.executeSql('CREATE TABLE IF NOT EXISTS Version( '
              + 'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB)
 
-         tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '
-             + 'productID VARCHAR(30) PRIMARY KEY NOT NULL, '
-             + 'title VARCHAR(80) NOT NULL,' +
-             'currency VARCHAR(5) NOT NULL,' +
-             'sellerID VARCHAR(30) NOT NULL,' +
-             'price INTEGER NOT NULL,' +
-             'postedOn TIMESTAMP NOT NULL,' +
-             'description VARCHAR(250),' +
-             'category VARCHAR(30),' +
-             'photos BLOB); ', [], this.successCB, this.errorCB)
+         tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
+             'acceptedPaymentMethod VARCHAR(32) NOT NULL,'+
+             'areaServed VARCHAR(32),'+
+             'availability VARCHAR(32) NOT NULL,'+
+             'availableDeliveryMethod VARCHAR(32) NOT NULL,'+
+             'brand VARCHAR(32) ,'+
+             'category VARCHAR(32) NOT NULL,'+
+             'currency VARCHAR(32) NOT NULL,'+
+             ' description VARCHAR(160),'+
+             'itemCondition VARCHAR(32) NOT NULL,'+
+             'manufacturer VARCHAR(32) ,'+
+             'model VARCHAR(32) ,'+
+             'name VARCHAR(32) NOT NULL,'+
+             ' photos BLOB ,'+
+             'price INTERGER NOT NULL,'+
+             'productID PRIMARY VARCHAR(32) NOT NULL,'+
+             'quantity INTERGER NOT NULL,'+
+             'timestamp INTERGER NOT NULL,'+
+             'userID VARCHAR(32) NOT NULL,'+
+             'userName VARCHAR(32) NOT NULL,'+
+             'warranty VARCHAR(80) ,); ', [], this.successCB, this.errorCB)
+
+             {
+
+             }
+
+
+
+
+
+
+
 
          tx.executeSql(
              'CREATE TABLE IF NOT EXISTS Orders( '
@@ -279,47 +301,88 @@ export class DBwrapper{
          let catLen=category.length;
 
 
-         for(let i=0,n=500;i<n;i++) {
+         for(let i=0,n=50;i<n;i++) {
              let UID = Math.ceil(Math.random() * 100000);
              let cat =category[Math.floor(Math.random()*catLen)]
 
 
+
+
+
+
+         let scheme=    {
+                 "acceptedPaymentMethod" : {
+                 "OnDelivery" : true,
+                     "TigoPesa" : true
+             },
+                 "areaServed" : {
+                 "MAIN" : true,
+                     "SMC" : true
+             },
+                 "availability" : "InStock",
+                 "availableDeliveryMethod" : {
+                 "Shipping" : true,
+                     "pickUp" : true
+             },
+                 "brand" : "onk",
+                 "category" : "electronics",
+                 "currency" : "TZS",
+                 "description" : "kjkjfdjkfl jhsdkjhaskd",
+                 "itemCondition" : "New",
+                 "manufacturer" : "jkgkl",
+                 "model" : "vbklo",
+                 "name" : "hp nm",
+                 "photos" : [ {
+                 "bucket" : "esoko-fc718.appspot.com",
+                 "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-ef001440-9b65-457b-86e5-28453294c7b9.jpg?alt=media&token=048431ba-702d-4a98-8622-b08cd8f1a51d",
+                 "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                 "metadata" : {
+                     "cacheControl" : "",
+                     "contentDisposition" : "inline; filename*=utf-8''image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                     "contentType" : "image/jpeg"
+                 },
+                 "name" : "image-ef001440-9b65-457b-86e5-28453294c7b9.jpg"
+             }, {
+                 "bucket" : "esoko-fc718.appspot.com",
+                 "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-7c11b60b-2680-4981-8f02-ae703f635b03.jpg?alt=media&token=a33e7661-b5af-4bb7-8aee-648be08d8d4b",
+                 "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                 "metadata" : {
+                     "cacheControl" : "",
+                     "contentDisposition" : "inline; filename*=utf-8''image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                     "contentType" : "image/jpeg"
+                 },
+                 "name" : "image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg"
+             } ],
+                 "price" : 258096,
+                 "productID" : "-KjeGCFaV9sDHtFCzmHq",
+                 "quantity" : 12,
+                 "timestamp" : 1494284040119,
+                 "userID" : "WuKkagJaoAbumfR0UZiKqCAoYlq1",
+                 "userName" : "Anonymous user",
+                 "warranty" : "sdxz  fdfgdgfd hgfhgh"
+             }
+
+
+
+
+
+
+
+
+
+
+
              that.addProduct({
-                 productID: UID,
-                 title: cat+" "+i,
+                     ...scheme,
+                 name :cat+" "+i,
+                 //quantity :"",
                  description: "React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
+                 warranty:"runs inside this Chrome tab.Press CtrlJ to open Developer",
+                 productID: UID,
                  price: UID,
-                 sellerID: "xxxxx",
                  category: cat,
-                 postedOn: new Date().getTime()/Math.ceil(Math.random() * 10),
-                 currency: "TZS",
-                 photos: [
-                     {
-                         name: "one",
-                         url: IMAGES[Math.ceil(Math.random() * 10)],
-                         type: "jpg"
-                     },
-                     {
-                         name: "two",
-                         url: IMAGES[Math.ceil(Math.random() * 10)],
-                         type: "jpg"
-                     },
-                     {
-                         name: "three",
-                         url: IMAGES[Math.ceil(Math.random() * 10)],
-                         type: "jpg"
-                     },
-                     {
-                         name: "four",
-                         url: IMAGES[Math.ceil(Math.random() * 10)],
-                         type: "jpg"
-                     },
-                     {
-                         name: "five",
-                         url: IMAGES[Math.ceil(Math.random() * 10)],
-                         type: "jpg"
-                     }
-                 ]
+                 timestamp: new Date().getTime()/Math.ceil(Math.random() * 10),
+
 
              }).then((res) => {
                  console.log("item added" + i + " ")
@@ -380,7 +443,7 @@ export class DBwrapper{
 
                  that.db.transaction((tx) => {
 
-                     tx.executeSql(' SELECT * FROM Products WHERE category=(?) ORDER BY postedOn DESC', [category],(tx,res)=>{
+                     tx.executeSql(' SELECT * FROM Products WHERE category=(?) ORDER BY timestamp DESC', [category],(tx,res)=>{
                          return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
 
                  }, (res)=>{reject(res)}, that.successCB)
@@ -436,17 +499,49 @@ export class DBwrapper{
          return new Promise((resolve,reject)=>{
              that.db.transaction((tx)=>{
 
-                 tx.executeSql('INSERT INTO Products (productID,title,currency,sellerID,price,postedOn,description,category,photos ) VALUES (?,?,?,?,?,?,?,?,?)',
+                 tx.executeSql('INSERT INTO Products (' +
+                     'acceptedPaymentMethod ,'+
+                     'areaServed,'+
+                     'availability,'+
+                     'availableDeliveryMethod,'+
+                     'brand,'+
+                     'category,'+
+                     'currency,'+
+                    ' description,'+
+                     'itemCondition,'+
+                     'manufacturer,'+
+                     'model,'+
+                     'name,'+
+                     'price,'+
+                     'productID,'+
+                     'quantity,'+
+                     'timestamp,'+
+                     'userID,'+
+                     'userName,'+
+                     'warranty,' +
+                     'photos ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                      [
-                         product.productID,
-                         product.title,
-                         product.currency,
-                         product.sellerID ,
-                         product.price ,
-                         product.postedOn ,
-                         product.description ,
+                         JSON.stringify(product.acceptedPaymentMethod) ,
+                         JSON.stringify(product.areaServed),
+                         product.availability,
+                         JSON.stringify(product.availableDeliveryMethod),
+                         product.brand,
                          product.category,
-                         JSON.stringify(product.photos)],(res)=>{resolve(res)}, (res)=>{reject(res)})
+                         product.currency,
+                         product.description,
+                         product.itemCondition,
+                         product.manufacturer,
+                         product.model,
+                         product.name,
+                         product.price,
+                         product.productID,
+                         product.quantity,
+                         product.timestamp,
+                         product.userID,
+                         product.userName,
+                         product.warranty,
+                         JSON.stringify(product.photos)
+                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})
 
 
 
@@ -479,7 +574,7 @@ export class DBwrapper{
                  if (category === "all")
                  {
 
-                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) ORDER BY postedOn DESC', [keyword], (tx, res) => {
+                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) ORDER BY timestamp DESC', [keyword], (tx, res) => {
                          return that.formatResults(tx, res, resolve)
                      }, (res) => {
                          reject(res)
@@ -496,6 +591,7 @@ export class DBwrapper{
              }, (res)=>{reject(res)}, that.successCB)
          })
      }
+     //Todo update update methode to apropiate fields
      updateProduct(product){
 
          let that =this;

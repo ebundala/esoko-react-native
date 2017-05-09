@@ -98,14 +98,14 @@ export class ProductsList extends Component {
                                                   resizeMode: Image.resizeMode.stretch,
                                                   backgroundColor: colours.paperGrey300.color
                                               }]}
-                                                     source={{uri: data.photos[0].url}}>
+                                                     source={{uri: data.photos[0].downloadUrl}}>
 
                                               </Image>
                                               <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
                                                   <View
                                                       style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
                                                       <Text style={[styles.productTitle]}>
-                                                          {shortenText(data.title)}
+                                                          {shortenText(data.name)}
                                                       </Text>
                                                   </View>
                                                   <View
@@ -210,13 +210,13 @@ export class SingleProductView extends Component {
         let props = this.props.screenProps;
         let reviews = [];
 
-
+let len=data.photos.length;
         for (let i = 0; i < 9; i++) {
             reviews.push({
                 reviewerName: "Elias Bundala",
                 rating: Math.random() * 5,
                 body: "hello this is a terible product dont buy it an way too expensive",
-                reviewerAvator: data.photos[Math.floor(Math.random() * 5)].url
+                reviewerAvator: data.photos["0"].downloadUrl
             })
         }
 
@@ -255,7 +255,7 @@ export class SingleProductView extends Component {
                                                 height: null,
                                                 resizeMode: Image.resizeMode.cover
                                             }]}
-                                                   source={{uri: data.photos[i].url}}>
+                                                   source={{uri: data.photos["0"].downloadUrl}}>
                                                 <Text style={[{
                                                     position: "absolute",
                                                     bottom: 8,
@@ -270,7 +270,7 @@ export class SingleProductView extends Component {
                                 <View style={[styles.flex8, styles.centerJustified]}>
                                     <View style={[styles.horizontal]}>
                                         <Text style={[colorStyle.paperGrey900, {fontSize: 14, fontWeight: "500"}]}>
-                                            {data.title}
+                                            {data.name}
                                         </Text>
                                     </View>
 
@@ -566,14 +566,14 @@ export class searchResultsProductsList extends Component {
                                                   resizeMode: Image.resizeMode.stretch,
                                                   backgroundColor: colours.paperGrey300.color
                                               }]}
-                                                     source={{uri: data.photos[0].url}}>
+                                                     source={{uri: data.photos["0"].url}}>
 
                                               </Image>
                                               <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
                                                   <View
                                                       style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
                                                       <Text style={[styles.productTitle]}>
-                                                          {shortenText(data.title)}
+                                                          {shortenText(data.name)}
                                                       </Text>
                                                   </View>
                                                   <View
@@ -1067,7 +1067,7 @@ export class CreateProduct extends Component {
     render() {
 
         let {navigate, goBack} = this.props.navigation;
-        let title = "New item"
+        let title = "New item";
         let {user}=this.props.screenProps;
         const {primaryColor} = uiTheme.palette;
         let routes = {
@@ -1114,7 +1114,7 @@ export class CreateProduct extends Component {
                                 }}
 
 
-                                validators={{
+                                validatorsg={{
 
 
                                     //  userID: 789098090,
@@ -1738,9 +1738,11 @@ export class CreateProduct extends Component {
                                     return new Promise((resolve, reject) => {
                                         let links=[];
 
-                                        //let retry=0;
 
+                                       if(files instanceof Array){
                                          uploadFile(files,uid,links,i,retry,resolve,reject)
+                                       }
+                                       else resolve([])
                                     })
                                 }
                                const submitForm=(data)=>{
@@ -1815,6 +1817,7 @@ export class CreateProduct extends Component {
                                  submitForm(prod).then((res) => {
                                  console.log(res);
                                      GiftedFormManager.reset('newProduct');
+
                                      postSubmit();
                                  }).catch((e) =>{
                                  console.log(e);
@@ -1836,6 +1839,8 @@ export class CreateProduct extends Component {
                                 },9000);*/
                                 //  return;
                             }
+                        GiftedFormManager.resetValues('newProduct');
+
                            // postSubmit(['error', 'invalid field detected']);
 
                     },

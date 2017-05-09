@@ -137,13 +137,13 @@ let ctx;
                                                            resizeMode:Image.resizeMode.stretch,
                                                            backgroundColor:colours.paperGrey300.color
                                                        }]}
-                                                               source={{uri:data.photos[0].url}}>
+                                                               source={{uri:data.photos[0].downloadUrl}}>
 
                                                        </Image>
                                                        <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
                                                            <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
                                                                <Text style={[styles.productTitle]}>
-                                                                   {data.title}
+                                                                   {data.name}
                                                                    </Text>
                                                            </View>
                                                            <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
@@ -157,60 +157,7 @@ let ctx;
                                                        </View>
                                                    </View>
 
-                                                   {false&& <View>
-                                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
-                                                           <Icon size={14} name="update"  />
-                                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
 
-                                                       </View>
-                                                       <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
-
-                                                           <View ref="detail" style={[styles.flex8,]}>
-                                                               <View style={[styles.horizontal,]}>
-                                                                   <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
-                                                               </View>
-                                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
-                                                                   <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
-                                                               </View>
-                                                               <View >
-                                                                   <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
-                                                               </View>
-
-                                                           </View>
-                                                           <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
-
-                                                           </View>
-                                                       </View>
-                                                       <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
-
-                                                           <TouchableNativeFeedback  title={"review "}
-                                                                                     onPress={() => props.reviewProduct(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       review
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-                                                           <TouchableNativeFeedback  title={"Bids "}
-                                                                                     onPress={() => props.placeBid(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       Bids
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-                                                           <TouchableNativeFeedback
-                                                               onPress={() =>props.startChat(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       Chats
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-
-
-                                                       </View>
-                                                   </View>}
 
 
                                                </Card>
@@ -247,13 +194,13 @@ let ctx;
                                                            resizeMode:Image.resizeMode.stretch,
                                                            backgroundColor:colours.paperGrey300.color
                                                        }]}
-                                                               source={{uri:data.photos[0].url}}>
+                                                               source={{uri:data.photos[0].downloadUrl}}>
 
                                                        </Image>
                                                        <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
                                                            <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
                                                                <Text style={[styles.productTitle]}>
-                                                                   {data.title}
+                                                                   {data.name}
                                                                </Text>
                                                            </View>
                                                            <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
@@ -267,60 +214,7 @@ let ctx;
                                                        </View>
                                                    </View>
 
-                                                   {false&& <View>
-                                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
-                                                           <Icon size={14} name="update"  />
-                                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
 
-                                                       </View>
-                                                       <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
-
-                                                           <View ref="detail" style={[styles.flex8,]}>
-                                                               <View style={[styles.horizontal,]}>
-                                                                   <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
-                                                               </View>
-                                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
-                                                                   <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
-                                                               </View>
-                                                               <View >
-                                                                   <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
-                                                               </View>
-
-                                                           </View>
-                                                           <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
-
-                                                           </View>
-                                                       </View>
-                                                       <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
-
-                                                           <TouchableNativeFeedback  title={"review "}
-                                                                                     onPress={() => props.reviewProduct(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       review
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-                                                           <TouchableNativeFeedback  title={"Bids "}
-                                                                                     onPress={() => props.placeBid(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       Bids
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-                                                           <TouchableNativeFeedback
-                                                               onPress={() =>props.startChat(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       Chats
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-
-
-                                                       </View>
-                                                   </View>}
 
 
                                                </Card>
@@ -357,13 +251,13 @@ let ctx;
                                                            resizeMode:Image.resizeMode.stretch,
                                                            backgroundColor:colours.paperGrey300.color
                                                        }]}
-                                                               source={{uri:data.photos[0].url}}>
+                                                               source={{uri:data.photos[0].downloadUrl}}>
 
                                                        </Image>
                                                        <View style={[styles.spaceAround,styles.alignItemsCenter,{height:40}]}>
                                                            <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
                                                                <Text style={[styles.productTitle]}>
-                                                                   {data.title}
+                                                                   {data.name}
                                                                </Text>
                                                            </View>
                                                            <View style={[styles.horizontal,styles.alignItemsCenter,styles.centerJustified]}>
@@ -377,60 +271,7 @@ let ctx;
                                                        </View>
                                                    </View>
 
-                                                   {false&& <View>
-                                                       <View style={[styles.horizontal,styles.alignItemsCenter,styles.flexStart]}>
-                                                           <Icon size={14} name="update"  />
-                                                           <Text style={[{fontSize: 10,marginHorizontal:5}]}>{data.postedOn}</Text>
 
-                                                       </View>
-                                                       <View style={[styles.horizontal,styles.flex1,{margin:5}]}>
-
-                                                           <View ref="detail" style={[styles.flex8,]}>
-                                                               <View style={[styles.horizontal,]}>
-                                                                   <Text style={[{fontSize: 16,fontWeight:"bold"}]}>{data.title}</Text>
-                                                               </View>
-                                                               <View style={[styles.flex1,{marginVertical:5,overflow:"hidden",backgroundColor:"white"}]}>
-                                                                   <Text style={[{fontSize: 12,textAlign:"left"}]}>{data.description}</Text>
-                                                               </View>
-                                                               <View >
-                                                                   <Text style={[{fontSize: 14,fontWeight:"bold",color:"orange"}]}>{"Price "+data.price}</Text>
-                                                               </View>
-
-                                                           </View>
-                                                           <View ref="photo" style={[styles.flex4,styles.yellow,{elevation:2}]}>
-
-                                                           </View>
-                                                       </View>
-                                                       <View style={[styles.horizontal,styles.spaceAround,{elevation:5,backgroundColor:"lime"}]}>
-
-                                                           <TouchableNativeFeedback  title={"review "}
-                                                                                     onPress={() => props.reviewProduct(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       review
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-                                                           <TouchableNativeFeedback  title={"Bids "}
-                                                                                     onPress={() => props.placeBid(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       Bids
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-                                                           <TouchableNativeFeedback
-                                                               onPress={() =>props.startChat(data,navigate)}>
-                                                               <View>
-                                                                   <Text>
-                                                                       Chats
-                                                                   </Text>
-                                                               </View>
-                                                           </TouchableNativeFeedback>
-
-
-                                                       </View>
-                                                   </View>}
 
 
                                                </Card>
