@@ -105,7 +105,7 @@ const database_displayname = "SQLite Test Database";
 const database_size = 200000;
 
 let instance=null;
-
+const firestack=new Firestack();
 export class DBwrapper{
 
     constructor(){
@@ -147,6 +147,35 @@ export class DBwrapper{
          that.db.executeSql('SELECT 1 FROM Version LIMIT 1', [],
              function () {
                  console.log("Database is ready ... executing query ...");
+                 that.db.executeSql('SELECT productID FROM Products ORDER BY timestamp DESC LIMIT 1', [],(res)=>{
+
+
+                     that.attachDbListerners(res);
+
+                    /*if(res.rows.length) {
+                        let productID=res.rows.item(0).productID;
+                        console.log("last product ",productID);
+                        firestack.database.ref('products').orderByKey().startAt(productID).on('child_added', (snapshot) => {
+
+                            const val = snapshot.val();
+                            //console.log("products from firebase ",val);
+                            if(productID!=val.productID)
+                            that.addProduct(val)
+                        })
+                    }
+                    else{
+                        firestack.database.ref('products').orderByKey().on('child_added', (snapshot) => {
+
+                            const val = snapshot.val();
+                            //console.log("products from firebase ",val);
+                            that.addProduct(val)
+                        })
+                    }*/
+
+                 },(e)=>{
+
+                     console.log(e)
+                 });
 
 
                  /*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
@@ -191,10 +220,10 @@ export class DBwrapper{
              'model VARCHAR(32) ,'+
              'name VARCHAR(32) NOT NULL,'+
              ' photos BLOB ,'+
-             'price INTERGER NOT NULL,'+
+             'price INTEGER NOT NULL,'+
              'productID PRIMARY VARCHAR(32) NOT NULL,'+
-             'quantity INTERGER NOT NULL,'+
-             'timestamp INTERGER NOT NULL,'+
+             'quantity INTEGER NOT NULL,'+
+             'timestamp INTEGER NOT NULL,'+
              'userID VARCHAR(32) NOT NULL,'+
              'userName VARCHAR(32) NOT NULL,'+
              'warranty VARCHAR(80) ,); ', [], this.successCB, this.errorCB)
@@ -235,7 +264,7 @@ export class DBwrapper{
         //
 
 
-          let category=   [
+       /*   let category=   [
              "electronics",
                  "Furniture",
                  "Women's Apparel",
@@ -351,7 +380,7 @@ export class DBwrapper{
                  "warranty" : "sdxz  fdfgdgfd hgfhgh"
              }
 
-         for(let i=0,n=500;i<n;i++) {
+         for(let i=0,n=0;i<n;i++) {
              let UID = Math.ceil(Math.random() * 100000);
              let cat =category[Math.floor(Math.random()*catLen)]
              that.addProduct({
@@ -362,14 +391,20 @@ export class DBwrapper{
                  warranty:"runs inside this Chrome tab.Press CtrlJ to open Developer",
                  productID: UID,
                  price: UID,
-                 category: cat,
-                 timestamp: new Date().getTime()/Math.ceil(Math.random() * 10),
+                // category: cat,
+                 //timestamp: new Date().getTime()/Math.ceil(Math.random() * 10),
 
 
              }).then((res) => {
                  console.log("item added" + i + " ")
              })
          }
+*/
+
+
+
+
+         this.populateDatabase();
 
          }, that.errorCB, function () {
              console.log("Database populated ... executing query ...");
@@ -392,6 +427,27 @@ export class DBwrapper{
 
 
          console.log("all config SQL done");
+     }
+     attachDbListerners(res){
+         if(res.rows?res.rows.length:false) {
+             let productID=res.rows.item(0).productID;
+             console.log("last product ",productID);
+             firestack.database.ref('products').orderByKey().startAt(productID).on('child_added', (snapshot) => {
+
+                 const val = snapshot.val();
+                 //console.log("products from firebase ",val);
+                 if(productID!=val.productID)
+                     this.addProduct(val)
+             })
+         }
+         else{
+             firestack.database.ref('products').orderByKey().on('child_added', (snapshot) => {
+
+                 const val = snapshot.val();
+                 //console.log("products from firebase ",val);
+                 this.addProduct(val)
+             })
+         }
      }
      openDatabase(){
          console.log("Opening database ...");
@@ -580,17 +636,48 @@ export class DBwrapper{
          return new Promise((resolve,reject)=>{
             that.db.transaction((tx)=>{
 
-                 tx.executeSql('UPDATE Products SET title=(?),currency=(?),price=(?),postedOn=(?),description=(?),category=(?),photos=(?)'+
-                     ' WHERE productID=(?) AND sellerID=(?)',
-                     [   product.title,
-                         product.currency,
-                         product.price ,
-                         product.postedOn ,
-                         product.description ,
+                 tx.executeSql('UPDATE Products SET '
+                     +'acceptedPaymentMethod =(?),'+
+                     'areaServed=(?),'+
+                     'availability=(?),'+
+                     'availableDeliveryMethod=(?),'+
+                     'brand=(?),'+
+                     'category=(?),'+
+                     'currency=(?),'+
+                     ' description=(?),'+
+                     'itemCondition=(?),'+
+                     'manufacturer=(?),'+
+                     'model=(?),'+
+                     'name=(?),'+
+                     'price=(?),'+
+                     'productID=(?),'+
+                     'quantity=(?),'+
+                     'timestamp=(?),'+
+                     'userID=(?),'+
+                     'userName=(?),'+
+                     'warranty=(?),' +
+                     'photos=(?) )'+
+                     'WHERE productID=(?) AND sellerID=(?)',
+                     [   JSON.stringify(product.acceptedPaymentMethod) ,
+                         JSON.stringify(product.areaServed),
+                         product.availability,
+                         JSON.stringify(product.availableDeliveryMethod),
+                         product.brand,
                          product.category,
-                         JSON.stringify(product.photos),
+                         product.currency,
+                         product.description,
+                         product.itemCondition,
+                         product.manufacturer,
+                         product.model,
+                         product.name,
+                         product.price,
                          product.productID,
-                         product.sellerID
+                         product.quantity,
+                         product.timestamp,
+                         product.userID,
+                         product.userName,
+                         product.warranty,
+                         JSON.stringify(product.photos)
                      ],(res)=>{resolve(res)}, (res)=>{reject(res)})
 
 
@@ -606,13 +693,17 @@ export class DBwrapper{
 
              let len = results.rows.length;
              let products=[];
-             for (let i = 0; i < len; i++) {
-                 let row=results.rows.item(i);
-                 row.photos=JSON.parse(row.photos)
-                 products.push(row);
-                 //console.log(JSON.parse(products[i].photos)[0].url)
+             let photos=[]
+         for (let i = 0; i < len; i++) {
+             let row = results.rows.item(i);
+             row.photos = JSON.parse(row.photos);
+             row.acceptedPaymentMethod = JSON.parse(row.acceptedPaymentMethod) ;
+             row.areaServed = JSON.parse(row.areaServed);
+             row.availableDeliveryMethod = JSON.parse(row.availableDeliveryMethod);
+             products.push(row);
+             console.log(row.photos)
 
-             }
+         }
              resolve(products)
 
      }

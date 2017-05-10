@@ -30,6 +30,8 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
 import Firestack from 'react-native-firestack'
 import {shortenText} from '../../utils/utils'
+import {DB} from "../../utils/database"
+
 import {uiTheme} from "../../app"
 let moment = require('moment');
 let ctx;
@@ -216,7 +218,7 @@ let len=data.photos.length;
                 reviewerName: "Elias Bundala",
                 rating: Math.random() * 5,
                 body: "hello this is a terible product dont buy it an way too expensive",
-                reviewerAvator: data.photos[Math.ceil(Math.random()*len)].downloadUrl
+                reviewerAvator: data.photos[0].downloadUrl
             })
         }
 
@@ -245,7 +247,7 @@ let len=data.photos.length;
 
                                     style={{flex: 1}}
                                     ref={(el) => this._viewPager = el}>
-                                    {this._renderImages().map((child, i) => (
+                                    {this._renderImages().map((child, i,photos) => (
                                         <View
                                             key={"key" + i}
                                             testID={"test" + i}
@@ -255,12 +257,12 @@ let len=data.photos.length;
                                                 height: null,
                                                 resizeMode: Image.resizeMode.cover
                                             }]}
-                                                   source={{uri: data.photos[0].downloadUrl}}>
+                                                   source={{uri: child.downloadUrl}}>
                                                 <Text style={[{
                                                     position: "absolute",
                                                     bottom: 8,
                                                     left: 8
-                                                }]}>{i + 1 + "/" + data.photos.length}</Text>
+                                                }]}>{i + 1 + "/" + photos.length}</Text>
                                             </Image>
                                         </View>
                                     ))}
@@ -488,6 +490,10 @@ let len=data.photos.length;
             if (data.photos instanceof Array) {
                 return data.photos;
             }
+
+          return Object.keys(data.photos).map(function(value, index) {
+                return data.photos[value];
+            });
         }
         return []
     }
@@ -1092,17 +1098,18 @@ export class CreateProduct extends Component {
                                      brand: 'onk',
                                      model: 'vbklo',
                                      manufacturer: 'jkgkl',
-                                    // price: 0,
-                                   //  currency: [ 'TZS' ],
-                                    // acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
+                                     price: "4567778",
+                                     currency: [ 'TZS' ],
+                                     acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
                                      quantity: '1',
-                                    // category: [ 'electronics' ],
-                                    // itemCondition: [ 'New' ],
-                                    // availability: [ 'InStock' ],
-                                    // areaServed: [ 'MAIN', 'SMC' ],
-                                   //  availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
-                                     description:'',
-                                     warranty:'',
+                                     category: [ 'electronics' ],
+                                     itemCondition: [ 'New' ],
+                                     availability: [ 'InStock' ],
+                                     areaServed: [ 'MAIN', 'SMC' ],
+                                     availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
+                                    description: "React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
+                                    warranty:"runs inside this Chrome tab.Press CtrlJ to open Developer",
+
                                 }}
 
 
@@ -1693,7 +1700,7 @@ export class CreateProduct extends Component {
                         ]
                     },
                     onSubmit(isValid, values, validationResults, postSubmit = null, modalNavigator = null){
-                            if (isValid === true)
+                            if (true)
                             {
                                 const uploadFile = (files,uid,links,i,retry,resolve,reject) => {
                                     let len =files.length;
@@ -1746,14 +1753,66 @@ export class CreateProduct extends Component {
                                            return firestack.ServerValue.then(map => {
 
                                             return uploadFiles(data.photos, newPostKey,i,retry).then((links) => {
-                                                    data = {...data, timestamp: map.TIMESTAMP, productID: newPostKey,photos:links};
+                                               //Todo remove scheme after testing
+                                                let scheme=    {
+                                                    "acceptedPaymentMethod" : {
+                                                        "OnDelivery" : true,
+                                                        "TigoPesa" : true
+                                                    },
+                                                    "areaServed" : {
+                                                        "MAIN" : true,
+                                                        "SMC" : true
+                                                    },
+                                                    "availability" : "InStock",
+                                                    "availableDeliveryMethod" : {
+                                                        "Shipping" : true,
+                                                        "pickUp" : true
+                                                    },
+                                                    "brand" : "onk",
+                                                    "category" : "electronics",
+                                                    "currency" : "TZS",
+                                                    "description" : "kjkjfdjkfl jhsdkjhaskd",
+                                                    "itemCondition" : "New",
+                                                    "manufacturer" : "jkgkl",
+                                                    "model" : "vbklo",
+                                                    "name" : "hp nm",
+                                                    "photos" : [ {
+                                                        "bucket" : "esoko-fc718.appspot.com",
+                                                        "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-ef001440-9b65-457b-86e5-28453294c7b9.jpg?alt=media&token=048431ba-702d-4a98-8622-b08cd8f1a51d",
+                                                        "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                                                        "metadata" : {
+                                                            "cacheControl" : "",
+                                                            "contentDisposition" : "inline; filename*=utf-8''image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                                                            "contentType" : "image/jpeg"
+                                                        },
+                                                        "name" : "image-ef001440-9b65-457b-86e5-28453294c7b9.jpg"
+                                                    }, {
+                                                        "bucket" : "esoko-fc718.appspot.com",
+                                                        "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-7c11b60b-2680-4981-8f02-ae703f635b03.jpg?alt=media&token=a33e7661-b5af-4bb7-8aee-648be08d8d4b",
+                                                        "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                                                        "metadata" : {
+                                                            "cacheControl" : "",
+                                                            "contentDisposition" : "inline; filename*=utf-8''image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                                                            "contentType" : "image/jpeg"
+                                                        },
+                                                        "name" : "image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg"
+                                                    } ],
+                                                    "price" : 258096,
+                                                    "productID" : "-KjeGCFaV9sDHtFCzmHq",
+                                                    "quantity" : 12,
+                                                    "timestamp" : 1494284040119,
+                                                    "userID" : "WuKkagJaoAbumfR0UZiKqCAoYlq1",
+                                                    "userName" : "Anonymous user",
+                                                    "warranty" : "sdxz  fdfgdgfd hgfhgh"
+                                                }
+                                                    data = {...scheme, timestamp: map.TIMESTAMP, productID: newPostKey,photos:links};
 
-                                                    console.log(data);
+                                                    //console.log("data to be sent\n",data);
 
                                                     let updates = {};
                                                     updates['/products/' + newPostKey] = data;
                                                 return firestack.database.ref().update(updates).then((resp) => {
-                                                        resolve(resp)
+                                                        resolve(data,resp)
 
                                                     }).catch((e) => {
                                                         reject(e)
@@ -1806,9 +1865,13 @@ export class CreateProduct extends Component {
                                     photos:values.photos
                                 };
                                 //console.log(prod);
-                                 submitForm(prod).then((res) => {
-                                 console.log(res);
-                                     GiftedFormManager.reset('newProduct');
+                                 submitForm(prod).then((data,res) => {
+                                 //console.log("response from server\n",data,res);
+
+
+
+
+                                     //GiftedFormManager.reset('newProduct');
 
                                      postSubmit();
                                  }).catch((e) =>{
@@ -1831,9 +1894,9 @@ export class CreateProduct extends Component {
                                 },9000);*/
                                 //  return;
                             }
-                        GiftedFormManager.resetValues('newProduct');
+                       // GiftedFormManager.resetValues('newProduct');
 
-                           // postSubmit(['error', 'invalid field detected']);
+                            postSubmit(['error', 'invalid field detected']);
 
                     },
 
