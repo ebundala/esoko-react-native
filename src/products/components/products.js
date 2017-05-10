@@ -451,11 +451,11 @@ let len=data.photos.length;
                             name: "chat"
                         },
                         {
-                            icon: 'favorite',
-                            label: "Add to wishlist",
+                            icon: 'add-shopping-cart',
+                            label: "Add to cart",
                             name: "favorite"
                         }]}
-                    icon="shop-two"
+                    icon="shopping-cart"
                     transition="speedDial"
                     onPress={(text) => {
                         switch (text) {
