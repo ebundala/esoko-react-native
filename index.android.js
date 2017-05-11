@@ -45,7 +45,7 @@ export default class eSoko extends Component {
                     //NavigationOauth.navigate("start")
                     // setPage("Oauth")
                     let {user}=store.getState();
-                    console.log("user obj ",user)
+                   // console.log("user obj ",user)
                     if(user.isNewUser){
                     store.dispatch(
                         {
@@ -108,7 +108,7 @@ export default class eSoko extends Component {
         return (
             <View style={{flex:1}}>
                 <Image source={require("./src/pngs/background.png")} style={{resizeMode:Image.resizeMode.cover,height:null,width:null,flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"rgb(0,0,0)"}}>
-                <ActivityIndicator size={50}></ActivityIndicator>
+                <ActivityIndicator size={80}></ActivityIndicator>
                 </Image>
         </View>)
     }

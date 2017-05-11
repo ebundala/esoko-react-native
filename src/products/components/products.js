@@ -30,7 +30,7 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
 import Firestack from 'react-native-firestack'
 import {shortenText} from '../../utils/utils'
-import {DB} from "../../utils/database"
+//import {DB} from "../../utils/database"
 
 import {uiTheme} from "../../app"
 let moment = require('moment');

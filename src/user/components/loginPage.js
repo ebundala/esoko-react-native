@@ -10,23 +10,26 @@ import {
     StyleSheet,
     Text,
     View,
-
+    Alert,
     TextInput,
     TouchableHighlight,
     TouchableNativeFeedback,
     Image
 } from 'react-native';
+import {connect} from 'react-redux'
+import {bindActionCreators} from "redux"
 import {StackNavigator} from 'react-navigation';
 //import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 //import Button from 'apsl-react-native-button'
 //import {Card, Icon,} from 'react-native-material-design';
 import { Toolbar,Divider,Button} from 'react-native-material-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {connect} from 'react-redux'
-import styles,{colours} from '../../styles/styles'
-import actions from "../user.actions"
-import * as activity from "../../activityIndicator/activitIndicatorAction"
 
+import styles,{colours} from '../../styles/styles'
+import * as actions from "../user.actions"
+import * as activity from "../../activityIndicator/activitIndicatorAction"
+const validator=require("validator")
+//import { isEmail } from 'validator/lib/isEmail';
 
 class LoginSection extends Component {
     static propTypes = {
@@ -60,7 +63,7 @@ class LoginSection extends Component {
                                 underlineColorAndroid="transparent"
 
                                 placeholder="Email"
-                                onSubmitEditing={() => validateEmail(this.state.email, navigate) ?
+                                onSubmitEditing={() => validateEmail(this.state.email) ?
                                     this.passwordInput.focus() : this.emailInput.focus()}
                                 onChangeText={email => this.setState({email})}
                             />
@@ -148,7 +151,7 @@ class SignUpSection extends Component {
                                 autoCapitalize="none"
                                 placeholderTextColor={colours.paperGrey500.color}
                                 placeholder="Email"
-                                onSubmitEditing={() => validateEmail(this.state.email, navigate) ? this.passwordInput.focus() : this.emailInput.focus()}
+                                onSubmitEditing={() => validateEmail(this.state.email) ? this.passwordInput.focus() : this.emailInput.focus()}
                                 onChangeText={email => this.setState({email})}
                             />
 
@@ -160,13 +163,13 @@ class SignUpSection extends Component {
 
                         <TextInput
                             underlineColorAndroid="transparent"
-
+                            editable={(validateEmail(this.state.email))}
                             ref={component => this.passwordInput = component}
                             style={styles.input}
                             maxLength={16}
                             secureTextEntry={true}
                             onSubmitEditing={() => this.retypedPassword.focus()}
-                            autoCorrect={true}
+                            autoCorrect={false}
                             autoCapitalize="none"
                             placeholderTextColor={colours.paperGrey500.color}
                             placeholder="Password"
@@ -180,13 +183,13 @@ class SignUpSection extends Component {
 
                         <TextInput
                             underlineColorAndroid="transparent"
-
+                            editable={(validateEmail(this.state.email))}
                             ref={component => this.retypedPassword = component}
                             style={styles.input}
                             maxLength={16}
                             secureTextEntry={true}
-                            onSubmitEditing={() => this.comparePassword() ? onSubmit(this.state.email, this.state.retypedPassword, setPage)
-                                : alert("password didn't match")}
+                            onSubmitEditing={() => this.comparePassword() ? onSubmit(this.state.email, this.state.retypedPassword,navigate, setPage)
+                                : Alert.alert("Error","password didn't match")}
                             autoCorrect={false}
                             autoCapitalize="none"
                             placeholderTextColor={colours.paperGrey500.color}
@@ -199,11 +202,11 @@ class SignUpSection extends Component {
                     <Divider/>
                     <View style={[styles.row,{paddingVertical:16}]}>
 
-                        <Button disabled={!this.comparePassword()}
+                        <Button disabled={!(this.comparePassword()&&validateEmail(this.state.email))}
                                 primary
                                 raised={true}
                                 text={"Sign up"}
-                                onPress={() => this.props.onSubmit(this.state.email, this.state.retypedPassword, setPage)}>
+                                onPress={() => this.props.onSubmit(this.state.email, this.state.retypedPassword,navigate, setPage)}>
 
                         </Button>
 
@@ -402,7 +405,10 @@ class resetPasswordScreen extends Component {
                             autoCapitalize="none"
                             placeholderTextColor={colours.paperGrey500.color}
                             placeholder="Email"
-                            onSubmitEditing={() => validateEmail(this.state.email, navigate)}
+                            onSubmitEditing={() => {
+                                //validateEmail(this.state.email)
+                                }
+                                }
                             onChangeText={email => this.setState({email})}
                         />
 
@@ -412,7 +418,7 @@ class resetPasswordScreen extends Component {
 <Divider/>
                 <View style={[styles.row,{paddingVertical:16}]}>
 
-                    <Button disabled={!(this.state.email)}
+                    <Button disabled={!(validateEmail(this.state.email))}
                             accent
                             raised={true}
                             text="Send Reset link"
@@ -483,15 +489,25 @@ const mapStateToProps = (state) => {
     return {...state}
 }
 const mapDispatchToProps = (dispatch) => {
-    return {
+    return{...bindActionCreators(actions,dispatch),
+          validateEmail:(email)=>{
+            if(email) {
+                return validator.isEmail(email);
+            }
+            else{
+                return false
+            }
+        }
 
-        login: (email, password, navigate = {}, setPage) => {
+    }
+
+       /* login: (email, password, navigate = {}, setPage) => {
             dispatch(activity.startActivity("loging user in"))
             dispatch(actions.login(email, password, navigate, setPage))
-            /*dispatch({
+            /!*dispatch({
              type:"USER_LOGIN",
              data:{email,password}
-             })*/
+             })*!/
         },
         oAuth: (name, navigate, setPage) => {
 
@@ -499,9 +515,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(actions.oAuth(name, token = "", navigate, setPage))
         },
         validateEmail: (email, navigate) => {
-            /*dispatch(
+            /!*dispatch(
              {type:"VALIDATE_EMAIL",data:{email}}
-             )*/
+             )*!/
             return true
         },
         resetPasswordWithEmail: (email, navigate, setPage) => {
@@ -515,10 +531,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         logout: (navigate,setPage) => {
             dispatch(actions.logout(navigate, setPage))
-        }
+        }*/
 
 
-    }
+
 
 }
 

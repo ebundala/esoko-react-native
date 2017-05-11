@@ -34,8 +34,8 @@ import {IntroOne, IntroTwo} from "./intro/components/intro"
 import NavigationView from "./navigationView/components/navigationView"
 //import {styles} from "./styles/styles"
 import * as actions from  "./products/products.actions"
-import {USER_ACTIONS} from "./user/user.actions"
-import Firestack from "react-native-firestack"
+//import {USER_ACTIONS} from "./user/user.actions"
+//import Firestack from "react-native-firestack"
 import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
 
@@ -48,7 +48,7 @@ export const uiTheme = {
     },
 };
 const UIManager = NativeModules.UIManager;
-const firestack=new Firestack();
+//const firestack=new Firestack();
 const StackHome = {
     Home: {screen:Home},
     products: {screen: ProductsList},
@@ -364,43 +364,6 @@ const mapDispatchToProps=(dispatch)=>{
 
     "use strict";
     return {...bindActionCreators(actions,dispatch),
-        userLoggedIn:(user, navigate, setPage,dispatch)=>{
-            return (dispatch) => {
-                console.log('User successfully logged in\n', user);
-                // dispatch(activity.endActivity("User successfully logged in "+email))
-                dispatch({
-                    type: USER_ACTIONS.LOGIN,
-                    status: "OK",
-                    data: {
-                        ...user
-                    }
-                });
-
-
-
-                navigate("account");
-                if (setPage) {
-                    setPage("app")
-                }
-            }
-        },
-        userLoggedOut:(user,navigate,setPage,dispatch)=> {
-            return(dispatch)=>{
-                console.log('You have been signed out\n', res);
-
-
-
-                dispatch(
-                    {
-                        type: USER_ACTIONS.LOGOUT,
-                        status: "OK"
-                        //data:null
-                    }
-                )
-                setPage("Oauth")
-                navigate("start")
-            }
-        },
         dispatch}
 
 }

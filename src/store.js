@@ -19,7 +19,7 @@ const logger = createLogger();
 //console.warn(INITIAL_STATE)
 return createStore(rootReducer,
     compose(
-    applyMiddleware(/*screenTracker,/*clearBodyMiddleware, apiCallMiddleware,*/ thunk/*, logger*/),
+    applyMiddleware(/*screenTracker,/*clearBodyMiddleware, apiCallMiddleware,*/ thunk, logger),
     autoRehydrate()
     )
 );

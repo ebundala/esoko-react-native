@@ -235,7 +235,7 @@ export class ReviewsList extends Component{
                     }}
                 />
            <ListView
-               renderSeparator={()=><Divider/>}
+               renderSeparator={(i,j)=><Divider key={j+"divider"+i}/>}
                dataSource={this.ds.cloneWithRows(reviews||[])}
                      renderRow={(review)=><TouchableNativeFeedback  onPress={()=>navigate("singleReview",{data:review})}>
 

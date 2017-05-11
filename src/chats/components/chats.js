@@ -47,7 +47,7 @@ export class ChatsList extends Component{
                     }}
                 />
                 <ListView dataSource={this.ds.cloneWithRows(chats)}
-                          renderSeparator={()=><Divider/>}
+                          renderSeparator={(i,j)=><Divider key={j+"divider"+i}/>}
                           enableEmptySections={true}
                           renderRow={(chat,sectionID, rowID, highlightRow) =>
                               <View key={rowID}>

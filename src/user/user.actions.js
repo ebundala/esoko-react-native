@@ -2,8 +2,12 @@
  * Created by ebundala on 2/24/2017.
  */
 
-import userUtil from "../utils/user"
+//import userUtil from "../utils/user"
 import * as activity from "../activityIndicator/activitIndicatorAction"
+import Firestack from "react-native-firestack";
+const firestack =new Firestack();
+const validator=require("validator")
+//import { isEmail } from 'validator/lib/isEmail';
 
 export const USER_ACTIONS={
     LOGIN:"USER_LOGIN",
@@ -13,13 +17,13 @@ export const USER_ACTIONS={
 
 }
 
- class userActions extends userUtil {
-     login(email, password, navigate, setPage) {
+ //class userActions extends userUtil {
+  export const  login=(email, password, navigate, setPage)=> {
          return (dispatch) => {
              if (email && password) {
                  dispatch(activity.startActivity("Login using " + email))
 
-                 return this.auth.signInWithEmail(email, password)
+                 return firestack.auth.signInWithEmail(email, password)
                      .then((user) => {
                         // console.log('User successfully logged in\n', user);
                          dispatch(activity.endActivity("User successfully logged in " + email))
@@ -52,9 +56,9 @@ export const USER_ACTIONS={
          }
      }
 
-     logout(navigate, setPage) {
+export const  logout=(navigate, setPage)=> {
          return (dispatch) => {
-             return this.auth.signOut()
+             return firestack.auth.signOut()
                  .then(res => {
                      console.log('You have been signed out\n', res)
                     /* dispatch(
@@ -85,12 +89,12 @@ export const USER_ACTIONS={
          }
      }
 
-     resetPasswordWithEmail(email, navigate, setPage) {
+export const   resetPasswordWithEmail=(email, navigate, setPage)=> {
          return (dispatch) => {
              if (email) {
                  dispatch(activity.startActivity("Sending reset  link to " + email))
 
-                 return this.auth.sendPasswordResetWithEmail(email)
+                 return firestack.auth.sendPasswordResetWithEmail(email)
                      .then(res => {
                          //console.log('Check your inbox for further instructions')
                          dispatch(activity.endActivity("Check your inbox for further instructions"))
@@ -117,11 +121,11 @@ export const USER_ACTIONS={
          }
      }
 
-     oAuth(name, token, navigate, setPage) {
+export const    oAuth=(name, token, navigate, setPage)=> {
          return (dispatch) => {
 
              dispatch(activity.startActivity("Login using " + name))
-             return this.auth.signInWithProvider(name, token, '') // facebook need only access token.
+             return firestack.auth.signInWithProvider(name, token, '') // facebook need only access token.
                  .then((user) => {
                      // console.log('User successfully logged in', user)
                      dispatch(activity.endActivity("User successfully logged in "))
@@ -153,11 +157,11 @@ export const USER_ACTIONS={
          }
      }
 
-     create(email, password, navigate, setPage) {
+export const    signUp=(email, password, navigate, setPage)=> {
          return dispatch => {
              if (email && password) {
                  dispatch(activity.startActivity("Creating User "))
-                 return this.auth.createUserWithEmail(email, password)
+                 return firestack.auth.createUserWithEmail(email, password)
                      .then((user) => {
                          console.log('user created', user)
 
@@ -199,7 +203,7 @@ export const USER_ACTIONS={
          }
      }
 
-     userLoggedIn(user, navigate, setPage) {
+export const   userLoggedIn=(user, navigate, setPage)=> {
          return (dispatch) => {
              console.log('User successfully logged in\n', user);
              // dispatch(activity.endActivity("User successfully logged in "+email))
@@ -217,7 +221,7 @@ export const USER_ACTIONS={
          }
      }
 
-     userLoggedOut(user, navigate) {
+export const   userLoggedOut=(user, navigate)=> {
          return(dispatch)=>{
              console.log('You have been signed out\n', res);
          dispatch(
@@ -232,5 +236,5 @@ export const USER_ACTIONS={
  }
 
 
-}
-export default new userActions()
+//}
+//export default new userActions()
