@@ -27,8 +27,8 @@ import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 
 
 
-import SQLite from 'react-native-sqlite-storage';
-SQLite.DEBUG(true);
+//import SQLite from 'react-native-sqlite-storage';
+/*SQLite.DEBUG(true);
 SQLite.enablePromise(false);
 
 const database_name = "esoko.db";
@@ -184,7 +184,7 @@ const SQLiteDemo = React.createClass({
         }
 
         products.forEach((item,i)=>{
-                /*tx.executeSql('INSERT INTO Products (productID,title,currency,sellerID,price,postedOn,description,category,photos ) VALUES (?,?,?,?,?,?,?,?,?)',
+                /!*tx.executeSql('INSERT INTO Products (productID,title,currency,sellerID,price,postedOn,description,category,photos ) VALUES (?,?,?,?,?,?,?,?,?)',
                 [
                 item.ID,
                 item.title,
@@ -194,7 +194,7 @@ const SQLiteDemo = React.createClass({
                 item.postedOn ,
                 item.description ,
                 item.category,
-                JSON.stringify(item.photos)],that.successCB, that.errorCB)*/
+                JSON.stringify(item.photos)],that.successCB, that.errorCB)*!/
 
                 that.addProduct(item).then((res,r)=>{
                     console.log("item added"+i+" ")
@@ -202,7 +202,7 @@ const SQLiteDemo = React.createClass({
         })
 
 
-       /* tx.executeSql('DROP TABLE IF EXISTS Employees;');
+       /!* tx.executeSql('DROP TABLE IF EXISTS Employees;');
         tx.executeSql('DROP TABLE IF EXISTS Offices;');
         tx.executeSql('DROP TABLE IF EXISTS Departments;');
 
@@ -251,7 +251,7 @@ const SQLiteDemo = React.createClass({
         tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Margaret Thatcher", 1, 3);', []);
         tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Donald Trump", 1, 3);', []);
         tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Dr DRE", 2, 2);', []);
-        tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Samantha Fox", 2, 1);', []);*/
+        tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Samantha Fox", 2, 1);', []);*!/
         console.log("all config SQL done");
     },
     loadAndQueryDB(){
@@ -687,7 +687,7 @@ var st = StyleSheet.create({
     mainContainer: {
         flex: 1
     }
-});
+});*/
 
 
 
@@ -719,14 +719,14 @@ export class OrdersList extends Component{
                     placeholder: 'Search',
                 }}
             />
-            <SQLiteDemo style={[styles.flex1]}/>
-            {false&&<View>
+
+            <View>
 
                 <Button title="Orders One" onPress={()=>navigate("singleOrder",{title:"Orders one"})}/>
                 <Button title="Orders two" onPress={()=>navigate("singleOrder",{title:"Orders two"})}/>
                 <Button title="Orders three" onPress={()=>navigate("singleOrder",{title:"Orders three"})}/>
                 <Button title="Orders four" onPress={()=>navigate("singleOrder",{title:"Orders four"})}/>
-            </View>}
+            </View>
         </View>
         )
     }

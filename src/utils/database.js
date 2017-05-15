@@ -94,9 +94,9 @@ export default class database extends Firestack {
 
 import {IMAGES} from "../products/products.actions"
 
-import SQLite from 'react-native-sqlite-storage';
+/*import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
-SQLite.enablePromise(false);
+SQLite.enablePromise(false);*/
 
 
 const database_name = "esoko.db";
@@ -106,13 +106,13 @@ const database_size = 200000;
 
 let instance=null;
 const firestack=new Firestack();
-export class DBwrapper{
+/*export class DBwrapper{
 
     constructor(){
       //super()
         instance=this;
         try {
-            this.openDatabase();
+            //this.openDatabase();
         }catch (e){
             console.error(e.message)
         }
@@ -152,7 +152,7 @@ export class DBwrapper{
 
                      that.attachDbListerners(res);
 
-                    /*if(res.rows.length) {
+                    /!*if(res.rows.length) {
                         let productID=res.rows.item(0).productID;
                         console.log("last product ",productID);
                         firestack.database.ref('products').orderByKey().startAt(productID).on('child_added', (snapshot) => {
@@ -170,7 +170,7 @@ export class DBwrapper{
                             //console.log("products from firebase ",val);
                             that.addProduct(val)
                         })
-                    }*/
+                    }*!/
 
                  },(e)=>{
 
@@ -178,9 +178,9 @@ export class DBwrapper{
                  });
 
 
-                 /*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
+                 /!*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
                      console.error(e.message)
-                 })*/
+                 })*!/
 
              },
              function (error) {
@@ -264,7 +264,7 @@ export class DBwrapper{
         //
 
 
-       /*   let category=   [
+       /!*   let category=   [
              "electronics",
                  "Furniture",
                  "Women's Apparel",
@@ -399,7 +399,7 @@ export class DBwrapper{
                  console.log("item added" + i + " ")
              })
          }
-*/
+*!/
 
 
 
@@ -409,7 +409,7 @@ export class DBwrapper{
          }, that.errorCB, function () {
              console.log("Database populated ... executing query ...");
 
-             /*that.db.transaction(()=>{
+             /!*that.db.transaction(()=>{
 
                  that.getAllProducts().then(that.getAllProductsSuccess).catch((e)=>{
                      console.error(e.message)
@@ -421,7 +421,7 @@ export class DBwrapper{
                  console.log("Processing completed");
 
                 // that.closeDatabase();
-             });*/
+             });*!/
          });
 
 
@@ -620,7 +620,7 @@ export class DBwrapper{
 
                  }
                  else {
-                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY postedOn DESC', [keyword, category], (tx, res) => {
+                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY timestamp DESC', [keyword, category], (tx, res) => {
                          return that.formatResults(tx, res, resolve)
                      }, (res) => {
                          reject(res)
@@ -693,7 +693,7 @@ export class DBwrapper{
 
              let len = results.rows.length;
              let products=[];
-             let photos=[]
+             //let photos=[]
          for (let i = 0; i < len; i++) {
              let row = results.rows.item(i);
              row.photos = JSON.parse(row.photos);
@@ -701,7 +701,7 @@ export class DBwrapper{
              row.areaServed = JSON.parse(row.areaServed);
              row.availableDeliveryMethod = JSON.parse(row.availableDeliveryMethod);
              products.push(row);
-             console.log(row.photos)
+             //console.log(row.photos)
 
          }
              resolve(products)
@@ -709,6 +709,6 @@ export class DBwrapper{
      }
 
 
-}
+}*/
 
-export const DB = new DBwrapper();
+export const DB ={} //new DBwrapper();

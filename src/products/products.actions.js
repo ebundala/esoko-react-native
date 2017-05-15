@@ -16,7 +16,7 @@ export const PRODUCTS_ACTIONS = {
     GET: "GET_PRODUCT",
     DELETE: "DELETE_PRODUCT",
     EDIT:"EDIT_PRODUCT",
-    REVIEW:"DELETE_PRODUCT",
+    REVIEW:"REVIEW_PRODUCT",
     ADD_BID:"ADD_BID",
     ADD_ORDER:"ADD_ORDER",
     START_CHAT:"START_CHAT"
@@ -85,14 +85,14 @@ export const queryProducts=(filter,navigate)=>{
 
 }
 
-export const searchProducts = (keyword,catergory, navigate) => {
+export const searchProducts = (keyword,category, navigate) => {
     "use strict";
     return (dispatch) => {
 
-        DB.searchProducts(keyword,catergory).then((products)=>{
-            navigate("searchResults", {title:"Results from "+catergory,products})
+        DB.searchProducts(keyword,category).then((products)=>{
+            navigate("searchResults", {title:"Results from "+category,products})
 
-        }).catch(()=>{
+        }).catch((e)=>{
             alert("error occured");
         })
 

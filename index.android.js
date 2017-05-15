@@ -32,7 +32,7 @@ export default class eSoko extends Component {
     componentWillMount(){
 
 
-        persistStore(store, {storage:AsyncStorage,blacklist: ['activity',"nav","navOauth","products"]},() => {
+        persistStore(store, {storage:AsyncStorage,blacklist: ['activity',"nav","navOauth","products","forms","form"]},() => {
             firestack.auth.listenForAuth((evt)=>{
 
                 // evt is the authentication event

@@ -631,33 +631,33 @@ const MultOptionWidget = React.createClass({
         });
     },
 
-    /* getInitialState(){
-     // return {preValue:false}
+     /*getInitialState(){
+      return {value:{false}
      },*/
     componentDidMount() {
         // get value from prop
-        // if (typeof this.props.value !== 'undefined') {
-        // this._setValue(this.props.value);
-        //return;
-        //  }
+         if (typeof this.props.value !== 'undefined') {
+         this._setValue(this.props.value);
+        return;
+          }
         // get value from store
         let formState = GiftedFormManager.stores[this.props.formName];
         if (typeof formState !== 'undefined') {
             if (typeof formState.values[this.props.name] !== 'undefined') {
-                // console.log(this.props.name+" form "+formState.values[this.props.name])
+                 console.log(this.props.name+" form "+formState.values[this.props.name])
                 // console.log(formState)
-                /*this.setState({
+                this.setState({
                  value: formState.values[this.props.name],
 
-                 });*/
-                //this._validate(formState.values[this.props.name]);
+                 });
+                this._validate(formState.values[this.props.name]);
             }
         }
     },
 
     componentWillReceiveProps(nextProps) {
         if (typeof nextProps.value !== 'undefined' && nextProps.value !== this.props.value) {
-            // this.onChange(nextProps.value);
+            this.onChange(nextProps.value);
         }
     },
     setValue(value) {
@@ -682,7 +682,7 @@ const MultOptionWidget = React.createClass({
 
 
     _renderCheckmark() {
-
+       //console.log(this.state.value)
         if (this.state.value === true) {
             return (
                 <Image
@@ -782,7 +782,7 @@ const PhotoPickerWidget = React.createClass({
     },
 
      getInitialState(){
-      return {photos:[]}
+      return {value:[]}
      },
     componentWillMount(){
 
@@ -791,28 +791,27 @@ const PhotoPickerWidget = React.createClass({
     },
     componentDidMount() {
         // get value from prop
-        // if (typeof this.props.value !== 'undefined') {
-        // this._setValue(this.props.value);
-        //return;
-        //  }
+         if (typeof this.props.value !== 'undefined') {
+        this._setValue(this.props.value);
+        return;
+          }
         // get value from store
         let formState = GiftedFormManager.stores[this.props.formName];
         if (typeof formState !== 'undefined') {
             if (typeof formState.values[this.props.name] !== 'undefined') {
-                // console.log(this.props.name+" form "+formState.values[this.props.name])
+                 console.log(this.props.name+" form "+formState.values[this.props.name])
                 // console.log(formState)
-                /*this.setState({
+                this.setState({
                  value: formState.values[this.props.name],
-
-                 });*/
-                //this._validate(formState.values[this.props.name]);
+                 });
+                this._validate(formState.values[this.props.name]);
             }
         }
     },
 
     componentWillReceiveProps(nextProps) {
         if (typeof nextProps.value !== 'undefined' && nextProps.value !== this.props.value) {
-            // this.onChange(nextProps.value);
+             this.onChange(nextProps.value);
         }
     },
     setValue(value) {
@@ -855,7 +854,7 @@ const PhotoPickerWidget = React.createClass({
             <View style={[{height:500}]}>
 
                 <View style={[styles.flex1]}>
-                <ListView dataSource={this.ds.cloneWithRows(this.state.photos)}
+                <ListView dataSource={this.ds.cloneWithRows(this.state.value)}
                           contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
 
                           enableEmptySections={true}
@@ -949,12 +948,12 @@ const PhotoPickerWidget = React.createClass({
 
                 // You can also display the image using data:
                // response = {...response,data: 'data:image/jpeg;base64,'+response.data };
-                let photos=this.state.photos;
+                let value=this.state.value;
 
-                photos.push(response);
-                this._onChange(photos);
+                value.push(response);
+                this._onChange(value);
                 this.setState({
-                    photos
+                    value
                 });
 
             }
@@ -1044,7 +1043,7 @@ class NavigationBar extends Navigator.NavigationBar {
 }
 
 
-
+import {ProductForm,EbModalInput,EbOptionInput,EbTextInput} from "../../forms/productForm"
 export class CreateProduct extends Component {
 
 
@@ -1905,8 +1904,46 @@ export class CreateProduct extends Component {
         }
 
         return (
+<View style={[styles.flex1]}>
+    <Toolbar
+        leftElement="arrow-back"
+        onLeftElementPress={() => {
+            goBack();
+        }}
+        centerElement={title}
 
-            <ExNavigator
+
+    />
+    <Card style={{flex:1}}>
+    <ProductForm formName="productForm" title={title}>
+        <EbTextInput field="name" title={"Product name"}
+                     validator={{
+                         errorMessage:"[TITLE] must be args[0] to args[1] characters",
+                         validator:"isLength",
+                         args:[5,32]
+
+                     }}/>
+        <EbTextInput field="model" title={"Model name"}
+                     validator={{
+                         errorMessage:"[TITLE] must be args[0] to args[1] characters",
+                         validator:"isLength",
+                         args:[2,10]
+
+                     }}
+
+        />
+        <EbTextInput field="manufacturer" title={"manufacturer"}
+
+                     validator={{
+                         errorMessage:"[TITLE] must be args[0] to args[1] characters",
+                         validator:"isLength",
+                         args:[2,10]
+
+                     }}
+        />
+    </ProductForm>
+    </Card>
+    {false&&<ExNavigator
                 initialRoute={routes.getHomeRoute()}
                 sceneStyle={{paddingTop: 56}}
                 navigationBarStyle={{backgroundColor: primaryColor}}
@@ -1925,8 +1962,8 @@ export class CreateProduct extends Component {
                 titleStyle={[{color: colours.paperGrey50.color, marginTop: 16, fontWeight: "bold"}]}
 
                 style={[styles.flex1]}
-            />
-
+            />}
+</View>
         );
     }
 
