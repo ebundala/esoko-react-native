@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1071434923103",
+    "firebase_url": "https://esoko-fc718.firebaseio.com",
+    "project_id": "esoko-fc718",
+    "storage_bucket": "esoko-fc718.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071434923103:android:d81f331fada31d48",
+        "android_client_info": {
+          "package_name": "com.esoko"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071434923103-u83d0f0nkvem7crt4j88s2pbj6ug5puo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAWtAxVT9maoiWWxe-fLJR4pUvLrSCSXo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
