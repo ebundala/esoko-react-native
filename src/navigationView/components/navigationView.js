@@ -9,7 +9,8 @@ import {
     TouchableNativeFeedback,
     Button,
     ScrollView,
-    Image
+    Image,
+    ListView
 } from 'react-native';
 import {Divider} from "react-native-material-design"
 import {connect} from 'react-redux'
@@ -63,40 +64,7 @@ class navigationViewContainer extends Component {
                 </View>
                 <Divider/>
                 <View style={[styles.flex8]}>
-                    <ScrollView contentContainerStyle={[styles.spaceAround]}>
 
-                        {this.categories().map((child, i) =>
-                            <TouchableNativeFeedback key={i} onPress={() => {
-                                root.closeDrawer();
-                                setTimeout(()=>{
-                                queryProducts(child, navigate)
-                                },16)
-                            }}>
-                                <View style={[{
-                                    height: 50,
-                                    marginVertical: 2,
-                                    //marginHorizontal:16,
-
-                                    // elevation:2,
-                                    //backgroundColor:"lime"
-                                },
-                                    //styles.yellow,
-                                    //styles.alignItemsCenter,
-                                    styles.centerJustified
-                                ]}>
-                                    <Text style={[
-                                        colorStyle.paperGrey900,
-                                        {
-                                        fontSize: 14,
-                                        paddingHorizontal: 16,
-                                        //fontWeight:"500",
-
-                                    }]}>{child}</Text>
-                                </View>
-                            </TouchableNativeFeedback>
-                        )}
-
-                    </ScrollView>
 
                 </View>
                 <Divider/>
@@ -120,79 +88,125 @@ class navigationViewContainer extends Component {
         )
     }
 
-    categories() {
-        return [
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
 
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
 
-            "electronics",
-            "Furniture",
-            "Women's Apparel",
-            "Women's shoes",
-            "Men's shoes",
-            "Men's Apparel",
-            "Men's Watches",
-            "Women's Watches",
-            "Back Packs",
-            "Books",
-            "Automotive",
-            "Computers",
-            "Mobile Phones",
-            "Accessories",
-            "Jewelry",
-        ]
+}
+
+
+class categoryViewContainer extends Component {
+
+    constructor(props) {
+        super(props);
+        this.ds =new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
     }
+
+
+    render() {
+
+        let {queryProducts,categories,navigate}=this.props;
+        //let {navigate}=this.props.navigation;
+        console.log(this.props)
+        return (
+
+
+            <View style={[styles.flex1,{backgroundColor:"white"}]}>
+
+
+
+
+                {false&&<ScrollView contentContainerStyle={[styles.spaceAround]}>
+
+                        {this.categories().map((child, i) =>
+                            <TouchableNativeFeedback key={i} onPress={() => {
+
+                                //setTimeout(()=>{
+                                    queryProducts(child, navigate)
+                                //},16)
+                            }}>
+                                <View style={[{
+                                    height: 50,
+                                    marginVertical: 2,
+                                    //marginHorizontal:16,
+
+                                    // elevation:2,
+                                    //backgroundColor:"lime"
+                                },
+                                    //styles.yellow,
+                                    //styles.alignItemsCenter,
+                                    styles.centerJustified
+                                ]}>
+                                    <Text style={[
+                                        colorStyle.paperGrey900,
+                                        {
+                                            fontSize: 14,
+                                            paddingHorizontal: 16,
+                                            //fontWeight:"500",
+
+                                        }]}>{child}</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                        )}
+
+                    </ScrollView>}
+                <ListView dataSource={this.ds.cloneWithRows(categories)}
+                          renderSeparator={(i,j)=><Divider key={j+"divider"+i}/>}
+                          enableEmptySections={true}
+                          renderRow={(child,sectionID, rowID, highlightRow) =>
+                              <View key={rowID}>
+                                  <TouchableNativeFeedback  onPress={() => {
+
+                                      //setTimeout(()=>{
+                                      queryProducts(child, navigate)
+                                      //},16)
+                                  }}>
+                                      <View style={[{
+                                          height: 50,
+                                          marginVertical: 2,
+                                          //marginHorizontal:16,
+
+                                          // elevation:2,
+                                          //backgroundColor:"lime"
+                                      },
+                                          //styles.yellow,
+                                          //styles.alignItemsCenter,
+                                          styles.centerJustified
+                                      ]}>
+                                          <Text style={[
+                                              colorStyle.paperGrey900,
+                                              {
+                                                  fontSize: 16,
+                                                  paddingHorizontal: 16,
+                                                  //fontWeight:"500",
+
+                                              }]}>{child}</Text>
+                                      </View>
+                                  </TouchableNativeFeedback>
+
+                              </View>
+
+
+                          }
+                />
+
+
+            </View>
+
+
+
+        )
+    }
+
+
 
 }
 
 
 const mapStateToProps = (state) => {
     "use strict";
-    return {}
+
+        return{
+            categories:state.categories
+        }
 }
 
 
@@ -200,8 +214,9 @@ const mapDispatchToProps = (dispatch) => {
     "use strict";
     return bindActionCreators(actions, dispatch)
 }
-//const mergeProps=()=>{}
+const mergeProps=()=>{}
 
 
-export default navigationView = connect(mapStateToProps, mapDispatchToProps)(navigationViewContainer)
+export default  navigationView = connect(mapStateToProps, mapDispatchToProps)(navigationViewContainer);
 
+export const CategoryView = connect(mapStateToProps, mapDispatchToProps)(categoryViewContainer);

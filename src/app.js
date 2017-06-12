@@ -42,7 +42,7 @@ import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
 export const uiTheme = {
     palette: {
-        primaryColor: COLOR.red500,
+        primaryColor: COLOR.green500,
         accentColor: COLOR.pink500,
         iconColor:COLOR.grey50
     },

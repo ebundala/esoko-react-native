@@ -1,0 +1,1 @@
+adb logcat com.eSoko:V *:I

@@ -94,9 +94,9 @@ export default class database extends Firestack {
 
 import {IMAGES} from "../products/products.actions"
 
-/*import SQLite from 'react-native-sqlite-storage';
+import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
-SQLite.enablePromise(false);*/
+SQLite.enablePromise(false);
 
 
 const database_name = "esoko.db";
@@ -106,13 +106,13 @@ const database_size = 200000;
 
 let instance=null;
 const firestack=new Firestack();
-/*export class DBwrapper{
+export class DBwrapper{
 
     constructor(){
       //super()
         instance=this;
         try {
-            //this.openDatabase();
+            this.openDatabase();
         }catch (e){
             console.error(e.message)
         }
@@ -152,7 +152,7 @@ const firestack=new Firestack();
 
                      that.attachDbListerners(res);
 
-                    /!*if(res.rows.length) {
+                    /*if(res.rows.length) {
                         let productID=res.rows.item(0).productID;
                         console.log("last product ",productID);
                         firestack.database.ref('products').orderByKey().startAt(productID).on('child_added', (snapshot) => {
@@ -170,7 +170,7 @@ const firestack=new Firestack();
                             //console.log("products from firebase ",val);
                             that.addProduct(val)
                         })
-                    }*!/
+                    }*/
 
                  },(e)=>{
 
@@ -178,9 +178,9 @@ const firestack=new Firestack();
                  });
 
 
-                 /!*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
+                 /*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
                      console.error(e.message)
-                 })*!/
+                 })*/
 
              },
              function (error) {
@@ -264,7 +264,7 @@ const firestack=new Firestack();
         //
 
 
-       /!*   let category=   [
+       /*   let category=   [
              "electronics",
                  "Furniture",
                  "Women's Apparel",
@@ -399,7 +399,7 @@ const firestack=new Firestack();
                  console.log("item added" + i + " ")
              })
          }
-*!/
+*/
 
 
 
@@ -409,7 +409,7 @@ const firestack=new Firestack();
          }, that.errorCB, function () {
              console.log("Database populated ... executing query ...");
 
-             /!*that.db.transaction(()=>{
+             /*that.db.transaction(()=>{
 
                  that.getAllProducts().then(that.getAllProductsSuccess).catch((e)=>{
                      console.error(e.message)
@@ -421,7 +421,7 @@ const firestack=new Firestack();
                  console.log("Processing completed");
 
                 // that.closeDatabase();
-             });*!/
+             });*/
          });
 
 
@@ -709,6 +709,6 @@ const firestack=new Firestack();
      }
 
 
-}*/
+}
 
-export const DB ={} //new DBwrapper();
+export const DB =new DBwrapper();
