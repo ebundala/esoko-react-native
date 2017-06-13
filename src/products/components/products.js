@@ -56,7 +56,11 @@ export class ProductsList extends Component {
         let props = this.props.screenProps;
         // let {products}=this.props.screenProps
         if(category.subCategories instanceof Array)
+        {
+            if(category.subCategories[0]!=="All")
             category.subCategories.unshift("All")
+        }
+
         return (
             <View style={[styles.flex1]}>
                 <Toolbar
