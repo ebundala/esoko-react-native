@@ -147,12 +147,14 @@ export class DBwrapper{
          that.db.executeSql('SELECT 1 FROM Version LIMIT 1', [],
              function () {
                  console.log("Database is ready ... executing query ...");
-                 that.db.executeSql('SELECT productID FROM Products ORDER BY timestamp DESC LIMIT 1', [],(res)=>{
+
+
+                 /*that.db.executeSql('SELECT productID FROM Products ORDER BY timestamp DESC LIMIT 1', [],(res)=>{
 
 
                      that.attachDbListerners(res);
 
-                    /*if(res.rows.length) {
+                    /!*if(res.rows.length) {
                         let productID=res.rows.item(0).productID;
                         console.log("last product ",productID);
                         firestack.database.ref('products').orderByKey().startAt(productID).on('child_added', (snapshot) => {
@@ -170,12 +172,12 @@ export class DBwrapper{
                             //console.log("products from firebase ",val);
                             that.addProduct(val)
                         })
-                    }*/
+                    }*!/
 
                  },(e)=>{
 
                      console.log(e)
-                 });
+                 });*/
 
 
                  /*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
@@ -206,7 +208,7 @@ export class DBwrapper{
          tx.executeSql('CREATE TABLE IF NOT EXISTS Version( '
              + 'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB)
 
-         tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
+        /* tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
              'acceptedPaymentMethod VARCHAR(32) NOT NULL,'+
              'areaServed VARCHAR(32),'+
              'availability VARCHAR(32) NOT NULL,'+
@@ -226,12 +228,59 @@ export class DBwrapper{
              'timestamp INTEGER NOT NULL,'+
              'userID VARCHAR(32) NOT NULL,'+
              'userName VARCHAR(32) NOT NULL,'+
-             'warranty VARCHAR(80) ,); ', [], this.successCB, this.errorCB)
+             'warranty VARCHAR(80) ,); ', [], this.successCB, this.errorCB)*/
 
-             {
 
-             }
+             tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
+                 'title VARCHAR(60) NOT NULL,'+
+                 'description VARCHAR(160) NOT NULL,'+
+                 'price INTEGER NOT NULL,'+
+                 'productID PRIMARY VARCHAR(32) NOT NULL,'+
+                 'price_value INTEGER,price_unit VARCHAR(3),'+
+                 'size_value INTEGER NOT NULL,size_unit VARCHAR(3),'+
+                 'subCategory VARCHAR(32) NOT NULL,'+//region
+                 'category VARCHAR(32) NOT NULL,'+//district
+                 'street VARCHAR(32) NOT NULL,'+
+                 'ward VARCHAR(32) NOT NULL,'+
+                 'surveyed BOOLEAN,planned BOOLEAN,titleDeed BOOLEAN,'+
+                 'rating_value INTEGER NOT NULL,rating_count INTEGER,'+
+                 'photos BLOB ,'+
+                 'seller BLOB,'+
+                 'createdAt INTEGER NOT NULL,'+
+                 'editedAt INTEGER NOT NULL,'+
+                 'expireAt INTEGER NOT NULL,'+
+                 'sold BOOLEAN ,); ', [], this.successCB, this.errorCB);
 
+            /* description: String,
+             price: {value:Number, unit:String},
+             size: {
+                 value:Number,
+                     unit:String
+             },
+             location: {
+                 region:  String,
+                     street:String,
+                     district: String,
+                     ward: String
+             },
+             legal: {surveyed: Boolean, planned:Boolean, titleDeed:Boolean},
+             rating: {
+                 value: Number,
+                     count: Number
+             },
+             photos: Array,
+
+                 services: {water:Boolean, electricity:Boolean, roads:Boolean},
+             seller: {
+                 name: String,
+                     phones: String,
+                     email: String,
+                     address: String
+             },
+             createdAt:Date,
+                 editedAt:Date,
+                 expireAt:Date,
+                 sold:Boolean*/
 
 
 
@@ -471,7 +520,7 @@ export class DBwrapper{
 
          }
      }
-     getProducts(category=null) {
+     getProducts(category=null,subCategory=null) {
 
          console.log("getAllProducts sql...");
          let that=this;
@@ -482,6 +531,18 @@ export class DBwrapper{
                  that.db.transaction((tx) => {
 
                      tx.executeSql(' SELECT * FROM Products WHERE category=(?) ORDER BY timestamp DESC', [category],(tx,res)=>{
+                         return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
+
+                 }, (res)=>{reject(res)}, that.successCB)
+             })
+         }
+         else if(subCategory){
+
+             return new Promise((resolve, reject) => {
+
+                 that.db.transaction((tx) => {
+
+                     tx.executeSql(' SELECT * FROM Products WHERE category=(?) ORDER BY timestamp DESC', [subCategory],(tx,res)=>{
                          return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
 
                  }, (res)=>{reject(res)}, that.successCB)
@@ -536,8 +597,55 @@ export class DBwrapper{
          let that =this;
          return new Promise((resolve,reject)=>{
              that.db.transaction((tx)=>{
+                 tx.executeSql('INSERT INTO Products ('+
+                     'title,'+
+                     'description,'+
+                     'productID,'+
+                     'price_value,' +
+                     'price_unit,'+
+                     'size_value,' +
+                     'size_unit,'+
+                     'subCategory,'+//region
+                     'category,'+//district
+                     'street,'+
+                     'ward,'+
+                     'surveyed' +
+                     ',planned,' +
+                     'titleDeed,'+
+                     'rating_value ' +
+                     ',rating_count,'+
+                     'photos  ,'+
+                     'seller ,'+
+                     'createdAt ,'+
+                     'editedAt ,'+
+                     'expireAt ,'+
+                     'sold ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                     [
+                         product.title,
+                         product.description,
+                         product.path,
+                         product.price.value,
+                         product.price.unit,
+                         product.size.value,
+                         product.size.unit,
+                         product.location.region,
+                         product.location.district,
+                         product.location.street,
+                         product.loacation.ward,
+                         product.legal.surveyed,
+                         product.legal.planned,
+                         product.legal.titleDeed,
+                         product.rating.value,
+                         product.rating.count,
+                         JSON.stringify(product.photos),
+                         JSON.stringify(product.seller) ,
+                        product.createdAt,
+                         product.editedAt,
+                         product.expireAt,
+                         false
+                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})
 
-                 tx.executeSql('INSERT INTO Products (' +
+                 /*tx.executeSql('INSERT INTO Products (' +
                      'acceptedPaymentMethod ,'+
                      'areaServed,'+
                      'availability,'+
@@ -579,7 +687,7 @@ export class DBwrapper{
                          product.userName,
                          product.warranty,
                          JSON.stringify(product.photos)
-                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})
+                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})*/
 
 
 

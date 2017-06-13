@@ -103,9 +103,9 @@ class categoryViewContainer extends Component {
 
     render() {
 
-        let {queryProducts,categories,navigate}=this.props;
+        let {categories,navigate}=this.props;
         //let {navigate}=this.props.navigation;
-        console.log(this.props)
+        //console.log(this.props)
         return (
 
 
@@ -118,13 +118,10 @@ class categoryViewContainer extends Component {
                 <ListView dataSource={this.ds.cloneWithRows(categories)}
                           renderSeparator={(i,j)=><Divider key={j+"divider"+i}/>}
                           enableEmptySections={true}
-                          renderRow={(child,sectionID, rowID, highlightRow) =>
+                          renderRow={(category,sectionID, rowID, highlightRow) =>
                               <View key={rowID}>
                                   <TouchableNativeFeedback  onPress={() => {
-
-                                      //setTimeout(()=>{
-                                      queryProducts(child, navigate)
-                                      //},16)
+                                      navigate("products", {category});
                                   }}>
                                       <View style={[{
                                           height: 50,
@@ -145,7 +142,7 @@ class categoryViewContainer extends Component {
                                                   paddingHorizontal: 16,
                                                   //fontWeight:"500",
 
-                                              }]}>{child.categoryName}</Text>
+                                              }]}>{category.categoryName}</Text>
                                       </View>
                                   </TouchableNativeFeedback>
 

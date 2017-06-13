@@ -20,7 +20,7 @@ import {
     Picker
 } from "react-native";
 import {Card} from 'react-native-material-design';
-import {Toolbar, Divider, Icon, ActionButton,RippleFeedback} from 'react-native-material-ui';
+import {Toolbar, Divider, Icon, ActionButton, RippleFeedback} from 'react-native-material-ui';
 
 import Button from 'apsl-react-native-button'
 import StarRating from 'react-native-star-rating';
@@ -31,7 +31,7 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import ExNavigator from '@expo/react-native-navigator';
 import Firestack from 'react-native-firestack'
 import {shortenText} from '../../utils/utils'
-//import {DB} from "../../utils/database"
+import {DB} from "../../utils/database"
 
 import {uiTheme} from "../../app"
 let moment = require('moment');
@@ -45,20 +45,23 @@ export class ProductsList extends Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-        this.state = {query: null,subCategoryf:"All"}
+        this.state = {
+            query: null,
+            subCategory: "All",
+            products: []
+        }
 
     }
 
     render() {
         ctx = this;
         let {navigate, goBack} = this.props.navigation;
-        let {category, products}=this.props.navigation.state.params;
+        let {category,}=this.props.navigation.state.params;
         let props = this.props.screenProps;
         // let {products}=this.props.screenProps
-        if(category.subCategories instanceof Array)
-        {
-            if(category.subCategories[0]!=="All")
-            category.subCategories.unshift("All")
+        if (category.subCategories instanceof Array) {
+            if (category.subCategories[0] !== "All")
+                category.subCategories.unshift("All")
         }
 
         return (
@@ -86,16 +89,25 @@ export class ProductsList extends Component {
 
                 <Picker
                     selectedValue={this.state.subCategory}
-                    onValueChange={(itemValue, itemIndex) => this.setState({subCategory: itemValue})}>
+                    onValueChange={(itemValue, itemIndex) => {
+                        this.setState({subCategory: itemValue})
+                        this.filterChanged(itemValue);
 
-                    {category.subCategories.map((item,i)=>{
-                        return <Picker.Item key={item} label={item} value={item} />
+                    }}>
+
+                    {category.subCategories.map((item, i) => {
+                        return <Picker.Item key={item} label={item} value={item}/>
 
                     })}
 
                 </Picker>
+                {this.state.error && <View>
+                    <Text >
+                        {this.state.error}
+                    </Text>
 
-                <ListView dataSource={this.ds.cloneWithRows(products)}
+                </View>}
+                <ListView dataSource={this.ds.cloneWithRows(this.state.products)}
                           contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
                           scrollRenderAheadDistance={640}
                           enableEmptySections={true}
@@ -139,7 +151,6 @@ export class ProductsList extends Component {
                                                   </View>
                                               </View>
                                           </View>
-
 
 
                                       </Card>
@@ -199,8 +210,54 @@ export class ProductsList extends Component {
         )
     }
 
-    componentWillUpdate() {
+    filterChanged(subCategory) {
+        let {category}=this.props.navigation.state.params;
+        let that = this;
+        DB.getProducts(null,subCategory).then((products) => {
+            //console.log(products)
+            //dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
+            // navigate("products", {category})
+            if (products.length === 0) {
 
+                that.setState({error: "Nothing was found at " + this.state.subCategory+" ,"+category.categoryName})
+
+            } else {
+
+                that.setState({products: products})
+            }
+
+        }).catch((e) => {
+
+            that.setState({error: e.message})
+            console.log(e)
+        })
+
+    }
+
+    componentDidMount() {
+        let {category}=this.props.navigation.state.params;
+        let that = this;
+        DB.getProducts(category.categoryName).then((products) => {
+            //console.log(products)
+            //dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
+            // navigate("products", {category})
+            if (products.length === 0) {
+
+                that.setState({error: "Nothing was found at " + this.state.subCategory+" ,"+category.categoryName})
+
+            } else {
+
+                that.setState({products: products})
+            }
+
+        }).catch((e) => {
+            //alert("error occured");
+            that.setState({error: e.message})
+            console.log(e)
+        })
+
+
+        //alert(this.state.subCategory+" "+category.categoryName)
     }
 
     openDrawer() {
@@ -222,7 +279,7 @@ export class SingleProductView extends Component {
         let props = this.props.screenProps;
         let reviews = [];
 
-let len=data.photos.length;
+        let len = data.photos.length;
         for (let i = 0; i < 9; i++) {
             reviews.push({
                 reviewerName: "Elias Bundala",
@@ -257,7 +314,7 @@ let len=data.photos.length;
 
                                     style={{flex: 1}}
                                     ref={(el) => this._viewPager = el}>
-                                    {this._renderImages().map((child, i,photos) => (
+                                    {this._renderImages().map((child, i, photos) => (
                                         <View
                                             key={"key" + i}
                                             testID={"test" + i}
@@ -488,8 +545,6 @@ let len=data.photos.length;
                 />
 
 
-
-
             </View>
         )
     }
@@ -501,7 +556,7 @@ let len=data.photos.length;
                 return data.photos;
             }
 
-          return Object.keys(data.photos).map(function(value, index) {
+            return Object.keys(data.photos).map(function (value, index) {
                 return data.photos[value];
             });
         }
@@ -605,7 +660,6 @@ export class searchResultsProductsList extends Component {
                                           </View>
 
 
-
                                       </Card>
                                   </View>
                               </TouchableNativeFeedback>}
@@ -641,25 +695,25 @@ const MultOptionWidget = React.createClass({
         });
     },
 
-     /*getInitialState(){
-      return {value:{false}
+    /*getInitialState(){
+     return {value:{false}
      },*/
     componentDidMount() {
         // get value from prop
-         if (typeof this.props.value !== 'undefined') {
-         this._setValue(this.props.value);
-        return;
-          }
+        if (typeof this.props.value !== 'undefined') {
+            this._setValue(this.props.value);
+            return;
+        }
         // get value from store
         let formState = GiftedFormManager.stores[this.props.formName];
         if (typeof formState !== 'undefined') {
             if (typeof formState.values[this.props.name] !== 'undefined') {
-                 console.log(this.props.name+" form "+formState.values[this.props.name])
+                console.log(this.props.name + " form " + formState.values[this.props.name])
                 // console.log(formState)
                 this.setState({
-                 value: formState.values[this.props.name],
+                    value: formState.values[this.props.name],
 
-                 });
+                });
                 this._validate(formState.values[this.props.name]);
             }
         }
@@ -692,7 +746,7 @@ const MultOptionWidget = React.createClass({
 
 
     _renderCheckmark() {
-       //console.log(this.state.value)
+        //console.log(this.state.value)
         if (this.state.value === true) {
             return (
                 <Image
@@ -791,9 +845,9 @@ const PhotoPickerWidget = React.createClass({
         });
     },
 
-     getInitialState(){
-      return {value:[]}
-     },
+    getInitialState(){
+        return {value: []}
+    },
     componentWillMount(){
 
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
@@ -801,19 +855,19 @@ const PhotoPickerWidget = React.createClass({
     },
     componentDidMount() {
         // get value from prop
-         if (typeof this.props.value !== 'undefined') {
-        this._setValue(this.props.value);
-        return;
-          }
+        if (typeof this.props.value !== 'undefined') {
+            this._setValue(this.props.value);
+            return;
+        }
         // get value from store
         let formState = GiftedFormManager.stores[this.props.formName];
         if (typeof formState !== 'undefined') {
             if (typeof formState.values[this.props.name] !== 'undefined') {
-                 console.log(this.props.name+" form "+formState.values[this.props.name])
+                console.log(this.props.name + " form " + formState.values[this.props.name])
                 // console.log(formState)
                 this.setState({
-                 value: formState.values[this.props.name],
-                 });
+                    value: formState.values[this.props.name],
+                });
                 this._validate(formState.values[this.props.name]);
             }
         }
@@ -821,7 +875,7 @@ const PhotoPickerWidget = React.createClass({
 
     componentWillReceiveProps(nextProps) {
         if (typeof nextProps.value !== 'undefined' && nextProps.value !== this.props.value) {
-             this.onChange(nextProps.value);
+            this.onChange(nextProps.value);
         }
     },
     setValue(value) {
@@ -844,16 +898,16 @@ const PhotoPickerWidget = React.createClass({
 
     _onClose() {
 
-            this._onChange(this.state.photos);
+        this._onChange(this.state.photos);
 
-            if (typeof this.props.onSelect === 'function') {
-                // console.log('onSelect');
-                this.props.onSelect(this.props.value);
-            }
+        if (typeof this.props.onSelect === 'function') {
+            // console.log('onSelect');
+            this.props.onSelect(this.props.value);
+        }
 
-            if (typeof this.props.onClose === 'function') {
-                this.props.onClose(this.props.title, this.props.navigator);
-            }
+        if (typeof this.props.onClose === 'function') {
+            this.props.onClose(this.props.title, this.props.navigator);
+        }
 
 
     },
@@ -861,14 +915,14 @@ const PhotoPickerWidget = React.createClass({
     render() {
 
         return (
-            <View style={[{height:500}]}>
+            <View style={[{height: 500}]}>
 
                 <View style={[styles.flex1]}>
-                <ListView dataSource={this.ds.cloneWithRows(this.state.value)}
-                          contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
+                    <ListView dataSource={this.ds.cloneWithRows(this.state.value)}
+                              contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
 
-                          enableEmptySections={true}
-                          renderRow={(photo) =>
+                              enableEmptySections={true}
+                              renderRow={(photo) =>
                                   <View style={[, {
                                       height: 220,
                                       width: 180
@@ -884,7 +938,7 @@ const PhotoPickerWidget = React.createClass({
                                                   resizeMode: Image.resizeMode.stretch,
                                                   backgroundColor: colours.paperGrey300.color
                                               }]}
-                                                     source={{uri:photo.uri}}>
+                                                     source={{uri: photo.uri}}>
 
                                               </Image>
                                               <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
@@ -900,7 +954,7 @@ const PhotoPickerWidget = React.createClass({
 
                                                       </Text>
                                                       <Text style={[styles.price]}>
-                                                          {photo.width+"x"+photo.height}
+                                                          {photo.width + "x" + photo.height}
                                                       </Text>
                                                   </View>
                                               </View>
@@ -908,18 +962,17 @@ const PhotoPickerWidget = React.createClass({
                                       </Card>
                                   </View>
                               }
-                />
+                    />
 
-                    <ActionButton style={{zIndex:9}}
+                    <ActionButton style={{zIndex: 9}}
 
-                        icon="add"
-                        onPress={(text) => {
+                                  icon="add"
+                                  onPress={(text) => {
 
-                            this.openPicker();
+                                      this.openPicker();
 
 
-
-                        }}
+                                  }}
                     />
                 </View>
             </View>
@@ -929,7 +982,7 @@ const PhotoPickerWidget = React.createClass({
 
         let options = {
             title: 'Select product photos',
-            mediaType:"photo",
+            mediaType: "photo",
             storageOptions: {
                 skipBackup: true,
                 path: 'images'
@@ -957,8 +1010,8 @@ const PhotoPickerWidget = React.createClass({
                 //let source = { uri: response.uri };
 
                 // You can also display the image using data:
-               // response = {...response,data: 'data:image/jpeg;base64,'+response.data };
-                let value=this.state.value;
+                // response = {...response,data: 'data:image/jpeg;base64,'+response.data };
+                let value = this.state.value;
 
                 value.push(response);
                 this._onChange(value);
@@ -975,7 +1028,7 @@ const PhotoPickerWidget = React.createClass({
 
 
 const COMPONENT_NAMES = ['Title', 'LeftButton', 'RightButton'];
-const navStatePresentedIndex = function(navState) {
+const navStatePresentedIndex = function (navState) {
     if (navState.presentedIndex !== undefined) {
         return navState.presentedIndex;
     }
@@ -995,25 +1048,26 @@ class NavigationBar extends Navigator.NavigationBar {
                 this._getComponent(componentName, route, index)
             )
         );
-        let{routeStack,presentedIndex}= this.props.navState;
+        let {routeStack, presentedIndex}= this.props.navState;
         let {toolbarProps}=this.props;
-        let route=routeStack[presentedIndex];
+        let route = routeStack[presentedIndex];
         return (
 
 
-                <View  style={[navBarStyle, this.props.style,{top:0,left:0,right:0,position:"absolute"}]}>
-                    <Toolbar
-                        leftElement={this._getComponent("LeftButton", route, presentedIndex)}
-                        rightElement={this._getComponent("RightButton", route, presentedIndex)}
-                        centerElement={this._getComponent("Title", route, presentedIndex)}
+            <View style={[navBarStyle, this.props.style, {top: 0, left: 0, right: 0, position: "absolute"}]}>
+                <Toolbar
+                    leftElement={this._getComponent("LeftButton", route, presentedIndex)}
+                    rightElement={this._getComponent("RightButton", route, presentedIndex)}
+                    centerElement={this._getComponent("Title", route, presentedIndex)}
 
 
-                    />
-                </View>
+                />
+            </View>
 
         );
 
     }
+
     _getComponent = (/*string*/componentName, /*object*/route, /*number*/index) => /*?Object*/ {
         if (this._descriptors[componentName].includes(route)) {
             return this._descriptors[componentName].get(route);
@@ -1046,14 +1100,14 @@ class NavigationBar extends Navigator.NavigationBar {
             </View>
         );
 
-       this._descriptors[componentName] = this._descriptors[componentName].set(route, rendered);
+        this._descriptors[componentName] = this._descriptors[componentName].set(route, rendered);
         return rendered;
     };
 
 }
 
 
-import {ProductForm,EbModalInput,EbOptionInput,EbTextInput} from "../../forms/productForm"
+import {ProductForm, EbModalInput, EbOptionInput, EbTextInput} from "../../forms/productForm"
 export class CreateProduct extends Component {
 
 
@@ -1100,24 +1154,24 @@ export class CreateProduct extends Component {
 
                                 defaults={{
 
-                                      userID: "",
-                                     userName: 'Anonymous user',
+                                    userID: "",
+                                    userName: 'Anonymous user',
 
                                     name: 'hp nm',
-                                     brand: 'onk',
-                                     model: 'vbklo',
-                                     manufacturer: 'jkgkl',
-                                     price: "4567778",
-                                     currency: [ 'TZS' ],
-                                     acceptedPaymentMethod: [ 'OnDelivery', 'TigoPesa' ],
-                                     quantity: '1',
-                                     category: [ 'electronics' ],
-                                     itemCondition: [ 'New' ],
-                                     availability: [ 'InStock' ],
-                                     areaServed: [ 'MAIN', 'SMC' ],
-                                     availableDeliveryMethod: [ 'pickUp', 'Shipping' ],
+                                    brand: 'onk',
+                                    model: 'vbklo',
+                                    manufacturer: 'jkgkl',
+                                    price: "4567778",
+                                    currency: ['TZS'],
+                                    acceptedPaymentMethod: ['OnDelivery', 'TigoPesa'],
+                                    quantity: '1',
+                                    category: ['electronics'],
+                                    itemCondition: ['New'],
+                                    availability: ['InStock'],
+                                    areaServed: ['MAIN', 'SMC'],
+                                    availableDeliveryMethod: ['pickUp', 'Shipping'],
                                     description: "React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
-                                    warranty:"runs inside this Chrome tab.Press CtrlJ to open Developer",
+                                    warranty: "runs inside this Chrome tab.Press CtrlJ to open Developer",
 
                                 }}
 
@@ -1579,7 +1633,7 @@ export class CreateProduct extends Component {
                                     cancelable={true}
                                     displayValue='photos'>
 
-                                    <PhotoPickerWidget  title='Photos' name='photos' />
+                                    <PhotoPickerWidget title='Photos' name='photos'/>
 
 
                                 </GiftedForm.ModalWidget>
@@ -1631,7 +1685,7 @@ export class CreateProduct extends Component {
                                     onPress={() => {
                                         goBack()
                                     }}
-                                    >
+                                >
                                     <View >
 
                                         <Icon color={colours.paperGrey50.color} style={{padding: 16}} size={24}
@@ -1709,203 +1763,199 @@ export class CreateProduct extends Component {
                         ]
                     },
                     onSubmit(isValid, values, validationResults, postSubmit = null, modalNavigator = null){
-                            if (true)
-                            {
-                                const uploadFile = (files,uid,links,i,retry,resolve,reject) => {
-                                    let len =files.length;
-                                    if (i < len)
-                                    {
-                                        firestack.storage.uploadFile(`photos/${uid}/${files[i].fileName}`, files[i].path, {
-                                            contentType: 'image/jpeg',
-                                            contentEncoding: 'base64',
-                                        }, (evt) => {
-                                            console.log('progress  '+i, evt);
-                                        }).then((res) => {
-                                            console.log('The file has been uploaded '+i);
-                                            i++;
-                                            links.push(res);
-                                            return  uploadFile(files, uid,links ,i,retry,resolve,reject)
-                                        }).catch(err => {
-                                            retry++;
-                                            console.log('There was an error uploading the file', err);
-                                            //Todo Retry here
-                                            if(retry>5){
-                                                i=i+2;
-                                                return uploadFile(files, uid,links ,i,retry);
-                                                //reject(err)
-                                                //todo delete photos on failed
-                                            }
-                                            return uploadFile(files, uid,links ,i++,retry)
-                                        })
-                                    }else {
-                                        resolve(links)
-                                    }
-                                }
-                               const uploadFiles=(files,uid,i,retry)=>{
-
-                                    return new Promise((resolve, reject) => {
-                                        let links=[];
-
-
-                                       if(files instanceof Array){
-                                         uploadFile(files,uid,links,i,retry,resolve,reject)
-                                       }
-                                       else resolve([])
+                        if (true) {
+                            const uploadFile = (files, uid, links, i, retry, resolve, reject) => {
+                                let len = files.length;
+                                if (i < len) {
+                                    firestack.storage.uploadFile(`photos/${uid}/${files[i].fileName}`, files[i].path, {
+                                        contentType: 'image/jpeg',
+                                        contentEncoding: 'base64',
+                                    }, (evt) => {
+                                        console.log('progress  ' + i, evt);
+                                    }).then((res) => {
+                                        console.log('The file has been uploaded ' + i);
+                                        i++;
+                                        links.push(res);
+                                        return uploadFile(files, uid, links, i, retry, resolve, reject)
+                                    }).catch(err => {
+                                        retry++;
+                                        console.log('There was an error uploading the file', err);
+                                        //Todo Retry here
+                                        if (retry > 5) {
+                                            i = i + 2;
+                                            return uploadFile(files, uid, links, i, retry);
+                                            //reject(err)
+                                            //todo delete photos on failed
+                                        }
+                                        return uploadFile(files, uid, links, i++, retry)
                                     })
+                                } else {
+                                    resolve(links)
                                 }
-                               const submitForm=(data)=>{
-                                   let i=0,retry=0;
-                                    return new Promise((resolve, reject) => {
-                                        firestack.database.ref("products").push().then((res) => {
-                                            let newPostKey = res.key;
+                            }
+                            const uploadFiles = (files, uid, i, retry) => {
 
-                                           return firestack.ServerValue.then(map => {
+                                return new Promise((resolve, reject) => {
+                                    let links = [];
 
-                                            return uploadFiles(data.photos, newPostKey,i,retry).then((links) => {
-                                               //Todo remove scheme after testing
-                                                let scheme=    {
-                                                    "acceptedPaymentMethod" : {
-                                                        "OnDelivery" : true,
-                                                        "TigoPesa" : true
+
+                                    if (files instanceof Array) {
+                                        uploadFile(files, uid, links, i, retry, resolve, reject)
+                                    }
+                                    else resolve([])
+                                })
+                            }
+                            const submitForm = (data) => {
+                                let i = 0, retry = 0;
+                                return new Promise((resolve, reject) => {
+                                    firestack.database.ref("products").push().then((res) => {
+                                        let newPostKey = res.key;
+
+                                        return firestack.ServerValue.then(map => {
+
+                                            return uploadFiles(data.photos, newPostKey, i, retry).then((links) => {
+                                                //Todo remove scheme after testing
+                                                let scheme = {
+                                                    "acceptedPaymentMethod": {
+                                                        "OnDelivery": true,
+                                                        "TigoPesa": true
                                                     },
-                                                    "areaServed" : {
-                                                        "MAIN" : true,
-                                                        "SMC" : true
+                                                    "areaServed": {
+                                                        "MAIN": true,
+                                                        "SMC": true
                                                     },
-                                                    "availability" : "InStock",
-                                                    "availableDeliveryMethod" : {
-                                                        "Shipping" : true,
-                                                        "pickUp" : true
+                                                    "availability": "InStock",
+                                                    "availableDeliveryMethod": {
+                                                        "Shipping": true,
+                                                        "pickUp": true
                                                     },
-                                                    "brand" : "onk",
-                                                    "category" : "electronics",
-                                                    "currency" : "TZS",
-                                                    "description" : "kjkjfdjkfl jhsdkjhaskd",
-                                                    "itemCondition" : "New",
-                                                    "manufacturer" : "jkgkl",
-                                                    "model" : "vbklo",
-                                                    "name" : "hp nm",
-                                                    "photos" : [ {
-                                                        "bucket" : "esoko-fc718.appspot.com",
-                                                        "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-ef001440-9b65-457b-86e5-28453294c7b9.jpg?alt=media&token=048431ba-702d-4a98-8622-b08cd8f1a51d",
-                                                        "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
-                                                        "metadata" : {
-                                                            "cacheControl" : "",
-                                                            "contentDisposition" : "inline; filename*=utf-8''image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
-                                                            "contentType" : "image/jpeg"
+                                                    "brand": "onk",
+                                                    "category": "electronics",
+                                                    "currency": "TZS",
+                                                    "description": "kjkjfdjkfl jhsdkjhaskd",
+                                                    "itemCondition": "New",
+                                                    "manufacturer": "jkgkl",
+                                                    "model": "vbklo",
+                                                    "name": "hp nm",
+                                                    "photos": [{
+                                                        "bucket": "esoko-fc718.appspot.com",
+                                                        "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-ef001440-9b65-457b-86e5-28453294c7b9.jpg?alt=media&token=048431ba-702d-4a98-8622-b08cd8f1a51d",
+                                                        "fullPath": "photos/-KjeGCFaV9sDHtFCzmHq/image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                                                        "metadata": {
+                                                            "cacheControl": "",
+                                                            "contentDisposition": "inline; filename*=utf-8''image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
+                                                            "contentType": "image/jpeg"
                                                         },
-                                                        "name" : "image-ef001440-9b65-457b-86e5-28453294c7b9.jpg"
+                                                        "name": "image-ef001440-9b65-457b-86e5-28453294c7b9.jpg"
                                                     }, {
-                                                        "bucket" : "esoko-fc718.appspot.com",
-                                                        "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-7c11b60b-2680-4981-8f02-ae703f635b03.jpg?alt=media&token=a33e7661-b5af-4bb7-8aee-648be08d8d4b",
-                                                        "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
-                                                        "metadata" : {
-                                                            "cacheControl" : "",
-                                                            "contentDisposition" : "inline; filename*=utf-8''image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
-                                                            "contentType" : "image/jpeg"
+                                                        "bucket": "esoko-fc718.appspot.com",
+                                                        "downloadUrl": "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-7c11b60b-2680-4981-8f02-ae703f635b03.jpg?alt=media&token=a33e7661-b5af-4bb7-8aee-648be08d8d4b",
+                                                        "fullPath": "photos/-KjeGCFaV9sDHtFCzmHq/image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                                                        "metadata": {
+                                                            "cacheControl": "",
+                                                            "contentDisposition": "inline; filename*=utf-8''image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
+                                                            "contentType": "image/jpeg"
                                                         },
-                                                        "name" : "image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg"
-                                                    } ],
-                                                    "price" : 258096,
-                                                    "productID" : "-KjeGCFaV9sDHtFCzmHq",
-                                                    "quantity" : 12,
-                                                    "timestamp" : 1494284040119,
-                                                    "userID" : "WuKkagJaoAbumfR0UZiKqCAoYlq1",
-                                                    "userName" : "Anonymous user",
-                                                    "warranty" : "sdxz  fdfgdgfd hgfhgh"
+                                                        "name": "image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg"
+                                                    }],
+                                                    "price": 258096,
+                                                    "productID": "-KjeGCFaV9sDHtFCzmHq",
+                                                    "quantity": 12,
+                                                    "timestamp": 1494284040119,
+                                                    "userID": "WuKkagJaoAbumfR0UZiKqCAoYlq1",
+                                                    "userName": "Anonymous user",
+                                                    "warranty": "sdxz  fdfgdgfd hgfhgh"
                                                 }
-                                                    data = {...scheme, timestamp: map.TIMESTAMP, productID: newPostKey,photos:links};
+                                                data = {
+                                                    ...scheme,
+                                                    timestamp: map.TIMESTAMP,
+                                                    productID: newPostKey,
+                                                    photos: links
+                                                };
 
-                                                    //console.log("data to be sent\n",data);
+                                                //console.log("data to be sent\n",data);
 
-                                                    let updates = {};
-                                                    updates['/products/' + newPostKey] = data;
+                                                let updates = {};
+                                                updates['/products/' + newPostKey] = data;
                                                 return firestack.database.ref().update(updates).then((resp) => {
-                                                        resolve(data,resp)
+                                                    resolve(data, resp)
 
-                                                    }).catch((e) => {
-                                                        reject(e)
+                                                }).catch((e) => {
+                                                    reject(e)
 
-                                                    })
                                                 })
                                             })
-                                        }).catch(reject)
-                                    })
-                                }
-
-
-
-
-
-
-
-                                //console.log(values)
-
-                                let   prod={
-                                    userID: values.hasOwnProperty("userID")? values.userID:postSubmit(["it seams your not logged in"]),
-                                   userName:values.hasOwnProperty("userName")? values.userName:postSubmit(["it seams your not logged in"]),
-                                   name: values.hasOwnProperty("name")?values.name:postSubmit(["product name is required"]),
-                                    brand: values.hasOwnProperty("brand")?values.brand:"",
-                                    model:values.hasOwnProperty("model")?values.model:"",
-                                    manufacturer:values.hasOwnProperty("manufacturer")?values.manufacturer:"",
-
-                                    price:parseInt(values.price)?parseInt(values.price):postSubmit(["price is not valid"]),
-                                   currency:values.hasOwnProperty("currency")?values.currency[0]:postSubmit(["currency is not valid"]),
-                                   acceptedPaymentMethod:values.acceptedPaymentMethod instanceof Array?values.acceptedPaymentMethod.reduce(function(acc, cur, i) {
-                                            acc[cur] = true;
-                                            return acc;
-                                        }, {}):null,
-                                   quantity:parseInt(values.quantity)?parseInt(values.quantity):postSubmit(["quantity is not valid"]) ,
-                                   category:values.hasOwnProperty("category")?values.category[0]:postSubmit(["category is required"]),
-                                    itemCondition:values.hasOwnProperty("itemCondition")?values.itemCondition[0]:postSubmit(["Item condition is required"]),
-                                   availability:values.hasOwnProperty("availability")?values.availability[0]:postSubmit(["Item Availability is required"]),
-                                   areaServed:values.areaServed instanceof Array?values.areaServed.reduce(function(acc, cur, i) {
-                                            acc[cur] = true;
-                                            return acc;
-                                        }, {}):null,
-                                    availableDeliveryMethod:values.availableDeliveryMethod instanceof Array?values.availableDeliveryMethod.reduce(function(acc, cur, i) {
-                                            acc[cur] = true;
-                                            return acc;
-                                        }, {}):null,
-                                    description: values.hasOwnProperty("userID")? values.description:postSubmit(["it seams your not logged in"]),
-                                    warranty: values.hasOwnProperty("userID")? values.warranty:postSubmit(["it seams your not logged in"]),
-
-
-                                    photos:values.photos
-                                };
-                                //console.log(prod);
-                                 submitForm(prod).then((data,res) => {
-                                 //console.log("response from server\n",data,res);
-
-
-
-
-                                     //GiftedFormManager.reset('newProduct');
-
-                                     postSubmit();
-                                 }).catch((e) =>{
-                                 console.log(e);
-                                 postSubmit(["error",e.message||"error occured"]);
-                                 // GiftedFormManager.reset('newProduct')
-                                 });
-
-
-                                /* Implement the request to your server using values variable
-                                 ** then you can do:
-                                 ** postSubmit(); // disable the loader
-                                 ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
-                                 ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
-                                 ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
-                                 */
-                                /*setTimeout(()=>{
-                                    postSubmit(['error', 'invalid field detected']);
-                                    // GiftedFormManager.reset('newProduct')
-                                },9000);*/
-                                //  return;
+                                        })
+                                    }).catch(reject)
+                                })
                             }
-                       // GiftedFormManager.resetValues('newProduct');
 
-                            postSubmit(['error', 'invalid field detected']);
+
+                            //console.log(values)
+
+                            let prod = {
+                                userID: values.hasOwnProperty("userID") ? values.userID : postSubmit(["it seams your not logged in"]),
+                                userName: values.hasOwnProperty("userName") ? values.userName : postSubmit(["it seams your not logged in"]),
+                                name: values.hasOwnProperty("name") ? values.name : postSubmit(["product name is required"]),
+                                brand: values.hasOwnProperty("brand") ? values.brand : "",
+                                model: values.hasOwnProperty("model") ? values.model : "",
+                                manufacturer: values.hasOwnProperty("manufacturer") ? values.manufacturer : "",
+
+                                price: parseInt(values.price) ? parseInt(values.price) : postSubmit(["price is not valid"]),
+                                currency: values.hasOwnProperty("currency") ? values.currency[0] : postSubmit(["currency is not valid"]),
+                                acceptedPaymentMethod: values.acceptedPaymentMethod instanceof Array ? values.acceptedPaymentMethod.reduce(function (acc, cur, i) {
+                                        acc[cur] = true;
+                                        return acc;
+                                    }, {}) : null,
+                                quantity: parseInt(values.quantity) ? parseInt(values.quantity) : postSubmit(["quantity is not valid"]),
+                                category: values.hasOwnProperty("category") ? values.category[0] : postSubmit(["category is required"]),
+                                itemCondition: values.hasOwnProperty("itemCondition") ? values.itemCondition[0] : postSubmit(["Item condition is required"]),
+                                availability: values.hasOwnProperty("availability") ? values.availability[0] : postSubmit(["Item Availability is required"]),
+                                areaServed: values.areaServed instanceof Array ? values.areaServed.reduce(function (acc, cur, i) {
+                                        acc[cur] = true;
+                                        return acc;
+                                    }, {}) : null,
+                                availableDeliveryMethod: values.availableDeliveryMethod instanceof Array ? values.availableDeliveryMethod.reduce(function (acc, cur, i) {
+                                        acc[cur] = true;
+                                        return acc;
+                                    }, {}) : null,
+                                description: values.hasOwnProperty("userID") ? values.description : postSubmit(["it seams your not logged in"]),
+                                warranty: values.hasOwnProperty("userID") ? values.warranty : postSubmit(["it seams your not logged in"]),
+
+
+                                photos: values.photos
+                            };
+                            //console.log(prod);
+                            submitForm(prod).then((data, res) => {
+                                //console.log("response from server\n",data,res);
+
+
+                                //GiftedFormManager.reset('newProduct');
+
+                                postSubmit();
+                            }).catch((e) => {
+                                console.log(e);
+                                postSubmit(["error", e.message || "error occured"]);
+                                // GiftedFormManager.reset('newProduct')
+                            });
+
+
+                            /* Implement the request to your server using values variable
+                             ** then you can do:
+                             ** postSubmit(); // disable the loader
+                             ** postSubmit(['An error occurred, please try again']); // disable the loader and display an error message
+                             ** postSubmit(['Username already taken', 'Email already taken']); // disable the loader and display an error message
+                             ** GiftedFormManager.reset('signupForm'); // clear the states of the form manually. 'signupForm' is the formName used
+                             */
+                            /*setTimeout(()=>{
+                             postSubmit(['error', 'invalid field detected']);
+                             // GiftedFormManager.reset('newProduct')
+                             },9000);*/
+                            //  return;
+                        }
+                        // GiftedFormManager.resetValues('newProduct');
+
+                        postSubmit(['error', 'invalid field detected']);
 
                     },
 
@@ -1914,66 +1964,69 @@ export class CreateProduct extends Component {
         }
 
         return (
-<View style={[styles.flex1]}>
-    <Toolbar
-        leftElement="arrow-back"
-        onLeftElementPress={() => {
-            goBack();
-        }}
-        centerElement={title}
-
-
-    />
-    <Card style={{flex:1}}>
-    <ProductForm formName="productForm" title={title}>
-        <EbTextInput field="name" title={"Product name"}
-                     validator={{
-                         errorMessage:"[TITLE] must be args[0] to args[1] characters",
-                         validator:"isLength",
-                         args:[5,32]
-
-                     }}/>
-        <EbTextInput field="model" title={"Model name"}
-                     validator={{
-                         errorMessage:"[TITLE] must be args[0] to args[1] characters",
-                         validator:"isLength",
-                         args:[2,10]
-
-                     }}
-
-        />
-        <EbTextInput field="manufacturer" title={"manufacturer"}
-
-                     validator={{
-                         errorMessage:"[TITLE] must be args[0] to args[1] characters",
-                         validator:"isLength",
-                         args:[2,10]
-
-                     }}
-        />
-    </ProductForm>
-    </Card>
-    {false&&<ExNavigator
-                initialRoute={routes.getHomeRoute()}
-                sceneStyle={{paddingTop: 56}}
-                navigationBarStyle={{backgroundColor: primaryColor}}
-                renderNavigationBarg={(props)=><NavigationBar
-                    routeMapperg={{
-                        LeftButton: (route, navigator, index, navState) =>
-                        { return (<Text>Cancel</Text>); },
-                        RightButton: (route, navigator, index, navState) =>
-                        { return (<Text>Done</Text>); },
-                        Title: (route, navigator, index, navState) =>
-                        { return (<Text>{route.getTitle()}</Text>); },
+            <View style={[styles.flex1]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={() => {
+                        goBack();
                     }}
+                    centerElement={title}
 
 
+                />
+                <Card style={{flex: 1}}>
+                    <ProductForm formName="productForm" title={title}>
+                        <EbTextInput field="name" title={"Product name"}
+                                     validator={{
+                                         errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                         validator: "isLength",
+                                         args: [5, 32]
+
+                                     }}/>
+                        <EbTextInput field="model" title={"Model name"}
+                                     validator={{
+                                         errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                         validator: "isLength",
+                                         args: [2, 10]
+
+                                     }}
+
+                        />
+                        <EbTextInput field="manufacturer" title={"manufacturer"}
+
+                                     validator={{
+                                         errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                         validator: "isLength",
+                                         args: [2, 10]
+
+                                     }}
+                        />
+                    </ProductForm>
+                </Card>
+                {false && <ExNavigator
+                    initialRoute={routes.getHomeRoute()}
+                    sceneStyle={{paddingTop: 56}}
+                    navigationBarStyle={{backgroundColor: primaryColor}}
+                    renderNavigationBarg={(props) => <NavigationBar
+                        routeMapperg={{
+                            LeftButton: (route, navigator, index, navState) => {
+                                return (<Text>Cancel</Text>);
+                            },
+                            RightButton: (route, navigator, index, navState) => {
+                                return (<Text>Done</Text>);
+                            },
+                            Title: (route, navigator, index, navState) => {
+                                return (<Text>{route.getTitle()}</Text>);
+                            },
+                        }}
+
+
+                    />}
+                    titleStyle={[{color: colours.paperGrey50.color, marginTop: 16, fontWeight: "bold"}]}
+
+                    style={[styles.flex1]}
                 />}
-                titleStyle={[{color: colours.paperGrey50.color, marginTop: 16, fontWeight: "bold"}]}
-
-                style={[styles.flex1]}
-            />}
-</View>
+            </View>
         );
     }
 

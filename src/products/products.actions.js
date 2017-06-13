@@ -61,17 +61,17 @@ export const queryProducts=(category,navigate)=>{
 
 
 
-        DB.getProducts(category.categoryName).then((products) => {
+        //DB.getProducts(category.categoryName).then((products) => {
             //console.log(products)
-            dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
-           navigate("products", {category,products})
+            //dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
+           navigate("products", {category})
 
 
 
-        }).catch((e)=>{
+       /* }).catch((e)=>{
             alert("error occured");
             console.log(e)
-        })
+        })*/
 
 
 
