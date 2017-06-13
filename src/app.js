@@ -87,7 +87,7 @@ class root extends Component {
 
         const {dispatch, nav, user, activity,navOauth,screenProps}=this.props;
         //console.log(this.props)
-      
+
         return (
             <ThemeProvider uiTheme={uiTheme}>
             <DrawerLayoutAndroid ref={component => {this.drawer = component}}

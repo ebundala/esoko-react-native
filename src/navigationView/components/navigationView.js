@@ -123,7 +123,7 @@ class categoryViewContainer extends Component {
                                   <TouchableNativeFeedback  onPress={() => {
 
                                       //setTimeout(()=>{
-                                      queryProducts(child.categoryName, navigate)
+                                      queryProducts(child, navigate)
                                       //},16)
                                   }}>
                                       <View style={[{

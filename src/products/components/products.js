@@ -16,7 +16,8 @@ import {
     ViewPagerAndroid,
     TouchableNativeFeedback,
     Navigator,
-    WebView
+    WebView,
+    Picker
 } from "react-native";
 import {Card} from 'react-native-material-design';
 import {Toolbar, Divider, Icon, ActionButton,RippleFeedback} from 'react-native-material-ui';
@@ -44,16 +45,18 @@ export class ProductsList extends Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
-        this.state = {query: null}
+        this.state = {query: null,subCategoryf:"All"}
 
     }
 
     render() {
         ctx = this;
         let {navigate, goBack} = this.props.navigation;
-        let {title, products}=this.props.navigation.state.params;
+        let {category, products}=this.props.navigation.state.params;
         let props = this.props.screenProps;
         // let {products}=this.props.screenProps
+        if(category.subCategories instanceof Array)
+            category.subCategories.unshift("All")
         return (
             <View style={[styles.flex1]}>
                 <Toolbar
@@ -61,14 +64,14 @@ export class ProductsList extends Component {
                     onLeftElementPress={() => {
                         goBack();
                     }}
-                    centerElement={title}
+                    centerElement={category.categoryName}
                     searchable={{
                         autoFocus: true,
                         placeholder: 'Search',
                         onSubmitEditing: e => {
                             if (this.state.query) {
 
-                                props.searchProducts(this.state.query, title, navigate)
+                                props.searchProducts(this.state.query, category.categoryName, navigate)
                             }
 
                         },
@@ -76,6 +79,17 @@ export class ProductsList extends Component {
                     }
                     }
                 />
+
+                <Picker
+                    selectedValue={this.state.subCategory}
+                    onValueChange={(itemValue, itemIndex) => this.setState({subCategory: itemValue})}>
+
+                    {category.subCategories.map((item,i)=>{
+                        return <Picker.Item key={item} label={item} value={item} />
+
+                    })}
+
+                </Picker>
 
                 <ListView dataSource={this.ds.cloneWithRows(products)}
                           contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
@@ -106,16 +120,16 @@ export class ProductsList extends Component {
                                               <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
                                                   <View
                                                       style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
-                                                      <Text style={[styles.productTitle]}>
-                                                          {shortenText(data.name)}
+                                                      <Text numberOfLines={1} style={[styles.productTitle]}>
+                                                          {data.name}
                                                       </Text>
                                                   </View>
                                                   <View
                                                       style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
-                                                      <Text style={[styles.currency]}>
+                                                      <Text numberOfLines={1} style={[styles.currency]}>
                                                           {data.currency}
                                                       </Text>
-                                                      <Text style={[styles.price]}>
+                                                      <Text numberOfLines={1} style={[styles.price]}>
                                                           {data.price}
                                                       </Text>
                                                   </View>
@@ -123,15 +137,7 @@ export class ProductsList extends Component {
                                           </View>
 
 
-                                          {false && <View style={[styles.horizontal]}>
 
-
-                                              <Button title={"add Product "}
-                                                      onPress={() => props.addProduct(data, navigate)}/>
-                                              <Button title={"edit Product "}
-                                                      onPress={() => props.editProduct(data, navigate)}/>
-
-                                          </View>}
                                       </Card>
                                   </View>
                               </TouchableNativeFeedback>}

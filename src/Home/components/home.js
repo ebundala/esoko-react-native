@@ -97,7 +97,7 @@ class homeComponent extends Component {
 
                 <BottomNavigation active={this.state.active} hidden={false} style={{container: styles.spaceBetween}}>
                     <BottomNavigation.Action
-                        style={{container: styles.flex1}}
+                        style={{container: styles.flex1,label:{fontSize:11}}}
                         key="Home"
                         icon="home"
                         label="home"
@@ -109,7 +109,7 @@ class homeComponent extends Component {
                         }
                     />
                     <BottomNavigation.Action
-                        style={{container: styles.flex1}}
+                        style={{container: styles.flex1,label:{fontSize:11}}}
                         key="Categories"
                         icon="location-on"
                         label="categories"
@@ -120,7 +120,7 @@ class homeComponent extends Component {
                         }}
                     />
                     <BottomNavigation.Action
-                        style={{container: styles.flex1}}
+                        style={{container: styles.flex1,label:{fontSize:11}}}
                         key="All"
                         icon="bookmark-border"
                         label="all"
@@ -131,12 +131,12 @@ class homeComponent extends Component {
                         }}
                     />
                     <BottomNavigation.Action
-                        style={{container: styles.flex1}}
+                        style={{container: styles.flex1,label:{fontSize:11}}}
                         key="Favorite"
                         icon="favorite"
                         label="favorite"
                         onPress={() => {
-                            this.setState({active: 'Favorites'});
+                            this.setState({active: 'Favorite'});
                             this._Pager.setPage(3)
 
                         }}
