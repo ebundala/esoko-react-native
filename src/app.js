@@ -85,9 +85,9 @@ class root extends Component {
         "use strict";
 
 
-        const {dispatch, nav, user, activity,navOauth}=this.props;
+        const {dispatch, nav, user, activity,navOauth,screenProps}=this.props;
         //console.log(this.props)
-
+      
         return (
             <ThemeProvider uiTheme={uiTheme}>
             <DrawerLayoutAndroid ref={component => {this.drawer = component}}
@@ -109,7 +109,7 @@ class root extends Component {
                     <Activity />
                 </Modal>
 
-                <ViewPagerAndroid
+                {false&&<ViewPagerAndroid
                     keyboardDismissMode='on-drag'
                     initialPage={3}
                     scrollEnabled={true}
@@ -124,9 +124,14 @@ class root extends Component {
                             {child}
                         </View>
                     ))}
-                </ViewPagerAndroid>
+                </ViewPagerAndroid>}
 
-
+                <Main screenProps={{drawer: this.drawer,setPage: this._setPage,...screenProps}}
+                      ref={component => {
+                          this.main = component
+                      }}
+                      navigation={addNavigationHelpers({dispatch, state: nav})}
+                />
             </DrawerLayoutAndroid>
             </ThemeProvider>
 

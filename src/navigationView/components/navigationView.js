@@ -114,40 +114,7 @@ class categoryViewContainer extends Component {
 
 
 
-                {false&&<ScrollView contentContainerStyle={[styles.spaceAround]}>
 
-                        {this.categories().map((child, i) =>
-                            <TouchableNativeFeedback key={i} onPress={() => {
-
-                                //setTimeout(()=>{
-                                    queryProducts(child, navigate)
-                                //},16)
-                            }}>
-                                <View style={[{
-                                    height: 50,
-                                    marginVertical: 2,
-                                    //marginHorizontal:16,
-
-                                    // elevation:2,
-                                    //backgroundColor:"lime"
-                                },
-                                    //styles.yellow,
-                                    //styles.alignItemsCenter,
-                                    styles.centerJustified
-                                ]}>
-                                    <Text style={[
-                                        colorStyle.paperGrey900,
-                                        {
-                                            fontSize: 14,
-                                            paddingHorizontal: 16,
-                                            //fontWeight:"500",
-
-                                        }]}>{child}</Text>
-                                </View>
-                            </TouchableNativeFeedback>
-                        )}
-
-                    </ScrollView>}
                 <ListView dataSource={this.ds.cloneWithRows(categories)}
                           renderSeparator={(i,j)=><Divider key={j+"divider"+i}/>}
                           enableEmptySections={true}
@@ -156,7 +123,7 @@ class categoryViewContainer extends Component {
                                   <TouchableNativeFeedback  onPress={() => {
 
                                       //setTimeout(()=>{
-                                      queryProducts(child, navigate)
+                                      queryProducts(child.categoryName, navigate)
                                       //},16)
                                   }}>
                                       <View style={[{
@@ -178,7 +145,7 @@ class categoryViewContainer extends Component {
                                                   paddingHorizontal: 16,
                                                   //fontWeight:"500",
 
-                                              }]}>{child}</Text>
+                                              }]}>{child.categoryName}</Text>
                                       </View>
                                   </TouchableNativeFeedback>
 
