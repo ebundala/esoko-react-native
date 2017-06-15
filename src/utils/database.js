@@ -10,7 +10,7 @@ import Firestack from 'react-native-firestack'
     messagingSenderId: "1071434923103"
   }; */
 
-export default class database extends Firestack {
+/*export default class database extends Firestack {
 	
     constructor(props) {
 		super();
@@ -82,7 +82,7 @@ export default class database extends Firestack {
     destroy(){
     delete this;
     }
-}
+}*/
 
 
 
@@ -206,7 +206,7 @@ export class DBwrapper{
 
 
          tx.executeSql('CREATE TABLE IF NOT EXISTS Version( '
-             + 'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB)
+             + 'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB);
 
         /* tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
              'acceptedPaymentMethod VARCHAR(32) NOT NULL,'+
@@ -232,18 +232,23 @@ export class DBwrapper{
 
 
              tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
+                 'authorID VARCHAR(32) NOT NULL,'+
                  'title VARCHAR(60) NOT NULL,'+
                  'description VARCHAR(160) NOT NULL,'+
-                 'price INTEGER NOT NULL,'+
                  'productID PRIMARY VARCHAR(32) NOT NULL,'+
-                 'price_value INTEGER,price_unit VARCHAR(3),'+
-                 'size_value INTEGER NOT NULL,size_unit VARCHAR(3),'+
+                 'price_value INTEGER,' +
+                 'price_unit VARCHAR(3),'+
+                 'size_value INTEGER NOT NULL,' +
+                 'size_unit VARCHAR(3),'+
                  'subCategory VARCHAR(32) NOT NULL,'+//region
                  'category VARCHAR(32) NOT NULL,'+//district
                  'street VARCHAR(32) NOT NULL,'+
                  'ward VARCHAR(32) NOT NULL,'+
-                 'surveyed BOOLEAN,planned BOOLEAN,titleDeed BOOLEAN,'+
-                 'rating_value INTEGER NOT NULL,rating_count INTEGER,'+
+                 'surveyed BOOLEAN,' +
+                 'planned BOOLEAN,' +
+                 'titleDeed BOOLEAN,'+
+                 'rating_value INTEGER NOT NULL,' +
+                 'rating_count INTEGER,'+
                  'photos BLOB ,'+
                  'seller BLOB,'+
                  'createdAt INTEGER NOT NULL,'+
@@ -251,36 +256,7 @@ export class DBwrapper{
                  'expireAt INTEGER NOT NULL,'+
                  'sold BOOLEAN ,); ', [], this.successCB, this.errorCB);
 
-            /* description: String,
-             price: {value:Number, unit:String},
-             size: {
-                 value:Number,
-                     unit:String
-             },
-             location: {
-                 region:  String,
-                     street:String,
-                     district: String,
-                     ward: String
-             },
-             legal: {surveyed: Boolean, planned:Boolean, titleDeed:Boolean},
-             rating: {
-                 value: Number,
-                     count: Number
-             },
-             photos: Array,
 
-                 services: {water:Boolean, electricity:Boolean, roads:Boolean},
-             seller: {
-                 name: String,
-                     phones: String,
-                     email: String,
-                     address: String
-             },
-             createdAt:Date,
-                 editedAt:Date,
-                 expireAt:Date,
-                 sold:Boolean*/
 
 
 
@@ -309,125 +285,51 @@ export class DBwrapper{
 
 
 
-        // let products=[];
-        //
+         let products=[];
+
+import {initialState } from "../../navigationView/categories.actions"
 
 
-       /*   let category=   [
-             "electronics",
-                 "Furniture",
-                 "Women's Apparel",
-                 "Women's shoes",
-                 "Men's shoes",
-                 "Men's Apparel",
-                 "Men's Watches",
-                 "Women's Watches",
-                 "Back Packs",
-                 "Books",
-                 "Automotive",
-                 "Computers",
-                 "Mobile Phones",
-                 "Accessories",
-                 "Jewelry",
-                 "electronics",
-                 "Furniture",
-                 "Women's Apparel",
-                 "Women's shoes",
-                 "Men's shoes",
-                 "Men's Apparel",
-                 "Men's Watches",
-                 "Women's Watches",
-                 "Back Packs",
-                 "Books",
-                 "Automotive",
-                 "Computers",
-                 "Mobile Phones",
-                 "Accessories",
-                 "Jewelry",
+         let catLen=initialState.length;
+             let scheme={
+                 description: String,
+              price: {
+              value:Number,
+              unit:String},
+              size: {
+              value:Number,
+              unit:String
+              },
+              location: {
+              region:  String,
+              street:String,
+              district: String,
+              ward: String
+              },
+              legal: {
+                 surveyed: Boolean,
+                  planned:Boolean,
+                  titleDeed:Boolean},
+              rating: {
+              value: Number,
+              count: Number
+              },
+              photos: Array,
 
-                 "electronics",
-                 "Furniture",
-                 "Women's Apparel",
-                 "Women's shoes",
-                 "Men's shoes",
-                 "Men's Apparel",
-                 "Men's Watches",
-                 "Women's Watches",
-                 "Back Packs",
-                 "Books",
-                 "Automotive",
-                 "Computers",
-                 "Mobile Phones",
-                 "Accessories",
-                 "Jewelry",
-                 "electronics",
-                 "Furniture",
-                 "Women's Apparel",
-                 "Women's shoes",
-                 "Men's shoes",
-                 "Men's Apparel",
-                 "Men's Watches",
-                 "Women's Watches",
-                 "Back Packs",
-                 "Books",
-                 "Automotive",
-                 "Computers",
-                 "Mobile Phones",
-                 "Accessories",
-                 "Jewelry",
-             ];
-         let catLen=category.length;
-             let scheme=    {
-                 "acceptedPaymentMethod" : {
-                     "OnDelivery" : true,
-                     "TigoPesa" : true
-                 },
-                 "areaServed" : {
-                     "MAIN" : true,
-                     "SMC" : true
-                 },
-                 "availability" : "InStock",
-                 "availableDeliveryMethod" : {
-                     "Shipping" : true,
-                     "pickUp" : true
-                 },
-                 "brand" : "onk",
-                 "category" : "electronics",
-                 "currency" : "TZS",
-                 "description" : "kjkjfdjkfl jhsdkjhaskd",
-                 "itemCondition" : "New",
-                 "manufacturer" : "jkgkl",
-                 "model" : "vbklo",
-                 "name" : "hp nm",
-                 "photos" : [ {
-                     "bucket" : "esoko-fc718.appspot.com",
-                     "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-ef001440-9b65-457b-86e5-28453294c7b9.jpg?alt=media&token=048431ba-702d-4a98-8622-b08cd8f1a51d",
-                     "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
-                     "metadata" : {
-                         "cacheControl" : "",
-                         "contentDisposition" : "inline; filename*=utf-8''image-ef001440-9b65-457b-86e5-28453294c7b9.jpg",
-                         "contentType" : "image/jpeg"
-                     },
-                     "name" : "image-ef001440-9b65-457b-86e5-28453294c7b9.jpg"
-                 }, {
-                     "bucket" : "esoko-fc718.appspot.com",
-                     "downloadUrl" : "https://firebasestorage.googleapis.com/v0/b/esoko-fc718.appspot.com/o/photos%2F-KjeGCFaV9sDHtFCzmHq%2Fimage-7c11b60b-2680-4981-8f02-ae703f635b03.jpg?alt=media&token=a33e7661-b5af-4bb7-8aee-648be08d8d4b",
-                     "fullPath" : "photos/-KjeGCFaV9sDHtFCzmHq/image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
-                     "metadata" : {
-                         "cacheControl" : "",
-                         "contentDisposition" : "inline; filename*=utf-8''image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg",
-                         "contentType" : "image/jpeg"
-                     },
-                     "name" : "image-7c11b60b-2680-4981-8f02-ae703f635b03.jpg"
-                 } ],
-                 "price" : 258096,
-                 "productID" : "-KjeGCFaV9sDHtFCzmHq",
-                 "quantity" : 12,
-                 "timestamp" : 1494284040119,
-                 "userID" : "WuKkagJaoAbumfR0UZiKqCAoYlq1",
-                 "userName" : "Anonymous user",
-                 "warranty" : "sdxz  fdfgdgfd hgfhgh"
-             }
+              services: {
+              water:Boolean,
+              electricity:Boolean,
+              roads:Boolean},
+              seller: {
+              name: String,
+              phones: String,
+              email: String,
+              address: String
+              },
+              createdAt:Date,
+              editedAt:Date,
+              expireAt:Date,
+              sold:Boolean}
 
          for(let i=0,n=0;i<n;i++) {
              let UID = Math.ceil(Math.random() * 100000);
@@ -437,10 +339,11 @@ export class DBwrapper{
                  name :cat+" "+i,
                  //quantity :"",
                  description: "React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
-                 warranty:"runs inside this Chrome tab.Press CtrlJ to open Developer",
+
                  productID: UID,
                  price: UID,
-                // category: cat,
+                 l: cat.categoryName,
+                 subCategory
                  //timestamp: new Date().getTime()/Math.ceil(Math.random() * 10),
 
 
@@ -448,7 +351,7 @@ export class DBwrapper{
                  console.log("item added" + i + " ")
              })
          }
-*/
+
 
 
 
@@ -598,6 +501,7 @@ export class DBwrapper{
          return new Promise((resolve,reject)=>{
              that.db.transaction((tx)=>{
                  tx.executeSql('INSERT INTO Products ('+
+                      'authorID,'+
                      'title,'+
                      'description,'+
                      'productID,'+
@@ -614,13 +518,14 @@ export class DBwrapper{
                      'titleDeed,'+
                      'rating_value ' +
                      ',rating_count,'+
-                     'photos  ,'+
-                     'seller ,'+
-                     'createdAt ,'+
-                     'editedAt ,'+
-                     'expireAt ,'+
-                     'sold ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                     'photos,'+
+                     'seller,'+
+                     'createdAt,'+
+                     'editedAt,'+
+                     'expireAt,'+
+                     'sold ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                      [
+                         product.authorID,
                          product.title,
                          product.description,
                          product.path,
@@ -719,7 +624,7 @@ export class DBwrapper{
              that.db.transaction((tx) => {
                  if (category === "all")
                  {
-
+//Todo split keywords and build a query to include each word in a search
                      tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) ORDER BY timestamp DESC', [keyword], (tx, res) => {
                          return that.formatResults(tx, res, resolve)
                      }, (res) => {
@@ -737,14 +642,66 @@ export class DBwrapper{
              }, (res)=>{reject(res)}, that.successCB)
          })
      }
-     //Todo update update methode to apropiate fields
+     //Todo update update method to apropiate fields
      updateProduct(product){
 
          let that =this;
          return new Promise((resolve,reject)=>{
             that.db.transaction((tx)=>{
 
-                 tx.executeSql('UPDATE Products SET '
+                tx.executeSql('UPDATE Products SET '+
+                'authorID=(?),'+
+                'title=(?),'+
+                'description=(?),'+
+                'productID=(?)=(?),'+
+                'price_value=(?),'+
+                'price_unit=(?),'+
+                'size_value,' +
+                'size_unit=(?),'+
+                'subCategory=(?),'+//region
+                'category=(?),'+//district
+                'street=(?),'+
+                'ward=(?),'+
+                'surveyed=(?),'+
+                'planned=(?),'+
+                'titleDeed=(?),'+
+                'rating_value =(?),'+
+                'rating_count=(?),'+
+                'photos  =(?),'+
+                'seller =(?),'+
+                'createdAt =(?),'+
+                'editedAt =(?),'+
+                'expireAt =(?),'+
+                'sold=(?),'+
+                 'WHERE path=(?) AND authorID=(?)',
+                        [
+                            product.authorID,
+                            product.title,
+                            product.description,
+                            product.path,
+                            product.price.value,
+                            product.price.unit,
+                            product.size.value,
+                            product.size.unit,
+                            product.location.region,
+                            product.location.district,
+                            product.location.street,
+                            product.loacation.ward,
+                            product.legal.surveyed,
+                            product.legal.planned,
+                            product.legal.titleDeed,
+                            product.rating.value,
+                            product.rating.count,
+                            JSON.stringify(product.photos),
+                            JSON.stringify(product.seller) ,
+                            product.createdAt,
+                            product.editedAt,
+                            product.expireAt,
+                            false
+                        ],(res)=>{resolve(res)}, (res)=>{reject(res)})
+
+
+                /*tx.executeSql('UPDATE Products SET '
                      +'acceptedPaymentMethod =(?),'+
                      'areaServed=(?),'+
                      'availability=(?),'+
@@ -786,11 +743,7 @@ export class DBwrapper{
                          product.userName,
                          product.warranty,
                          JSON.stringify(product.photos)
-                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})
-
-
-
-
+                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})*/
 
              }, (res)=>{reject(res)},that.successCB)
          })
@@ -805,9 +758,8 @@ export class DBwrapper{
          for (let i = 0; i < len; i++) {
              let row = results.rows.item(i);
              row.photos = JSON.parse(row.photos);
-             row.acceptedPaymentMethod = JSON.parse(row.acceptedPaymentMethod) ;
-             row.areaServed = JSON.parse(row.areaServed);
-             row.availableDeliveryMethod = JSON.parse(row.availableDeliveryMethod);
+             row.seller = JSON.parse(row.seller);
+
              products.push(row);
              //console.log(row.photos)
 

@@ -132,7 +132,7 @@ dependencies {
 	compile project(':react-native-firestack')
 	compile project(':react-native-sqlite-storage')
 	compile project(':react-native-image-picker')
-
+    compile project(':react-native-workers')
 }
 
 

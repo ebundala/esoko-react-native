@@ -30,8 +30,9 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
          new SQLitePluginPackage(),   // register SQLite Plugin here
           new FirestackPackage(),  //register firestack here
-          new ImagePickerPackage(),
-          new MainReactPackage()
+          new ImagePickerPackage(),//image picker
+          new WorkerPackage(),//workers thread
+          new MainReactPackage(new SQLitePluginPackage(),new FirestackPackage())
 
       );
     }
