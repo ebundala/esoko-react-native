@@ -15,7 +15,7 @@ import com.facebook.soloader.SoLoader;
 import io.fullstack.firestack.FirestackPackage;
 import org.pgsqlite.SQLitePluginPackage;
 import com.imagepicker.ImagePickerPackage;
-import co.apptailor.Worker.WorkerPackage;
+//import co.apptailor.Worker.WorkerPackage;
 
 
 public class MainApplication extends Application implements ReactApplication {
@@ -32,7 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
          new SQLitePluginPackage(),   // register SQLite Plugin here
           new FirestackPackage(),  //register firestack here
           new ImagePickerPackage(),//image picker
-          new WorkerPackage(new SQLitePluginPackage(),new FirestackPackage()),//workers thread
+         // new WorkerPackage(new SQLitePluginPackage(),new FirestackPackage()),//workers thread
           new MainReactPackage()
 
       );
