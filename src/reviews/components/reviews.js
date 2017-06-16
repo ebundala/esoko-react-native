@@ -19,7 +19,7 @@ import StarRating from 'react-native-star-rating';
 
 import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
-import ExNavigator from '@expo/react-native-navigator';
+//import ExNavigator from '@expo/react-native-navigator';
 import {shortenText} from '../../utils/utils'
 let moment = require('moment');
 
@@ -348,7 +348,7 @@ export class CreateReview extends Component{
 
                                 openModal={(route) => {
                                     // console.log(route.getTitle())
-                                    navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
+                                    //navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
                                 }}
 
                                 clearOnClose={false} // delete the values of the form when unmounted
@@ -546,14 +546,9 @@ export class CreateReview extends Component{
         }
 
         return (
+            <View></View>
 
-            <ExNavigator
-                initialRoute={routes.getHomeRoute()}
-                sceneStyle={{ paddingTop: 56 }}
-                navigationBarStyle={{backgroundColor:primaryColor}}
-                titleStyle={[{color:colours.paperGrey900.color,marginTop:16,fontWeight:"bold"}]}
-                style={[styles.flex1]}
-            />
+            
 
         );
     }
