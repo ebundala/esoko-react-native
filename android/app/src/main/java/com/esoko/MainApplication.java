@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.facebook.react.ReactApplication;
+import com.microsoft.codepush.react.CodePush;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -15,12 +16,18 @@ import com.facebook.soloader.SoLoader;
 import io.fullstack.firestack.FirestackPackage;
 import org.pgsqlite.SQLitePluginPackage;
 import com.imagepicker.ImagePickerPackage;
-//import co.apptailor.Worker.WorkerPackage;
+
 
 
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
+
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -32,9 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
          new SQLitePluginPackage(),   // register SQLite Plugin here
           new FirestackPackage(),  //register firestack here
           new ImagePickerPackage(),//image picker
-         // new WorkerPackage(new SQLitePluginPackage(),new FirestackPackage()),//workers thread
-          new MainReactPackage()
-
+          new MainReactPackage(),
+            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG)
       );
     }
   };

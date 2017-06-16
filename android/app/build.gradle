@@ -65,6 +65,7 @@ import com.android.build.OutputFile
  * ]
  */
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 /**
@@ -132,6 +133,7 @@ dependencies {
 	compile project(':react-native-firestack')
 	compile project(':react-native-sqlite-storage')
 	compile project(':react-native-image-picker')
+	compile project(':react-native-code-push')
     //compile project(':react-native-workers')
 }
 

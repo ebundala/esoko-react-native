@@ -89,11 +89,49 @@ import Firestack from 'react-native-firestack'
 
 
 
+let scheme={
+    description: String,
+    price: {
+        value:Number,
+        unit:String},
+    size: {
+        value:Number,
+        unit:String
+    },
+    location: {
+        region:  String,
+        street:String,
+        district: String,
+        ward: String
+    },
+    legal: {
+        surveyed: Boolean,
+        planned:Boolean,
+        titleDeed:Boolean},
+    rating: {
+        value: Number,
+        count: Number
+    },
+    photos: Array,
 
+    services: {
+        water:Boolean,
+        electricity:Boolean,
+        roads:Boolean},
+    seller: {
+        name: String,
+        phones: String,
+        email: String,
+        address: String
+    },
+    createdAt:Date,
+    editedAt:Date,
+    expireAt:Date,
+    sold:Boolean}
 
 
 import {IMAGES} from "../products/products.actions"
-
+import {initialState } from "../navigationView/categories.actions"
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 SQLite.enablePromise(false);
@@ -287,49 +325,15 @@ export class DBwrapper{
 
          let products=[];
 
-import {initialState } from "../../navigationView/categories.actions"
 
+            let ph={
+                 "data":"https://firebasestorage.googleapis.com/v0/b/nunua-ardhi.appspot.com/o/images%2FC3l3u9xsgphsDko4uq0JFlgsCSo1%2F-KcWgHvCwNd70oudwVVT%2FIMG-20170208-WA0029.jpg?alt=media&token=d9d65fdd-ef0e-4c11-bd0e-704787b58047",
+                 "name" : "IMG-20170208-WA0029.jpg",
+                 "type" : "image/jpeg"
+             }
 
          let catLen=initialState.length;
-             let scheme={
-                 description: String,
-              price: {
-              value:Number,
-              unit:String},
-              size: {
-              value:Number,
-              unit:String
-              },
-              location: {
-              region:  String,
-              street:String,
-              district: String,
-              ward: String
-              },
-              legal: {
-                 surveyed: Boolean,
-                  planned:Boolean,
-                  titleDeed:Boolean},
-              rating: {
-              value: Number,
-              count: Number
-              },
-              photos: Array,
 
-              services: {
-              water:Boolean,
-              electricity:Boolean,
-              roads:Boolean},
-              seller: {
-              name: String,
-              phones: String,
-              email: String,
-              address: String
-              },
-              createdAt:Date,
-              editedAt:Date,
-              expireAt:Date,
-              sold:Boolean}
 
          for(let i=0,n=0;i<n;i++) {
              let UID = Math.ceil(Math.random() * 100000);
