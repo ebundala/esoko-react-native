@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
+ AppRegistry,
  // StyleSheet,
     Image,
   View,
@@ -17,7 +17,7 @@ import Firestack from "react-native-firestack";
 import {USER_ACTIONS} from "./src/user/user.actions"
 const firestack =new Firestack();
 import configStore from './src/store'
-import codePush from "react-native-code-push";
+//import codePush from "react-native-code-push";
 
  let store=configStore();
  
@@ -118,6 +118,6 @@ export default class eSoko extends Component {
 
 
 }
-eSoko=codePush(eSoko);
+//eSoko=codePush(eSoko);
 
 AppRegistry.registerComponent('eSoko', () => eSoko);

@@ -6,7 +6,7 @@ import {applyMiddleware, createStore, compose} from 'redux';
 
 import thunk from 'redux-thunk';
 import screenTracker from './screenTracker/screenTracker';
-import createLogger from 'redux-logger';
+import {createLogger} from 'redux-logger';
 //import devTools from 'remote-redux-devtools';
 //import {apiCallMiddleware} from './utils/api/apiCallMiddleware';
 //import {clearBodyMiddleware} from './utils/api/clearBodyMiddleware';

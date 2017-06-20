@@ -1,7 +1,7 @@
 
 
 'use strict';
-
+var fs = require('fs');
 
 // Include Gulp & tools we'll use
 var gulp = require('gulp');
@@ -86,3 +86,51 @@ gulp.task("bundle",function () {
 --assets-dest android/app/src/main/res/')
 
 })
+
+gulp.task('PHPtranspile',function(cb) {
+
+    var transpiler = require('php-transpiler');
+    var instance = new transpiler({
+        browser: true // says if we generate code for browser or nodejs
+    });
+    //var readStream = fs.createReadStream(__dirname+'/src/utils/wp-db.js');
+
+    fs.readFile(__dirname+'/src/utils/ez_sql_core.php', 'utf8', function (err,data) {
+        if (err) {
+            return console.log(err);
+        }
+        //console.log(data);
+        var jsCode = instance.read(data);
+       // console.log(jsCode);
+
+
+        fs.writeFile(__dirname+'/src/utils/gen/db.js', jsCode, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The file was saved!");
+        });
+    })
+
+   /* fs.readFile(__dirname+'/src/utils/schema.php', 'utf8', function (err,data) {
+        if (err) {
+            return console.log(err);
+        }
+        //console.log(data);
+        var jsCode = instance.read(data);
+        // console.log(jsCode);
+
+
+        fs.writeFile(__dirname+'/src/utils/gen/schema.js', jsCode, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The file was saved!");
+        });
+    })*/
+//var php=require(".")
+
+    //return
+});

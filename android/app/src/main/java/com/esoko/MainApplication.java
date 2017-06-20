@@ -1,23 +1,22 @@
 package com.esoko;
 
 import android.app.Application;
-import android.util.Log;
-import java.util.Arrays;
-import java.util.List;
 
 import com.facebook.react.ReactApplication;
+
 import com.microsoft.codepush.react.CodePush;
-import com.facebook.react.ReactInstanceManager;
+import org.pgsqlite.SQLitePluginPackage;
+import io.fullstack.firestack.FirestackPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.wix.interactable.Interactable;
+
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-//user import
-import io.fullstack.firestack.FirestackPackage;
-import org.pgsqlite.SQLitePluginPackage;
-import com.imagepicker.ImagePickerPackage;
 
-
+import java.util.Arrays;
+import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -36,11 +35,12 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-         new SQLitePluginPackage(),   // register SQLite Plugin here
-          new FirestackPackage(),  //register firestack here
-          new ImagePickerPackage(),//image picker
           new MainReactPackage(),
-            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG)
+          new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
+          new FirestackPackage(),
+          new SQLitePluginPackage(),   // register SQLite Plugin here
+          new ImagePickerPackage(),
+          new Interactable()
       );
     }
   };
