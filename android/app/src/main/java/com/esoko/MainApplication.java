@@ -9,6 +9,7 @@ import org.pgsqlite.SQLitePluginPackage;
 import io.fullstack.firestack.FirestackPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.wix.interactable.Interactable;
+//import com.oblador.vectoricons.VectorIconsPackage;
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -41,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
           new SQLitePluginPackage(),   // register SQLite Plugin here
           new ImagePickerPackage(),
           new Interactable()
+          //new VectorIconsPackage()
       );
     }
   };
