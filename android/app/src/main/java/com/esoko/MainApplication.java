@@ -4,12 +4,12 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 
-import com.microsoft.codepush.react.CodePush;
+//import com.microsoft.codepush.react.CodePush;
 import org.pgsqlite.SQLitePluginPackage;
 import io.fullstack.firestack.FirestackPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.wix.interactable.Interactable;
-//import com.oblador.vectoricons.VectorIconsPackage;
+
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -23,10 +23,10 @@ public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
 
-    @Override
+   /* @Override
     protected String getJSBundleFile() {
       return CodePush.getJSBundleFile();
-    }
+    }*/
 
     @Override
     public boolean getUseDeveloperSupport() {
@@ -37,7 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
+          //new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
           new FirestackPackage(),
           new SQLitePluginPackage(),   // register SQLite Plugin here
           new ImagePickerPackage(),

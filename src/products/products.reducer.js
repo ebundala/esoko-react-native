@@ -2,7 +2,10 @@
  * Created by ebundala on 3/22/2017.
  */
 
-import {PRODUCTS_ACTIONS,initialState,IMAGES} from "./products.actions"
+import {PRODUCTS_ACTIONS,initialState,IMAGES} from "./products.consts"
+
+
+
 
 import {REHYDRATE} from 'redux-persist/constants'
 

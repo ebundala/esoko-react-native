@@ -107,9 +107,10 @@ export default class eSoko extends Component {
         }
         return (
             <View style={{flex:1}}>
-                <Image source={require("./src/pngs/background.png")} style={{resizeMode:Image.resizeMode.cover,height:null,width:null,flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"rgb(0,0,0)"}}>
                 <ActivityIndicator size={80}></ActivityIndicator>
-                </Image>
+                {false&&<Image source={require("./src/pngs/background.png")} style={{resizeMode:Image.resizeMode.cover,height:null,width:null,flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"rgb(0,0,0)"}}>
+
+                </Image>}
         </View>)
     }
 

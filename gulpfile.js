@@ -5,7 +5,7 @@ var fs = require('fs');
 
 // Include Gulp & tools we'll use
 var gulp = require('gulp');
-var download = require("gulp-download-stream");
+
 //var fs = require('fs');
 
 var DIST = 'android/app/src/main/assets/';
@@ -68,7 +68,7 @@ gulp.task("build",function(){
 })
 // Build production files, the default task
 gulp.task('default',function(cb) {
-
+    var download = require("gulp-download-stream");
   return download({
     file:"index.android.bundle",
     url:"http://localhost:8081/index.android.bundle?platform=android&dev=false&hot=false&minify=true"})

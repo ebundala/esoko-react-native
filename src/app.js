@@ -293,7 +293,7 @@ this.preConfig();
     }
 
     shouldCloseApp(nav) {
-        return false
+        //return false
         if (nav.hasOwnProperty("routes")) {
             let route = nav.routes[nav.index];
             if (route.hasOwnProperty("routes")) {
@@ -367,7 +367,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps=(dispatch)=>{
 
-    "use strict";
+
     return {...bindActionCreators(actions,dispatch),
         dispatch}
 
