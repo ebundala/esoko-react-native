@@ -1247,32 +1247,29 @@ class DatabaseWrapper {
     update( table, data, where, format = null, where_format = null ) {}
     delete( table, where, where_format = null ) {}
     process_fields( table, data, format ) {
-        let sql=[],sq=[];
-        let i=0,field,placeholder=[];
-        let values=[];
+        let sql=[],sq=[],placeholder=[],values=[],field;
+        let that=this;
         switch(format){
             case "INSERT":
-
-
                 for(field in data){
                    if(data.hasOwnProperty(field)){
                     values.push(data[field].toString());
                     sql.push(field);
-                    //sq.push(field+" VARCHAR(50)");
+                    sq.push(field+" VARCHAR(50)");
                     placeholder.push("?");
-                    i++;
+
                    }
                 }
                 sql="INSERT INTO "+table+"("+sql.toString()+") VALUES("+placeholder.toString()+")";
-               // sq="CREATE TABLE IF NOT EXISTS "+table+"( id INTEGER AUTO INCREMENT PRIMARY KEY,"+sq.toString()+")"
-                console.log(sq);
-                let that=this;
-                /*this.db.transaction(tx =>
+                sq="CREATE TABLE IF NOT EXISTS "+table+"(id INTEGER PRIMARY KEY AUTOINCREMENT,"+sq.toString()+")"
+                console.log(sql);
+
+                this.db.transaction(tx =>
                 {
                     return tx.executeSql(sq,[]).then(r=>{
                         return that.db.executeSql(sql,values).then(()=>{
                            return that.db.executeSql("SELECT * FROM "+table+"",[]).then(res => {
-                               console.log(res[0].rows.item(1))
+                               console.log(res[0].rows.item(1));
                                alert(res[0].rows.item(1))
                            }).catch(e => {
                                console.log(e)
@@ -1283,13 +1280,36 @@ class DatabaseWrapper {
                     console.log(res)
                 }).catch(e => {
                     console.log(e)
-                })*/
-
+                })
                 break;
             case "SET":
-                sql="SET ";
+                for(field in data){
+                    if(data.hasOwnProperty(field)){
+                        values.push(data[field].toString());
+                        sql.push(field+"=(?)");
+                        //sq.push(field+" VARCHAR(50)");
+                        //placeholder.push("?");
+                    }
+                }
+                sql="UPDATE "+table+" SET "+sql.toString()+" WHERE id=1";
+                console.log(sql);
+
+                this.db.transaction(tx =>
+                {
+                    return tx.executeSql(sql,values).then(tx,res=>{
+                        console.log(res.rows.item(1));
+                        alert(res.rows.item(1))
+                    })
+                }).then(res => {
+                    console.log(res)
+                }).catch(e => {
+                    console.log(e)
+                })
+
                 break;
             default:
+
+
                 break;
         }
 
@@ -1453,7 +1473,7 @@ constructor(){
 
             <View>
 
-                <Button title="close db" onPress={()=>{
+                <Button title="delete DB" onPress={()=>{
 
                     db.delete_db().then(()=>{
                         alert("db Deleted")
@@ -1462,11 +1482,18 @@ constructor(){
                     });
 
                 }}/>
-                <Button title="close db" onPress={()=>{
+                <Button title="proces field insert" onPress={()=>{
 
                     db.process_fields("users",this.props.navigation,"INSERT");
 
                 }}/>
+
+                <Button title="process field set" onPress={()=>{
+
+                    db.process_fields("users",this.props.navigation,"SET");
+
+                }}/>
+
             </View>
         </View>
         )
