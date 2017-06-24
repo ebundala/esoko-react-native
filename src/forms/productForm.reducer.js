@@ -2,7 +2,7 @@
  * Created by ebundala on 5/11/2017.
  */
 
-import {PRODUCT_FORM_ACTIONS,FORM_INITIAL_STATE} from "./productForm.actions"
+import {PRODUCT_FORM_ACTIONS,FORM_INITIAL_STATE} from "./product.formConsts"
 
 
 export default function productFormReducer(state=FORM_INITIAL_STATE,action) {

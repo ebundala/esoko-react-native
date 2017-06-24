@@ -27,8 +27,7 @@ import StarRating from 'react-native-star-rating';
 //import Accordion from "react-native-accordion"
 //import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles, {typographyStyle, colorStyle, colours} from "../../styles/styles"
-//import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
-//import ExNavigator from '@expo/react-native-navigator';
+import CollapsingHeaderWithScroll from './CollapsingHeaderWithScroll';
 import Firestack from 'react-native-firestack'
 import {shortenText} from '../../utils/utils'
 import {DB} from "../../utils/database"
@@ -65,148 +64,10 @@ export class ProductsList extends Component {
         }
 
         return (
-            <View style={[styles.flex1]}>
-                <Toolbar
-                    leftElement="arrow-back"
-                    onLeftElementPress={() => {
-                        goBack();
-                    }}
-                    centerElement={category.categoryName}
-                    searchable={{
-                        autoFocus: true,
-                        placeholder: 'Search',
-                        onSubmitEditing: e => {
-                            if (this.state.query) {
 
-                                props.searchProducts(this.state.query, category.categoryName, navigate)
-                            }
-
-                        },
-                        onChangeText: query => this.setState({query})
-                    }
-                    }
-                />
-
-                <Picker
-                    selectedValue={this.state.subCategory}
-                    onValueChange={(itemValue, itemIndex) => {
-                        this.setState({subCategory: itemValue})
-                        this.filterChanged(itemValue);
-
-                    }}>
-
-                    {category.subCategories.map((item, i) => {
-                        return <Picker.Item key={item} label={item} value={item}/>
-
-                    })}
-
-                </Picker>
-                {this.state.error && <View>
-                    <Text >
-                        {this.state.error}
-                    </Text>
-
-                </View>}
-                <ListView dataSource={this.ds.cloneWithRows(this.state.products)}
-                          contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
-                          scrollRenderAheadDistance={640}
-                          enableEmptySections={true}
-                          renderRow={(data) =>
-                              <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
-                                  data: data
-                              })}>
-                                  <View style={[, {
-                                      height: 220,
-                                      width: 180
-                                  },
-
-                                  ]}>
-                                      <Card style={[styles.flex1]}>
-
-                                          <View style={[styles.flex1]}>
-                                              <Image style={[{
-                                                  marginTop: 16, marginBottom: 8,
-                                                  width: 132, height: 132,
-                                                  resizeMode: Image.resizeMode.stretch,
-                                                  backgroundColor: colours.paperGrey300.color
-                                              }]}
-                                                     source={{uri: data.photos[0].downloadUrl}}>
-
-                                              </Image>
-                                              <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
-                                                  <View
-                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
-                                                      <Text numberOfLines={1} style={[styles.productTitle]}>
-                                                          {data.name}
-                                                      </Text>
-                                                  </View>
-                                                  <View
-                                                      style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
-                                                      <Text numberOfLines={1} style={[styles.currency]}>
-                                                          {data.currency}
-                                                      </Text>
-                                                      <Text numberOfLines={1} style={[styles.price]}>
-                                                          {data.price}
-                                                      </Text>
-                                                  </View>
-                                              </View>
-                                          </View>
+        <CollapsingHeaderWithScroll></CollapsingHeaderWithScroll>
 
 
-                                      </Card>
-                                  </View>
-                              </TouchableNativeFeedback>}
-                />
-
-                {false && <Card style={[{
-                    height: 50,
-                    margin: 0,
-                    elevation: 4,
-                    borderRadius: 0,
-                    //backgroundColor:colours.paperTeal500.color
-                }]}>
-                    <View style={[styles.horizontal]}>
-
-                        <View style={[styles.flex9]}>
-
-
-                            <TextInput
-                                ref={component => this.searchInput = component}
-                                keyboardType="web-search"
-                                style={styles.input}
-                                autoCorrect={true}
-                                autoCapitalize="none"
-                                placeholder={"Search " + title}
-                                placeholderTextColor={colours.paperGrey500.color}
-                                underlineColorAndroid="transparent"
-                                onSubmitEditing={(e) => {
-                                    if (this.state.query) {
-                                        this.searchInput.blur();
-                                        props.searchProducts(this.state.query, title, navigate)
-                                    }
-                                    else
-                                        this.searchInput.focus();
-                                }}
-                                onChangeText={query => this.setState({query})}
-                            />
-
-                        </View>
-                        <TouchableNativeFeedback onPress={() => {
-                            if (this.state.query) {
-                                this.searchInput.blur();
-                                props.searchProducts(this.state.query, title, navigate)
-                            }
-                            else
-                                this.searchInput.focus();
-                        }}>
-                            <View style={[styles.flex1, styles.centerJustified, styles.alignItemsCenter]}>
-                                <Icon name="search"/>
-                            </View>
-                        </TouchableNativeFeedback>
-                    </View>
-                </Card>}
-
-            </View>
         )
     }
 

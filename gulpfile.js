@@ -11,8 +11,8 @@ var gulp = require('gulp');
 var DIST = 'android/app/src/main/assets/';
 var ProjectDir="/"
 
-var spwner=function(cmd){
-  var cdvSpawn = require('child_process').exec;
+var spwner=function(cmd,kill){
+  var cdvSpawn = require('child_process');
 
 
   var options = {
@@ -23,7 +23,7 @@ var spwner=function(cmd){
     //cwd: ProjectDir,
     env: process.env
   };
-  var child= cdvSpawn(cmd, options,function(error, stdout, stderr){
+  var child= cdvSpawn.exec(cmd, options,function(error, stdout, stderr){
 
 
 
@@ -52,12 +52,20 @@ var spwner=function(cmd){
       return child;
     }
   });
+    setTimeout(() => {
+        if(kill) {
+            console.log("killed")
+            cdvSpawn.kill("SIGTERM");
+        }// does not terminate the node process in the shell
+    }, 2000);
 }
 gulp.task("serve",function(){
-  spwner('start react-native start');
+ var sp= spwner('start react-native start',true);
+
+
 })
 gulp.task("log",function(){
-  spwner('start adb logcat com.eSoko:V ReactNativeJS:V Firestack:V *:E');
+  spwner('start adb logcat com.eSoko:V ReactNativeJS:V Firestack:V *:E',true)
 })
 gulp.task("run",function(){
   spwner('react-native run-android');
