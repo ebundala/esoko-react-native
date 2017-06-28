@@ -614,11 +614,11 @@ class DatabaseWrapper extends Singleton{
          }).catch(e => {
              console.log(e)
          });*/
-        // return new Promise((resolve,reject)=>{});
+
 
          return this.db.executeSql(sql,values).then(res=>{
-                console.log("query res ",res);
-                that.last_result.push(res);
+                console.log("query res ",res[0]);
+                that.last_result.push(res[0]);
                 return res;
 
             }).catch(e => {
@@ -633,43 +633,38 @@ class DatabaseWrapper extends Singleton{
     _do_query(){}
     insert(){}
     replace(){}
-    _insert_replace_helper( table, data, format = null, type = 'INSERT' ) {}
+    //_insert_replace_helper( table, data, format = null, type = 'INSERT' ) {}
     update( table, data, where, format = null, where_format = null ) {}
     delete( table, where, where_format = null ) {}
-    process_fields( table, data, format ) {
+    process_fields( table, data, format ){
         let sql=[],sq=[],placeholder=[],values=[],field;
         let that=this;
         switch(format){
+            case "CREATE":
+                for(field in data){
+                    if(data.hasOwnProperty(field)){
+                        //values.push(data[field].toString());
+                        sql.push(field+" "+data[field].toString());
+                    }
+                }
+                //sql=sql.join(" ?, ")+" ? ";
+                 sql="CREATE TABLE IF NOT EXISTS "+table+"(id INTEGER PRIMARY KEY AUTOINCREMENT,"+sql.toString()+")";
+                console.log(sql);
+
+                break;
             case "INSERT":
                 for(field in data){
                    if(data.hasOwnProperty(field)){
                     values.push(data[field].toString());
                     sql.push(field);
-                    sq.push(field+" VARCHAR(50)");
+
                     placeholder.push("?");
 
                    }
                 }
                 sql="INSERT INTO "+table+"("+sql.toString()+") VALUES("+placeholder.toString()+")";
-                sq="CREATE TABLE IF NOT EXISTS "+table+"(id INTEGER PRIMARY KEY AUTOINCREMENT,"+sq.toString()+")";
                 console.log(sql);
-                /*this.db.transaction(tx =>
-                {
-                    return tx.executeSql(sq,[]).then(r=>{
-                        return that.db.executeSql(sql,values).then(()=>{
-                            return that.db.executeSql("SELECT * FROM "+table+"",[]).then(res => {
-                                console.log("res",res[0].rows.item(0));
-                                //alert(res[0].rows.item(1))
-                            }).catch(e => {
-                                console.log(e)
-                            })
-                        })
-                    })
-                }).then(res => {
-                    console.log("trx",res)
-                }).catch(e => {
-                    console.log(e)
-                });*/
+
                break;
             case "SET":
                 for(field in data){
@@ -682,18 +677,7 @@ class DatabaseWrapper extends Singleton{
                 }
                 sql="UPDATE "+table+" SET "+sql.toString()+" WHERE id=1";
                 console.log(sql);
-               /* this.db.transaction(tx =>
-                {
-                    return tx.executeSql(sql,values).then(tx,res=>{
-                        console.log(res.rows.item(1));
-                        alert(res.rows.item(1))
-                    })
-                }).then(res => {
-                    console.log(res)
-                }).catch(e => {
-                    console.log(e)
-                });
-*/
+
                 break;
             case "AND":
                 for(field in data){
@@ -716,21 +700,9 @@ class DatabaseWrapper extends Singleton{
                 }
                sql=sql.join(" OR ");
                 sql="SELECT * FROM "+table+" WHERE ("+sql.toString()+")";
-               /* this.db.transaction(tx =>
-                {
-                    return tx.executeSql(sql,values).then(tx,res=>{
-                        console.log(res);
-                        alert(res.rows.item(0))
-                    }).catch(e => {
-                        console.log(e)
-                    });
-                }).then(res => {
-                    console.log(res)
-                }).catch(e => {
-                    console.log(e)
-                });
-                console.log(sql);*/
+
                 break;
+
             default:
                 sql="";
 
@@ -911,9 +883,24 @@ constructor(){
                     });
 
                 }}/>
+
+                <Button title=" Create table" onPress={()=>{
+                    db.query( db.process_fields("users",{
+                        name:"VARCHAR(50)",
+                        age:"INTEGER",
+                        job:"VARCHAR(50)",
+                        industry:"VARCHAR(50)"
+                    },"CREATE")
+                    ).then((res)=>{
+                        console.log("result",res)
+                    });
+
+                }}/>
                 <Button title=" insert" onPress={()=>{
 
-                    db.process_fields("users",this.state,"INSERT");
+                    db.query(db.process_fields("users",this.state,"INSERT")).then((res)=>{
+                        console.log("result",res)
+                    });
 
                 }}/>
 
