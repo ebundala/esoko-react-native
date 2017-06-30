@@ -46,7 +46,7 @@ const database_size = 200000;
 
 
 class DatabaseWrapper extends Singleton{
-    constructor(dbname){
+    constructor(dbname) {
         super();
 
         /**
@@ -121,7 +121,7 @@ class DatabaseWrapper extends Singleton{
          * @access private
          * @var array
          */
-        this.last_query="";
+        this.last_query = "";
 
         /**
          * Results of the last query made
@@ -130,7 +130,7 @@ class DatabaseWrapper extends Singleton{
          * @access private
          * @var array|null
          */
-        this.last_result=[];
+        this.last_result = [];
 
         /**
          * MySQL result, which is either a resource or boolean.
@@ -139,53 +139,8 @@ class DatabaseWrapper extends Singleton{
          * @access protected
          * @var mixed
          */
-       this.result="";
+        this.result = "";
 
-        /**
-         * Cached column info, for sanity checking data before inserting
-         *
-         * @since 4.2.0
-         * @access protected
-         * @var array
-         */
-       this.col_meta = [];
-
-        /**
-         * Calculated character sets on tables
-         *
-         * @since 4.2.0
-         * @access protected
-         * @var array
-         */
-       this.table_charset = [];
-
-        /**
-         * Whether text fields in the current query need to be sanity checked.
-         *
-         * @since 4.2.0
-         * @access protected
-         * @var bool
-         */
-       this.check_current_query = true;
-
-        /**
-         * Flag to ensure we don't run into recursion problems when checking the collation.
-         *
-         * @since 4.2.0
-         * @access private
-         * @see wpdb::check_safe_collation()
-         * @var bool
-         */
-        this.checking_collation = false;
-
-        /**
-         * Saved info on the table column
-         *
-         * @since 0.71
-         * @access protected
-         * @var array
-         */
-       this.col_info=[];
 
         /**
          * Saved queries that were executed
@@ -194,7 +149,7 @@ class DatabaseWrapper extends Singleton{
          * @access private
          * @var array
          */
-        this.queries=[];
+        this.queries = [];
 
         /**
          * The number of times to retry reconnecting before dying.
@@ -204,7 +159,7 @@ class DatabaseWrapper extends Singleton{
          * @see wpdb::check_connection()
          * @var int
          */
-       this.reconnect_retries = 5;
+        this.reconnect_retries = 5;
 
         /**
          * WordPress table prefix
@@ -226,7 +181,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.base_prefix="";
+        this.base_prefix = "";
 
         /**
          * Whether the database queries are ready to start executing.
@@ -237,23 +192,6 @@ class DatabaseWrapper extends Singleton{
          */
         this.ready = false;
 
-        /**
-         * Blog ID.
-         *
-         * @since 3.0.0
-         * @access public
-         * @var int
-         */
-        this.blogid = 0;
-
-        /**
-         * Site ID.
-         *
-         * @since 3.0.0
-         * @access public
-         * @var int
-         */
-        this.siteid = 0;
 
         /**
          * List of WordPress per-blog tables
@@ -263,31 +201,9 @@ class DatabaseWrapper extends Singleton{
          * @see wpdb::tables()
          * @var array
          */
-        this.tables = [ 'posts', 'comments', 'links', 'options', 'postmeta',
-            'terms', 'term_taxonomy', 'term_relationships', 'termmeta', 'commentmeta' ];
+        this.tables = ['posts', 'comments', 'postmeta',
+            'terms', 'term_taxonomy', 'term_relationships', 'termmeta', 'commentmeta'];
 
-        
-
-        /**
-         * List of WordPress global tables
-         *
-         * @since 3.0.0
-         * @access private
-         * @see wpdb::tables()
-         * @var array
-         */
-        this.global_tables = ['users', 'usermeta' ];
-
-        /**
-         * List of Multisite global tables
-         *
-         * @since 3.0.0
-         * @access private
-         * @see wpdb::tables()
-         * @var array
-         */
-        this.ms_global_tables = [ 'blogs', 'signups', 'site', 'sitemeta',
-            'sitecategories', 'registration_log', 'blog_versions' ];
 
         /**
          * WordPress Comments table
@@ -296,7 +212,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.comments="";
+        this.comments = "comments";
 
         /**
          * WordPress Comment Metadata table
@@ -305,25 +221,8 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.commentmeta="";
+        this.commentmeta = "commentmeta";
 
-        /**
-         * WordPress Links table
-         *
-         * @since 1.5.0
-         * @access public
-         * @var string
-         */
-        this.links="";
-
-        /**
-         * WordPress Options table
-         *
-         * @since 1.5.0
-         * @access public
-         * @var string
-         */
-        this.options="";
 
         /**
          * WordPress Post Metadata table
@@ -332,7 +231,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.postmeta="";
+        this.postmeta = "";
 
         /**
          * WordPress Posts table
@@ -341,7 +240,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.posts="";
+        this.posts = "postmeta";
 
         /**
          * WordPress Terms table
@@ -350,7 +249,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.terms="";
+        this.terms = "terms";
 
         /**
          * WordPress Term Relationships table
@@ -359,7 +258,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.term_relationships="";
+        this.term_relationships = "term_relationships";
 
         /**
          * WordPress Term Taxonomy table
@@ -368,7 +267,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.term_taxonomy="";
+        this.term_taxonomy = "term_taxonomy";
 
         /**
          * WordPress Term Meta table.
@@ -377,128 +276,7 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.termmeta="";
-
-        //
-        // Global and Multisite tables
-        //
-
-        /**
-         * WordPress User Metadata table
-         *
-         * @since 2.3.0
-         * @access public
-         * @var string
-         */
-        this.usermeta="";
-
-        /**
-         * WordPress Users table
-         *
-         * @since 1.5.0
-         * @access public
-         * @var string
-         */
-        this.users="";
-
-        /**
-         * Multisite Blogs table
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.blogs="";
-
-        /**
-         * Multisite Blog Versions table
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.blog_versions="";
-
-        /**
-         * Multisite Registration Log table
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.registration_log="";
-
-        /**
-         * Multisite Signups table
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.signups="";
-
-        /**
-         * Multisite Sites table
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.site="";
-
-        /**
-         * Multisite Sitewide Terms table
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.sitecategories="";
-
-        /**
-         * Multisite Site Metadata table
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.sitemeta="";
-
-        /**
-         * Format specifiers for DB columns. Columns not listed here default to %s. Initialized during WP load.
-         *
-         * Keys are column names, values are format types: 'ID' => '%d'
-         *
-         * @since 2.8.0
-         * @see wpdb::prepare()
-         * @see wpdb::insert()
-         * @see wpdb::update()
-         * @see wpdb::delete()
-         * @see wp_set_wpdb_vars()
-         * @access public
-         * @var array
-         */
-        this.field_types = [];
-
-        /**
-         * Database table columns charset
-         *
-         * @since 2.2.0
-         * @access public
-         * @var string
-         */
-        this.charset="";
-
-        /**
-         * Database table columns collate
-         *
-         * @since 2.2.0
-         * @access public
-         * @var string
-         */
-        this.collate="";
-
-       
+        this.termmeta = "termmeta";
 
         /**
          * Database Name
@@ -507,10 +285,7 @@ class DatabaseWrapper extends Singleton{
          * @access protected
          * @var string
          */
-       this.dbname=dbname;
-
-       
-
+        this.dbname = dbname;
         /**
          * Database Handle
          *
@@ -518,8 +293,8 @@ class DatabaseWrapper extends Singleton{
          * @access protected
          * @var string
          */
-       this.dbh=SQLite;
-        this.db=null;
+        this.dbh = SQLite;
+        this.db = null;
         /**
          * A textual description of the last query/get_row/get_var call
          *
@@ -527,8 +302,8 @@ class DatabaseWrapper extends Singleton{
          * @access public
          * @var string
          */
-        this.func_call="";
-        
+        this.func_call = [];
+
         /**
          * Whether we've managed to successfully connect at some point
          *
@@ -537,185 +312,280 @@ class DatabaseWrapper extends Singleton{
          * @var bool
          */
         this.has_connected = false;
-      if(this.dbname&&this.dbh)
-        this.connect();
+        if (this.dbname && this.dbh)
+            this.connect();
     }
-    connect(name){
-        let that=this;
-      return  this.dbh.echoTest().then((r)=>{
-          return  that.dbh.openDatabase({name : that.dbname||name}).then((DB) => {
+
+    connect(name) {
+        let that = this;
+        return this.dbh.echoTest().then((r) => {
+            return that.dbh.openDatabase({name: that.dbname || name}).then((DB) => {
                 that.db = DB;
-                if(that.db){
-                    that.has_connected=true;
-                    return(that.db);
+                if (that.db) {
+                    that.has_connected = true;
+                    return (that.db);
                 }
-                throw (new Error("failed to connect to database "+that.dbname))
+                throw (new Error("failed to connect to database " + that.dbname))
             }).catch((error) => {
                 console.log(error);
             });
 
 
-        }).catch(function(e){
+        }).catch(function (e) {
             console.log(e);
         })
 
     }
-    tables(){}
-    prepare(){
 
+    tables() {
     }
-    show_errors(){
-        this.show_error=true;
+
+    prepare(table, data, format) {
+        return this.process_fields(table, data, format);
     }
-    hide_errors(){
-        this.show_error=false;
+
+    show_errors() {
+        this.show_error = true;
     }
-    flush(){
+
+    hide_errors() {
+        this.show_error = false;
+    }
+
+    flush() {
         this.last_result = [];
-        this.col_info = [];
         this.last_query = "";
+        this.num_queries = 0;
+        this.last_error = "";
+        this.queries = [];
+        this.rows_affected = 0;
+        this.num_rows = 0;
+        this.insert_id = 0;
+        this.func_call=[];
+
+
         //this.from_disk_cache = false;
     }
-    check_connection(){
+
+    check_connection() {
 
         return this.has_connected;
     }
-     query (sqlObject){
-        let values=[];
-        let sql="";
-         if(sqlObject.hasOwnProperty("sql"))
-         {
-            sql=sqlObject.sql;
-            values=sqlObject.values;
 
-        }else{
-             sql=sqlObject;
+    query(sqlObject) {
+        let values = [];
+        let sql = "";
+        if (sqlObject.hasOwnProperty("sql")) {
+            sql = sqlObject.sql;
+            values = sqlObject.values;
+        } else {
+            sql = sqlObject;
+        }
+        this.last_query = sql;
+        this.queries.push(sqlObject);
+        this.num_queries++;
+        this.func_call.push(`\db.query(\"${sql}\")`);
 
-         }
-        this.last_query=sql;
-         this.num_queries++;
+        let that = this;
 
-        let that=this;
-
-       /*  this.db.transaction(tx =>
-         {
-            // return tx.executeSql(sq,[]).then(r=>{
-                 return that.db.executeSql(sql,values).then(()=>{
-                     return that.db.executeSql("SELECT * FROM "+table+"",[]).then(res => {
-                         console.log("res",res[0].rows.item(0));
-                         //alert(res[0].rows.item(1))
-                     }).catch(e => {
-                         console.log(e)
-                     })
-                 })
-            // })
-         }).then(res => {
-             console.log("trx",res)
-         }).catch(e => {
-             console.log(e)
-         });*/
-
-
-         return this.db.executeSql(sql,values).then(res=>{
-                console.log("query res ",res[0]);
+        return this.db.executeSql(sql, values).then(res => {
+            console.log("query response ", res);
+            if (res instanceof Array && res.length) {
+                that.rows_affected = res[0].rowsAffected;
+                that.num_rows = res[0].rows.length;
+                that.insert_id = res[0].insertId;
                 that.last_result.push(res[0]);
-                return res;
 
-            }).catch(e => {
-                console.log(e);
-                that.last_error=e;
-
-            });
-
+                return res[0];
+            }
+            else {
+                throw new Error(sql + "\n query result is not an array");
+            }
+        }).catch(e => {
+            console.log(e);
+            that.last_error = e;
+            that.last_result.push(e);
+        });
 
 
     }
-    _do_query(){}
-    insert(){}
-    replace(){}
+
+    debug() {
+        this.func_call.push(`\db.debug()`);
+        console.log("all query info\n", this.last_result, "\n", this.queries, "\n",this.func_call,"\n\n\n\n");
+        console.log("last query info\n", this.last_result[this.num_queries-1], "\n", this.func_call[this.func_call.length-2], "\n", this.last_query);
+    }
+
+    insert(table, data) {
+
+        let sql = this.process_fields(table, data, "INSERT");
+        this.func_call.push(`\db.insert(${sql})`);
+        return this.query(sql)
+    }
+
+    replace(table, oldData, newData) {
+        let sql = this.process_fields(table, oldData, "AND");
+        this.func_call.push(`\db.replace(\"${table}\",${oldData},${newData})`);
+
+        return this.query(sql).then((res) => {
+            if (res.rows.length) {
+                let item = res.rows.item(0);
+                newData.where = "id=" + item.id;
+                sql = this.process_fields(table, newData, "SET");
+                return this.query(sql)
+            }
+            throw new Error("Item not found ")
+        })
+
+    }
+
     //_insert_replace_helper( table, data, format = null, type = 'INSERT' ) {}
-    update( table, data, where, format = null, where_format = null ) {}
-    delete( table, where, where_format = null ) {}
-    process_fields( table, data, format ){
-        let sql=[],sq=[],placeholder=[],values=[],field;
-        let that=this;
-        switch(format){
+    update(table, data, where) {
+   let sql=this.process_fields(table,{...data,where},"SET");
+        return this.query(sql)
+    }
+
+    delete(table, where) {
+        let data={
+            where:where
+        };
+       let sql=this.process_fields(table,data,"DELETE");
+        return this.query(sql);
+    }
+
+    process_fields(table, data, format) {
+        let sql = [], placeholder = [], values = [], field;
+        let conditions = "";
+        this.func_call.push(`\db.process_fields(\"${table}\",${data},${format})`);
+        switch (format) {
             case "CREATE":
-                for(field in data){
-                    if(data.hasOwnProperty(field)){
+                for (field in data) {
+                    if (data.hasOwnProperty(field)) {
                         //values.push(data[field].toString());
-                        sql.push(field+" "+data[field].toString());
+                        sql.push(field + " " + data[field].toString());
                     }
                 }
-                //sql=sql.join(" ?, ")+" ? ";
-                 sql="CREATE TABLE IF NOT EXISTS "+table+"(id INTEGER PRIMARY KEY AUTOINCREMENT,"+sql.toString()+")";
+                sql = "CREATE TABLE IF NOT EXISTS " + table + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + sql.toString() + ")";
                 console.log(sql);
-
                 break;
             case "INSERT":
-                for(field in data){
-                   if(data.hasOwnProperty(field)){
-                    values.push(data[field].toString());
-                    sql.push(field);
-
-                    placeholder.push("?");
-
-                   }
-                }
-                sql="INSERT INTO "+table+"("+sql.toString()+") VALUES("+placeholder.toString()+")";
-                console.log(sql);
-
-               break;
-            case "SET":
-                for(field in data){
-                    if(data.hasOwnProperty(field)){
+                for (field in data) {
+                    if (data.hasOwnProperty(field)&&(field != "where")) {
                         values.push(data[field].toString());
-                        sql.push(field+"=?");
-                        //sq.push(field+" VARCHAR(50)");
-                        //placeholder.push("?");
+                        sql.push(field);
+
+                        placeholder.push("?");
+
                     }
                 }
-                sql="UPDATE "+table+" SET "+sql.toString()+" WHERE id=1";
+                sql = "INSERT INTO " + table + "(" + sql.toString() + ") VALUES(" + placeholder.toString() + ")";
+                console.log(sql);
+                break;
+            case "SET":
+
+                for (field in data) {
+                    if (data.hasOwnProperty(field)) {
+                        if (field != "where") {
+                            values.push(data[field].toString());
+                            sql.push(field + "=?");
+                        }
+                        else {
+                            conditions = data["where"].toString();
+                        }
+                    }
+                }
+                if (conditions) {
+                    sql = "UPDATE " + table + " SET " + sql.toString() + " WHERE " + conditions;
+                }
+                else {
+                    sql = "";
+
+                }
                 console.log(sql);
 
+                break;
+            case "DELETE":
+                if (data.hasOwnProperty("where")) {
+                    conditions = data["where"].toString();
+
+                } else {
+
+                    for (field in data) {
+                        if (data.hasOwnProperty(field)) {
+                            values.push(data[field].toString());
+                            sql.push(field + "=?");
+
+                        }
+                    }
+                }
+                if (conditions) {
+                    sql = "DELETE FROM " + table + " WHERE " + conditions;
+                    values = [];
+                }
+                else {
+                    sql = "DELETE FROM " + table + " WHERE " + sql.toString();
+
+                }
+                console.log(sql);
                 break;
             case "AND":
-                for(field in data){
-                    if(data.hasOwnProperty(field)){
-                        values.push(data[field].toString());
-                        sql.push(field+"=?");
-                    }
+                if (data.hasOwnProperty("where")){
+                    conditions = data["where"].toString();
                 }
-                sql=sql.join(" AND ");
-                sql="SELECT * FROM "+table+" WHERE ("+sql.toString()+")";
-                console.log(sql);
+                else {
+                    for (field in data) {
+                        if (data.hasOwnProperty(field)&&(field != "where")) {
 
+                                values.push(data[field].toString());
+                                sql.push(field + "=?");
+
+                        }
+                    }
+                    sql = sql.join(" AND ");
+                }
+
+                if(conditions){
+                    sql = "SELECT * FROM " + table + " WHERE "+conditions;
+                }
+                else{
+                sql = "SELECT * FROM " + table + " WHERE (" + sql.toString() + ")";
+                }
+                console.log(sql);
                 break;
             case "OR":
-                for(field in data){
-                    if(data.hasOwnProperty(field)){
-                        values.push(data[field].toString());
-                        sql.push(field+"=?");
-                    }
+                if (data.hasOwnProperty("where")){
+                    conditions = data["where"].toString();
                 }
-               sql=sql.join(" OR ");
-                sql="SELECT * FROM "+table+" WHERE ("+sql.toString()+")";
-
+            else {
+                    for (field in data) {
+                        if (data.hasOwnProperty(field)&&(field != "where")) {
+                                values.push(data[field].toString());
+                                sql.push(field + "=?");
+                        }
+                    }
+                    sql = sql.join(" OR ");
+            }
+                if (conditions) {
+                    sql = "SELECT * FROM " + table + " WHERE " + conditions;
+                    values = []
+                } else {
+                    sql = "SELECT * FROM " + table + " WHERE (" + sql.toString() + ")";
+                }
                 break;
-
             default:
-                sql="";
+                sql = "";
 
         }
 
-        return {sql,values};
+        return {sql, values};
     }
+
     //process_field_formats( data, format ) {}
-    get_var( query = null,field,x = 0, y = 0 ) {
+    get_var( query = null,field, x = 0, y = this.num_queries) {
 
         let values;
         // Log how the function was called
-        this.func_call = `\db.get_var(\"${query}\",${x},${y})`;
+        this.func_call.push(`\db.get_var(\"${query}\",${x},${y})`);
         let that = this;
 
         return new Promise((resolve, reject) => {
@@ -727,18 +597,19 @@ class DatabaseWrapper extends Singleton{
             }
 
             // Extract var out of cached results based x,y vals
-            if (that.last_result[y]) {
-                values = that.last_result[y];
+            if (that.last_result.length&&that.last_result[y-1]) {
+                values = that.last_result[y-1];
             }
 
             // If there is a value return it else return null
-            resolve(values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(x)[field] : null);
+            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(x)[field] : null);
         });
     }
-    get_row( query = null ,x=0,y = 0) {
+
+    get_row( query = null,x = 0, y = this.num_queries) {
         let values;
         // Log how the function was called
-        this.func_call = `\db.get_row(\"${query}\",${x},${y})`;
+        this.func_call.push(`\db.get_row(\"${query}\",${x},${y})`);
 
         let that = this;
 
@@ -746,23 +617,24 @@ class DatabaseWrapper extends Singleton{
             // If there is a query then perform it if not then use cached results..
             if (query) {
                 return that.query(query).then((results) => {
-                    resolve(results.rows.length ? results.rows.item(y): null);
+                    resolve(results.rows.length ? results.rows.item(y) : null);
                 });
             }
 
             // Extract var out of cached results based x,y vals
-            if (that.last_result[x]) {
-                values = that.last_result[x];
+            if (that.last_result.length&&that.last_result[y-1]) {
+                values = that.last_result[y-1];
             }
 
             // If there is a value return it else return null
-            resolve(values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(y): null);
+            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(x) : null);
         });
     }
-    get_col( query = null ,field, x = 0 ) {
-        let values=[];
+
+    get_col( query = null,field, y = this.num_queries) {
+        let values = [];
         // Log how the function was called
-        this.func_call = `\db.get_col(\"${query}\",${x})`;
+        this.func_call.push(`\db.get_col(\"${query}\",${field},${y})`);
 
         let that = this;
 
@@ -770,34 +642,32 @@ class DatabaseWrapper extends Singleton{
             // If there is a query then perform it if not then use cached results..
             if (query) {
                 return that.query(query).then((results) => {
-                    let len=results.rows.length;
-                    for (let i=0;i<len;i++)
-                    {
+                    let len = results.rows.length;
+                    for (let i = 0; i < len; i++) {
                         values.push(results.rows.item(i)[field]);
                     }
-                    resolve(values.length ? values: null);
+                    resolve(values.length ? values : null);
                 });
             }
 
             // Extract var out of cached results based x,y vals
-            if (that.last_result[x]) {
-                let last=that.last_result[x];
-                let len=last.hasOwnProperty("rows") && last.rows.length ? last.rows.length: 0;
-                for (let i=0;i<len;i++)
-                {
+            if (that.last_result.length&&that.last_result[y-1]) {
+                let last = that.last_result[y-1];
+                let len = last.hasOwnProperty("rows") && last.rows.length ? last.rows.length : 0;
+                for (let i = 0; i < len; i++) {
                     values.push(last.rows.item(i)[field]);
                 }
 
             }
 
             // If there is a value return it else return null
-            resolve(values instanceof Array && values.length ? values: null);
+            resolve(values instanceof Array && values.length ? values : null);
         });
     }
-    get_results( query = null, x = 0 )
-    {
+
+    get_results(query = null, y = this.num_queries) {
         let values;
-        this.func_call = `\db->get_results(\"${query}\", ${x})`;
+        this.func_call.push(`\db.get_results(\"${query}\", ${y})`);
         let that = this;
         return new Promise((resolve, reject) => {
             if (query) {
@@ -806,38 +676,42 @@ class DatabaseWrapper extends Singleton{
                     resolve(results.rows.length ? results : null);
                 })
             }
-            if (that.last_result[x]) {
-                values = that.last_result[x];
+            if (that.last_result.length&&that.last_result[y-1]) {
+                values = that.last_result[y-1];
 
             }
 
 
-            resolve(values.hasOwnProperty("rows") && values.rows.length ? values : null);
+            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values : null);
         })
     }
-    close(){
+
+    close() {
+        this.func_call.push("db.close()");
         if (this.db) {
             console.log("Closing database ...");
-            let that=this;
-           return this.db.close().then((status) => {
-               that.has_connected=false;
-            return this.flush();
+            let that = this;
+            return this.db.close().then((status) => {
+                that.has_connected = false;
+                return this.flush();
             }).catch((error) => {
                 console.log("Closing database ... error");
             });
         } else {
-            return new Promise((r,reject)=>{
+            console.log("Database not opened");
+            return new Promise((r, reject) => {
                 reject(new Error("db is undefined"));
             })
-            console.log("Database not opened");
+
         }
     }
-    delete_db(dbname){
-      return  this.dbh.deleteDatabase(this.dbname||dbname).then(() => {
+
+    delete_db(dbname) {
+        return this.dbh.deleteDatabase(this.dbname || dbname).then(() => {
             console.log("Database DELETED");
 
         }).catch((error) => {
-          console.log("Database DELETE error");
+            console.log("Database DELETE error");
         });
     }
 }
@@ -892,51 +766,148 @@ constructor(){
                         industry:"VARCHAR(50)"
                     },"CREATE")
                     ).then((res)=>{
-                        console.log("result",res)
+                        //console.log("result",res)
+                        db.debug();
                     });
 
                 }}/>
                 <Button title=" insert" onPress={()=>{
 
                     db.query(db.process_fields("users",this.state,"INSERT")).then((res)=>{
-                        console.log("result",res)
+                       // console.log("result",res)
+                        db.debug();
                     });
 
                 }}/>
 
-                <Button title=" set" onPress={()=>{
+                <Button title=" update" onPress={()=>{
 
+                let item ={...this.state};
 
-                    db.query(db.process_fields("users",this.state,"SET")).then(res=>{
-
-                        console.log("result",res);
+                    //console.log(this.state)
+                    db.update("users",this.state,"id=1").then((res)=>{
+                        // console.log("result",res)
+                        db.debug();
                     });
                 }}/>
 
                 <Button title=" AND " onPress={()=>{
 
-
+                    //console.log(this.state)
                     db.query(db.process_fields("users",this.state,"AND")).then(res=>{
-
-                        console.log("result",res);
+                        db.debug();
+                        //console.log("result",res);
                     });
             }}/>
 
                 <Button title=" OR " onPress={()=>{
-
+                    console.log(this.state);
                     db.query(db.process_fields("users",this.state,"OR")).then(res=>{
-
-                        console.log("result",res);
+                        db.debug();
+                        //console.log("result",res);
                     });
 
                 }}/>
 
                 <Button title=" query " onPress={()=>{
                     //db.process_fields("users",this.state,"INSERT")
-                    db.query("SELECT * FROM users")
+                    db.query("SELECT * FROM users").then((res)=>{
+                        db.debug();
+                        console.log(res)
+                    })
                     /*.then((res)=>{
                         console.log("result",db.last_result[db.num_queries-1])
                     });*/
+
+                }}/>
+
+                <Button title=" replace " onPress={()=>
+                {
+                    //db.process_fields("users",this.state,"INSERT")
+                    db.replace("users",this.state,this.state)
+                    .then((res)=>{
+                     db.debug();
+                        console.log(res)
+                     });
+
+                }}/>
+                <Button title=" get_var " onPress={()=>
+                {
+                    //db.process_fields("users",this.state,"INSERT")
+                    db.get_var(null,"name")
+                        .then((res)=>{
+                            //db.debug();
+                            console.log(res);
+                        });
+                    db.get_var("SELECT * FROM users","name")
+                        .then((res)=>{
+                            //db.debug();
+                            console.log("with param",res);
+                        });
+
+                }}/>
+                <Button title=" get_col " onPress={()=>
+                {
+                    //db.process_fields("users",this.state,"INSERT")
+                    db.get_col(null,"name")
+                        .then((res)=>{
+
+                            //db.debug();
+                            console.log(res)
+                        });
+
+                    db.get_col("SELECT * FROM users","job",)
+                        .then((res)=>{
+
+                           // db.debug();
+                            console.log("with param",res)
+                        });
+
+                }}/>
+                <Button title=" get_row " onPress={()=>
+                {
+                    //db.process_fields("users",this.state,"INSERT")
+                    db.get_row(null,5)
+                        .then((res)=>{
+
+                            //db.debug();
+                            console.log("with param",res)
+                        });
+                    db.get_row()
+                        .then((res)=>{
+
+                            //db.debug();
+                            console.log(res)
+                        });
+
+                }}/>
+                <Button title=" get_results " onPress={()=>
+                {
+                    //db.process_fields("users",this.state,"INSERT")
+                    db.get_results("SELECT * FROM users")
+                        .then((res)=>{
+
+                           // db.debug();
+                            console.log("with param",res)
+                        });
+
+                    db.get_results()
+                        .then((res)=>{
+
+                            //db.debug();
+                            console.log(res)
+                        });
+
+                }}/>
+                <Button title=" delete " onPress={()=>
+                {
+                    //db.process_fields("users",this.state,"INSERT")
+                    db.delete("users","id=2")
+                        .then((res)=>{
+
+                            db.debug();
+                            console.log(res)
+                        });
 
                 }}/>
             </View>

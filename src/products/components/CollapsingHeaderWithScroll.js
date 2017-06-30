@@ -45,6 +45,7 @@ export default class CollapsingHeaderWithScroll extends Component {
             boundaries={{top: -150}}
             onSnap={this.onSnap.bind(this)}
             animatedValueY={this._deltaY}>
+
             <ScrollView
               bounces={false}
               canCancelContentTouches={this.state.canScroll}
@@ -58,6 +59,7 @@ export default class CollapsingHeaderWithScroll extends Component {
               <View style={styles.placeholder} />
               <View style={styles.placeholder} />
             </ScrollView>
+
           </Interactable.View>
 
       </View>
@@ -65,13 +67,16 @@ export default class CollapsingHeaderWithScroll extends Component {
   }
   onSnap(event) {
     const { id } = event.nativeEvent;
+
     if (id === 'bottom') {
       this.setState({ canScroll: true });
-      alert('This implementation is still broken, in progress');
+        console.log('This implementation is still broken, in progress');
     }
   }
   onScroll(event) {
+
     const { contentOffset } = event.nativeEvent;
+      //console.log(this._deltaY);
     if (contentOffset.y === 0) {
       this.setState({ canScroll: false });
     }

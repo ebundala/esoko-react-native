@@ -15,13 +15,11 @@ import {
     Alert,
     ViewPagerAndroid,
     TouchableNativeFeedback,
-   
     WebView,
     Picker
 } from "react-native";
 import {Card} from 'react-native-material-design';
 import {Toolbar, Divider, Icon, ActionButton, RippleFeedback} from 'react-native-material-ui';
-//import  {Navigator} from 'react-native-depricated-custom-component'
 import Button from 'apsl-react-native-button'
 import StarRating from 'react-native-star-rating';
 //import Accordion from "react-native-accordion"
@@ -65,7 +63,7 @@ export class ProductsList extends Component {
 
         return (
 
-        <CollapsingHeaderWithScroll></CollapsingHeaderWithScroll>
+        <CollapsingHeaderWithScroll/>
 
 
         )
