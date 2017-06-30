@@ -43,12 +43,12 @@ export const searchProducts = (keyword,category, navigate) => {
     "use strict";
     return (dispatch) => {
 
-        DB.searchProducts(keyword,category).then((products)=>{
+        /*DB.searchProducts(keyword,category).then((products)=>{
             navigate("searchResults", {title:"Results from "+category,products})
 
         }).catch((e)=>{
             alert("error occured");
-        })
+        })*/
 
     }
 

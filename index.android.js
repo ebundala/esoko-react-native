@@ -8,7 +8,8 @@ import {
   View,
     ActivityIndicator,
  // TouchableHighlight,
-    AsyncStorage
+    AsyncStorage,
+    Text
 } from 'react-native';
 import { persistStore} from 'redux-persist'
 import { Provider } from 'react-redux'
@@ -18,8 +19,9 @@ import {USER_ACTIONS} from "./src/user/user.actions"
 const firestack =new Firestack();
 import configStore from './src/store'
 //import codePush from "react-native-code-push";
-
- let store=configStore();
+import {DB} from "./src/utils/database"
+import {get_DB_schema} from "./src/utils/schema"
+let store=configStore();
  
  
 export default class eSoko extends Component {
@@ -29,68 +31,79 @@ export default class eSoko extends Component {
         this.state = { rehydrated: false ,authChecked:false}
     }
 
-    componentWillMount(){
+    componentDidMount(){
+        let that=this;
+
+        DB.connect().then(db => {
+            DB.db.sqlBatch(get_DB_schema()).then((res) => {
+                console.log("table creation results", res);
+                persistStore(store, {
+                    storage: AsyncStorage,
+                    blacklist: ['activity', "nav", "navOauth", "products", "forms", "form"]
+                }, () => {
+                    firestack.auth.listenForAuth((evt) => {
+
+                        // evt is the authentication event
+                        // it contains an `error` key for carrying the
+                        // error message in case of an error
+                        // and a `user` key upon successful authentication
+                        if (!evt.authenticated) {
+                            // There was an error or there is no user
+
+                            //NavigationOauth.navigate("start")
+                            // setPage("Oauth")
+                            let {user}=store.getState();
+                            // console.log("user obj ",user)
+                            if (user.isNewUser) {
+                                store.dispatch(
+                                    {
+                                        type: USER_ACTIONS.LOGOUT,
+                                        status: "Initial"
+                                        //data:null
+                                    }
+                                )
+                            }
+                            else {
+                                store.dispatch(
+                                    {
+                                        type: USER_ACTIONS.LOGOUT,
+                                        status: "OK"
+                                        //data:null
+                                    })
+                            }
+
+                        } else {
+                            // evt.user contains the user details
+                            console.log('User details', evt.user);
+                            // NavigationOauth.navigate("account")
+                            // setPage("app")
+                            store.dispatch({
+                                type: USER_ACTIONS.LOGIN,
+                                status: "OK",
+                                data: {
+                                    ...evt
+                                }
+                            });
+                            //userLoggedIn(evt,NavigationOauth.navigate,setPage,dispatch)
 
 
-        persistStore(store, {storage:AsyncStorage,blacklist: ['activity',"nav","navOauth","products","forms","form"]},() => {
-            firestack.auth.listenForAuth((evt)=>{
-
-                // evt is the authentication event
-                // it contains an `error` key for carrying the
-                // error message in case of an error
-                // and a `user` key upon successful authentication
-                if (!evt.authenticated) {
-                    // There was an error or there is no user
-
-                    //NavigationOauth.navigate("start")
-                    // setPage("Oauth")
-                    let {user}=store.getState();
-                   // console.log("user obj ",user)
-                    if(user.isNewUser){
-                    store.dispatch(
-                        {
-                            type: USER_ACTIONS.LOGOUT,
-                            status: "Initial"
-                            //data:null
                         }
-                    )
-                    }
-                    else {
-                        store.dispatch(
-                            {
-                                type: USER_ACTIONS.LOGOUT,
-                                status: "OK"
-                                //data:null
-                            })
-                    }
 
-                } else {
-                    // evt.user contains the user details
-                    console.log('User details', evt.user);
-                    // NavigationOauth.navigate("account")
-                    // setPage("app")
-                    store.dispatch({
-                        type: USER_ACTIONS.LOGIN,
-                        status: "OK",
-                        data: {
-                            ...evt
-                        }
-                    });
-                    //userLoggedIn(evt,NavigationOauth.navigate,setPage,dispatch)
+                        this.setState({authChecked: true});
 
+                    })
+                        .then(() => console.log('Listening for authentication changes'))
 
+                    this.setState({rehydrated: true})
 
-                }
+                });
 
-                this.setState({authChecked:true});
-
-            })
-                .then(()=>console.log('Listening for authentication changes'))
-
-            this.setState({ rehydrated: true })
-
-        });
-
+            }).catch((e) => {
+                console.log(e)
+            });
+        }).catch((e) => {
+that.setState({error:e.message});
+        })
     }
     componentWillUnmount() {
         //BackAndroid.removeEventListener('backPress');
@@ -108,7 +121,8 @@ export default class eSoko extends Component {
         return (
             <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
 
-                <ActivityIndicator size={80}></ActivityIndicator>
+                {!this.state.error&&<ActivityIndicator size={80}></ActivityIndicator>}
+                <Text> {this.state.error}</Text>
                 {false&&<Image source={require("./src/pngs/background.png")} style={{resizeMode:Image.resizeMode.cover,height:null,width:null,flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"rgb(0,0,0)"}}>
 
                 </Image>}

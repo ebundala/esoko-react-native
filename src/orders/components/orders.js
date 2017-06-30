@@ -6,925 +6,252 @@
 
 'use strict';
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     Text,
     View,
     ListView,
     Button,
-    TouchableNativeFeedback
+    TouchableNativeFeeDBack
 } from 'react-native';
 
 //import { StackNavigator } from 'react-navigation';
-import { Toolbar} from 'react-native-material-ui';
+import {Toolbar} from 'react-native-material-ui';
 
 import {IMAGES} from "../../products/products.consts"
 
-import styles,{typographyStyle,colorStyle,colours} from "../../styles/styles"
-
-
-
+import styles, {typographyStyle, colorStyle, colours} from "../../styles/styles"
 
 
 import SQLite from 'react-native-sqlite-storage';
-import Singleton from "../../utils/singleton";
-SQLite.DEBUG(true);
-SQLite.enablePromise(true);
+import DatabaseWrapper, {DB,database_name} from "../../utils/database";
+import {get_DB_schema} from "../../utils/schema";
 
 
 
 
-
-
-
-
-const database_name = "eso.db";
-const database_version = "1.0";
-const database_displayname = "SQLite Test Database";
-const database_size = 200000;
-
-
-class DatabaseWrapper extends Singleton{
-    constructor(dbname) {
+export class OrdersList extends Component {
+    constructor() {
         super();
-
-        /**
-         * Whether to show SQL/DB errors.
-         *
-         * Default behavior is to show errors if both WP_DEBUG and WP_DEBUG_DISPLAY
-         * evaluated to true.
-         *
-         * @since 0.71
-         * @access private
-         * @var bool
-         */
-        this.show_error = false;
-
-        /**
-         * Whether to suppress errors during the DB bootstrapping.
-         *
-         * @access private
-         * @since 2.5.0
-         * @var bool
-         */
-        this.suppress_errors = false;
-
-        /**
-         * The last error during query.
-         *
-         * @since 2.5.0
-         * @var string
-         */
-        this.last_error = '';
-
-        /**
-         * Amount of queries made
-         *
-         * @since 1.2.0
-         * @access public
-         * @var int
-         */
-        this.num_queries = 0;
-
-        /**
-         * Count of rows returned by previous query
-         *
-         * @since 0.71
-         * @access public
-         * @var int
-         */
-        this.num_rows = 0;
-
-        /**
-         * Count of affected rows by previous query
-         *
-         * @since 0.71
-         * @access private
-         * @var int
-         */
-        this.rows_affected = 0;
-
-        /**
-         * The ID generated for an AUTO_INCREMENT column by the previous query (usually INSERT).
-         *
-         * @since 0.71
-         * @access public
-         * @var int
-         */
-        this.insert_id = 0;
-
-        /**
-         * Last query made
-         *
-         * @since 0.71
-         * @access private
-         * @var array
-         */
-        this.last_query = "";
-
-        /**
-         * Results of the last query made
-         *
-         * @since 0.71
-         * @access private
-         * @var array|null
-         */
-        this.last_result = [];
-
-        /**
-         * MySQL result, which is either a resource or boolean.
-         *
-         * @since 0.71
-         * @access protected
-         * @var mixed
-         */
-        this.result = "";
-
-
-        /**
-         * Saved queries that were executed
-         *
-         * @since 1.5.0
-         * @access private
-         * @var array
-         */
-        this.queries = [];
-
-        /**
-         * The number of times to retry reconnecting before dying.
-         *
-         * @since 3.9.0
-         * @access protected
-         * @see wpdb::check_connection()
-         * @var int
-         */
-        this.reconnect_retries = 5;
-
-        /**
-         * WordPress table prefix
-         *
-         * You can set this to have multiple WordPress installations
-         * in a single database. The second reason is for possible
-         * security precautions.
-         *
-         * @since 2.5.0
-         * @access public
-         * @var string
-         */
-        this.prefix = '';
-
-        /**
-         * WordPress base table prefix.
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.base_prefix = "";
-
-        /**
-         * Whether the database queries are ready to start executing.
-         *
-         * @since 2.3.2
-         * @access private
-         * @var bool
-         */
-        this.ready = false;
-
-
-        /**
-         * List of WordPress per-blog tables
-         *
-         * @since 2.5.0
-         * @access private
-         * @see wpdb::tables()
-         * @var array
-         */
-        this.tables = ['posts', 'comments', 'postmeta',
-            'terms', 'term_taxonomy', 'term_relationships', 'termmeta', 'commentmeta'];
-
-
-        /**
-         * WordPress Comments table
-         *
-         * @since 1.5.0
-         * @access public
-         * @var string
-         */
-        this.comments = "comments";
-
-        /**
-         * WordPress Comment Metadata table
-         *
-         * @since 2.9.0
-         * @access public
-         * @var string
-         */
-        this.commentmeta = "commentmeta";
-
-
-        /**
-         * WordPress Post Metadata table
-         *
-         * @since 1.5.0
-         * @access public
-         * @var string
-         */
-        this.postmeta = "";
-
-        /**
-         * WordPress Posts table
-         *
-         * @since 1.5.0
-         * @access public
-         * @var string
-         */
-        this.posts = "postmeta";
-
-        /**
-         * WordPress Terms table
-         *
-         * @since 2.3.0
-         * @access public
-         * @var string
-         */
-        this.terms = "terms";
-
-        /**
-         * WordPress Term Relationships table
-         *
-         * @since 2.3.0
-         * @access public
-         * @var string
-         */
-        this.term_relationships = "term_relationships";
-
-        /**
-         * WordPress Term Taxonomy table
-         *
-         * @since 2.3.0
-         * @access public
-         * @var string
-         */
-        this.term_taxonomy = "term_taxonomy";
-
-        /**
-         * WordPress Term Meta table.
-         *
-         * @since 4.4.0
-         * @access public
-         * @var string
-         */
-        this.termmeta = "termmeta";
-
-        /**
-         * Database Name
-         *
-         * @since 3.1.0
-         * @access protected
-         * @var string
-         */
-        this.dbname = dbname;
-        /**
-         * Database Handle
-         *
-         * @since 0.71
-         * @access protected
-         * @var string
-         */
-        this.dbh = SQLite;
-        this.db = null;
-        /**
-         * A textual description of the last query/get_row/get_var call
-         *
-         * @since 3.0.0
-         * @access public
-         * @var string
-         */
-        this.func_call = [];
-
-        /**
-         * Whether we've managed to successfully connect at some point
-         *
-         * @since 3.9.0
-         * @access private
-         * @var bool
-         */
-        this.has_connected = false;
-        if (this.dbname && this.dbh)
-            this.connect();
-    }
-
-    connect(name) {
-        let that = this;
-        return this.dbh.echoTest().then((r) => {
-            return that.dbh.openDatabase({name: that.dbname || name}).then((DB) => {
-                that.db = DB;
-                if (that.db) {
-                    that.has_connected = true;
-                    return (that.db);
-                }
-                throw (new Error("failed to connect to database " + that.dbname))
-            }).catch((error) => {
-                console.log(error);
-            });
-
-
-        }).catch(function (e) {
-            console.log(e);
-        })
-
-    }
-
-    tables() {
-    }
-
-    prepare(table, data, format) {
-        return this.process_fields(table, data, format);
-    }
-
-    show_errors() {
-        this.show_error = true;
-    }
-
-    hide_errors() {
-        this.show_error = false;
-    }
-
-    flush() {
-        this.last_result = [];
-        this.last_query = "";
-        this.num_queries = 0;
-        this.last_error = "";
-        this.queries = [];
-        this.rows_affected = 0;
-        this.num_rows = 0;
-        this.insert_id = 0;
-        this.func_call=[];
-
-
-        //this.from_disk_cache = false;
-    }
-
-    check_connection() {
-
-        return this.has_connected;
-    }
-
-    query(sqlObject) {
-        let values = [];
-        let sql = "";
-        if (sqlObject.hasOwnProperty("sql")) {
-            sql = sqlObject.sql;
-            values = sqlObject.values;
-        } else {
-            sql = sqlObject;
-        }
-        this.last_query = sql;
-        this.queries.push(sqlObject);
-        this.num_queries++;
-        this.func_call.push(`\db.query(\"${sql}\")`);
-
-        let that = this;
-
-        return this.db.executeSql(sql, values).then(res => {
-            console.log("query response ", res);
-            if (res instanceof Array && res.length) {
-                that.rows_affected = res[0].rowsAffected;
-                that.num_rows = res[0].rows.length;
-                that.insert_id = res[0].insertId;
-                that.last_result.push(res[0]);
-
-                return res[0];
-            }
-            else {
-                throw new Error(sql + "\n query result is not an array");
-            }
-        }).catch(e => {
-            console.log(e);
-            that.last_error = e;
-            that.last_result.push(e);
-        });
-
-
-    }
-
-    debug() {
-        this.func_call.push(`\db.debug()`);
-        console.log("all query info\n", this.last_result, "\n", this.queries, "\n",this.func_call,"\n\n\n\n");
-        console.log("last query info\n", this.last_result[this.num_queries-1], "\n", this.func_call[this.func_call.length-2], "\n", this.last_query);
-    }
-
-    insert(table, data) {
-
-        let sql = this.process_fields(table, data, "INSERT");
-        this.func_call.push(`\db.insert(${sql})`);
-        return this.query(sql)
-    }
-
-    replace(table, oldData, newData) {
-        let sql = this.process_fields(table, oldData, "AND");
-        this.func_call.push(`\db.replace(\"${table}\",${oldData},${newData})`);
-
-        return this.query(sql).then((res) => {
-            if (res.rows.length) {
-                let item = res.rows.item(0);
-                newData.where = "id=" + item.id;
-                sql = this.process_fields(table, newData, "SET");
-                return this.query(sql)
-            }
-            throw new Error("Item not found ")
-        })
-
-    }
-
-    //_insert_replace_helper( table, data, format = null, type = 'INSERT' ) {}
-    update(table, data, where) {
-   let sql=this.process_fields(table,{...data,where},"SET");
-        return this.query(sql)
-    }
-
-    delete(table, where) {
-        let data={
-            where:where
-        };
-       let sql=this.process_fields(table,data,"DELETE");
-        return this.query(sql);
-    }
-
-    process_fields(table, data, format) {
-        let sql = [], placeholder = [], values = [], field;
-        let conditions = "";
-        this.func_call.push(`\db.process_fields(\"${table}\",${data},${format})`);
-        switch (format) {
-            case "CREATE":
-                for (field in data) {
-                    if (data.hasOwnProperty(field)) {
-                        //values.push(data[field].toString());
-                        sql.push(field + " " + data[field].toString());
-                    }
-                }
-                sql = "CREATE TABLE IF NOT EXISTS " + table + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + sql.toString() + ")";
-                console.log(sql);
-                break;
-            case "INSERT":
-                for (field in data) {
-                    if (data.hasOwnProperty(field)&&(field != "where")) {
-                        values.push(data[field].toString());
-                        sql.push(field);
-
-                        placeholder.push("?");
-
-                    }
-                }
-                sql = "INSERT INTO " + table + "(" + sql.toString() + ") VALUES(" + placeholder.toString() + ")";
-                console.log(sql);
-                break;
-            case "SET":
-
-                for (field in data) {
-                    if (data.hasOwnProperty(field)) {
-                        if (field != "where") {
-                            values.push(data[field].toString());
-                            sql.push(field + "=?");
-                        }
-                        else {
-                            conditions = data["where"].toString();
-                        }
-                    }
-                }
-                if (conditions) {
-                    sql = "UPDATE " + table + " SET " + sql.toString() + " WHERE " + conditions;
-                }
-                else {
-                    sql = "";
-
-                }
-                console.log(sql);
-
-                break;
-            case "DELETE":
-                if (data.hasOwnProperty("where")) {
-                    conditions = data["where"].toString();
-
-                } else {
-
-                    for (field in data) {
-                        if (data.hasOwnProperty(field)) {
-                            values.push(data[field].toString());
-                            sql.push(field + "=?");
-
-                        }
-                    }
-                }
-                if (conditions) {
-                    sql = "DELETE FROM " + table + " WHERE " + conditions;
-                    values = [];
-                }
-                else {
-                    sql = "DELETE FROM " + table + " WHERE " + sql.toString();
-
-                }
-                console.log(sql);
-                break;
-            case "AND":
-                if (data.hasOwnProperty("where")){
-                    conditions = data["where"].toString();
-                }
-                else {
-                    for (field in data) {
-                        if (data.hasOwnProperty(field)&&(field != "where")) {
-
-                                values.push(data[field].toString());
-                                sql.push(field + "=?");
-
-                        }
-                    }
-                    sql = sql.join(" AND ");
-                }
-
-                if(conditions){
-                    sql = "SELECT * FROM " + table + " WHERE "+conditions;
-                }
-                else{
-                sql = "SELECT * FROM " + table + " WHERE (" + sql.toString() + ")";
-                }
-                console.log(sql);
-                break;
-            case "OR":
-                if (data.hasOwnProperty("where")){
-                    conditions = data["where"].toString();
-                }
-            else {
-                    for (field in data) {
-                        if (data.hasOwnProperty(field)&&(field != "where")) {
-                                values.push(data[field].toString());
-                                sql.push(field + "=?");
-                        }
-                    }
-                    sql = sql.join(" OR ");
-            }
-                if (conditions) {
-                    sql = "SELECT * FROM " + table + " WHERE " + conditions;
-                    values = []
-                } else {
-                    sql = "SELECT * FROM " + table + " WHERE (" + sql.toString() + ")";
-                }
-                break;
-            default:
-                sql = "";
-
-        }
-
-        return {sql, values};
-    }
-
-    //process_field_formats( data, format ) {}
-    get_var( query = null,field, x = 0, y = this.num_queries) {
-
-        let values;
-        // Log how the function was called
-        this.func_call.push(`\db.get_var(\"${query}\",${x},${y})`);
-        let that = this;
-
-        return new Promise((resolve, reject) => {
-            // If there is a query then perform it if not then use cached results..
-            if (query) {
-                return that.query(query).then((results) => {
-                    resolve(results.rows.length ? results.rows.item(x)[field] : null);
-                });
-            }
-
-            // Extract var out of cached results based x,y vals
-            if (that.last_result.length&&that.last_result[y-1]) {
-                values = that.last_result[y-1];
-            }
-
-            // If there is a value return it else return null
-            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(x)[field] : null);
-        });
-    }
-
-    get_row( query = null,x = 0, y = this.num_queries) {
-        let values;
-        // Log how the function was called
-        this.func_call.push(`\db.get_row(\"${query}\",${x},${y})`);
-
-        let that = this;
-
-        return new Promise((resolve, reject) => {
-            // If there is a query then perform it if not then use cached results..
-            if (query) {
-                return that.query(query).then((results) => {
-                    resolve(results.rows.length ? results.rows.item(y) : null);
-                });
-            }
-
-            // Extract var out of cached results based x,y vals
-            if (that.last_result.length&&that.last_result[y-1]) {
-                values = that.last_result[y-1];
-            }
-
-            // If there is a value return it else return null
-            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(x) : null);
-        });
-    }
-
-    get_col( query = null,field, y = this.num_queries) {
-        let values = [];
-        // Log how the function was called
-        this.func_call.push(`\db.get_col(\"${query}\",${field},${y})`);
-
-        let that = this;
-
-        return new Promise((resolve, reject) => {
-            // If there is a query then perform it if not then use cached results..
-            if (query) {
-                return that.query(query).then((results) => {
-                    let len = results.rows.length;
-                    for (let i = 0; i < len; i++) {
-                        values.push(results.rows.item(i)[field]);
-                    }
-                    resolve(values.length ? values : null);
-                });
-            }
-
-            // Extract var out of cached results based x,y vals
-            if (that.last_result.length&&that.last_result[y-1]) {
-                let last = that.last_result[y-1];
-                let len = last.hasOwnProperty("rows") && last.rows.length ? last.rows.length : 0;
-                for (let i = 0; i < len; i++) {
-                    values.push(last.rows.item(i)[field]);
-                }
-
-            }
-
-            // If there is a value return it else return null
-            resolve(values instanceof Array && values.length ? values : null);
-        });
-    }
-
-    get_results(query = null, y = this.num_queries) {
-        let values;
-        this.func_call.push(`\db.get_results(\"${query}\", ${y})`);
-        let that = this;
-        return new Promise((resolve, reject) => {
-            if (query) {
-                return that.query(query).then((results) => {
-
-                    resolve(results.rows.length ? results : null);
-                })
-            }
-            if (that.last_result.length&&that.last_result[y-1]) {
-                values = that.last_result[y-1];
-
-            }
-
-
-            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values : null);
-        })
-    }
-
-    close() {
-        this.func_call.push("db.close()");
-        if (this.db) {
-            console.log("Closing database ...");
-            let that = this;
-            return this.db.close().then((status) => {
-                that.has_connected = false;
-                return this.flush();
-            }).catch((error) => {
-                console.log("Closing database ... error");
-            });
-        } else {
-            console.log("Database not opened");
-            return new Promise((r, reject) => {
-                reject(new Error("db is undefined"));
-            })
-
+        this.state = {
+            name: "elias",
+            age: 678,
+            job: "engineer",
+            industry: "software"
         }
     }
 
-    delete_db(dbname) {
-        return this.dbh.deleteDatabase(this.dbname || dbname).then(() => {
-            console.log("Database DELETED");
-
-        }).catch((error) => {
-            console.log("Database DELETE error");
-        });
-    }
-}
+    render() {
+        let {navigate, goBack}=this.props.navigation;
+        //let DB= new DatabaseWrapper(database_name);
+        return (
 
 
-export class OrdersList extends Component{
-constructor(){
-    super();
-    this.state={
-        name:"elias",
-        age:678,
-        job:"engineer",
-        industry:"software"
-    }
-}
-    render(){
-        let {navigate,goBack}=this.props.navigation;
-       let db= new DatabaseWrapper(database_name);
-        return(
+            <View style={{flex: 1}}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={() => {
+                        goBack();
+                    }}
+                    centerElement="Orders"
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                    }}
+                />
+
+                <View>
+                    <Button title=" connect " onPress={() => {
+                        //DB.process_fields("users",this.state,"INSERT")
+                        DB.connect()
+                            .then((res) => {
+
+                                DB.debug();
+                                console.log(res)
+                            });
+
+                    }}/>
+                    <Button title="delete DB" onPress={() => {
+
+                        DB.delete_DB().then(() => {
+                            alert("DB Deleted")
+                        }).catch((e) => {
+                            console.log(e)
+                        });
+
+                    }}/>
+
+                    <Button title=" Create tableS" onPress={() => {
+                        /*DB.query( DB.process_fields("users",{
+                         name:"VARCHAR(50)",
+                         age:"INTEGER",
+                         job:"VARCHAR(50)",
+                         industry:"VARCHAR(50)"
+                         },"CREATE")
+                         ).then((res)=>{
+                         //console.log("result",res)
+                         DB.debug();
+                         });*/
+                        DB.db.sqlBatch(get_DB_schema()).then((res) => {
+                            console.log("table creation results", res);
 
 
-        <View style={{flex:1}}>
-            <Toolbar
-                leftElement="arrow-back"
-                onLeftElementPress={()=>{
-                    goBack();
-                }}
-                centerElement="Orders"
-                searchable={{
-                    autoFocus: true,
-                    placeholder: 'Search',
-                }}
-            />
+                        }).catch((e) => {
+                            console.log(e)
+                        });
 
-            <View>
+                    }}></Button>
 
-                <Button title="delete DB" onPress={()=>{
+                <Button title=" insert" onPress={() => {
 
-                    db.delete_db().then(()=>{
-                        alert("db Deleted")
-                    }).catch((e)=>{
-                        console.log(e)
-                    });
-
-                }}/>
-
-                <Button title=" Create table" onPress={()=>{
-                    db.query( db.process_fields("users",{
-                        name:"VARCHAR(50)",
-                        age:"INTEGER",
-                        job:"VARCHAR(50)",
-                        industry:"VARCHAR(50)"
-                    },"CREATE")
-                    ).then((res)=>{
-                        //console.log("result",res)
-                        db.debug();
-                    });
-
-                }}/>
-                <Button title=" insert" onPress={()=>{
-
-                    db.query(db.process_fields("users",this.state,"INSERT")).then((res)=>{
-                       // console.log("result",res)
-                        db.debug();
-                    });
-
-                }}/>
-
-                <Button title=" update" onPress={()=>{
-
-                let item ={...this.state};
-
-                    //console.log(this.state)
-                    db.update("users",this.state,"id=1").then((res)=>{
+                    DB.query(DB.process_fields("users", this.state, "INSERT")).then((res) => {
                         // console.log("result",res)
-                        db.debug();
+                        DB.debug();
                     });
-                }}/>
 
-                <Button title=" AND " onPress={()=>{
+                }
+                }/>
+
+                <Button title=" update" onPress={() => {
+
+                    let item = {...this.state};
 
                     //console.log(this.state)
-                    db.query(db.process_fields("users",this.state,"AND")).then(res=>{
-                        db.debug();
+                    DB.update("users", this.state, "id=1").then((res) => {
+                        // console.log("result",res)
+                        DB.debug();
+                    });
+                }}/>
+
+                <Button title=" AND " onPress={() => {
+
+                    //console.log(this.state)
+                    DB.query(DB.process_fields("users", this.state, "AND")).then(res => {
+                        DB.debug();
                         //console.log("result",res);
                     });
-            }}/>
+                }}/>
 
-                <Button title=" OR " onPress={()=>{
+                <Button title=" OR " onPress={() => {
                     console.log(this.state);
-                    db.query(db.process_fields("users",this.state,"OR")).then(res=>{
-                        db.debug();
+                    DB.query(DB.process_fields("users", this.state, "OR")).then(res => {
+                        DB.debug();
                         //console.log("result",res);
                     });
 
                 }}/>
 
-                <Button title=" query " onPress={()=>{
-                    //db.process_fields("users",this.state,"INSERT")
-                    db.query("SELECT * FROM users").then((res)=>{
-                        db.debug();
+                <Button title=" query " onPress={() => {
+                    //DB.process_fields("users",this.state,"INSERT")
+                    DB.query("SELECT * FROM users").then((res) => {
+                        DB.debug();
                         console.log(res)
                     })
                     /*.then((res)=>{
-                        console.log("result",db.last_result[db.num_queries-1])
-                    });*/
+                     console.log("result",DB.last_result[DB.num_queries-1])
+                     });*/
 
                 }}/>
 
-                <Button title=" replace " onPress={()=>
-                {
-                    //db.process_fields("users",this.state,"INSERT")
-                    db.replace("users",this.state,this.state)
-                    .then((res)=>{
-                     db.debug();
-                        console.log(res)
-                     });
+                <Button title=" replace " onPress={() => {
+                    //DB.process_fields("users",this.state,"INSERT")
+                    DB.replace("users", this.state, this.state)
+                        .then((res) => {
+                            DB.debug();
+                            console.log(res)
+                        });
 
                 }}/>
-                <Button title=" get_var " onPress={()=>
-                {
-                    //db.process_fields("users",this.state,"INSERT")
-                    db.get_var(null,"name")
-                        .then((res)=>{
-                            //db.debug();
+                <Button title=" get_var " onPress={() => {
+                    //DB.process_fields("users",this.state,"INSERT")
+                    DB.get_var(null, "name")
+                        .then((res) => {
+                            //DB.debug();
                             console.log(res);
                         });
-                    db.get_var("SELECT * FROM users","name")
-                        .then((res)=>{
-                            //db.debug();
-                            console.log("with param",res);
+                    DB.get_var("SELECT * FROM users", "name")
+                        .then((res) => {
+                            //DB.debug();
+                            console.log("with param", res);
                         });
 
                 }}/>
-                <Button title=" get_col " onPress={()=>
-                {
-                    //db.process_fields("users",this.state,"INSERT")
-                    db.get_col(null,"name")
-                        .then((res)=>{
+                <Button title=" get_col " onPress={() => {
+                    //DB.process_fields("users",this.state,"INSERT")
+                    DB.get_col(null, "name")
+                        .then((res) => {
 
-                            //db.debug();
+                            //DB.debug();
                             console.log(res)
                         });
 
-                    db.get_col("SELECT * FROM users","job",)
-                        .then((res)=>{
+                    DB.get_col("SELECT * FROM users", "job",)
+                        .then((res) => {
 
-                           // db.debug();
-                            console.log("with param",res)
+                            // DB.debug();
+                            console.log("with param", res)
                         });
 
                 }}/>
-                <Button title=" get_row " onPress={()=>
-                {
-                    //db.process_fields("users",this.state,"INSERT")
-                    db.get_row(null,5)
-                        .then((res)=>{
+                <Button title=" get_row " onPress={() => {
+                    //DB.process_fields("users",this.state,"INSERT")
+                    DB.get_row(null, 5)
+                        .then((res) => {
 
-                            //db.debug();
-                            console.log("with param",res)
+                            //DB.debug();
+                            console.log("with param", res)
                         });
-                    db.get_row()
-                        .then((res)=>{
+                    DB.get_row()
+                        .then((res) => {
 
-                            //db.debug();
-                            console.log(res)
-                        });
-
-                }}/>
-                <Button title=" get_results " onPress={()=>
-                {
-                    //db.process_fields("users",this.state,"INSERT")
-                    db.get_results("SELECT * FROM users")
-                        .then((res)=>{
-
-                           // db.debug();
-                            console.log("with param",res)
-                        });
-
-                    db.get_results()
-                        .then((res)=>{
-
-                            //db.debug();
+                            //DB.debug();
                             console.log(res)
                         });
 
                 }}/>
-                <Button title=" delete " onPress={()=>
-                {
-                    //db.process_fields("users",this.state,"INSERT")
-                    db.delete("users","id=2")
-                        .then((res)=>{
+                <Button title=" get_results " onPress={() => {
+                    //DB.process_fields("users",this.state,"INSERT")
+                    DB.get_results("SELECT * FROM users")
+                        .then((res) => {
 
-                            db.debug();
+                            // DB.debug();
+                            console.log("with param", res)
+                        });
+
+                    DB.get_results()
+                        .then((res) => {
+
+                            //DB.debug();
+                            console.log(res)
+                        });
+
+                }}/>
+                <Button title=" delete " onPress={() => {
+                    //DB.process_fields("users",this.state,"INSERT")
+                    DB.delete("users", "id=2")
+                        .then((res) => {
+
+                            DB.debug();
                             console.log(res)
                         });
 
                 }}/>
             </View>
-        </View>
-        )
+    </View>
+    )
     }
 }
 
-export class SingleOrderView extends Component{
+export class SingleOrderView extends Component {
 
-    render(){
-        let {navigate,goBack}=this.props.navigation;
-        return(
-            <View style={{flex:1}}>
+    render() {
+        let {navigate, goBack}=this.props.navigation;
+        return (
+            <View style={{flex: 1}}>
                 <Toolbar
                     leftElement="arrow-back"
-                    onLeftElementPress={()=>{
+                    onLeftElementPress={() => {
                         goBack();
                     }}
                     centerElement="Orders"

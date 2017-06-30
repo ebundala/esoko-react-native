@@ -96,11 +96,9 @@ export class ProductsList extends Component {
     componentDidMount() {
         let {category}=this.props.navigation.state.params;
         let that = this;
-        DB.getProducts(category.categoryName).then((products) => {
-            //console.log(products)
-            //dispatch({type: PRODUCTS_ACTIONS.GET, data: products});
-            // navigate("products", {category})
-            if (products.length === 0) {
+        DB.query("SELECT * FROM "+DB.posts).then((products) => {
+
+            if (products.rows.length === 0) {
 
                 that.setState({error: "Nothing was found at " + this.state.subCategory+" ,"+category.categoryName})
 
@@ -111,7 +109,7 @@ export class ProductsList extends Component {
 
         }).catch((e) => {
             //alert("error occured");
-            that.setState({error: e.message})
+            that.setState({error: e.message});
             console.log(e)
         })
 

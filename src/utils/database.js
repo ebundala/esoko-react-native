@@ -10,79 +10,6 @@ import Firestack from 'react-native-firestack'
     messagingSenderId: "1071434923103"
   }; */
 
-/*export default class database extends Firestack {
-	
-    constructor(props) {
-		super();
-       //initialise firebase here
-        const NAME="databases";
-		//this.app=firestack;
-		//this.database=firestack.database;
-		//this.storage=firestack.storage;
-		//this.Auth=firestack.auth;
-		this.id="";
-		this.type=null;
-		this.data={};
-        this.debug=true;
-		if(props instanceof Object){
-			this.id=props.id?props.id:null;
-			this.data=props;
-		}
-    }
-   getID(){
-	   return this.id;
-   }
-    log(message){
-        if(this.debug&&message){
-            console.log(JSON.stringify(message))
-        }
-    }
-   getData(){
-	   return this.data;
-   }
-   setData(data){
-	   this.data=data;
-   }
-   getInfo(){
-	   return {id:this.id,type:this.type}
-   }
-    create(){
-
-        this.database.ref(this.name).push().then((res) => {
- let newPostKey = res.key;
- 
-  this.ServerValue.then(map => {
-	  this.log(map);
-   const postData = {
-     type: this.name,
-     timestamp: map.TIMESTAMP,
-     id: newPostKey,
-	 data:this.data
-    }
-    let updates = {}
-    updates['/'+this.name+'/' + newPostKey] = postData
-    this.database.ref().update(updates).then(() => {
-        this.log("posted "+this.name);
-	
-	}).catch(() => {
-		alert("error "+ctx.name)
-      
-    })
-	
-  }) 
-  
-  
-  
-}) 
-   
-
-   }
-	
-	
-    destroy(){
-    delete this;
-    }
-}*/
 
 
 
@@ -127,652 +54,694 @@ let scheme={
     createdAt:Date,
     editedAt:Date,
     expireAt:Date,
-    sold:Boolean}
-
-
+    sold:Boolean};
 import {IMAGES} from "../products/products.actions"
 import {initialState } from "../navigationView/categories.actions"
+import Singleton from "./singleton";
+
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
-SQLite.enablePromise(false);
+SQLite.enablePromise(true);
 
 
-const database_name = "esoko.db";
-const database_version = "1.0";
-const database_displayname = "SQLite Test Database";
-const database_size = 200000;
+export const database_name = "esoko.db";
+export const database_version = "1.0";
+//const database_displayname = "SQLite Test Database";
+//const database_size = 200000;
 
-let instance=null;
-const firestack=new Firestack();
-export class DBwrapper{
 
-    constructor(){
-      //super()
-        instance=this;
-        try {
-            this.openDatabase();
-        }catch (e){
-            console.error(e.message)
-        }
+
+
+
+export default class DatabaseWrapper extends Singleton{
+    constructor(dbname) {
+        super();
+
+        /**
+         * Whether to show SQL/DB errors.
+         *
+         * Default behavior is to show errors if both WP_DEBUG and WP_DEBUG_DISPLAY
+         * evaluated to true.
+         *
+         * @since 0.71
+         * @access private
+         * @var bool
+         */
+        this.show_error = false;
+
+        /**
+         * Whether to suppress errors during the DB bootstrapping.
+         *
+         * @access private
+         * @since 2.5.0
+         * @var bool
+         */
+        this.suppress_errors = false;
+
+        /**
+         * The last error during query.
+         *
+         * @since 2.5.0
+         * @var string
+         */
+        this.last_error = '';
+
+        /**
+         * Amount of queries made
+         *
+         * @since 1.2.0
+         * @access public
+         * @var int
+         */
+        this.num_queries = 0;
+
+        /**
+         * Count of rows returned by previous query
+         *
+         * @since 0.71
+         * @access public
+         * @var int
+         */
+        this.num_rows = 0;
+
+        /**
+         * Count of affected rows by previous query
+         *
+         * @since 0.71
+         * @access private
+         * @var int
+         */
+        this.rows_affected = 0;
+
+        /**
+         * The ID generated for an AUTO_INCREMENT column by the previous query (usually INSERT).
+         *
+         * @since 0.71
+         * @access public
+         * @var int
+         */
+        this.insert_id = 0;
+
+        /**
+         * Last query made
+         *
+         * @since 0.71
+         * @access private
+         * @var array
+         */
+        this.last_query = "";
+
+        /**
+         * Results of the last query made
+         *
+         * @since 0.71
+         * @access private
+         * @var array|null
+         */
+        this.last_result = [];
+
+        /**
+         * MySQL result, which is either a resource or boolean.
+         *
+         * @since 0.71
+         * @access protected
+         * @var mixed
+         */
+        this.result = "";
+
+
+        /**
+         * Saved queries that were executed
+         *
+         * @since 1.5.0
+         * @access private
+         * @var array
+         */
+        this.queries = [];
+
+        /**
+         * The number of times to retry reconnecting before dying.
+         *
+         * @since 3.9.0
+         * @access protected
+         * @see wpdb::check_connection()
+         * @var int
+         */
+        this.reconnect_retries = 5;
+
+        /**
+         * WordPress table prefix
+         *
+         * You can set this to have multiple WordPress installations
+         * in a single database. The second reason is for possible
+         * security precautions.
+         *
+         * @since 2.5.0
+         * @access public
+         * @var string
+         */
+        this.prefix = '';
+
+        /**
+         * WordPress base table prefix.
+         *
+         * @since 3.0.0
+         * @access public
+         * @var string
+         */
+        this.base_prefix = "";
+
+        /**
+         * Whether the database queries are ready to start executing.
+         *
+         * @since 2.3.2
+         * @access private
+         * @var bool
+         */
+        this.ready = false;
+
+
+        /**
+         * List of WordPress per-blog tables
+         *
+         * @since 2.5.0
+         * @access private
+         * @see wpdb::tables()
+         * @var array
+         */
+        this.tables = ['posts', 'comments', 'postmeta',
+            'terms', 'term_taxonomy', 'term_relationships', 'termmeta', 'commentmeta'];
+
+
+        /**
+         * WordPress Comments table
+         *
+         * @since 1.5.0
+         * @access public
+         * @var string
+         */
+        this.comments = "comments";
+
+        /**
+         * WordPress Comment Metadata table
+         *
+         * @since 2.9.0
+         * @access public
+         * @var string
+         */
+        this.commentmeta = "commentmeta";
+
+
+        /**
+         * WordPress Post Metadata table
+         *
+         * @since 1.5.0
+         * @access public
+         * @var string
+         */
+        this.postmeta = "postmeta";
+
+        /**
+         * WordPress Posts table
+         *
+         * @since 1.5.0
+         * @access public
+         * @var string
+         */
+        this.posts = "posts";
+
+        /**
+         * WordPress Terms table
+         *
+         * @since 2.3.0
+         * @access public
+         * @var string
+         */
+        this.terms = "terms";
+
+        /**
+         * WordPress Term Relationships table
+         *
+         * @since 2.3.0
+         * @access public
+         * @var string
+         */
+        this.term_relationships = "term_relationships";
+
+        /**
+         * WordPress Term Taxonomy table
+         *
+         * @since 2.3.0
+         * @access public
+         * @var string
+         */
+        this.term_taxonomy = "term_taxonomy";
+
+        /**
+         * WordPress Term Meta table.
+         *
+         * @since 4.4.0
+         * @access public
+         * @var string
+         */
+        this.termmeta = "termmeta";
+        this.apps="apps";
+        this.appsmeta="appsmeta";
+
+        /**
+         * Database Name
+         *
+         * @since 3.1.0
+         * @access protected
+         * @var string
+         */
+        this.dbname = dbname;
+        /**
+         * Database Handle
+         *
+         * @since 0.71
+         * @access protected
+         * @var string
+         */
+        this.dbh = SQLite;
+        this.db = null;
+        /**
+         * A textual description of the last query/get_row/get_var call
+         *
+         * @since 3.0.0
+         * @access public
+         * @var string
+         */
+        this.func_call = [];
+
+        /**
+         * Whether we've managed to successfully connect at some point
+         *
+         * @since 3.9.0
+         * @access private
+         * @var bool
+         */
+        this.has_connected = false;
+        if (this.dbname && this.dbh)
+            this.connect();
+    }
+
+    connect(name) {
+        let that = this;
+        return this.dbh.echoTest().then((r) => {
+            return that.dbh.openDatabase({name: that.dbname || name}).then((DB) => {
+                that.db = DB;
+                if (that.db) {
+                    that.has_connected = true;
+                    return (that.db);
+                }
+                throw (new Error("failed to connect to database " + that.dbname))
+            }).catch((error) => {
+                console.log(error);
+            });
+
+
+        }).catch(function (e) {
+            console.log(e);
+        })
 
     }
-     errorCB(err) {
-         console.log("error: ",err);
-         console.log("Error: "+ (err.message || err));
 
-         return false;
-     }
-     successCB() {
-         console.log("SQL executed ...");
-     }
-     openCB() {
-         console.log("Database OPEN");
-         this.populateDatabase();
-     }
-     closeCB() {
-         console.log("Database CLOSED");
+    tables() {
+    }
 
-     }
-     deleteCB() {
-         console.log("Database DELETED");
+    prepare(table, data, format) {
+        return this.process_fields(table, data, format);
+    }
 
+    show_errors() {
+        this.show_error = true;
+    }
 
-     }
-     populateDatabase(){
-         let that = this;
-         console.log("Database integrity check");
+    hide_errors() {
+        this.show_error = false;
+    }
 
-         that.db.executeSql('SELECT 1 FROM Version LIMIT 1', [],
-             function () {
-                 console.log("Database is ready ... executing query ...");
+    flush() {
+        this.last_result = [];
+        this.last_query = "";
+        this.num_queries = 0;
+        this.last_error = "";
+        this.queries = [];
+        this.rows_affected = 0;
+        this.num_rows = 0;
+        this.insert_id = 0;
+        this.func_call=[];
 
 
-                 /*that.db.executeSql('SELECT productID FROM Products ORDER BY timestamp DESC LIMIT 1', [],(res)=>{
+        //this.from_disk_cache = false;
+    }
+
+    check_connection() {
+
+        return this.has_connected;
+    }
+
+    query(sqlObject) {
+        let values = [];
+        let sql = "";
+        if (sqlObject.hasOwnProperty("sql")) {
+            sql = sqlObject.sql;
+            values = sqlObject.values;
+        } else {
+            sql = sqlObject;
+        }
+        this.last_query = sql;
+        this.queries.push(sqlObject);
+        this.num_queries++;
+        this.func_call.push(`\db.query(\"${sql}\")`);
+
+        let that = this;
+
+        return this.db.executeSql(sql, values).then(res => {
+            console.log("query response ", res);
+            if (res instanceof Array && res.length) {
+                that.rows_affected = res[0].rowsAffected;
+                that.num_rows = res[0].rows.length;
+                that.insert_id = res[0].insertId;
+                that.last_result.push(res[0]);
+
+                return res[0];
+            }
+            else {
+                throw new Error(sql + "\n query result is not an array");
+            }
+        }).catch(e => {
+            console.log(e);
+            that.last_error = e;
+            that.last_result.push(e);
+        });
 
 
-                     that.attachDbListerners(res);
+    }
 
-                    /!*if(res.rows.length) {
-                        let productID=res.rows.item(0).productID;
-                        console.log("last product ",productID);
-                        firestack.database.ref('products').orderByKey().startAt(productID).on('child_added', (snapshot) => {
+    debug() {
+        this.func_call.push(`\db.debug()`);
+        console.log("all query info\n", this.last_result, "\n", this.queries, "\n",this.func_call,"\n\n\n\n");
+        console.log("last query info\n", this.last_result[this.num_queries-1], "\n", this.func_call[this.func_call.length-2], "\n", this.last_query);
+    }
 
-                            const val = snapshot.val();
-                            //console.log("products from firebase ",val);
-                            if(productID!=val.productID)
-                            that.addProduct(val)
-                        })
+    insert(table, data) {
+
+        let sql = this.process_fields(table, data, "INSERT");
+        this.func_call.push(`\db.insert(${sql})`);
+        return this.query(sql)
+    }
+
+    replace(table, oldData, newData) {
+        let sql = this.process_fields(table, oldData, "AND");
+        this.func_call.push(`\db.replace(\"${table}\",${oldData},${newData})`);
+
+        return this.query(sql).then((res) => {
+            if (res.rows.length) {
+                let item = res.rows.item(0);
+                newData.where = "id=" + item.id;
+                sql = this.process_fields(table, newData, "SET");
+                return this.query(sql)
+            }
+            throw new Error("Item not found ")
+        })
+
+    }
+
+    update(table, data, where) {
+        let sql=this.process_fields(table,{...data,where},"SET");
+        return this.query(sql)
+    }
+
+    delete(table, where) {
+        let data={
+            where:where
+        };
+        let sql=this.process_fields(table,data,"DELETE");
+        return this.query(sql);
+    }
+
+    process_fields(table, data, format) {
+        let sql = [], placeholder = [], values = [], field;
+        let conditions = "";
+        this.func_call.push(`\db.process_fields(\"${table}\",${data},${format})`);
+        switch (format) {
+            case "CREATE":
+                for (field in data) {
+                    if (data.hasOwnProperty(field)) {
+                        //values.push(data[field].toString());
+                        sql.push(field + " " + data[field].toString());
                     }
-                    else{
-                        firestack.database.ref('products').orderByKey().on('child_added', (snapshot) => {
-
-                            const val = snapshot.val();
-                            //console.log("products from firebase ",val);
-                            that.addProduct(val)
-                        })
-                    }*!/
-
-                 },(e)=>{
-
-                     console.log(e)
-                 });*/
-
-
-                 /*that.searchProducts("debugging","electronics").then(that.getAllProductsSuccess).catch((e)=>{
-                     console.error(e.message)
-                 })*/
-
-             },
-             function (error) {
-                 console.log("received version error:", error);
-                 console.log("Database not yet ready ... populating data");
-                 that.populateDB();
-
-             });
-     }
-     populateDB() {
-         let that=this;
-         this.db.transaction((tx)=>{
-         console.log("Executing DROP stmts");
-
-         tx.executeSql('DROP TABLE IF EXISTS Products;');
-         tx.executeSql('DROP TABLE IF EXISTS Orders;');
-         tx.executeSql('DROP TABLE IF EXISTS Messages;');
-
-
-         console.log("Executing CREATE stmts");
-
-
-         tx.executeSql('CREATE TABLE IF NOT EXISTS Version( '
-             + 'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB);
-
-        /* tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
-             'acceptedPaymentMethod VARCHAR(32) NOT NULL,'+
-             'areaServed VARCHAR(32),'+
-             'availability VARCHAR(32) NOT NULL,'+
-             'availableDeliveryMethod VARCHAR(32) NOT NULL,'+
-             'brand VARCHAR(32) ,'+
-             'category VARCHAR(32) NOT NULL,'+
-             'currency VARCHAR(32) NOT NULL,'+
-             ' description VARCHAR(160),'+
-             'itemCondition VARCHAR(32) NOT NULL,'+
-             'manufacturer VARCHAR(32) ,'+
-             'model VARCHAR(32) ,'+
-             'name VARCHAR(32) NOT NULL,'+
-             ' photos BLOB ,'+
-             'price INTEGER NOT NULL,'+
-             'productID PRIMARY VARCHAR(32) NOT NULL,'+
-             'quantity INTEGER NOT NULL,'+
-             'timestamp INTEGER NOT NULL,'+
-             'userID VARCHAR(32) NOT NULL,'+
-             'userName VARCHAR(32) NOT NULL,'+
-             'warranty VARCHAR(80) ,); ', [], this.successCB, this.errorCB)*/
-
-
-             tx.executeSql('CREATE VIRTUAL TABLE IF NOT EXISTS Products USING fts4( '+
-                 'authorID VARCHAR(32) NOT NULL,'+
-                 'title VARCHAR(60) NOT NULL,'+
-                 'description VARCHAR(160) NOT NULL,'+
-                 'productID PRIMARY VARCHAR(32) NOT NULL,'+
-                 'price_value INTEGER,' +
-                 'price_unit VARCHAR(3),'+
-                 'size_value INTEGER NOT NULL,' +
-                 'size_unit VARCHAR(3),'+
-                 'subCategory VARCHAR(32) NOT NULL,'+//region
-                 'category VARCHAR(32) NOT NULL,'+//district
-                 'street VARCHAR(32) NOT NULL,'+
-                 'ward VARCHAR(32) NOT NULL,'+
-                 'surveyed BOOLEAN,' +
-                 'planned BOOLEAN,' +
-                 'titleDeed BOOLEAN,'+
-                 'rating_value INTEGER NOT NULL,' +
-                 'rating_count INTEGER,'+
-                 'photos BLOB ,'+
-                 'seller BLOB,'+
-                 'createdAt INTEGER NOT NULL,'+
-                 'editedAt INTEGER NOT NULL,'+
-                 'expireAt INTEGER NOT NULL,'+
-                 'sold BOOLEAN ,); ', [], this.successCB, this.errorCB);
-
-
-
-
-
-
-
-
-
-         tx.executeSql(
-             'CREATE TABLE IF NOT EXISTS Orders( '
-             + 'orderID VARCHAR(30) PRIMARY KEY NOT NULL, '
-             + 'productID VARCHAR(30) NOT NULL, '
-             + 'price INTEGER NOT NULL, '
-             + 'bidPrice INTEGER NOT NULL, '
-             + 'sellerId VARCHAR(30) NOT NULL, '
-             + 'buyerID VARCHAR(30) NOT NULL) ; ', [], this.successCB, this.errorCB)
-
-         tx.executeSql(
-             'CREATE TABLE IF NOT EXISTS Messages( '
-             + 'messageID VARCHAR(30) PRIMARY KEY NOT NULL, '
-             + 'chatID VARCHAR(30) NOT NULL, '
-             + 'userID VARCHAR(30) NOT NULL, '
-             + 'productID VARCHAR(30),'
-             + 'message VARCHAR(250) NOT NULL, '
-             + 'FOREIGN KEY ( productID ) REFERENCES Products ( productID ));'
-             , [], this.successCB, this.errorCB)
-
-
-
-         let products=[];
-
-
-            let ph={
-                 "data":"https://firebasestorage.googleapis.com/v0/b/nunua-ardhi.appspot.com/o/images%2FC3l3u9xsgphsDko4uq0JFlgsCSo1%2F-KcWgHvCwNd70oudwVVT%2FIMG-20170208-WA0029.jpg?alt=media&token=d9d65fdd-ef0e-4c11-bd0e-704787b58047",
-                 "name" : "IMG-20170208-WA0029.jpg",
-                 "type" : "image/jpeg"
-             }
-
-         let catLen=initialState.length;
-
-
-         for(let i=0,n=0;i<n;i++) {
-             let UID = Math.ceil(Math.random() * 100000);
-             let cat =category[Math.floor(Math.random()*catLen)]
-             that.addProduct({
-                     ...scheme,
-                 name :cat+" "+i,
-                 //quantity :"",
-                 description: "React testJS code runs inside this Chrome tab.Press CtrlJ to open Developer Tools. Enable Pause On Caught Exceptions for a better debugging experience.Status: Debugger session",
-
-                 productID: UID,
-                 price: UID,
-                 l: cat.categoryName,
-                 subCategory
-                 //timestamp: new Date().getTime()/Math.ceil(Math.random() * 10),
-
-
-             }).then((res) => {
-                 console.log("item added" + i + " ")
-             })
-         }
-
-
-
-
-
-         this.populateDatabase();
-
-         }, that.errorCB, function () {
-             console.log("Database populated ... executing query ...");
-
-             /*that.db.transaction(()=>{
-
-                 that.getAllProducts().then(that.getAllProductsSuccess).catch((e)=>{
-                     console.error(e.message)
-                 })
-
-
-             },that.errorCB, function () {
-                 console.log("Transaction is now finished");
-                 console.log("Processing completed");
-
-                // that.closeDatabase();
-             });*/
-         });
-
-
-
-         console.log("all config SQL done");
-     }
-     attachDbListerners(res){
-         if(res.rows?res.rows.length:false) {
-             let productID=res.rows.item(0).productID;
-             console.log("last product ",productID);
-             firestack.database.ref('products').orderByKey().startAt(productID).on('child_added', (snapshot) => {
-
-                 const val = snapshot.val();
-                 //console.log("products from firebase ",val);
-                 if(productID!=val.productID)
-                     this.addProduct(val)
-             })
-         }
-         else{
-             firestack.database.ref('products').orderByKey().on('child_added', (snapshot) => {
-
-                 const val = snapshot.val();
-                 //console.log("products from firebase ",val);
-                 this.addProduct(val)
-             })
-         }
-     }
-     openDatabase(){
-         console.log("Opening database ...");
-
-         this.db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB.bind(this), this.errorCB);
-
-     }
-     deleteDatabase(){
-         console.log("Deleting database");
-
-         SQLite.deleteDatabase(database_name, this.deleteCB, this.errorCB);
-     }
-     closeDatabase(){
-         let that = this;
-         if (this.db) {
-             console.log("Closing database ...");
-
-             this.db.close(that.closeCB,that.errorCB);
-         } else {
-             console.log("Database was not OPENED");
-
-         }
-     }
-     getProducts(category=null,subCategory=null) {
-
-         console.log("getAllProducts sql...");
-         let that=this;
-
-         if(category){
-             return new Promise((resolve, reject) => {
-
-                 that.db.transaction((tx) => {
-
-                     tx.executeSql(' SELECT * FROM Products WHERE category=(?) ORDER BY timestamp DESC', [category],(tx,res)=>{
-                         return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
-
-                 }, (res)=>{reject(res)}, that.successCB)
-             })
-         }
-         else if(subCategory){
-
-             return new Promise((resolve, reject) => {
-
-                 that.db.transaction((tx) => {
-
-                     tx.executeSql(' SELECT * FROM Products WHERE category=(?) ORDER BY timestamp DESC', [subCategory],(tx,res)=>{
-                         return that.formatResults(tx,res,resolve)}, (res)=>{reject(res)})
-
-                 }, (res)=>{reject(res)}, that.successCB)
-             })
-         }
-
-
-
-
-         return new Promise((resolve, reject) => {
-             that.db.transaction((tx) => {
-
-                 tx.executeSql('SELECT * FROM Products ORDER BY postedOn DESC', [],(tx,res)=>{
-                     return that.formatResults(tx,res,resolve)},(res)=>{reject(res)});
-
-             }, (error)=>{
-                 reject(error)
-             }, (res)=>{
-                 //that.closeDatabase();
-                 console.log("Processing completed");
-
-             });
-         })
-
-
-     }
-
-     getAllProductsSuccess(results) {
-         console.log("results\n"+JSON.stringify(results))
-         console.log("Query completed");
-
-         let len = results.length;
-         for (let i = 0; i < len; i++) {
-             let row = results[i];
-             console.log(row);
-         }
-
-     }
-     query(sql){
-         let that =this;
-         return new Promise((resolve, reject) => {
-             console.log("Database query ... executing  ...");
-
-             that.db.transaction((tx) => {
-                 tx.executeSql(sql, [], (res)=>{resolve(res)}, (res)=>{reject(res)})
-             }, (res)=>{reject(res)}, that.successCB);
-         })
-     }
-
-     //PRODUCT METHODS
-     addProduct(product){
-         let that =this;
-         return new Promise((resolve,reject)=>{
-             that.db.transaction((tx)=>{
-                 tx.executeSql('INSERT INTO Products ('+
-                      'authorID,'+
-                     'title,'+
-                     'description,'+
-                     'productID,'+
-                     'price_value,' +
-                     'price_unit,'+
-                     'size_value,' +
-                     'size_unit,'+
-                     'subCategory,'+//region
-                     'category,'+//district
-                     'street,'+
-                     'ward,'+
-                     'surveyed' +
-                     ',planned,' +
-                     'titleDeed,'+
-                     'rating_value ' +
-                     ',rating_count,'+
-                     'photos,'+
-                     'seller,'+
-                     'createdAt,'+
-                     'editedAt,'+
-                     'expireAt,'+
-                     'sold ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                     [
-                         product.authorID,
-                         product.title,
-                         product.description,
-                         product.path,
-                         product.price.value,
-                         product.price.unit,
-                         product.size.value,
-                         product.size.unit,
-                         product.location.region,
-                         product.location.district,
-                         product.location.street,
-                         product.loacation.ward,
-                         product.legal.surveyed,
-                         product.legal.planned,
-                         product.legal.titleDeed,
-                         product.rating.value,
-                         product.rating.count,
-                         JSON.stringify(product.photos),
-                         JSON.stringify(product.seller) ,
-                        product.createdAt,
-                         product.editedAt,
-                         product.expireAt,
-                         false
-                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})
-
-                 /*tx.executeSql('INSERT INTO Products (' +
-                     'acceptedPaymentMethod ,'+
-                     'areaServed,'+
-                     'availability,'+
-                     'availableDeliveryMethod,'+
-                     'brand,'+
-                     'category,'+
-                     'currency,'+
-                    ' description,'+
-                     'itemCondition,'+
-                     'manufacturer,'+
-                     'model,'+
-                     'name,'+
-                     'price,'+
-                     'productID,'+
-                     'quantity,'+
-                     'timestamp,'+
-                     'userID,'+
-                     'userName,'+
-                     'warranty,' +
-                     'photos ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                     [
-                         JSON.stringify(product.acceptedPaymentMethod) ,
-                         JSON.stringify(product.areaServed),
-                         product.availability,
-                         JSON.stringify(product.availableDeliveryMethod),
-                         product.brand,
-                         product.category,
-                         product.currency,
-                         product.description,
-                         product.itemCondition,
-                         product.manufacturer,
-                         product.model,
-                         product.name,
-                         product.price,
-                         product.productID,
-                         product.quantity,
-                         product.timestamp,
-                         product.userID,
-                         product.userName,
-                         product.warranty,
-                         JSON.stringify(product.photos)
-                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})*/
-
-
-
-
-
-             }, (res)=>{reject(res)},that.successCB)
-         })
-     }
-     deleteProduct(id){
-         let that =this;
-         return new Promise((resolve,reject)=>{
-             that.db.transaction((tx)=>{
-
-                 tx.executeSql('DELETE FROM Products WHERE productID=(?)',
-                     [id],(res)=>{resolve(res)}, (res)=>{reject(res)})
-
-
-
-
-
-             }, (res)=>{reject(res)},that.successCB)
-         })
-     }
-     searchProducts(keyword ,category){
-         let that = this;
-
-         return new Promise((resolve, reject) => {
-
-             that.db.transaction((tx) => {
-                 if (category === "all")
-                 {
-//Todo split keywords and build a query to include each word in a search
-                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) ORDER BY timestamp DESC', [keyword], (tx, res) => {
-                         return that.formatResults(tx, res, resolve)
-                     }, (res) => {
-                         reject(res)
-                     })
-
-                 }
-                 else {
-                     tx.executeSql('SELECT * FROM Products WHERE Products MATCH (?) AND category=(?) ORDER BY timestamp DESC', [keyword, category], (tx, res) => {
-                         return that.formatResults(tx, res, resolve)
-                     }, (res) => {
-                         reject(res)
-                     })
-                 }
-             }, (res)=>{reject(res)}, that.successCB)
-         })
-     }
-     //Todo update update method to apropiate fields
-     updateProduct(product){
-
-         let that =this;
-         return new Promise((resolve,reject)=>{
-            that.db.transaction((tx)=>{
-
-                tx.executeSql('UPDATE Products SET '+
-                'authorID=(?),'+
-                'title=(?),'+
-                'description=(?),'+
-                'productID=(?)=(?),'+
-                'price_value=(?),'+
-                'price_unit=(?),'+
-                'size_value,' +
-                'size_unit=(?),'+
-                'subCategory=(?),'+//region
-                'category=(?),'+//district
-                'street=(?),'+
-                'ward=(?),'+
-                'surveyed=(?),'+
-                'planned=(?),'+
-                'titleDeed=(?),'+
-                'rating_value =(?),'+
-                'rating_count=(?),'+
-                'photos  =(?),'+
-                'seller =(?),'+
-                'createdAt =(?),'+
-                'editedAt =(?),'+
-                'expireAt =(?),'+
-                'sold=(?),'+
-                 'WHERE path=(?) AND authorID=(?)',
-                        [
-                            product.authorID,
-                            product.title,
-                            product.description,
-                            product.path,
-                            product.price.value,
-                            product.price.unit,
-                            product.size.value,
-                            product.size.unit,
-                            product.location.region,
-                            product.location.district,
-                            product.location.street,
-                            product.loacation.ward,
-                            product.legal.surveyed,
-                            product.legal.planned,
-                            product.legal.titleDeed,
-                            product.rating.value,
-                            product.rating.count,
-                            JSON.stringify(product.photos),
-                            JSON.stringify(product.seller) ,
-                            product.createdAt,
-                            product.editedAt,
-                            product.expireAt,
-                            false
-                        ],(res)=>{resolve(res)}, (res)=>{reject(res)})
-
-
-                /*tx.executeSql('UPDATE Products SET '
-                     +'acceptedPaymentMethod =(?),'+
-                     'areaServed=(?),'+
-                     'availability=(?),'+
-                     'availableDeliveryMethod=(?),'+
-                     'brand=(?),'+
-                     'category=(?),'+
-                     'currency=(?),'+
-                     ' description=(?),'+
-                     'itemCondition=(?),'+
-                     'manufacturer=(?),'+
-                     'model=(?),'+
-                     'name=(?),'+
-                     'price=(?),'+
-                     'productID=(?),'+
-                     'quantity=(?),'+
-                     'timestamp=(?),'+
-                     'userID=(?),'+
-                     'userName=(?),'+
-                     'warranty=(?),' +
-                     'photos=(?) )'+
-                     'WHERE productID=(?) AND sellerID=(?)',
-                     [   JSON.stringify(product.acceptedPaymentMethod) ,
-                         JSON.stringify(product.areaServed),
-                         product.availability,
-                         JSON.stringify(product.availableDeliveryMethod),
-                         product.brand,
-                         product.category,
-                         product.currency,
-                         product.description,
-                         product.itemCondition,
-                         product.manufacturer,
-                         product.model,
-                         product.name,
-                         product.price,
-                         product.productID,
-                         product.quantity,
-                         product.timestamp,
-                         product.userID,
-                         product.userName,
-                         product.warranty,
-                         JSON.stringify(product.photos)
-                     ],(res)=>{resolve(res)}, (res)=>{reject(res)})*/
-
-             }, (res)=>{reject(res)},that.successCB)
-         })
-     }
-     formatResults(tx,results,resolve){
-
-             //that.getAllProductsSuccess(tx,results)
-
-             let len = results.rows.length;
-             let products=[];
-             //let photos=[]
-         for (let i = 0; i < len; i++) {
-             let row = results.rows.item(i);
-             row.photos = JSON.parse(row.photos);
-             row.seller = JSON.parse(row.seller);
-
-             products.push(row);
-             //console.log(row.photos)
-
-         }
-             resolve(products)
-
-     }
-
-
+                }
+                sql = "CREATE TABLE IF NOT EXISTS " + table + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + sql.toString() + ")";
+                console.log(sql);
+                break;
+            case "INSERT":
+                for (field in data) {
+                    if (data.hasOwnProperty(field)&&(field != "where")) {
+                        values.push(data[field].toString());
+                        sql.push(field);
+
+                        placeholder.push("?");
+
+                    }
+                }
+                sql = "INSERT INTO " + table + "(" + sql.toString() + ") VALUES(" + placeholder.toString() + ")";
+                console.log(sql);
+                break;
+            case "SET":
+
+                for (field in data) {
+                    if (data.hasOwnProperty(field)) {
+                        if (field != "where") {
+                            values.push(data[field].toString());
+                            sql.push(field + "=?");
+                        }
+                        else {
+                            conditions = data["where"].toString();
+                        }
+                    }
+                }
+                if (conditions) {
+                    sql = "UPDATE " + table + " SET " + sql.toString() + " WHERE " + conditions;
+                }
+                else {
+                    sql = "";
+
+                }
+                console.log(sql);
+
+                break;
+            case "DELETE":
+                if (data.hasOwnProperty("where")) {
+                    conditions = data["where"].toString();
+
+                } else {
+
+                    for (field in data) {
+                        if (data.hasOwnProperty(field)) {
+                            values.push(data[field].toString());
+                            sql.push(field + "=?");
+
+                        }
+                    }
+                }
+                if (conditions) {
+                    sql = "DELETE FROM " + table + " WHERE " + conditions;
+                    values = [];
+                }
+                else {
+                    sql = "DELETE FROM " + table + " WHERE " + sql.toString();
+
+                }
+                console.log(sql);
+                break;
+            case "AND":
+                if (data.hasOwnProperty("where")){
+                    conditions = data["where"].toString();
+                }
+                else {
+                    for (field in data) {
+                        if (data.hasOwnProperty(field)&&(field != "where")) {
+
+                            values.push(data[field].toString());
+                            sql.push(field + "=?");
+
+                        }
+                    }
+                    sql = sql.join(" AND ");
+                }
+
+                if(conditions){
+                    sql = "SELECT * FROM " + table + " WHERE "+conditions;
+                }
+                else{
+                    sql = "SELECT * FROM " + table + " WHERE (" + sql.toString() + ")";
+                }
+                console.log(sql);
+                break;
+            case "OR":
+                if (data.hasOwnProperty("where")){
+                    conditions = data["where"].toString();
+                }
+                else {
+                    for (field in data) {
+                        if (data.hasOwnProperty(field)&&(field != "where")) {
+                            values.push(data[field].toString());
+                            sql.push(field + "=?");
+                        }
+                    }
+                    sql = sql.join(" OR ");
+                }
+                if (conditions) {
+                    sql = "SELECT * FROM " + table + " WHERE " + conditions;
+                    values = []
+                } else {
+                    sql = "SELECT * FROM " + table + " WHERE (" + sql.toString() + ")";
+                }
+                break;
+            default:
+                sql = "";
+
+        }
+
+        return {sql, values};
+    }
+
+    get_var( query = null,field, x = 0, y = this.num_queries) {
+
+        let values;
+        // Log how the function was called
+        this.func_call.push(`\db.get_var(\"${query}\",${x},${y})`);
+        let that = this;
+
+        return new Promise((resolve, reject) => {
+            // If there is a query then perform it if not then use cached results..
+            if (query) {
+                return that.query(query).then((results) => {
+                    resolve(results.rows.length ? results.rows.item(x)[field] : null);
+                });
+            }
+
+            // Extract var out of cached results based x,y vals
+            if (that.last_result.length&&that.last_result[y-1]) {
+                values = that.last_result[y-1];
+            }
+
+            // If there is a value return it else return null
+            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(x)[field] : null);
+        });
+    }
+
+    get_row( query = null,x = 0, y = this.num_queries) {
+        let values;
+        // Log how the function was called
+        this.func_call.push(`\db.get_row(\"${query}\",${x},${y})`);
+
+        let that = this;
+
+        return new Promise((resolve, reject) => {
+            // If there is a query then perform it if not then use cached results..
+            if (query) {
+                return that.query(query).then((results) => {
+                    resolve(results.rows.length ? results.rows.item(y) : null);
+                });
+            }
+
+            // Extract var out of cached results based x,y vals
+            if (that.last_result.length&&that.last_result[y-1]) {
+                values = that.last_result[y-1];
+            }
+
+            // If there is a value return it else return null
+            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values.rows.item(x) : null);
+        });
+    }
+
+    get_col( query = null,field, y = this.num_queries) {
+        let values = [];
+        // Log how the function was called
+        this.func_call.push(`\db.get_col(\"${query}\",${field},${y})`);
+
+        let that = this;
+
+        return new Promise((resolve, reject) => {
+            // If there is a query then perform it if not then use cached results..
+            if (query) {
+                return that.query(query).then((results) => {
+                    let len = results.rows.length;
+                    for (let i = 0; i < len; i++) {
+                        values.push(results.rows.item(i)[field]);
+                    }
+                    resolve(values.length ? values : null);
+                });
+            }
+
+            // Extract var out of cached results based x,y vals
+            if (that.last_result.length&&that.last_result[y-1]) {
+                let last = that.last_result[y-1];
+                let len = last.hasOwnProperty("rows") && last.rows.length ? last.rows.length : 0;
+                for (let i = 0; i < len; i++) {
+                    values.push(last.rows.item(i)[field]);
+                }
+
+            }
+
+            // If there is a value return it else return null
+            resolve(values instanceof Array && values.length ? values : null);
+        });
+    }
+
+    get_results(query = null, y = this.num_queries) {
+        let values;
+        this.func_call.push(`\db.get_results(\"${query}\", ${y})`);
+        let that = this;
+        return new Promise((resolve, reject) => {
+            if (query) {
+                return that.query(query).then((results) => {
+
+                    resolve(results.rows.length ? results : null);
+                })
+            }
+            if (that.last_result.length&&that.last_result[y-1]) {
+                values = that.last_result[y-1];
+
+            }
+
+
+            resolve(values&&values.hasOwnProperty("rows") && values.rows.length ? values : null);
+        })
+    }
+
+    close() {
+        this.func_call.push("db.close()");
+        if (this.db) {
+            console.log("Closing database ...");
+            let that = this;
+            return this.db.close().then((status) => {
+                that.has_connected = false;
+                return this.flush();
+            }).catch((error) => {
+                console.log("Closing database ... error");
+            });
+        } else {
+            console.log("Database not opened");
+            return new Promise((r, reject) => {
+                reject(new Error("db is undefined"));
+            })
+
+        }
+    }
+
+    delete_DB(dbname) {
+        return this.dbh.deleteDatabase(this.dbname || dbname).then(() => {
+            console.log("Database DELETED");
+
+        }).catch((error) => {
+            console.log("Database DELETE error");
+        });
+    }
 }
 
-export const DB =new DBwrapper();
+export const DB =new DatabaseWrapper(database_name);
