@@ -33,9 +33,8 @@ export default class eSoko extends Component {
 
     componentDidMount(){
         let that=this;
-
         DB.connect().then(db => {
-            DB.db.sqlBatch(get_DB_schema()).then((res) => {
+            DB.queryBatch(get_DB_schema()).then((res) => {
                 console.log("table creation results", res);
                 persistStore(store, {
                     storage: AsyncStorage,

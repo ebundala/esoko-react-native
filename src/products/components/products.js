@@ -543,6 +543,7 @@ export class searchResultsProductsList extends Component {
 
 
 import {ProductForm, EbModalInput, EbOptionInput, EbTextInput} from "../../forms/productForm"
+import dataScheme from "../../utils/dataSchema";
 export class CreateProduct extends Component {
 
 
@@ -580,47 +581,364 @@ export class CreateProduct extends Component {
 
 
                 />
+                <ScrollView style={{flex: 1}}>
                 <Card style={{flex: 1}}>
                     <ProductForm formName="productForm" title={title}>
-                        <EbTextInput field="name" title={"Product name"}
-                                     validator={{
-                                         errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                                         validator: "isLength",
-                                         args: [5, 32]
 
-                                     }}/>
-                        <EbTextInput field="model" title={"Model name"}
-                                     validator={{
-                                         errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                                         validator: "isLength",
-                                         args: [2, 10]
+                        {this.getPostFields().map((item)=>{
+                            return item;
+                        })}
 
-                                     }}
 
-                        />
-                        <EbTextInput field="manufacturer" title={"manufacturer"}
-
-                                     validator={{
-                                         errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                                         validator: "isLength",
-                                         args: [2, 10]
-
-                                     }}
-                        />
                     </ProductForm>
                 </Card>
+                </ScrollView>
             </View>)
                 
     }
 
+  getPostFields(){
+
+      let posts = [
+          {
+              ID: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  order: 0,
+                  props: {}
+              }
+          },
+          {
+              post_author: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  order: 0,
+                  label: "",
+                  props: {}
+              }
+          },
+          {
+              post_date: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  order: 0,
+                  props: {}
+              }
+          },
+          // post_date_gmt:"" ,
+          {
+              post_content: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "inlineText",
+                  order: 0,
+                  label: "Description",
+                  props: {}
+              }
+          },
+          {
+              post_title: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "inlineText",
+                  order: 9,
+                  label: "Title",
+                  props: {}
+              }
+          },
+          // post_excerpt:"" ,
+          {
+              post_status: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  order: 0,
+                  label: "",
+                  props: {}
+              }
+          },
+          {
+              comment_status: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  order: 0,
+                  label: "",
+                  props: {}
+              }
+          },
+          //ping_status:"" ,
+          //post_password:"" ,
+          {
+              post_name: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [50, 32]
+
+                  },
+                  widget: "hidden",
+                  order: 0,
+                  label: "",
+                  props: {}
+              }
+          },
+          // to_ping:"" ,
+          //pinged:"" ,
+          {
+              post_modified: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  order: 0,
+                  label: "",
+                  props: {}
+              }
+          },
+          // post_modified_gmt:"",
+          // post_content_filtered:"",
+          {
+              post_parent: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  label: "",
+                  order: 0,
+                  props: {}
+              }
+          },
+          {
+              guid: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  label: "",
+                  order: 0,
+                  props: {}
+              }
+          },
+          {
+              menu_order: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  label: "",
+                  order: 0,
+                  props: {}
+              }
+          },
+          {
+              post_type: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  label: "",
+                  order: 0,
+                  props: {}
+              }
+          },
+          {
+              post_mime_type: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  label: "",
+                  order: 0,
+                  props: {}
+              }
+          },
+          {
+              comment_count: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  label: "",
+                  order: 0,
+                  props: {}
+              }
+          },
+          {
+              app_id: {
+                  validator: {
+                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                      validator: "isLength",
+                      args: [5, 32]
+
+                  },
+                  widget: "hidden",
+                  label: "",
+                  order: 0,
+                  props: {}
+              }
+          }
+      ]
 
 
 
+
+        let field,fields=[],item;
+
+    posts= posts.sort((a,b)=>{
+          if(a["order"]<b["order"])return -1;
+          if(a["order"]>b["order"])return 1;
+          return 0;
+      });
+posts.forEach((post,i)=>{
+     for(field in post)
+     {
+         item=post[field];
+         switch (item.widget){
+
+             case "inlineText":
+                 fields.push(
+                     <EbTextInput key={field}
+                                  {...item.props}
+                                  field={field}
+                                  label={item.hasOwnProperty("label")?item.label:""}
+                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                     />
+                 );
+
+                 break;
+             case "hiddeng":
+
+                 fields.push(
+                     <EbTextInput key={field}
+                                               field={field}
+                                               label={item.hasOwnProperty("label")?item.label:""}
+                                               validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                     />
+                 )
+                 break;
+             case"modal":
+                 fields.push(
+
+                     <EbTextInput key={field}
+                                  field={field}
+                                  label={item.hasOwnProperty("label")?item.label:""}
+                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                     />
+
+                 )
+                 break;
+             case"filePicker":
+                 fields.push(
+                     <EbTextInput key={field}
+                                  field={field}
+                                  label={item.hasOwnProperty("label")?item.label:""}
+                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                     />
+                 )
+                 break;
+             default:
+
+         }
+
+        /*fields.push(
+            <EbTextInput key={field} field={field} label={field.replace(/\_/g," ")}
+                         validator={{
+                             errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                             validator: "isLength",
+                             args: [5, 32]
+
+                         }}/>
+        )*/
+     }
+})
+     return fields;
+ }
+
+sortFieldsOrder(){
+
+}
 
 }
 
 
+/*<EbTextInput field="name" title={"Product name"}
+             validator={{
+                 errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                 validator: "isLength",
+                 args: [5, 32]
 
+             }}/>
+<EbTextInput field="model" title={"Model name"}
+validator={{
+    errorMessage: "[TITLE] must be args[0] to args[1] characters",
+        validator: "isLength",
+        args: [2, 10]
+
+}}
+
+/>
+<EbTextInput field="manufacturer" title={"manufacturer"}
+
+validator={{
+    errorMessage: "[TITLE] must be args[0] to args[1] characters",
+        validator: "isLength",
+        args: [2, 10]
+
+}}
+/>*/
 
 
 

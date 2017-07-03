@@ -342,8 +342,8 @@ export default class DatabaseWrapper extends Singleton{
          * @var bool
          */
         this.has_connected = false;
-        if (this.dbname && this.dbh)
-            this.connect();
+       // if (this.dbname && this.dbh)
+            //this.connect();
     }
 
     connect(name) {
@@ -439,6 +439,29 @@ export default class DatabaseWrapper extends Singleton{
 
 
     }
+    queryBatch(sql){
+
+        this.last_query = sql;
+        this.queries.push(sql);
+        this.num_queries++;
+        this.func_call.push(`\db.queryBatch(\"${sql}\")`);
+
+        let that = this;
+
+        return this.db.sqlBatch(sql).then(res => {
+            console.log("query response ", res);
+
+            that.rows_affected = 0;
+            that.num_rows = 0;
+            that.insert_id = 0;
+            that.last_result.push(res[0]);
+            return res;
+        }).catch(e => {
+            console.log(e);
+            that.last_error = e;
+            that.last_result.push(e);
+        });
+    }
 
     debug() {
         this.func_call.push(`\db.debug()`);
@@ -500,7 +523,8 @@ export default class DatabaseWrapper extends Singleton{
             case "INSERT":
                 for (field in data) {
                     if (data.hasOwnProperty(field)&&(field != "where")) {
-                        values.push(data[field].toString());
+                        let val=data[field]?data[field].toString():null
+                        values.push(val);
                         sql.push(field);
 
                         placeholder.push("?");
@@ -515,7 +539,8 @@ export default class DatabaseWrapper extends Singleton{
                 for (field in data) {
                     if (data.hasOwnProperty(field)) {
                         if (field != "where") {
-                            values.push(data[field].toString());
+                            let val=data[field]?data[field].toString():null
+                            values.push(val);
                             sql.push(field + "=?");
                         }
                         else {
@@ -541,7 +566,8 @@ export default class DatabaseWrapper extends Singleton{
 
                     for (field in data) {
                         if (data.hasOwnProperty(field)) {
-                            values.push(data[field].toString());
+                            let val=data[field]?data[field].toString():null;
+                            values.push(val);
                             sql.push(field + "=?");
 
                         }
@@ -565,7 +591,8 @@ export default class DatabaseWrapper extends Singleton{
                     for (field in data) {
                         if (data.hasOwnProperty(field)&&(field != "where")) {
 
-                            values.push(data[field].toString());
+                            let val=data[field]?data[field].toString():null
+                            values.push(val);
                             sql.push(field + "=?");
 
                         }
@@ -588,7 +615,8 @@ export default class DatabaseWrapper extends Singleton{
                 else {
                     for (field in data) {
                         if (data.hasOwnProperty(field)&&(field != "where")) {
-                            values.push(data[field].toString());
+                            let val=data[field]?data[field].toString():null
+                            values.push(val);
                             sql.push(field + "=?");
                         }
                     }

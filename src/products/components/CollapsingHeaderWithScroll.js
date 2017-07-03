@@ -49,6 +49,7 @@ export default class CollapsingHeaderWithScroll extends Component {
             <ScrollView
               bounces={false}
               canCancelContentTouches={this.state.canScroll}
+              scrollEnabled={this.state.canScroll}
               onScroll={this.onScroll.bind(this)}
               style={{left: 0, right: 0, height: Screen.height - 100, backgroundColor: '#e0e0e0'}}>
               <View style={styles.placeholder} />
@@ -76,7 +77,7 @@ export default class CollapsingHeaderWithScroll extends Component {
   onScroll(event) {
 
     const { contentOffset } = event.nativeEvent;
-      //console.log(this._deltaY);
+      console.log(contentOffset);
     if (contentOffset.y === 0) {
       this.setState({ canScroll: false });
     }

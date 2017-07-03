@@ -69,7 +69,7 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
  }
 
     render(){
-        let {onValueChange,forms,formName,field,validator}=this.props;
+        let {onValueChange,forms,formName,field,label,validator}=this.props;
         return(
             <View >
             <View style={[{height:40},styles.horizontal,styles.alignItemsCenter]}>
@@ -78,7 +78,7 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
                     fontSize: 15,
                     color: '#000',
                     paddingLeft: 10,}}>
-                    {field}
+                    {label}
                 </Text>
                 </View>
                 <View style={[styles.flex1]}>
@@ -115,7 +115,7 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
                                                isValid:false,
                                                errorMessage:this.replaceAll(validator.errorMessage,
                                                    {
-                                                       "TITLE": field,
+                                                       "TITLE": label,
                                                        "args0": validator.args[0],
                                                        "args1": validator.args[1],
                                                    })

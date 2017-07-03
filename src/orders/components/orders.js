@@ -27,7 +27,7 @@ import styles, {typographyStyle, colorStyle, colours} from "../../styles/styles"
 import SQLite from 'react-native-sqlite-storage';
 import DatabaseWrapper, {DB,database_name} from "../../utils/database";
 import {get_DB_schema} from "../../utils/schema";
-
+import dataSchema from "../../utils/dataSchema";
 
 
 
@@ -101,11 +101,11 @@ export class OrdersList extends Component {
                             console.log(e)
                         });
 
-                    }}></Button>
+                    }}/>
 
                 <Button title=" insert" onPress={() => {
 
-                    DB.query(DB.process_fields("users", this.state, "INSERT")).then((res) => {
+                    DB.query(DB.process_fields(DB.posts, dataSchema.posts, "INSERT")).then((res) => {
                         // console.log("result",res)
                         DB.debug();
                     });

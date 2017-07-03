@@ -14,15 +14,26 @@ import rootReducer from './rootReducer';
 
 function configStore() {
 
+    const middlewares = [thunk];
+
+    if (process.env.NODE_ENV === `development`) {
+        const { logger } = require(`redux-logger`);
+         middlewares.push(logger);
+    }
+
+   return compose(autoRehydrate(),applyMiddleware(...middlewares))(createStore)(rootReducer);
+
+
+
 
 //const logger = createLogger();
 //console.warn(INITIAL_STATE)
-return createStore(rootReducer,
+/*return createStore(rootReducer,
     compose(
-    applyMiddleware(/*screenTracker,/*clearBodyMiddleware, apiCallMiddleware,*/ thunk),
+    applyMiddleware(/!*screenTracker,/!*clearBodyMiddleware, apiCallMiddleware,*!/ thunk,logger),
     autoRehydrate()
     )
-);
+);*/
 
 
 
