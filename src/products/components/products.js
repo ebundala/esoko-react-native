@@ -583,7 +583,7 @@ export class CreateProduct extends Component {
                 />
                 <ScrollView style={{flex: 1}}>
                 <Card style={{flex: 1}}>
-                    <ProductForm formName="productForm" title={title}>
+                    <ProductForm formName="createForm" title={title}>
 
                         {this.getPostFields().map((item)=>{
                             return item;
@@ -609,7 +609,9 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  order: 0,
+                  order: 90,
+                  label:"ID",
+                  placeholder:"",
                   props: {}
               }
           },
@@ -622,8 +624,9 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  order: 0,
-                  label: "",
+                  order: 7,
+                  label: "Author",
+                  placeholder:"",
                   props: {}
               }
           },
@@ -637,6 +640,8 @@ export class CreateProduct extends Component {
                   },
                   widget: "hidden",
                   order: 0,
+                  label: "Date",
+                  placeholder:"",
                   props: {}
               }
           },
@@ -650,8 +655,9 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "inlineText",
-                  order: 0,
+                  order: 8,
                   label: "Description",
+                  placeholder:"",
                   props: {}
               }
           },
@@ -666,6 +672,7 @@ export class CreateProduct extends Component {
                   widget: "inlineText",
                   order: 9,
                   label: "Title",
+                  placeholder:"",
                   props: {}
               }
           },
@@ -680,7 +687,7 @@ export class CreateProduct extends Component {
                   },
                   widget: "hidden",
                   order: 0,
-                  label: "",
+                  label: "Status",
                   props: {}
               }
           },
@@ -694,7 +701,7 @@ export class CreateProduct extends Component {
                   },
                   widget: "hidden",
                   order: 0,
-                  label: "",
+                  label: "Comment Enabled",
                   props: {}
               }
           },
@@ -710,7 +717,8 @@ export class CreateProduct extends Component {
                   },
                   widget: "hidden",
                   order: 0,
-                  label: "",
+                  label: "Name",
+
                   props: {}
               }
           },
@@ -726,7 +734,7 @@ export class CreateProduct extends Component {
                   },
                   widget: "hidden",
                   order: 0,
-                  label: "",
+                  label:"Modified",
                   props: {}
               }
           },
@@ -741,7 +749,7 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  label: "",
+                  label: "Parent",
                   order: 0,
                   props: {}
               }
@@ -755,7 +763,7 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  label: "",
+                  label: "SKU",
                   order: 0,
                   props: {}
               }
@@ -769,7 +777,7 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  label: "",
+                  label: "Order",
                   order: 0,
                   props: {}
               }
@@ -783,7 +791,7 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  label: "",
+                  label: "Type",
                   order: 0,
                   props: {}
               }
@@ -797,7 +805,7 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  label: "",
+                  label: "Mime",
                   order: 0,
                   props: {}
               }
@@ -811,7 +819,7 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  label: "",
+                  label: "Count",
                   order: 0,
                   props: {}
               }
@@ -825,7 +833,7 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  label: "",
+                  label: "App id",
                   order: 0,
                   props: {}
               }
@@ -837,11 +845,9 @@ export class CreateProduct extends Component {
 
         let field,fields=[],item;
 
-    posts= posts.sort((a,b)=>{
-          if(a["order"]<b["order"])return -1;
-          if(a["order"]>b["order"])return 1;
-          return 0;
-      });
+    posts= this.sortFieldsOrder(posts);
+
+
 posts.forEach((post,i)=>{
      for(field in post)
      {
@@ -859,7 +865,7 @@ posts.forEach((post,i)=>{
                  );
 
                  break;
-             case "hiddeng":
+             case "hidden":
 
                  fields.push(
                      <EbTextInput key={field}
@@ -893,22 +899,20 @@ posts.forEach((post,i)=>{
 
          }
 
-        /*fields.push(
-            <EbTextInput key={field} field={field} label={field.replace(/\_/g," ")}
-                         validator={{
-                             errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                             validator: "isLength",
-                             args: [5, 32]
 
-                         }}/>
-        )*/
      }
 })
      return fields;
  }
 
-sortFieldsOrder(){
-
+sortFieldsOrder(arr){
+  return  arr.sort((a,b)=>{
+        let keyA=Object.keys(a)[0];
+        let keyB=Object.keys(b)[0];
+        if(a[keyA]["order"]<b[keyB]["order"])return 1;
+        if(a[keyA]["order"]>b[keyB]["order"])return -1;
+        return 0;
+    });
 }
 
 }

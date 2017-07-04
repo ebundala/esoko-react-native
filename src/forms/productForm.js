@@ -14,10 +14,13 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from "redux"
 import {Toolbar, Divider, Icon, ActionButton,RippleFeedback,Card} from 'react-native-material-ui';
 import styles, {typographyStyle, colorStyle, colours} from "../styles/styles"
-
+import {uiTheme} from "../app"
 import {shortenText} from '../utils/utils'
 import * as actions from "./productForm.actions";
 const validation=require("validator");
+
+
+
 
 const mergeProps = (stateProps, dispatchProp, ownProps) => {
 
@@ -40,7 +43,7 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
     constructor(){
         super();
         this.state={
-            value:"hello",
+            value:"",
             isValid:true
         }
     }
@@ -69,7 +72,8 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
  }
 
     render(){
-        let {onValueChange,forms,formName,field,label,validator}=this.props;
+        const {accentColor} = uiTheme.palette;
+        let {onValueChange,forms,formName,field,label,validator,placeholder}=this.props;
         return(
             <View >
             <View style={[{height:40},styles.horizontal,styles.alignItemsCenter]}>
@@ -86,8 +90,8 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
                     <TextInput
                                ref={component => this.input = component}
                                placeholderTextColor={colours.paperGrey500.color}
-                               placeholder="hello world"
-                               underlineColorAndroid="red"
+                               placeholder={placeholder}
+                               underlineColorAndroid={accentColor}
                                onSubmitEditing={() => {
 
                                    let value={};

@@ -146,7 +146,7 @@ class root extends Component {
 ///this.Oauth=
       let that=this;
         return [
-            <IntroOne setPage={this._setPage}nav={addNavigationHelpers({dispatch, state:navOauth})}/>,
+            <IntroOne setPage={this._setPage} nav={addNavigationHelpers({dispatch, state:navOauth})}/>,
 
             <IntroTwo setPage={this._setPage} nav={addNavigationHelpers({dispatch, state:navOauth})}/>,
 
