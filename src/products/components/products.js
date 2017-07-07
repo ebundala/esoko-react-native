@@ -542,7 +542,7 @@ export class searchResultsProductsList extends Component {
 
 
 
-import {ProductForm, EbModalInput, EbOptionInput, EbTextInput} from "../../forms/productForm"
+import {ProductForm, EbModalInput, EbOptionInput, EbTextInput,EbHiddenInput,EbFilePickerInput} from "../../forms/productForm"
 import dataScheme from "../../utils/dataSchema";
 export class CreateProduct extends Component {
 
@@ -612,7 +612,8 @@ export class CreateProduct extends Component {
                   order: 90,
                   label:"ID",
                   placeholder:"",
-                  props: {}
+
+
               }
           },
           {
@@ -623,7 +624,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "hidden",
+                  widget: "filePicker",
                   order: 7,
                   label: "Author",
                   placeholder:"",
@@ -638,7 +639,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "hidden",
+                  widget: "modal",
                   order: 0,
                   label: "Date",
                   placeholder:"",
@@ -658,7 +659,10 @@ export class CreateProduct extends Component {
                   order: 8,
                   label: "Description",
                   placeholder:"",
-                  props: {}
+                  props: {
+                      vertical:true,
+                      lines:5,
+                  }
               }
           },
           {
@@ -776,7 +780,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "hidden",
+                  widget: "modal",
                   label: "Order",
                   order: 0,
                   props: {}
@@ -790,7 +794,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "hidden",
+                  widget: "filePicker",
                   label: "Type",
                   order: 0,
                   props: {}
@@ -804,7 +808,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "hidden",
+                  widget: "inlineText",
                   label: "Mime",
                   order: 0,
                   props: {}
@@ -818,7 +822,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "hidden",
+                  widget: "modal",
                   label: "Count",
                   order: 0,
                   props: {}
@@ -868,32 +872,34 @@ posts.forEach((post,i)=>{
              case "hidden":
 
                  fields.push(
-                     <EbTextInput key={field}
+                     <EbHiddenInput key={field}
+                                  {...item.props}
                                                field={field}
                                                label={item.hasOwnProperty("label")?item.label:""}
                                                validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
                      />
-                 )
+                 );
                  break;
              case"modal":
                  fields.push(
 
-                     <EbTextInput key={field}
+                     <EbModalInput key={field}
                                   field={field}
                                   label={item.hasOwnProperty("label")?item.label:""}
                                   validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
                      />
 
-                 )
+                 );
                  break;
              case"filePicker":
                  fields.push(
-                     <EbTextInput key={field}
+                     <EbFilePickerInput key={field}
+                                  {...item.props}
                                   field={field}
                                   label={item.hasOwnProperty("label")?item.label:""}
                                   validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
                      />
-                 )
+                 );
                  break;
              default:
 

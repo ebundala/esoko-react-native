@@ -44,7 +44,9 @@ export const uiTheme = {
     palette: {
         primaryColor: COLOR.green500,
         accentColor: COLOR.pink500,
-        iconColor:COLOR.grey50
+        iconColor:COLOR.grey50,
+        textColor:COLOR.black,
+        placeholderColor:COLOR.grey50
     },
 };
 const UIManager = NativeModules.UIManager;
@@ -70,13 +72,15 @@ const stackConfig = {
     headerMode: "none"
 }
 
-const Main = StackNavigator(StackHome,stackConfig)
+const Main = StackNavigator(StackHome,stackConfig);
 
 
 
 class root extends Component {
+    static ourSelf=null;
     constructor(props) {
         super(props)
+        ourSelf=this;
         this.seInitialtPage=true;
 
     }
@@ -90,7 +94,7 @@ class root extends Component {
 
         return (
             <ThemeProvider uiTheme={uiTheme}>
-            <DrawerLayoutAndroid ref={component => {this.drawer = component}}
+            <DrawerLayoutAndroid ref="drawer"
                                  drawerWidth={300}
                                  drawerPosition={DrawerLayoutAndroid.positions.Left}
                                  renderNavigationView={()=> <NavigationView root={this} navigation={addNavigationHelpers({dispatch, state: nav})}/>}
@@ -126,7 +130,7 @@ class root extends Component {
                     ))}
                 </ViewPagerAndroid>}
 
-                <Main screenProps={{drawer: this.drawer,setPage: this._setPage,...screenProps}}
+                <Main  screenProps={{drawer:ourSelf,setPage: this._setPage,...screenProps}}
                       ref={component => {
                           this.main = component
                       }}
@@ -346,11 +350,13 @@ this.preConfig();
     }
 
     closeDrawer() {
-        this.drawer.closeDrawer();
+         if(this.refs["drawer"])
+        this.refs["drawer"].closeDrawer();
     }
 
     openDrawer() {
-        this.drawer.openDrawer();
+        if(this.refs["drawer"])
+        this.refs["drawer"].openDrawer();
     }
 }
 
@@ -421,7 +427,7 @@ export const routeReducers = (state = initialNavState, action) => {
         case REHYDRATE:
             //alert(JSON.stringify(action.type))
 
-            if (action.hasOwnProperty("payload"))
+            /*if (action.hasOwnProperty("payload"))
                 if (action.payload.hasOwnProperty("nav") ? action.payload.nav : false) {
 
                     if (action.payload.hasOwnProperty("user")) {
@@ -462,7 +468,7 @@ export const routeReducers = (state = initialNavState, action) => {
                     //alert(JSON.stringify(action.payload.nav))
                     // return {...action.payload.nav};
                     //alert(JSON.stringify(action.type))
-                }
+                }*/
 
             return {...state};
         default:

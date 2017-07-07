@@ -28,12 +28,14 @@ class homeComponent extends Component {
 
     constructor(props) {
         super(props);
+
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
         this.state = {query: null, active: 'Home'}
     }
 
     openDrawer() {
-        this.props.screenProps.drawer.openDrawer()
+        if(this.props.screenProps.drawer.refs["drawer"])
+        this.props.screenProps.drawer.refs["drawer"].openDrawer()
     }
 
     render() {
@@ -48,6 +50,7 @@ class homeComponent extends Component {
                     leftElement="menu"
                     onLeftElementPress={() => {
                         this.openDrawer();
+
                     }}
                     centerElement={this.state.active}
                     rightElement={<Statuses
