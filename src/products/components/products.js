@@ -545,61 +545,15 @@ export class searchResultsProductsList extends Component {
 import {ProductForm, EbModalInput, EbOptionInput, EbTextInput,EbHiddenInput,EbFilePickerInput} from "../../forms/productForm"
 import dataScheme from "../../utils/dataSchema";
 export class CreateProduct extends Component {
-
-
     constructor(props) {
-        super(props)
-        //let {user}=this.props.screenProps;
-        this.state = {
-            product: {
-                uid: null,
-                title: null,
-                discription: null,
-                price: null,
-                sellerID: "xxxxx",
-            }
-        }
-    }
-
-    render() {
-
-        let {navigate, goBack} = this.props.navigation;
-        let title = "New item";
+        super(props);
         let {user}=this.props.screenProps;
-        const {primaryColor} = uiTheme.palette;
-        
-		
-
-        return (
-            <View style={[styles.flex1]}>
-                <Toolbar
-                    leftElement="arrow-back"
-                    onLeftElementPress={() => {
-                        goBack();
-                    }}
-                    centerElement={title}
-
-
-                />
-                <ScrollView style={{flex: 1}}>
-                <Card style={{flex: 1}}>
-                    <ProductForm formName="createForm" title={title}>
-
-                        {this.getPostFields().map((item)=>{
-                            return item;
-                        })}
-
-
-                    </ProductForm>
-                </Card>
-                </ScrollView>
-            </View>)
-                
+        this.state = {}
     }
 
-  getPostFields(){
+  getFields() {
 
-      let posts = [
+      return [
           {
               ID: {
                   validator: {
@@ -609,9 +563,9 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  order: 90,
-                  label:"ID",
-                  placeholder:"",
+                  order: 0,
+                  label: "ID",
+                  placeholder: "",
 
 
               }
@@ -624,11 +578,47 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "filePicker",
+                  widget: "modal",
                   order: 7,
-                  label: "Author",
-                  placeholder:"",
-                  props: {}
+                  label: "Photos",
+                  placeholder: "",
+                  props: {
+                      fields:[
+                          {
+                              post_photos: {
+                                  validator: {
+                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                      validator: "isLength",
+                                      args: [5, 32]
+
+                                  },
+                                  widget: "filePicker",
+                                  order: 7,
+                                  label: "files",
+                                  placeholder: "",
+                                  props: {}
+                              }
+                          },
+                          {
+                              post_photosM: {
+                                  validator: {
+                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                      validator: "isLength",
+                                      args: [5, 32]
+
+                                  },
+                                  widget: "modal",
+                                  order: 0,
+                                  label: "Photos",
+                                  placeholder: "",
+                                  props: {
+                                      vertical: true,
+                                      lines: 5,
+                                  }
+                              }
+                          }
+                      ]
+                  }
               }
           },
           {
@@ -642,8 +632,43 @@ export class CreateProduct extends Component {
                   widget: "modal",
                   order: 0,
                   label: "Date",
-                  placeholder:"",
-                  props: {}
+                  placeholder: "",
+                  props: {
+                      fields:[
+                          {
+                              post_authorr: {
+                                  validator: {
+                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                      validator: "isLength",
+                                      args: [5, 32]
+
+                                  },
+                                  widget: "inlineText",
+                                  order: 7,
+                                  label: "Author",
+                                  placeholder: "",
+                                  props: {}
+                              }
+                          },
+                          {
+                              post_authorry: {
+                                  validator: {
+                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                      validator: "isLength",
+                                      args: [5, 32]
+
+                                  },
+                                  widget: "inlineText",
+                                  order: 0,
+                                  label: "Author b",
+                                  placeholder: "",
+                                  props: {
+                                      vertical: true,
+                                      lines: 5,
+                                  }
+                              }
+                          }
+                      ]}
               }
           },
           // post_date_gmt:"" ,
@@ -656,12 +681,12 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "inlineText",
-                  order: 8,
+                  order: -9,
                   label: "Description",
-                  placeholder:"",
+                  placeholder: "",
                   props: {
-                      vertical:true,
-                      lines:5,
+                      vertical: true,
+                      lines: 5,
                   }
               }
           },
@@ -676,7 +701,7 @@ export class CreateProduct extends Component {
                   widget: "inlineText",
                   order: 9,
                   label: "Title",
-                  placeholder:"",
+                  placeholder: "",
                   props: {}
               }
           },
@@ -738,7 +763,7 @@ export class CreateProduct extends Component {
                   },
                   widget: "hidden",
                   order: 0,
-                  label:"Modified",
+                  label: "Modified",
                   props: {}
               }
           },
@@ -844,83 +869,40 @@ export class CreateProduct extends Component {
           }
       ]
 
+  }
+    render() {
+
+        let {navigate, goBack} = this.props.navigation;
+        let title = "New item";
+        let {user}=this.props.screenProps;
+        const {primaryColor} = uiTheme.palette;
 
 
 
-        let field,fields=[],item;
-
-    posts= this.sortFieldsOrder(posts);
-
-
-posts.forEach((post,i)=>{
-     for(field in post)
-     {
-         item=post[field];
-         switch (item.widget){
-
-             case "inlineText":
-                 fields.push(
-                     <EbTextInput key={field}
-                                  {...item.props}
-                                  field={field}
-                                  label={item.hasOwnProperty("label")?item.label:""}
-                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                     />
-                 );
-
-                 break;
-             case "hidden":
-
-                 fields.push(
-                     <EbHiddenInput key={field}
-                                  {...item.props}
-                                               field={field}
-                                               label={item.hasOwnProperty("label")?item.label:""}
-                                               validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                     />
-                 );
-                 break;
-             case"modal":
-                 fields.push(
-
-                     <EbModalInput key={field}
-                                  field={field}
-                                  label={item.hasOwnProperty("label")?item.label:""}
-                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                     />
-
-                 );
-                 break;
-             case"filePicker":
-                 fields.push(
-                     <EbFilePickerInput key={field}
-                                  {...item.props}
-                                  field={field}
-                                  label={item.hasOwnProperty("label")?item.label:""}
-                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                     />
-                 );
-                 break;
-             default:
-
-         }
+        return (
+            <View style={[styles.flex1]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={() => {
+                        goBack();
+                    }}
+                    centerElement={title}
 
 
-     }
-})
-     return fields;
- }
+                />
+                <ScrollView style={{flex: 1}}>
+                    <Card style={{flex: 1}}>
+                        <ProductForm formName="createForm" title={title} fields={this.getFields()}/>
 
-sortFieldsOrder(arr){
-  return  arr.sort((a,b)=>{
-        let keyA=Object.keys(a)[0];
-        let keyB=Object.keys(b)[0];
-        if(a[keyA]["order"]<b[keyB]["order"])return 1;
-        if(a[keyA]["order"]>b[keyB]["order"])return -1;
-        return 0;
-    });
-}
 
+
+
+
+                    </Card>
+                </ScrollView>
+            </View>)
+
+    }
 }
 
 

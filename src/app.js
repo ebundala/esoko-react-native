@@ -42,11 +42,13 @@ import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
 export const uiTheme = {
     palette: {
-        primaryColor: COLOR.green500,
-        accentColor: COLOR.pink500,
+        primaryColor:COLOR.green500,
+        accentColor:COLOR.pink300,
         iconColor:COLOR.grey50,
         textColor:COLOR.black,
-        placeholderColor:COLOR.grey50
+        placeholderColor:COLOR.grey500,
+        errorColor:COLOR.red500,
+        inputUnderlineColor:COLOR.amber50
     },
 };
 const UIManager = NativeModules.UIManager;

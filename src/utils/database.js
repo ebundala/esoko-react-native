@@ -60,7 +60,7 @@ import {initialState } from "../navigationView/categories.actions"
 import Singleton from "./singleton";
 
 import SQLite from 'react-native-sqlite-storage';
-SQLite.DEBUG(true);
+SQLite.DEBUG(false);
 SQLite.enablePromise(true);
 
 
