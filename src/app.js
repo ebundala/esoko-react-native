@@ -48,7 +48,7 @@ export const uiTheme = {
         textColor:COLOR.black,
         placeholderColor:COLOR.grey500,
         errorColor:COLOR.red500,
-        inputUnderlineColor:COLOR.amber50
+        inputUnderlineColor:COLOR.amber300
     },
 };
 const UIManager = NativeModules.UIManager;

@@ -5,6 +5,7 @@ import React,{Component} from "react";
 import {
     Text,
     View,
+    Image,
     TextInput,
     TouchableNativeFeedback,
     Modal,
@@ -15,7 +16,9 @@ import {
 import {StackNavigator} from "react-navigation";
 import {connect} from 'react-redux'
 import {bindActionCreators} from "redux"
-import {Toolbar, Divider, Icon, ActionButton,RippleFeedback,Card} from 'react-native-material-ui';
+import {Toolbar, Divider, Icon, ActionButton,RippleFeedback} from 'react-native-material-ui';
+import {Card} from 'react-native-material-design';
+
 import styles, {typographyStyle, colorStyle, colours} from "../styles/styles"
 import {uiTheme} from "../app"
 import {shortenText} from '../utils/utils'
@@ -40,11 +43,27 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
     }
 };
 
+class EBwidgetBase extends Component{
+    onValueChange(values){
+        let {onValueChange,forms,formName,field}=this.props;
+        let value={};
+        value[field]=values;
+        forms[formName]={...forms[formName],...value};
+
+        onValueChange(forms);
+        this.setState({
+            value:value[field]
+        });
+    }
+
+    render(){
+        return(<View></View>)
+    }
+}
 
 
 
-
-class InlineTextInput extends Component{
+class InlineTextInput extends EBwidgetBase{
     constructor(props){
         super(props)
         this.state={
@@ -52,7 +71,19 @@ class InlineTextInput extends Component{
             isValid:true
         }
     }
-     renderError(){
+    componentDidMount() {
+        let {forms,formName,field}=this.props;
+
+        // get value from store
+        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+            let values=forms[formName][field];
+            this.onValueChange(values);
+
+        }
+
+
+    }
+    renderError(){
          const {errorColor} = uiTheme.palette;
         if(!this.state.isValid){
             return(
@@ -69,7 +100,7 @@ class InlineTextInput extends Component{
 
      }
 
-     replaceAll(str,mapObj){
+    replaceAll(str,mapObj){
      let re = new RegExp(Object.keys(mapObj).join("|"),"gi");
 
      return str.replace(/\[|\]/gi,"").replace(re, function(matched){
@@ -84,6 +115,7 @@ class InlineTextInput extends Component{
     return[!lines?{height:40}:{},vertical?styles.flex1:{},vertical?styles.vertical:styles.horizontal]
 
 }
+
     render(){
         const {accentColor,textColor,placeholderColor,inputUnderlineColor} = uiTheme.palette;
         let {onValueChange,forms,formName,field,label,validator,placeholder,lines,vertical}=this.props;
@@ -102,31 +134,26 @@ class InlineTextInput extends Component{
                 <View style={[styles.flex1]}>
                     <TextInput
                         numberOfLines={lines||1}
-                               ref={component => this.input = component}
+                        multiline={!!lines}
+                              value={this.state.value}
+                               ref="input"
                                placeholderTextColor={placeholderColor}
                                placeholder={placeholder}
                                underlineColorAndroid={inputUnderlineColor}
                                onSubmitEditing={() => {
 
-                                   let value={};
-                                   value[field]=this.state.value;
-                                   forms[formName]={...forms[formName],...value};
-                                   //console.log(forms);
-                                   onValueChange(forms);
+
+                                   this.onValueChange(this.state.value);
                                }}
 
                                onBlur={()=>{
-                                   let value={};
-                                   value[field]=this.state.value;
-                                   forms[formName]={...forms[formName],...value};
-                                   //console.log(forms);
-                                   onValueChange(forms);
+                                   this.onValueChange(this.state.value);
                                }}
                                onChangeText={value => {
-
+                                   this.setState({value});
                                    if(validator){
                                        if(validation[validator.validator](value,{min:validator.args[0],max:validator.args[1]})){
-                                           this.setState({value:value,isValid:true});
+                                           this.setState({isValid:true});
                                        }
                                        else {
                                            this.setState({
@@ -141,8 +168,8 @@ class InlineTextInput extends Component{
                                            });
                                        }
                                    }
-                                   else
-                                   this.setState({value});
+                                  // else
+                                   //this.setState({value});
 
                                }}
                     />
@@ -166,10 +193,21 @@ export const EbTextInput=connect((state)=>{
 
 
 
- class OptionInput extends Component{
+ class OptionInput extends EBwidgetBase{
      constructor(props){
          super(props)
     }
+     componentDidMount() {
+         let {forms,formName,field}=this.props;
+
+         // get value from store
+         if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+             let values=forms[formName][field];
+             this.onValueChange(values);
+         }
+
+
+     }
     render(){
         return(
             <View>
@@ -190,7 +228,7 @@ export const EbOptionInput=connect((state)=>{
 })(OptionInput);
 
 
- class InputModal extends Component{
+ class InputModal extends EBwidgetBase{
      constructor(props){
          super(props);
          this.state = {
@@ -286,9 +324,20 @@ export const EbModalInput=connect((state)=>{
 
 
 
-class HiddenInput extends Component{
+class HiddenInput extends EBwidgetBase{
     constructor(){
         super();
+
+    }
+    componentDidMount() {
+        let {forms,formName,field}=this.props;
+
+        // get value from store
+        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+            let values=forms[formName][field];
+            this.onValueChange(values);
+        }
+
 
     }
     render(){
@@ -309,7 +358,7 @@ export const EbHiddenInput=connect((state)=>{
 
 
 
-class FilePickerInput extends Component{
+class FilePickerInput extends EBwidgetBase{
     constructor(props){
         super(props);
         this.state={
@@ -349,7 +398,7 @@ class FilePickerInput extends Component{
         let {onValueChange,forms,formName,field}=this.props;
 
         let options = {
-            title: 'Select photos',
+            title: 'Add photos',
             mediaType: "photo",
             storageOptions: {
                 skipBackup: true,
@@ -385,14 +434,7 @@ class FilePickerInput extends Component{
                 let files = this.state.value;
                 files.push(response);
 
-                let value={};
-                value[field]=this.state.value;
-                forms[formName]={...forms[formName],...value};
-
-                onValueChange(forms);
-                this.setState({
-                    value
-                });
+                this.onValueChange(files);
 
             }
         });
@@ -403,14 +445,38 @@ class FilePickerInput extends Component{
 
     }
     componentDidMount() {
-        // get value from prop
-        if (typeof this.props.value !== 'undefined') {
+        let {forms,formName,field}=this.props;
 
-            // return;
-        }
         // get value from store
+        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+            let values=forms[formName][field];
+            this.onValueChange(values);
+        }
+
 
     }
+    /*onValueChange(files){
+        let {onValueChange,forms,formName,field}=this.props;
+        let value={};
+        value[field]=files;
+        forms[formName]={...forms[formName],...value};
+
+        onValueChange(forms);
+        this.setState({
+            value:value[field]
+        });
+    }
+    componentDidMount() {
+         let {forms,formName,field}=this.props;
+
+        // get value from store
+        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+            let files=forms[formName][field];
+            this.onValueChange(files);
+        }
+
+
+    }*/
     render() {
         const {textColor,errorColor} = uiTheme.palette;
        // let {onValueChange,forms,formName,field,label,validator,placeholder,lines,vertical}=this.props;
@@ -424,12 +490,10 @@ class FilePickerInput extends Component{
 
                               enableEmptySections={true}
                               renderRow={(photo) =>
-                                  <View style={[, {
+                                  <View style={[{
                                       height: 220,
                                       width: 180
-                                  },
-
-                                  ]}>
+                                  },]}>
                                       <Card style={[styles.flex1]}>
 
                                           <View style={[styles.flex1]}>
@@ -445,7 +509,7 @@ class FilePickerInput extends Component{
                                               <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
                                                   <View
                                                       style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
-                                                      <Text style={[styles.productTitle]}>
+                                                      <Text numberOfLines={1} style={[styles.productTitle]}>
                                                           {shortenText(photo.fileName)}
                                                       </Text>
                                                   </View>
@@ -460,12 +524,13 @@ class FilePickerInput extends Component{
                                                   </View>
                                               </View>
                                           </View>
+
                                       </Card>
                                   </View>
                               }
                     />
 
-                    <ActionButton style={{padding:50}}
+                    <ActionButton
 
                                   icon="add"
                                   onPress={(text) => {

@@ -594,7 +594,7 @@ export class CreateProduct extends Component {
                                   },
                                   widget: "filePicker",
                                   order: 7,
-                                  label: "files",
+                                  label: "Value",
                                   placeholder: "",
                                   props: {}
                               }
@@ -612,8 +612,7 @@ export class CreateProduct extends Component {
                                   label: "Photos",
                                   placeholder: "",
                                   props: {
-                                      vertical: true,
-                                      lines: 5,
+
                                   }
                               }
                           }
