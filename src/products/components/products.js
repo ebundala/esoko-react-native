@@ -16,7 +16,8 @@ import {
     ViewPagerAndroid,
     TouchableNativeFeedback,
     WebView,
-    Picker
+    Picker,
+    Animated,Dimensions
 } from "react-native";
 import {Card} from 'react-native-material-design';
 import {Toolbar, Divider, Icon, ActionButton, RippleFeedback} from 'react-native-material-ui';
@@ -26,6 +27,8 @@ import StarRating from 'react-native-star-rating';
 //import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles, {typographyStyle, colorStyle, colours} from "../../styles/styles"
 import CollapsingHeaderWithScroll from './CollapsingHeaderWithScroll';
+import Interactable from 'react-native-interactable';
+
 import Firestack from 'react-native-firestack'
 import {shortenText} from '../../utils/utils'
 import {DB} from "../../utils/database"
@@ -34,7 +37,9 @@ import {uiTheme} from "../../app"
 let moment = require('moment');
 let ctx;
 const firestack = new Firestack();
-
+const Screen = {
+    height: Dimensions.get('window').height - 75
+};
 
 export class ProductsList extends Component {
 
@@ -43,32 +48,14 @@ export class ProductsList extends Component {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
         this.state = {
+            canScroll: false,
             query: null,
             subCategory: "All",
-            products: []
+            products: [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
         }
+        this._deltaY = new Animated.Value(0);
 
     }
-
-    render() {
-        ctx = this;
-        let {navigate, goBack} = this.props.navigation;
-        let {category,}=this.props.navigation.state.params;
-        let props = this.props.screenProps;
-        // let {products}=this.props.screenProps
-        if (category.subCategories instanceof Array) {
-            if (category.subCategories[0] !== "All")
-                category.subCategories.unshift("All")
-        }
-
-        return (
-
-        <CollapsingHeaderWithScroll/>
-
-
-        )
-    }
-
     filterChanged(subCategory) {
         let {category}=this.props.navigation.state.params;
         let that = this;
@@ -120,6 +107,215 @@ export class ProductsList extends Component {
     openDrawer() {
         this.props.screenProps.drawer.openDrawer()
     }
+    onSnap(event) {
+        const { id } = event.nativeEvent;
+
+        if (id === 'bottom') {
+            this.setState({ canScroll: true });
+            console.log('This implementation is still broken, in progress');
+        }
+    }
+    onScroll(event) {
+
+        const { contentOffset } = event.nativeEvent;
+       // console.log(contentOffset);
+        if (contentOffset.y === 0) {
+            this.setState({ canScroll: false });
+        }
+    }
+    render() {
+        ctx = this;
+        let {navigate, goBack} = this.props.navigation;
+        let {category,}=this.props.navigation.state.params;
+        let props = this.props.screenProps;
+        // let {products}=this.props.screenProps
+        if (category.subCategories instanceof Array) {
+            if (category.subCategories[0] !== "All")
+                category.subCategories.unshift("All")
+        }
+        const {primaryColor} = uiTheme.palette;
+        return (
+            <View style={[styles.flex1]}>
+                <Toolbar
+                    leftElement="arrow-back"
+                    onLeftElementPress={() => {
+                        goBack();
+                    }}
+                    centerElement={category.categoryName}
+                    searchable={{
+                        autoFocus: true,
+                        placeholder: 'Search',
+                        onSubmitEditing: e => {
+                            if (this.state.query) {
+
+                                props.searchProducts(this.state.query, category.categoryName, navigate)
+                            }
+
+                        },
+                        onChangeText: query => this.setState({query})
+                    }
+                    }
+                />
+                <Animated.View style={{zIndex:5,
+                    transform: [
+                        {
+                            translateY: this._deltaY.interpolate({
+                                inputRange: [-150, -150, 0, 0],
+                                outputRange: [-140, -140, 0, 0]
+                            })
+                        },
+                        /*{
+                            scale: this._deltaY.interpolate({
+                                inputRange: [-150, -150, 0, 0],
+                                outputRange: [0.35, 0.35, 1, 1]
+                            })
+                        }*/
+                    ]
+                }}>
+                <View style={{height:150,backgroundColor:primaryColor}}>
+                    <Picker
+                        selectedValue={this.state.subCategory}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setState({subCategory: itemValue});
+                            //this.filterChanged(itemValue);
+
+                        }}>
+
+                        {category.subCategories.map((item, i) => {
+                            return <Picker.Item key={item} label={item} value={item}/>
+
+                        })}
+
+                    </Picker>
+                    <Text >
+                        {this.state.error}
+                    </Text>
+
+                </View>
+                </Animated.View>
+            <Interactable.View
+                verticalOnly={true}
+                snapPoints={[{y: 0}, {y: -150, id: 'bottom'}]}
+                boundaries={{top: -150}}
+                onSnap={this.onSnap.bind(this)}
+                animatedValueY={this._deltaY}>
+
+
+
+
+
+                    <ListView
+                        bounces={false}
+                        canCancelContentTouches={this.state.canScroll}
+                        scrollEnabled={this.state.canScroll}
+                        onScroll={this.onScroll.bind(this)}
+                                      dataSource={this.ds.cloneWithRows(this.state.products)}
+                                      contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
+                                      scrollRenderAheadDistance={640}
+                                      enableEmptySections={true}
+                                      renderRow={(data) =>
+                                          <TouchableNativeFeedback onPress={() => navigate("singleProduct", {
+                                              data: data
+                                          })}>
+                                              <View style={[, {
+                                                  height: 220,
+                                                  width: 180
+                                              },
+
+                                              ]}>
+                                                  <Card style={[styles.flex1]}>
+
+                                                      <View style={[styles.flex1]}>
+                                                          <Image style={[{
+                                                              marginTop: 16, marginBottom: 8,
+                                                              width: 132, height: 132,
+                                                              resizeMode: Image.resizeMode.stretch,
+                                                              backgroundColor: colours.paperGrey300.color
+                                                          }]}
+                                                                 source={{uri: "data.photos[0].downloadUrl"}}>
+
+                                                          </Image>
+                                                          <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
+                                                              <View
+                                                                  style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
+                                                                  <Text numberOfLines={1} style={[styles.productTitle]}>
+                                                                      {data.name}
+                                                                  </Text>
+                                                              </View>
+                                                              <View
+                                                                  style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
+                                                                  <Text numberOfLines={1} style={[styles.currency]}>
+                                                                      {data.currency}
+                                                                  </Text>
+                                                                  <Text numberOfLines={1} style={[styles.price]}>
+                                                                      {data.price}
+                                                                  </Text>
+                                                              </View>
+                                                          </View>
+                                                      </View>
+
+
+                                                  </Card>
+                                              </View>
+                                          </TouchableNativeFeedback>}
+                    />
+
+                    {false && <Card style={[{
+                        height: 50,
+                        margin: 0,
+                        elevation: 4,
+                        borderRadius: 0,
+                        //backgroundColor:colours.paperTeal500.color
+                    }]}>
+                        <View style={[styles.horizontal]}>
+
+                            <View style={[styles.flex9]}>
+
+
+                                <TextInput
+                                    ref={component => this.searchInput = component}
+                                    keyboardType="web-search"
+                                    style={styles.input}
+                                    autoCorrect={true}
+                                    autoCapitalize="none"
+                                    placeholder={"Search " + title}
+                                    placeholderTextColor={colours.paperGrey500.color}
+                                    underlineColorAndroid="transparent"
+                                    onSubmitEditing={(e) => {
+                                        if (this.state.query) {
+                                            this.searchInput.blur();
+                                            props.searchProducts(this.state.query, title, navigate)
+                                        }
+                                        else
+                                            this.searchInput.focus();
+                                    }}
+                                    onChangeText={query => this.setState({query})}
+                                />
+
+                            </View>
+                            <TouchableNativeFeedback onPress={() => {
+                                if (this.state.query) {
+                                    this.searchInput.blur();
+                                    props.searchProducts(this.state.query, title, navigate)
+                                }
+                                else
+                                    this.searchInput.focus();
+                            }}>
+                                <View style={[styles.flex1, styles.centerJustified, styles.alignItemsCenter]}>
+                                    <Icon name="search"/>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>
+                    </Card>}
+
+            </Interactable.View>
+
+            </View>
+
+        )
+    }
+
+
 }
 
 export class SingleProductView extends Component {
@@ -136,13 +332,13 @@ export class SingleProductView extends Component {
         let props = this.props.screenProps;
         let reviews = [];
 
-        let len = data.photos.length;
+        let len = 5//data.photos.length;
         for (let i = 0; i < 9; i++) {
             reviews.push({
                 reviewerName: "Elias Bundala",
                 rating: Math.random() * 5,
                 body: "hello this is a terible product dont buy it an way too expensive",
-                reviewerAvator: data.photos[0].downloadUrl
+                reviewerAvator: "data.photos[0].downloadUrl"
             })
         }
 
@@ -175,13 +371,14 @@ export class SingleProductView extends Component {
                                         <View
                                             key={"key" + i}
                                             testID={"test" + i}
-                                            style={[styles.flex1, {backgroundColor: colours.paperTeal50.color}]}>
+                                            style={[styles.flex1, {backgroundColor: colours.paperGrey500.color}]}>
                                             <Image style={[styles.flex1, {
+                                                backgroundColor: colours.paperGrey200.color,
                                                 width: null,
                                                 height: null,
                                                 resizeMode: Image.resizeMode.cover
                                             }]}
-                                                   source={{uri: child.downloadUrl}}>
+                                                   source={{uri: "child.downloadUrl"}}>
                                                 <Text style={[{
                                                     position: "absolute",
                                                     bottom: 8,
@@ -578,45 +775,12 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "modal",
+                  widget: "filePicker",
                   order: 7,
                   label: "Photos",
                   placeholder: "",
                   props: {
-                      fields:[
-                          {
-                              post_photos: {
-                                  validator: {
-                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                                      validator: "isLength",
-                                      args: [5, 32]
 
-                                  },
-                                  widget: "filePicker",
-                                  order: 7,
-                                  label: "Value",
-                                  placeholder: "",
-                                  props: {}
-                              }
-                          },
-                          {
-                              post_photosM: {
-                                  validator: {
-                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                                      validator: "isLength",
-                                      args: [5, 32]
-
-                                  },
-                                  widget: "modal",
-                                  order: 0,
-                                  label: "Photos",
-                                  placeholder: "",
-                                  props: {
-
-                                  }
-                              }
-                          }
-                      ]
                   }
               }
           },
@@ -659,7 +823,7 @@ export class CreateProduct extends Component {
                                   },
                                   widget: "inlineText",
                                   order: 0,
-                                  label: "Author b",
+                                  label: "Description",
                                   placeholder: "",
                                   props: {
                                       vertical: true,
@@ -730,7 +894,42 @@ export class CreateProduct extends Component {
                   widget: "hidden",
                   order: 0,
                   label: "Comment Enabled",
-                  props: {}
+                  props: {
+                      fields:[
+                          {
+                              post_photos: {
+                                  validator: {
+                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                      validator: "isLength",
+                                      args: [5, 32]
+
+                                  },
+                                  widget: "filePicker",
+                                  order: 7,
+                                  label: "Value",
+                                  placeholder: "",
+                                  props: {}
+                              }
+                          },
+                          {
+                              post_photosM: {
+                                  validator: {
+                                      errorMessage: "[TITLE] must be args[0] to args[1] characters",
+                                      validator: "isLength",
+                                      args: [5, 32]
+
+                                  },
+                                  widget: "modal",
+                                  order: 0,
+                                  label: "Photos",
+                                  placeholder: "",
+                                  props: {
+
+                                  }
+                              }
+                          }
+                      ]
+                  }
               }
           },
           //ping_status:"" ,
@@ -832,7 +1031,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "inlineText",
+                  widget: "hidden",
                   label: "Mime",
                   order: 0,
                   props: {}
@@ -846,7 +1045,7 @@ export class CreateProduct extends Component {
                       args: [5, 32]
 
                   },
-                  widget: "modal",
+                  widget: "hidden",
                   label: "Count",
                   order: 0,
                   props: {}

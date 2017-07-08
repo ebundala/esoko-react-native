@@ -160,7 +160,8 @@ class homeComponent extends Component {
     _renderScenes() {
         let {navigate}=this.props.navigation;
         let {queryProducts, searchProducts, products, popular, newest, cheapest}=this.props;
-
+        products=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+        popular=products; newest=products; cheapest=products;
         return [
             <ScrollView contentContainerStyle={[]}>
                 <View style={[{height: 160, marginHorizontal: 0, padding: 0, elevation: 5}]}>
@@ -249,7 +250,7 @@ class homeComponent extends Component {
                                                       resizeMode: Image.resizeMode.stretch,
                                                       backgroundColor: colours.paperGrey300.color
                                                   }]}
-                                                         source={{uri: data.photos[0].downloadUrl}}>
+                                                         source={{uri: "data.photos[0].downloadUrl"}}>
 
                                                   </Image>
                                                   <View
@@ -309,7 +310,7 @@ class homeComponent extends Component {
                                                       resizeMode: Image.resizeMode.stretch,
                                                       backgroundColor: colours.paperGrey300.color
                                                   }]}
-                                                         source={{uri: data.photos[0].downloadUrl}}>
+                                                         source={{uri: "data.photos[0].downloadUrl"}}>
 
                                                   </Image>
                                                   <View
@@ -369,7 +370,7 @@ class homeComponent extends Component {
                                                       resizeMode: Image.resizeMode.stretch,
                                                       backgroundColor: colours.paperGrey300.color
                                                   }]}
-                                                         source={{uri: data.photos[0].downloadUrl}}>
+                                                         source={{uri: "data.photos[0].downloadUrl"}}>
 
                                                   </Image>
                                                   <View
