@@ -16,7 +16,7 @@ import {
 import {StackNavigator} from "react-navigation";
 import {connect} from 'react-redux'
 import {bindActionCreators} from "redux"
-import {Toolbar, Divider, Icon, ActionButton,RippleFeedback} from 'react-native-material-ui';
+import {Toolbar, Divider, Icon, ActionButton,RippleFeedback,Button} from 'react-native-material-ui';
 import {Card} from 'react-native-material-design';
 
 import styles, {typographyStyle, colorStyle, colours} from "../styles/styles"
@@ -34,28 +34,145 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
 
     return {
         ...ownProps,
-        form: {
-            ...ownProps,
-            ...stateProps,
-            ...dispatchProp,
-
-        }
+        ...stateProps,
+        ...dispatchProp,
     }
 };
 
 class EBwidgetBase extends Component{
-    onValueChange(values){
-        let {onValueChange,forms,formName,field}=this.props;
+    constructor(props){
+        super(props)
+        this.state={
+            value:"",
+            isValid:true
+        }
+    }
+    _onValueChange(values){
+
+        let {onValueChange,forms,formName,field,isMeta}=this.props;
         let value={};
         value[field]=values;
-        forms[formName]={...forms[formName],...value};
+        if(!isMeta){
+
+            forms[formName] = {...forms[formName], ...value};
+        }
+        else{
+            if(forms[formName]&&forms[formName].hasOwnProperty("metadata")) {
+
+                value={...forms[formName].metadata,...value};
+                forms[formName] = {...forms[formName], ...{metadata:value}};
+                
+            }
+            else{
+
+                forms[formName] = {...forms[formName],...{metadata:value}};
+            }
+        }
 
         onValueChange(forms);
         this.setState({
             value:value[field]
         });
     }
+    isValid(){
+        return this.state.isValid
+}
+    setInvalid(){
+        this.setState({
+            isValid:false,
+            errorMessage:this.getErrorMsg()
 
+        });
+    }
+    validate(){
+
+        let isValid=true;
+        let {validator,label,isRequired}=this.props;
+        if(isRequired) {
+            if (this.state.value) {
+                if (typeof validator.validator === "string") {
+                    isValid = validation[validator.validator](this.state.value.toString(), {
+                        min: validator.args[0],
+                        max: validator.args[1]
+                    })
+
+                } else if (typeof validator.validator === "function") {
+                    isValid = validator.validator(this.state.value.toString(), {
+                        min: validator.args[0],
+                        max: validator.args[1]
+                    })
+                }
+            }
+            else {
+                isValid = false;
+            }
+        }
+        else{
+            if (this.state.value) {
+                if (typeof validator.validator === "string") {
+                    isValid = validation[validator.validator](this.state.value.toString(), {
+                        min: validator.args[0],
+                        max: validator.args[1]
+                    })
+
+                } else if (typeof validator.validator === "function") {
+                    isValid = validator.validator(this.state.value.toString(), {
+                        min: validator.args[0],
+                        max: validator.args[1]
+                    })
+                }
+            }
+            else {
+                isValid = true;
+            }
+        }
+
+        if(!isValid){
+      this.setInvalid();
+        }
+        console.log("validating ",label,isValid)
+            return isValid;
+    }
+    replaceAll(str,mapObj){
+        let re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+
+        return str.replace(/\[|\]/gi,"").replace(re, function(matched){
+            return mapObj[matched];
+        });
+    }
+    getErrorMsg(){
+        let {validator,label}=this.props;
+        if(validator)
+      return  this.replaceAll(validator.errorMessage,
+            {
+                "TITLE": label,
+                "args0": validator.args[0],
+                "args1": validator.args[1],
+            })
+        else
+            return "";
+    }
+    componentDidMount() {
+        let {forms,formName,field,isMeta}=this.props;
+        let values;
+        // get value from store
+        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined'&&!isMeta) {
+            values=forms[formName][field];
+            console.log("not meta",values);
+            this._onValueChange(values);
+
+        }
+        else if(typeof forms[formName]!== 'undefined'&&
+            typeof forms[formName]["metadata"] !== 'undefined'&&
+            typeof forms[formName]["metadata"][field] !== 'undefined'&&isMeta)
+        {
+            values=forms[formName]["metadata"][field];
+            console.log("meta",values);
+            this._onValueChange(values);
+        }
+
+
+    }
     render(){
         return(<View></View>)
     }
@@ -71,18 +188,7 @@ class InlineTextInput extends EBwidgetBase{
             isValid:true
         }
     }
-    componentDidMount() {
-        let {forms,formName,field}=this.props;
 
-        // get value from store
-        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
-            let values=forms[formName][field];
-            this.onValueChange(values);
-
-        }
-
-
-    }
     renderError(){
          const {errorColor} = uiTheme.palette;
         if(!this.state.isValid){
@@ -100,13 +206,7 @@ class InlineTextInput extends EBwidgetBase{
 
      }
 
-    replaceAll(str,mapObj){
-     let re = new RegExp(Object.keys(mapObj).join("|"),"gi");
 
-     return str.replace(/\[|\]/gi,"").replace(re, function(matched){
-         return mapObj[matched];
-     });
- }
     getStyles(){
     let {lines,vertical}=this.props;
 
@@ -143,31 +243,23 @@ class InlineTextInput extends EBwidgetBase{
                                onSubmitEditing={() => {
 
 
-                                   this.onValueChange(this.state.value);
+                                   this._onValueChange(this.state.value);
                                }}
 
                                onBlur={()=>{
-                                   this.onValueChange(this.state.value);
+                                   this._onValueChange(this.state.value);
                                }}
                                onChangeText={value => {
                                    this.setState({value});
-                                   if(validator){
-                                       if(validation[validator.validator](value,{min:validator.args[0],max:validator.args[1]})){
+
+                                       /*validation[validator.validator](value,{min:validator.args[0],max:validator.args[1]})*/
+                                       if(this.validate()){
                                            this.setState({isValid:true});
                                        }
                                        else {
-                                           this.setState({
-                                               isValid:false,
-                                               errorMessage:this.replaceAll(validator.errorMessage,
-                                                   {
-                                                       "TITLE": label,
-                                                       "args0": validator.args[0],
-                                                       "args1": validator.args[1],
-                                                   })
-
-                                           });
+                                           this.setInvalid();
                                        }
-                                   }
+
                                   // else
                                    //this.setState({value});
 
@@ -188,7 +280,7 @@ export const EbTextInput=connect((state)=>{
     }
 },(dispatch)=>{
    return bindActionCreators(actions,dispatch);
-})(InlineTextInput);
+}, mergeProps,{withRef: true})(InlineTextInput);
 
 
 
@@ -197,17 +289,17 @@ export const EbTextInput=connect((state)=>{
      constructor(props){
          super(props)
     }
-     componentDidMount() {
+   /*  componentDidMount() {
          let {forms,formName,field}=this.props;
 
          // get value from store
          if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
              let values=forms[formName][field];
-             this.onValueChange(values);
+             this._onValueChange(values);
          }
 
 
-     }
+     }*/
     render(){
         return(
             <View>
@@ -225,7 +317,7 @@ export const EbOptionInput=connect((state)=>{
     }
 },(dispatch)=>{
     return bindActionCreators(actions,dispatch);
-})(OptionInput);
+},mergeProps, {withRef: true})(OptionInput);
 
 
  class InputModal extends EBwidgetBase{
@@ -250,7 +342,7 @@ export const EbOptionInput=connect((state)=>{
      }
      render(){
          const {accentColor,textColor} = uiTheme.palette;
-         let {onValueChange,forms,formName,field,label,validator}=this.props;
+         let {label}=this.props;
 
          return(
              <View style={{height:40}}>
@@ -301,10 +393,10 @@ export const EbOptionInput=connect((state)=>{
                      <Text style={{width: 110,
                          fontSize: 15,
                          color: textColor,
-                         paddingLeft: 10}}>{label}
+                         padding: 10}}>{label}
                          </Text>
-                         <View style={[styles.flex1]}></View>
-                         <Icon  name="arrow-drop-down" style={[{paddingRight:10}]}/>
+                         <View style={[styles.flex1]}/>
+                         <Icon  name="arrow-drop-down" style={[{padding:10}]}/>
                      </View>
                  </TouchableNativeFeedback>
                  <Divider/>
@@ -320,26 +412,23 @@ export const EbModalInput=connect((state)=>{
     }
 },(dispatch)=>{
     return bindActionCreators(actions,dispatch);
-})(InputModal);
+}, mergeProps,{withRef: true})(InputModal);
 
 
 
 class HiddenInput extends EBwidgetBase{
-    constructor(){
-        super();
 
-    }
-    componentDidMount() {
+   /* componentDidMount() {
         let {forms,formName,field}=this.props;
 
         // get value from store
         if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
             let values=forms[formName][field];
-            this.onValueChange(values);
+            this._onValueChange(values);
         }
 
 
-    }
+    }*/
     render(){
         return(
             <View>
@@ -354,7 +443,7 @@ export const EbHiddenInput=connect((state)=>{
     }
 },(dispatch)=>{
     return bindActionCreators(actions,dispatch);
-})(HiddenInput);
+},mergeProps, {withRef: true})(HiddenInput);
 
 
 
@@ -382,13 +471,13 @@ class FilePickerInput extends EBwidgetBase{
         }
 
     }
-    replaceAll(str,mapObj){
+   /* replaceAll(str,mapObj){
         let re = new RegExp(Object.keys(mapObj).join("|"),"gi");
 
         return str.replace(/\[|\]/gi,"").replace(re, function(matched){
             return mapObj[matched];
         });
-    }
+    }*/
     getStyles(){
         let {lines,vertical}=this.props;
         return[!lines?{height:40}:{},vertical?styles.flex1:{},vertical?styles.vertical:styles.horizontal]
@@ -434,7 +523,7 @@ class FilePickerInput extends EBwidgetBase{
                 let files = this.state.value;
                 files.push(response);
 
-                this.onValueChange(files);
+                this._onValueChange(files);
 
             }
         });
@@ -444,17 +533,17 @@ class FilePickerInput extends EBwidgetBase{
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
 
     }
-    componentDidMount() {
+    /*componentDidMount() {
         let {forms,formName,field}=this.props;
 
         // get value from store
         if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
             let values=forms[formName][field];
-            this.onValueChange(values);
+            this._onValueChange(values);
         }
 
 
-    }
+    }*/
     /*onValueChange(files){
         let {onValueChange,forms,formName,field}=this.props;
         let value={};
@@ -552,9 +641,203 @@ export const EbFilePickerInput=connect((state)=>{
     }
 },(dispatch)=>{
     return bindActionCreators(actions,dispatch);
-})(FilePickerInput);
+},mergeProps, {withRef: true})(FilePickerInput);
+
+class submitInput extends EBwidgetBase{
+    constructor(props){
+        super(props);
+        this.state={
+            value:[],
+            isValid:true
+        }
+    }
+    renderError(){
+        const {errorColor} = uiTheme.palette;
+        if(!this.state.isValid){
+            return(
+                <View style={[styles.alignItemsCenter]}>
+                    <Text numberOfLines={1}  style={{
+                        fontSize: 12,
+                        color: errorColor,
+                        paddingLeft: 10,}}>
+                        {this.state.errorMessage}
+                    </Text>
+                </View>
+            )
+        }
+
+    }
+    /*replaceAll(str,mapObj){
+        let re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+
+        return str.replace(/\[|\]/gi,"").replace(re, function(matched){
+            return mapObj[matched];
+        });
+    }*/
+    getStyles(){
+        let {lines,vertical}=this.props;
+        return[!lines?{height:40}:{},vertical?styles.flex1:{},vertical?styles.vertical:styles.horizontal]
+
+    }
+    openPicker(){
+        let {onValueChange,forms,formName,field}=this.props;
+
+        let options = {
+            title: 'Add photos',
+            mediaType: "photo",
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
+        };
+
+        /**
+         * The first arg is the options object for customization (it can also be null or omitted for default options),
+         * The second arg is the callback which sends object: response (more info below in README)
+         */
+        ImagePicker.showImagePicker(options, (response) => {
+            //console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+                Alert.alert(response.error)
+            }
+            else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+                //let source = { uri: response.uri };
+
+                // You can also display the image using data:
+                // response = {...response,data: 'data:image/jpeg;base64,'+response.data };
 
 
+
+                let files = this.state.value;
+                files.push(response);
+
+                this.onValueChange(files);
+
+            }
+        });
+    }
+    componentWillMount(){
+
+        this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
+
+    }
+    /*componentDidMount() {
+        let {forms,formName,field}=this.props;
+
+        // get value from store
+        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+            let values=forms[formName][field];
+            this._onValueChange(values);
+        }
+
+
+    }*/
+    /*onValueChange(files){
+     let {onValueChange,forms,formName,field}=this.props;
+     let value={};
+     value[field]=files;
+     forms[formName]={...forms[formName],...value};
+
+     onValueChange(forms);
+     this.setState({
+     value:value[field]
+     });
+     }
+     componentDidMount() {
+     let {forms,formName,field}=this.props;
+
+     // get value from store
+     if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+     let files=forms[formName][field];
+     this.onValueChange(files);
+     }
+
+
+     }*/
+    render() {
+        const {textColor,errorColor} = uiTheme.palette;
+        // let {onValueChange,forms,formName,field,label,validator,placeholder,lines,vertical}=this.props;
+
+        return (
+
+
+            <View style={[{height:Screen.height}]}>
+                <ListView dataSource={this.ds.cloneWithRows(this.state.value)}
+                          contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
+
+                          enableEmptySections={true}
+                          renderRow={(photo) =>
+                              <View style={[{
+                                  height: 220,
+                                  width: 180
+                              },]}>
+                                  <Card style={[styles.flex1]}>
+
+                                      <View style={[styles.flex1]}>
+                                          <Image style={[{
+                                              marginTop: 16, marginBottom: 8,
+                                              width: 132, height: 132,
+                                              resizeMode: Image.resizeMode.stretch,
+                                              backgroundColor: colours.paperGrey300.color
+                                          }]}
+                                                 source={{uri: photo.uri}}>
+
+                                          </Image>
+                                          <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
+                                              <View
+                                                  style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
+                                                  <Text numberOfLines={1} style={[styles.productTitle]}>
+                                                      {shortenText(photo.fileName)}
+                                                  </Text>
+                                              </View>
+                                              <View
+                                                  style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
+                                                  <Text style={[styles.currency]}>
+
+                                                  </Text>
+                                                  <Text style={[styles.price]}>
+                                                      {photo.width + "x" + photo.height}
+                                                  </Text>
+                                              </View>
+                                          </View>
+                                      </View>
+
+                                  </Card>
+                              </View>
+                          }
+                />
+
+                <ActionButton
+
+                    icon="add"
+                    onPress={(text) => {
+
+                        this.openPicker();
+
+
+                    }}
+                />
+            </View>
+
+        );
+    }
+
+}
+export const EbSubmitInput=connect((state)=>{
+    return{
+        forms:{...state.forms}
+    }
+},(dispatch)=>{
+    return bindActionCreators(actions,dispatch);
+}, mergeProps,{withRef: true})(submitInput)
 
 
 
@@ -565,6 +848,7 @@ export class ProductForm extends Component{
     constructor(props){
         super(props);
         this.fields=[];
+        this.state={validate:false,isValid:false}
     }
     childrenWithProps() {
         return React.Children.map(this.props.children, (child) => {
@@ -576,7 +860,6 @@ export class ProductForm extends Component{
             }
         });
     }
-
     getFields(fields){
 
      let {formName,title}=this.props;
@@ -586,7 +869,7 @@ export class ProductForm extends Component{
         fields= this.sortFieldsOrder(fields);
 
 
-        fields.forEach((sect,i)=>{
+        /*fields.forEach((sect,i)=>{
             for(field in sect)
             {
                 item=sect[field];
@@ -594,7 +877,7 @@ export class ProductForm extends Component{
 
                     case "inlineText":
                         _fields.push(
-                            <EbTextInput key={field}
+                            <EbTextInput  key={field}
 
                                          {...{...item.props,formName,title}}
                                          field={field}
@@ -607,7 +890,7 @@ export class ProductForm extends Component{
                     case "hidden":
 
                         _fields.push(
-                            <EbHiddenInput key={field}
+                            <EbHiddenInput  key={field}
                                            {...{...item.props,formName,title}}
                                            field={field}
                                            label={item.hasOwnProperty("label")?item.label:""}
@@ -618,7 +901,8 @@ export class ProductForm extends Component{
                     case"modal":
                         _fields.push(
 
-                            <EbModalInput key={field}
+                            <EbModalInput
+                                          key={field}
                                           {...{...item.props,formName,title}}
                                           field={field}
                                           fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
@@ -639,7 +923,7 @@ export class ProductForm extends Component{
                         picker=[picker];
 
                         _fields.push(
-                            <EbModalInput key={field}
+                            <EbModalInput  key={field}
                                           {...{...item.props,formName,title}}
                                           field={field}
                                           fields={picker}
@@ -651,6 +935,7 @@ export class ProductForm extends Component{
                     case "option":
                         _fields.push(
                             <EbOptionInput
+
                                 key={field}
                                 {...{...item.props,formName,title}}
                                 field={field}
@@ -665,10 +950,9 @@ export class ProductForm extends Component{
 
 
             }
-        });
-        return _fields;
+        });*/
+        return fields;
     }
-
     sortFieldsOrder(arr){
         return  arr.sort((a,b)=>{
             let keyA=Object.keys(a)[0];
@@ -685,14 +969,232 @@ export class ProductForm extends Component{
 
     }
     renderFields(){
-       return this.fields.map((item)=>{
-            return item;
-        })
+
+        this.fields.map((sect,i)=>{
+            for(field in sect)
+            {
+                item=sect[field];
+                switch (item.widget){
+
+                    case "inlineText":
+                        return(
+                            <EbTextInput  key={field}
+
+                                          {...{...item.props,formName,title}}
+                                          field={field}
+                                          label={item.hasOwnProperty("label")?item.label:""}
+                                          validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                            />
+                        );
+
+                        break;
+                    case "hidden":
+
+                        return(
+                            <EbHiddenInput  key={field}
+                                            {...{...item.props,formName,title}}
+                                            field={field}
+                                            label={item.hasOwnProperty("label")?item.label:""}
+                                            validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                            />
+                        );
+                        break;
+                    case"modal":
+                        return(
+
+                            <EbModalInput
+                                key={field}
+                                {...{...item.props,formName,title}}
+                                field={field}
+                                fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
+                                label={item.hasOwnProperty("label")?item.label:""}
+                                validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                            />
+
+                        );
+                        break;
+                    case"filePicker":
+
+                        let  picker=<EbFilePickerInput key={field}
+                                                       {...{...item.props,formName,title}}
+                                                       field={field}
+                                                       label={item.hasOwnProperty("label")?item.label:""}
+                                                       validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                        />;
+                        picker=[picker];
+
+                        return(
+                            <EbModalInput  key={field}
+                                           {...{...item.props,formName,title}}
+                                           field={field}
+                                           fields={picker}
+                                           label={item.hasOwnProperty("label")?item.label:""}
+                                           validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                            />
+                        );
+                        break;
+                    case "option":
+                        return(
+                            <EbOptionInput
+
+                                key={field}
+                                {...{...item.props,formName,title}}
+                                field={field}
+                                fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
+                                label={item.hasOwnProperty("label")?item.label:""}
+                                validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                        );
+                        break;
+                    default:
+
+
+                }
+
+
+            }
+        });
+    }
+    validateForm(){
+        let field;
+        let fields=this.fields;
+        let status=true;
+
+        if(fields instanceof  Array){
+
+       for (let i=0;i<fields.length;i++) {
+
+
+
+           for (field in fields[i]) {
+
+
+
+               if (this.refs[field].getWrappedInstance()["validate"]) {
+                   if (!this.refs[field].getWrappedInstance().validate()) {
+                       status = false;
+                       console.log("valid form cheki"+field);
+                       break;
+                   }
+               }
+               else {
+                   console.log("no validator");
+               }
+
+           }
+
+
+       }
+    }
+       return status;
     }
     render(){
+        let field,item;
+        let {formName,title}=this.props;
         return(
-            <View style={[styles.flex1]}>
-                {this.renderFields()}
+
+            <View ref="wrapper" style={[styles.flex1]}>
+                {this.fields.map((sect,i)=>{
+                    for(field in sect)
+                    {
+                        item=sect[field];
+                        switch (item.widget){
+
+                            case "inlineText":
+                                return(
+                                    <EbTextInput  key={field}
+                                                  ref={field}
+                                                  {...{...item.props,formName,title}}
+                                                  field={field}
+                                                  label={item.hasOwnProperty("label")?item.label:""}
+                                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                  validate={this.state.validate}
+
+                                    />
+                                );
+
+                                break;
+                            case "hidden":
+
+                                return(
+                                    <EbHiddenInput  key={field}
+                                                    ref={field}
+                                                    validate={this.state.validate}
+                                                    {...{...item.props,formName,title}}
+                                                    field={field}
+                                                    label={item.hasOwnProperty("label")?item.label:""}
+                                                    validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                    />
+                                );
+                                break;
+                            case"modal":
+                                return(
+
+                                    <EbModalInput
+                                        key={field}
+                                        ref={field}
+                                        validate={this.state.validate}
+                                        {...{...item.props,formName,title}}
+                                        field={field}
+                                        fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
+                                        label={item.hasOwnProperty("label")?item.label:""}
+                                        validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                    />
+
+                                );
+                                break;
+                            case"filePicker":
+
+                                let  picker=<EbFilePickerInput key={field}
+
+                                                               validate={this.state.validate}
+                                                               {...{...item.props,formName,title}}
+                                                               field={field}
+                                                               label={item.hasOwnProperty("label")?item.label:""}
+                                                               validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                />;
+                                picker=[picker];
+
+                                return(
+                                    <EbModalInput  key={field}
+                                                   ref={field}
+                                                   validate={this.state.validate}
+                                                   {...{...item.props,formName,title}}
+                                                   field={field}
+                                                   fields={picker}
+                                                   label={item.hasOwnProperty("label")?item.label:""}
+                                                   validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                    />
+                                );
+                                break;
+                            case "option":
+                                return(
+                                    <EbOptionInput
+                                        validate={this.state.validate}
+                                        key={field}
+                                        ref={field}
+                                        {...{...item.props,formName,title}}
+                                        field={field}
+                                        fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
+                                        label={item.hasOwnProperty("label")?item.label:""}
+                                        validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                                );
+                                break;
+                            default:
+
+                                return null;
+
+                        }
+
+
+                    }
+                })}
+                <Button text="Submit" onPress={(e)=>{
+                    if(this.validateForm()){
+                        alert("valid form")
+                    }
+                    else
+                        alert("invalid form")
+                }}> </Button>
             </View>)
     }
 

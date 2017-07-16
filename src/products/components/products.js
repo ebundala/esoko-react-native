@@ -35,7 +35,7 @@ import {DB} from "../../utils/database"
 
 import {uiTheme} from "../../app"
 let moment = require('moment');
-let ctx;
+//let ctx;
 const firestack = new Firestack();
 const Screen = {
     height: Dimensions.get('window').height - 75
@@ -114,6 +114,7 @@ export class ProductsList extends Component {
             this.setState({ canScroll: true });
             console.log('This implementation is still broken, in progress');
         }
+
     }
     onScroll(event) {
 
@@ -124,7 +125,7 @@ export class ProductsList extends Component {
         }
     }
     render() {
-        ctx = this;
+        //ctx = this;
         let {navigate, goBack} = this.props.navigation;
         let {category,}=this.props.navigation.state.params;
         let props = this.props.screenProps;
@@ -133,16 +134,16 @@ export class ProductsList extends Component {
             if (category.subCategories[0] !== "All")
                 category.subCategories.unshift("All")
         }
-        const {primaryColor} = uiTheme.palette;
+        const {primaryColor,filterBackgroundColor,mainTextColor} = uiTheme.palette;
         return (
             <View style={[styles.flex1]}>
-                <Toolbar
+                <Toolbar style={{zIndex:9,elevation:5}}
                     leftElement="arrow-back"
                     onLeftElementPress={() => {
                         goBack();
                     }}
                     centerElement={category.categoryName}
-                    searchable={{
+                    searchableh={{
                         autoFocus: true,
                         placeholder: 'Search',
                         onSubmitEditing: e => {
@@ -156,40 +157,95 @@ export class ProductsList extends Component {
                     }
                     }
                 />
-                <Animated.View style={{zIndex:5,
+                <Animated.View style={{zIndex:5,elevation:3,
                     transform: [
                         {
                             translateY: this._deltaY.interpolate({
                                 inputRange: [-150, -150, 0, 0],
-                                outputRange: [-140, -140, 0, 0]
+                                outputRange: [-150, -150, 0, 0]
                             })
                         },
-                        /*{
-                            scale: this._deltaY.interpolate({
+                        {
+                            scaleY: this._deltaY.interpolate({
                                 inputRange: [-150, -150, 0, 0],
-                                outputRange: [0.35, 0.35, 1, 1]
+                                outputRange: [0.1, 0.1, 1, 1]
                             })
-                        }*/
+                        }
                     ]
                 }}>
-                <View style={{height:150,backgroundColor:primaryColor}}>
-                    <Picker
-                        selectedValue={this.state.subCategory}
-                        onValueChange={(itemValue, itemIndex) => {
-                            this.setState({subCategory: itemValue});
-                            //this.filterChanged(itemValue);
+                <View style={{height:150,backgroundColor:filterBackgroundColor}}>
 
-                        }}>
+                    <View style={[styles.alignSelfEnd]}>
+                        <Icon name="arrow-drop-up" color={mainTextColor}/>
+                    </View>
+                    <Card style={[styles.centerJustified,{height:36,backgroundColor:uiTheme.COLOR.teal300,borderColor:"transparent",borderRadius:5}]}>
+                                <View style={[styles.horizontal]}>
+                                    <View style={[styles.flex9]}>
 
-                        {category.subCategories.map((item, i) => {
-                            return <Picker.Item key={item} label={item} value={item}/>
 
-                        })}
+                                        <TextInput
+                                            ref={component => this.searchInput = component}
+                                            keyboardType="web-search"
+                                            style={[styles.input,{backgroundColor:uiTheme.COLOR.teal300,color:mainTextColor}]}
+                                            autoCorrect={true}
+                                            autoCapitalize="none"
+                                            placeholderTextColor={mainTextColor}
+                                            placeholder={"Search "}
+                                            underlineColorAndroid={uiTheme.COLOR.teal500}
+                                            onSubmitEditing={(e) => {
+                                                if (this.state.query) {
+                                                    this.searchInput.blur();
+                                                    if (this.state.query) {
 
-                    </Picker>
-                    <Text >
+                                                        props.searchProducts(this.state.query, category.categoryName, navigate)
+                                                    }
+                                                }
+                                                else
+                                                    this.searchInput.focus();
+                                            }}
+                                            onChangeText={query => this.setState({query})}
+                                        />
+
+                                    </View>
+                                    <TouchableNativeFeedback onPress={() => {
+                                        if (this.state.query) {
+                                            this.searchInput.blur();
+
+
+                                                props.searchProducts(this.state.query, category.categoryName, navigate)
+
+
+                                        }
+                                        else
+                                            this.searchInput.focus();
+                                    }}>
+                                        <View
+                                            style={[styles.flex1, styles.centerJustified, styles.alignItemsCenter]}>
+                                            <Icon name="search" color={mainTextColor}/>
+                                        </View>
+                                    </TouchableNativeFeedback>
+                                </View>
+                    </Card>
+                    <Card style={[styles.centerJustified,{height:36,backgroundColor:uiTheme.COLOR.teal300,borderColor:"transparent",borderRadius:5}]}>
+                        <Picker style={{color:mainTextColor}}
+                                selectedValue={this.state.subCategory}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    this.setState({subCategory: itemValue});
+                                    //this.filterChanged(itemValue);
+
+                                }}>
+
+                            {category.subCategories.map((item, i) => {
+                                return <Picker.Item key={item} label={item} value={item}/>
+
+                            })}
+
+                        </Picker>
+                    </Card>
+
+                    {false&&<Text>
                         {this.state.error}
-                    </Text>
+                    </Text>}
 
                 </View>
                 </Animated.View>
@@ -199,18 +255,13 @@ export class ProductsList extends Component {
                 boundaries={{top: -150}}
                 onSnap={this.onSnap.bind(this)}
                 animatedValueY={this._deltaY}>
-
-
-
-
-
                     <ListView
                         bounces={false}
                         canCancelContentTouches={this.state.canScroll}
                         scrollEnabled={this.state.canScroll}
                         onScroll={this.onScroll.bind(this)}
                                       dataSource={this.ds.cloneWithRows(this.state.products)}
-                                      contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
+                                      contentContainerStyle={[{elevation:0},styles.horizontal, styles.spaceAround, styles.flexWrap]}
                                       scrollRenderAheadDistance={640}
                                       enableEmptySections={true}
                                       renderRow={(data) =>
@@ -267,7 +318,7 @@ export class ProductsList extends Component {
                         borderRadius: 0,
                         //backgroundColor:colours.paperTeal500.color
                     }]}>
-                        <View style={[styles.horizontal]}>
+                        <View style={[styles.horizontal,{}]}>
 
                             <View style={[styles.flex9]}>
 
@@ -652,7 +703,7 @@ export class searchResultsProductsList extends Component {
     }
 
     render() {
-        ctx = this;
+       // ctx = this;
         let {navigate, goBack} = this.props.navigation;
         let {title, products}=this.props.navigation.state.params;
         let props = this.props.screenProps;
@@ -739,7 +790,7 @@ export class searchResultsProductsList extends Component {
 
 
 
-import {ProductForm, EbModalInput, EbOptionInput, EbTextInput,EbHiddenInput,EbFilePickerInput} from "../../forms/productForm"
+import {ProductForm} from "../../forms/productForm"
 import dataScheme from "../../utils/dataSchema";
 export class CreateProduct extends Component {
     constructor(props) {
@@ -760,6 +811,8 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
+                  isRequired:false,
+                  isMeta:false,
                   order: 0,
                   label: "ID",
                   placeholder: "",
@@ -848,6 +901,8 @@ export class CreateProduct extends Component {
                   label: "Description",
                   placeholder: "",
                   props: {
+                      isRequired:true,
+                      isMeta:true,
                       vertical: true,
                       lines: 5,
                   }
@@ -864,8 +919,12 @@ export class CreateProduct extends Component {
                   widget: "inlineText",
                   order: 9,
                   label: "Title",
+
                   placeholder: "",
-                  props: {}
+                  props: {
+                      isRequired:false,
+                      isMeta:true,
+                  }
               }
           },
           // post_excerpt:"" ,
@@ -1104,31 +1163,7 @@ export class CreateProduct extends Component {
 }
 
 
-/*<EbTextInput field="name" title={"Product name"}
-             validator={{
-                 errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                 validator: "isLength",
-                 args: [5, 32]
 
-             }}/>
-<EbTextInput field="model" title={"Model name"}
-validator={{
-    errorMessage: "[TITLE] must be args[0] to args[1] characters",
-        validator: "isLength",
-        args: [2, 10]
-
-}}
-
-/>
-<EbTextInput field="manufacturer" title={"manufacturer"}
-
-validator={{
-    errorMessage: "[TITLE] must be args[0] to args[1] characters",
-        validator: "isLength",
-        args: [2, 10]
-
-}}
-/>*/
 
 
 

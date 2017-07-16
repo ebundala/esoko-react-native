@@ -42,14 +42,17 @@ import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
 export const uiTheme = {
     palette: {
-        primaryColor:COLOR.green500,
+        primaryColor:COLOR.teal900,
         accentColor:COLOR.pink300,
         iconColor:COLOR.grey50,
         textColor:COLOR.black,
+        mainTextColor:"white",
         placeholderColor:COLOR.grey500,
         errorColor:COLOR.red500,
-        inputUnderlineColor:COLOR.amber300
+        inputUnderlineColor:COLOR.amber300,
+        filterBackgroundColor:COLOR.teal500
     },
+    COLOR:COLOR
 };
 const UIManager = NativeModules.UIManager;
 //const firestack=new Firestack();
