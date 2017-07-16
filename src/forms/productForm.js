@@ -61,7 +61,7 @@ class EBwidgetBase extends Component{
 
                 value={...forms[formName].metadata,...value};
                 forms[formName] = {...forms[formName], ...{metadata:value}};
-                
+
             }
             else{
 
@@ -152,6 +152,22 @@ class EBwidgetBase extends Component{
         else
             return "";
     }
+    renderError(){
+        const {errorColor} = uiTheme.palette;
+        if(!this.state.isValid){
+            return(
+                <View style={[styles.alignItemsCenter]}>
+                    <Text numberOfLines={1}  style={{
+                        fontSize: 12,
+                        color: errorColor,
+                        padding: 5,}}>
+                        {this.state.errorMessage}
+                    </Text>
+                </View>
+            )
+        }
+
+    }
     componentDidMount() {
         let {forms,formName,field,isMeta}=this.props;
         let values;
@@ -189,22 +205,7 @@ class InlineTextInput extends EBwidgetBase{
         }
     }
 
-    renderError(){
-         const {errorColor} = uiTheme.palette;
-        if(!this.state.isValid){
-            return(
-                <View style={[styles.alignItemsCenter]}>
-                    <Text numberOfLines={1}  style={{
-                        fontSize: 12,
-                        color: errorColor,
-                        padding: 5,}}>
-                        {this.state.errorMessage}
-                    </Text>
-                </View>
-            )
-        }
 
-     }
 
 
     getStyles(){
@@ -328,26 +329,113 @@ export const EbOptionInput=connect((state)=>{
          }
     }
 
-     childrenWithProps() {
-         let {formName,title,fields} =this.props;
 
-        return fields.map((item)=>{
-             return item
-        })
-     }
+      componentWillMount(){
+    let {fields}=this.props;
+         this.fields=fields||[];
 
+}
 
      setModalVisible(visible) {
          this.setState({modalVisible: visible});
      }
+
+     validate(){
+         let field;
+         let fields=this.fields;
+         let status=true;
+
+         if(fields instanceof  Array){
+
+             for (let i=0;i<fields.length;i++) {
+
+
+
+                 for (field in fields[i]) {
+
+
+                     //console.log("modal " ,fields[i]);
+
+                     if (!this._validate(fields[i],field))
+                     {
+
+                             status = false;
+
+                             break;
+
+                     }
+
+
+                 }
+
+
+             }
+         }
+         if(!status){
+             this.setInvalid();
+         }
+         return status;
+     }
+     _validate(item,field){
+
+         let isValid=true;
+         let {validator,label}=item[field];
+         let isRequired=item[field].props&&item[field].props.hasOwnProperty("isRequired")?item[field].props.isRequired:false;
+         let {formName,title,forms}=this.props;
+         if(isRequired) {
+             if (forms[formName][field]) {
+                 if (typeof validator.validator === "string") {
+                     isValid = validation[validator.validator](forms[formName][field].toString(), {
+                         min: validator.args[0],
+                         max: validator.args[1]
+                     })
+
+                 } else if (typeof validator.validator === "function") {
+                     isValid = validator.validator(forms[formName][field].toString(), {
+                         min: validator.args[0],
+                         max: validator.args[1]
+                     })
+                 }
+             }
+             else {
+                 isValid = false;
+             }
+         }
+         else{
+             if (this.state.value) {
+                 if (typeof validator.validator === "string") {
+                     isValid = validation[validator.validator](forms[formName][field].toString(), {
+                         min: validator.args[0],
+                         max: validator.args[1]
+                     })
+
+                 } else if (typeof validator.validator === "function") {
+                     isValid = validator.validator(forms[formName][field].toString(), {
+                         min: validator.args[0],
+                         max: validator.args[1]
+                     })
+                 }
+             }
+             else {
+                 isValid = true;
+             }
+         }
+
+         if(!isValid){
+             this.setInvalid();
+         }
+         console.log("validating ",label,isValid)
+         return isValid;
+     }
      render(){
          const {accentColor,textColor} = uiTheme.palette;
-         let {label}=this.props;
 
+         let field,item;
+         let {formName,title,label,isFilePicker}=this.props;
          return(
              <View style={{height:40}}>
 
-                 <Modal
+                 <Modal ref="modal"
                      animationType={"slide"}
                      transparent={false}
                      visible={this.state.modalVisible}
@@ -379,8 +467,106 @@ export const EbOptionInput=connect((state)=>{
                                  </TouchableNativeFeedback>
                              </View>
                              <Divider/>
-                             <ScrollView>
-                                 {this.childrenWithProps()}
+
+                             <ScrollView >
+
+                                 {isFilePicker?
+                                     <EbFilePickerInput key={this.props.field}
+
+                                                                    validate={this.state.validate}
+                                                                    {...{...this.props,formName,title}}
+                                                                    field={this.props.field}
+                                                                    label={label}
+                                                                    validator={this.props.hasOwnProperty("validator")?this.props.validator:()=>{}}
+                                     />
+                                     :
+                                     this.fields.map((sect,i)=>{
+                                     for(field in sect)
+                                     {
+                                         item=sect[field];
+                                         switch (item.widget){
+
+                                             case "inlineText":
+                                                 return(
+                                                     <EbTextInput  key={field}
+                                                                   ref={field}
+                                                                   {...{...item.props,formName,title}}
+                                                                   field={field}
+                                                                   label={item.hasOwnProperty("label")?item.label:""}
+                                                                   validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                                   validate={this.state.validate}
+
+                                                     />
+                                                 );
+
+                                                 break;
+                                             case "hidden":
+
+                                                 return(
+                                                     <EbHiddenInput  key={field}
+                                                                     ref={field}
+                                                                     validate={this.state.validate}
+                                                                     {...{...item.props,formName,title}}
+                                                                     field={field}
+                                                                     label={item.hasOwnProperty("label")?item.label:""}
+                                                                     validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                     />
+                                                 );
+                                                 break;
+                                             case"modal":
+                                                 return(
+
+                                                     <EbModalInput
+                                                         key={field}
+                                                         ref={field}
+                                                         validate={this.state.validate}
+                                                         {...{...item.props,formName,title}}
+                                                         field={field}
+                                                         fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
+                                                         label={item.hasOwnProperty("label")?item.label:""}
+                                                         validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                     />
+
+                                                 );
+                                                 break;
+                                             case"filePicker":
+
+
+
+                                                 return(
+                                                     <EbModalInput  key={field}
+                                                                    ref={field}
+                                                                    validate={this.state.validate}
+                                                                    {...{...item.props,formName,title}}
+                                                                    field={field}
+                                                                    isFilePicker={true}
+                                                                    label={item.hasOwnProperty("label")?item.label:""}
+                                                                    validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                     />
+                                                 );
+                                                 break;
+                                             case "option":
+                                                 return(
+                                                     <EbOptionInput
+                                                         validate={this.state.validate}
+                                                         key={field}
+                                                         ref={field}
+                                                         {...{...item.props,formName,title}}
+                                                         field={field}
+                                                         fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
+                                                         label={item.hasOwnProperty("label")?item.label:""}
+                                                         validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                                                 );
+                                                 break;
+                                             default:
+
+                                                 return null;
+
+                                         }
+
+
+                                     }
+                                 })}
                              </ScrollView>
                          </View>
 
@@ -395,6 +581,7 @@ export const EbOptionInput=connect((state)=>{
                          color: textColor,
                          padding: 10}}>{label}
                          </Text>
+                         {this.renderError()}
                          <View style={[styles.flex1]}/>
                          <Icon  name="arrow-drop-down" style={[{padding:10}]}/>
                      </View>
@@ -1093,6 +1280,8 @@ export class ProductForm extends Component{
         return(
 
             <View ref="wrapper" style={[styles.flex1]}>
+
+
                 {this.fields.map((sect,i)=>{
                     for(field in sect)
                     {
@@ -1144,15 +1333,7 @@ export class ProductForm extends Component{
                                 break;
                             case"filePicker":
 
-                                let  picker=<EbFilePickerInput key={field}
 
-                                                               validate={this.state.validate}
-                                                               {...{...item.props,formName,title}}
-                                                               field={field}
-                                                               label={item.hasOwnProperty("label")?item.label:""}
-                                                               validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                                />;
-                                picker=[picker];
 
                                 return(
                                     <EbModalInput  key={field}
@@ -1160,7 +1341,7 @@ export class ProductForm extends Component{
                                                    validate={this.state.validate}
                                                    {...{...item.props,formName,title}}
                                                    field={field}
-                                                   fields={picker}
+                                                   isFilePicker={true}
                                                    label={item.hasOwnProperty("label")?item.label:""}
                                                    validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
                                     />
