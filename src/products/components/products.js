@@ -863,7 +863,10 @@ export class CreateProduct extends Component {
                                   order: 7,
                                   label: "Author",
                                   placeholder: "",
-                                  props: {}
+                                  props: {
+                                      isRequired:true,
+                                      isMeta:true,
+                                  }
                               }
                           },
                           {
@@ -879,6 +882,8 @@ export class CreateProduct extends Component {
                                   label: "Description",
                                   placeholder: "",
                                   props: {
+                                      isRequired:true,
+                                      isMeta:true,
                                       vertical: true,
                                       lines: 5,
                                   }
@@ -1079,7 +1084,10 @@ export class CreateProduct extends Component {
                   widget: "filePicker",
                   label: "Type",
                   order: 0,
-                  props: {}
+                  props: {
+                      isRequired:true,
+                      isMeta:false,
+                  }
               }
           },
           {

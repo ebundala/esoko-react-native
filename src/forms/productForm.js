@@ -383,7 +383,7 @@ export const EbOptionInput=connect((state)=>{
          let isRequired=item[field].props&&item[field].props.hasOwnProperty("isRequired")?item[field].props.isRequired:false;
          let {formName,title,forms}=this.props;
          if(isRequired) {
-             if (forms[formName][field]) {
+             if (forms[formName]&&forms[formName][field]) {
                  if (typeof validator.validator === "string") {
                      isValid = validation[validator.validator](forms[formName][field].toString(), {
                          min: validator.args[0],
@@ -402,7 +402,7 @@ export const EbOptionInput=connect((state)=>{
              }
          }
          else{
-             if (this.state.value) {
+             if (forms[formName]&&forms[formName][field]) {
                  if (typeof validator.validator === "string") {
                      isValid = validation[validator.validator](forms[formName][field].toString(), {
                          min: validator.args[0],
