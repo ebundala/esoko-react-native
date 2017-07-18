@@ -4,7 +4,13 @@
 
 import {PRODUCT_FORM_ACTIONS,FORM_INITIAL_STATE} from "./product.formConsts"
 
+export const onFormInit=(value)=>{
 
+    return{
+        type:PRODUCT_FORM_ACTIONS.FORM_INIT,
+        value:value
+    }
+}
 export const onValueChange=(value)=>{
 
     return{

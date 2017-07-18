@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "apsl-react-native-button": "^3.0.2",
+    "deepmerge": "^1.5.0",
     "moment": "^2.18.1",
     "react": "^15.4.2",
     "react-native": "^0.42.0",
@@ -37,6 +38,7 @@
     "jest": "18.1.0",
     "php-transpiler": "^0.4.0",
     "react-test-renderer": "~15.4.0-rc.4",
+    "redux-logger": "^3.0.6",
     "remote-redux-devtools": "^0.5.7",
     "remote-redux-devtools-on-debugger": "^0.7.0"
   },

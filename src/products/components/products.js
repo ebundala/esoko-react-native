@@ -26,7 +26,7 @@ import StarRating from 'react-native-star-rating';
 //import Accordion from "react-native-accordion"
 //import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles, {typographyStyle, colorStyle, colours} from "../../styles/styles"
-import CollapsingHeaderWithScroll from './CollapsingHeaderWithScroll';
+//import CollapsingHeaderWithScroll from './CollapsingHeaderWithScroll';
 import Interactable from 'react-native-interactable';
 
 import Firestack from 'react-native-firestack'
@@ -227,7 +227,7 @@ export class ProductsList extends Component {
                                 </View>
                     </Card>
                     <Card style={[styles.centerJustified,{height:36,backgroundColor:uiTheme.COLOR.teal300,borderColor:"transparent",borderRadius:5}]}>
-                        <Picker style={{color:mainTextColor}}
+                        <Picker mode="dropdown" style={{color:mainTextColor}}
                                 selectedValue={this.state.subCategory}
                                 onValueChange={(itemValue, itemIndex) => {
                                     this.setState({subCategory: itemValue});
@@ -864,6 +864,7 @@ export class CreateProduct extends Component {
                                   label: "Author",
                                   placeholder: "",
                                   props: {
+                                      value:"hello world",
                                       isRequired:true,
                                       isMeta:true,
                                   }
@@ -882,6 +883,7 @@ export class CreateProduct extends Component {
                                   label: "Description",
                                   placeholder: "",
                                   props: {
+                                      value:"hello world",
                                       isRequired:true,
                                       isMeta:true,
                                       vertical: true,
@@ -905,7 +907,9 @@ export class CreateProduct extends Component {
                   order: -9,
                   label: "Description",
                   placeholder: "",
+
                   props: {
+                      value:"hello world",
                       isRequired:true,
                       isMeta:true,
                       vertical: true,
@@ -927,6 +931,7 @@ export class CreateProduct extends Component {
 
                   placeholder: "",
                   props: {
+                      value:"hello world",
                       isRequired:false,
                       isMeta:true,
                   }
@@ -944,7 +949,9 @@ export class CreateProduct extends Component {
                   widget: "hidden",
                   order: 0,
                   label: "Status",
-                  props: {}
+                  props: {
+                      value:"hello world",
+                  }
               }
           },
           {
@@ -959,6 +966,7 @@ export class CreateProduct extends Component {
                   order: 0,
                   label: "Comment Enabled",
                   props: {
+                      value:"hello world",
                       fields:[
                           {
                               post_photos: {
@@ -1010,7 +1018,9 @@ export class CreateProduct extends Component {
                   order: 0,
                   label: "Name",
 
-                  props: {}
+                  props: {
+                      value:"hello world",
+                  }
               }
           },
           // to_ping:"" ,
@@ -1026,7 +1036,9 @@ export class CreateProduct extends Component {
                   widget: "hidden",
                   order: 0,
                   label: "Modified",
-                  props: {}
+                  props: {
+                      value:"hello world",
+                  }
               }
           },
           // post_modified_gmt:"",
@@ -1042,7 +1054,9 @@ export class CreateProduct extends Component {
                   widget: "hidden",
                   label: "Parent",
                   order: 0,
-                  props: {}
+                  props: {
+                      value:"hello world",
+                  }
               }
           },
           {
@@ -1056,7 +1070,9 @@ export class CreateProduct extends Component {
                   widget: "hidden",
                   label: "SKU",
                   order: 0,
-                  props: {}
+                  props: {
+                      value:"hello world",
+                  }
               }
           },
           {
@@ -1137,7 +1153,7 @@ export class CreateProduct extends Component {
   }
     render() {
 
-        let {navigate, goBack} = this.props.navigation;
+        let { goBack} = this.props.navigation;
         let title = "New item";
         let {user}=this.props.screenProps;
         const {primaryColor} = uiTheme.palette;

@@ -10,7 +10,7 @@ export default categoriesReducer=(state=initialState,action)=>{
     switch (action.type){
 
         default:
-            return initialState;
+            return state;
         //console.log("catergo",state)
 
     }

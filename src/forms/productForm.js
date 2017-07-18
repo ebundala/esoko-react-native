@@ -47,11 +47,12 @@ class EBwidgetBase extends Component{
             isValid:true
         }
     }
-    _onValueChange(values){
+    _onFormInit(values){
 
-        let {onValueChange,forms,formName,field,isMeta}=this.props;
+        let {onFormInit,forms,formName,field,isMeta}=this.props;
         let value={};
         value[field]=values;
+
         if(!isMeta){
 
             forms[formName] = {...forms[formName], ...value};
@@ -69,10 +70,45 @@ class EBwidgetBase extends Component{
             }
         }
 
-        onValueChange(forms);
+        //console.log(forms);
+        debugger;
+        onFormInit(forms);
+        debugger;
         this.setState({
             value:value[field]
         });
+
+    }
+    _onValueChange(values){
+
+        let {onValueChange,onFormInit,forms,formName,field,isMeta}=this.props;
+        let value={};
+        value[field]=values;
+
+        if(!isMeta){
+
+            forms[formName] = {...forms[formName], ...value};
+        }
+        else{
+            if(forms[formName]&&forms[formName].hasOwnProperty("metadata")) {
+
+                value={...forms[formName].metadata,...value};
+                forms[formName] = {...forms[formName], ...{metadata:value}};
+
+            }
+            else{
+
+                forms[formName] = {...forms[formName],...{metadata:value}};
+            }
+        }
+
+        //console.log(forms);
+        onValueChange(forms);
+       // debugger;
+        this.setState({
+            value:value[field]
+        });
+
     }
     isValid(){
         return this.state.isValid
@@ -169,23 +205,39 @@ class EBwidgetBase extends Component{
 
     }
     componentDidMount() {
-        let {forms,formName,field,isMeta}=this.props;
+        let {forms,formName,field,isMeta,value}=this.props;
         let values;
-        // get value from store
-        if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined'&&!isMeta) {
-            values=forms[formName][field];
-            console.log("not meta",values);
-            this._onValueChange(values);
+
+
+        let isInitialNotMeta=(!isMeta)&& (typeof forms[formName]==="undefined"
+            ||(typeof forms[formName]!=="undefined"?typeof forms[formName][field] === 'undefined':false));
+
+        let isInitialMeta=isMeta&&(typeof forms[formName]==="undefined"
+            ||typeof forms[formName]['metadata']==="undefined"
+            ||(typeof forms[formName]!=="undefined"?typeof forms[formName]["metadata"]!== 'undefined'?typeof forms[formName]["metadata"][field] === 'undefined':false:false));
+        if(value &&( isInitialMeta||isInitialNotMeta))
+        {
+                this._onFormInit(value);
 
         }
-        else if(typeof forms[formName]!== 'undefined'&&
-            typeof forms[formName]["metadata"] !== 'undefined'&&
-            typeof forms[formName]["metadata"][field] !== 'undefined'&&isMeta)
-        {
-            values=forms[formName]["metadata"][field];
-            console.log("meta",values);
-            this._onValueChange(values);
+        else{
+            // get value from store
+            if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined'&&!isMeta) {
+                values=forms[formName][field];
+                console.log("not meta",values);
+                this._onValueChange(values);
+
+            }
+            else if(typeof forms[formName]!== 'undefined'&&
+                typeof forms[formName]["metadata"] !== 'undefined'&&
+                typeof forms[formName]["metadata"][field] !== 'undefined'&&isMeta)
+            {
+                values=forms[formName]["metadata"][field];
+                console.log("meta",values);
+                this._onValueChange(values);
+            }
         }
+
 
 
     }
@@ -335,7 +387,7 @@ export const EbOptionInput=connect((state)=>{
          this.fields=fields||[];
 
 }
-
+      componentDidMount(){}
      setModalVisible(visible) {
          this.setState({modalVisible: visible});
      }
@@ -354,7 +406,8 @@ export const EbOptionInput=connect((state)=>{
                  for (field in fields[i]) {
 
 
-                     //console.log("modal " ,fields[i]);
+                     console.log("modal " ,fields[i]);
+
 
                      if (!this._validate(fields[i],field))
                      {
@@ -377,32 +430,81 @@ export const EbOptionInput=connect((state)=>{
          return status;
      }
      _validate(item,field){
-
          let isValid=true;
          let {validator,label}=item[field];
-         let isRequired=item[field].props&&item[field].props.hasOwnProperty("isRequired")?item[field].props.isRequired:false;
-         let {formName,title,forms}=this.props;
-         if(isRequired) {
-             if (forms[formName]&&forms[formName][field]) {
-                 if (typeof validator.validator === "string") {
-                     isValid = validation[validator.validator](forms[formName][field].toString(), {
-                         min: validator.args[0],
-                         max: validator.args[1]
-                     })
+         let {isRequired,isMeta}=item[field].props;
+         let {formName,forms}=this.props;
 
-                 } else if (typeof validator.validator === "function") {
-                     isValid = validator.validator(forms[formName][field].toString(), {
-                         min: validator.args[0],
-                         max: validator.args[1]
-                     })
+         if(isRequired)
+         {
+
+             if (isMeta)
+             {
+
+                 if (forms[formName] && forms[formName]["metadata"][field]) {
+                     if (typeof validator.validator === "string") {
+                         isValid = validation[validator.validator](forms[formName]["metadata"][field].toString(), {
+                             min: validator.args[0],
+                             max: validator.args[1]
+                         })
+
+                     } else if (typeof validator.validator === "function") {
+                         isValid = validator.validator(forms[formName]["metadata"][field].toString(), {
+                             min: validator.args[0],
+                             max: validator.args[1]
+                         })
+                     }
+                 }
+                 else {
+                     isValid = false;
+                 }
+             } else {
+                 if (forms[formName] && forms[formName][field]) {
+                     if (typeof validator.validator === "string") {
+                         isValid = validation[validator.validator](forms[formName][field].toString(), {
+                             min: validator.args[0],
+                             max: validator.args[1]
+                         })
+
+                     } else if (typeof validator.validator === "function") {
+                         isValid = validator.validator(forms[formName][field].toString(), {
+                             min: validator.args[0],
+                             max: validator.args[1]
+                         })
+                     }
+                 }
+                 else {
+                     isValid = false;
                  }
              }
-             else {
-                 isValid = false;
-             }
+
          }
-         else{
-             if (forms[formName]&&forms[formName][field]) {
+         else
+             {
+             if (isMeta)
+             {
+                 if (forms[formName]&&forms[formName]['metadata'][field]) {
+                     if (typeof validator.validator === "string") {
+                         isValid = validation[validator.validator](forms[formName]['metadata'][field].toString(), {
+                             min: validator.args[0],
+                             max: validator.args[1]
+                         })
+
+                     } else if (typeof validator.validator === "function") {
+                         isValid = validator.validator(forms[formName]['metadata'][field].toString(), {
+                             min: validator.args[0],
+                             max: validator.args[1]
+                         })
+                     }
+                 }
+                 else {
+                     isValid = true;
+                 }
+             }
+             else
+            {
+             if (forms[formName] && forms[formName][field])
+             {
                  if (typeof validator.validator === "string") {
                      isValid = validation[validator.validator](forms[formName][field].toString(), {
                          min: validator.args[0],
@@ -416,15 +518,17 @@ export const EbOptionInput=connect((state)=>{
                      })
                  }
              }
-             else {
+             else
+             {
                  isValid = true;
              }
+         }
          }
 
          if(!isValid){
              this.setInvalid();
          }
-         console.log("validating ",label,isValid)
+         console.log("validating ",label,isValid);
          return isValid;
      }
      render(){
@@ -616,7 +720,9 @@ class HiddenInput extends EBwidgetBase{
 
 
     }*/
+
     render(){
+
         return(
             <View>
 
