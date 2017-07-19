@@ -71,9 +71,9 @@ class EBwidgetBase extends Component{
         }
 
         //console.log(forms);
-        debugger;
+        //debugger;
         onFormInit(forms);
-        debugger;
+    //   debugger;
         this.setState({
             value:value[field]
         });
@@ -207,7 +207,6 @@ class EBwidgetBase extends Component{
     componentDidMount() {
         let {forms,formName,field,isMeta,value}=this.props;
         let values;
-
 
         let isInitialNotMeta=(!isMeta)&& (typeof forms[formName]==="undefined"
             ||(typeof forms[formName]!=="undefined"?typeof forms[formName][field] === 'undefined':false));
@@ -387,11 +386,65 @@ export const EbOptionInput=connect((state)=>{
          this.fields=fields||[];
 
 }
-      componentDidMount(){}
+     // componentDidMount(){}
      setModalVisible(visible) {
          this.setState({modalVisible: visible});
      }
+     getErrorMsg(validator,label,isRequired){
 
+
+         if(validator&&validator.hasOwnProperty('errorMessage')) {
+             return this.replaceAll(validator.errorMessage,
+                 {
+                     "TITLE": label,
+                     "args0": validator.args[0],
+                     "args1": validator.args[1],
+                 })
+         } else if(isRequired)
+             return "required '"+label+"' is Invalid";
+     }
+//set invalid of childrens
+     _setInvalid(validator,label,isRequired){
+             this.setState({
+                 isValid:false,
+                 errorMessage:this.getErrorMsg(validator,label,isRequired)
+
+             });
+         }
+    _onFormInit(key,values,isMeta,){
+
+        let {onFormInit,forms,formName}=this.props;
+        let value={};
+        value[key]=values;
+
+        if(!isMeta){
+
+            forms[formName] = {...forms[formName], ...value};
+        }
+        else{
+            if(forms[formName]&&forms[formName].hasOwnProperty("metadata")) {
+
+                value={...forms[formName].metadata,...value};
+                forms[formName] = {...forms[formName], ...{metadata:value}};
+
+            }
+            else{
+
+                forms[formName] = {...forms[formName],...{metadata:value}};
+            }
+        }
+
+        //console.log(forms);
+        //debugger;
+        onFormInit(forms);
+           debugger;
+       // this.setState({
+         //   value:value[field]
+        //});
+
+
+
+    }
      validate(){
          let field;
          let fields=this.fields;
@@ -406,7 +459,7 @@ export const EbOptionInput=connect((state)=>{
                  for (field in fields[i]) {
 
 
-                     console.log("modal " ,fields[i]);
+                     //console.log("modal " ,fields[i]);
 
 
                      if (!this._validate(fields[i],field))
@@ -424,9 +477,9 @@ export const EbOptionInput=connect((state)=>{
 
              }
          }
-         if(!status){
-             this.setInvalid();
-         }
+        // if(!status){
+            // this.setInvalid();
+        // }
          return status;
      }
      _validate(item,field){
@@ -526,11 +579,80 @@ export const EbOptionInput=connect((state)=>{
          }
 
          if(!isValid){
-             this.setInvalid();
+             this._setInvalid(validator,label,isRequired);
          }
          console.log("validating ",label,isValid);
          return isValid;
      }
+    componentDidMount() {
+        let {forms,formName,field}=this.props;
+
+
+
+
+        let fields=this.fields;
+        let key;
+
+        if(fields instanceof  Array){
+
+            for (let i=0;i<fields.length;i++) {
+
+
+
+                for (key in fields[i]) {
+
+
+                    let {isMeta,value}=fields[i][key].props;
+                    console.log(isMeta);
+
+                    let isInitialNotMeta=(!isMeta)&& (typeof forms[formName]==="undefined"
+                        ||(typeof forms[formName]!=="undefined"?typeof forms[formName][key] === 'undefined':false));
+
+                    let isInitialMeta=isMeta&&(typeof forms[formName]==="undefined"
+                        ||typeof forms[formName]['metadata']==="undefined"
+                        ||(typeof forms[formName]!=="undefined"?typeof forms[formName]["metadata"]!== 'undefined'?typeof forms[formName]["metadata"][key] === 'undefined':false:false));
+
+                    if(value&&( isInitialMeta||isInitialNotMeta))
+                    {
+                        this._onFormInit(key,value,isMeta);
+                       
+                    }
+
+
+
+                }
+
+
+            }
+        }
+
+
+
+
+
+
+
+       /* else{
+            // get value from store
+            if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined'&&!isMeta) {
+                values=forms[formName][field];
+                console.log("not meta",values);
+                this._onValueChange(values);
+
+            }
+            else if(typeof forms[formName]!== 'undefined'&&
+                typeof forms[formName]["metadata"] !== 'undefined'&&
+                typeof forms[formName]["metadata"][field] !== 'undefined'&&isMeta)
+            {
+                values=forms[formName]["metadata"][field];
+                console.log("meta",values);
+                this._onValueChange(values);
+            }
+        }*/
+
+
+
+    }
      render(){
          const {accentColor,textColor} = uiTheme.palette;
 

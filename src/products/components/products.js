@@ -807,7 +807,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -825,7 +825,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "filePicker",
@@ -842,7 +842,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "modal",
@@ -856,7 +856,7 @@ export class CreateProduct extends Component {
                                   validator: {
                                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                                       validator: "isLength",
-                                      args: [5, 32]
+                                      args: [2, 32]
 
                                   },
                                   widget: "inlineText",
@@ -875,7 +875,7 @@ export class CreateProduct extends Component {
                                   validator: {
                                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                                       validator: "isLength",
-                                      args: [5, 32]
+                                      args: [2, 32]
 
                                   },
                                   widget: "inlineText",
@@ -900,7 +900,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "inlineText",
@@ -922,7 +922,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "inlineText",
@@ -943,7 +943,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -959,7 +959,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -973,7 +973,7 @@ export class CreateProduct extends Component {
                                   validator: {
                                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                                       validator: "isLength",
-                                      args: [5, 32]
+                                      args: [2, 32]
 
                                   },
                                   widget: "filePicker",
@@ -988,7 +988,7 @@ export class CreateProduct extends Component {
                                   validator: {
                                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                                       validator: "isLength",
-                                      args: [5, 32]
+                                      args: [2, 32]
 
                                   },
                                   widget: "modal",
@@ -1011,7 +1011,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [50, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -1030,7 +1030,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -1048,7 +1048,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -1064,7 +1064,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -1080,7 +1080,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "modal",
@@ -1094,7 +1094,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "filePicker",
@@ -1111,7 +1111,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -1125,7 +1125,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
@@ -1139,7 +1139,7 @@ export class CreateProduct extends Component {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
                       validator: "isLength",
-                      args: [5, 32]
+                      args: [2, 32]
 
                   },
                   widget: "hidden",
