@@ -23,6 +23,7 @@ import {Card} from 'react-native-material-design';
 import {Toolbar, Divider, Icon, ActionButton, RippleFeedback} from 'react-native-material-ui';
 import Button from 'apsl-react-native-button'
 import StarRating from 'react-native-star-rating';
+import { SearchBar } from 'react-native-elements'
 //import Accordion from "react-native-accordion"
 //import {Statuses,Menu}  from "../../statuses/components/statuses"
 import styles, {typographyStyle, colorStyle, colours} from "../../styles/styles"
@@ -175,57 +176,13 @@ export class ProductsList extends Component {
                 }}>
                 <View style={{height:150,backgroundColor:filterBackgroundColor}}>
 
-                    <View style={[styles.alignSelfEnd]}>
-                        <Icon name="arrow-drop-up" color={mainTextColor}/>
-                    </View>
-                    <Card style={[styles.centerJustified,{height:36,backgroundColor:uiTheme.COLOR.teal300,borderColor:"transparent",borderRadius:5}]}>
-                                <View style={[styles.horizontal]}>
-                                    <View style={[styles.flex9]}>
 
+                    <SearchBar
+                        round
+                        lightTheme
+                        onChangeText={()=>{}}
+                        placeholder='Search...' />
 
-                                        <TextInput
-                                            ref={component => this.searchInput = component}
-                                            keyboardType="web-search"
-                                            style={[styles.input,{backgroundColor:uiTheme.COLOR.teal300,color:mainTextColor}]}
-                                            autoCorrect={true}
-                                            autoCapitalize="none"
-                                            placeholderTextColor={mainTextColor}
-                                            placeholder={"Search "}
-                                            underlineColorAndroid={uiTheme.COLOR.teal500}
-                                            onSubmitEditing={(e) => {
-                                                if (this.state.query) {
-                                                    this.searchInput.blur();
-                                                    if (this.state.query) {
-
-                                                        props.searchProducts(this.state.query, category.categoryName, navigate)
-                                                    }
-                                                }
-                                                else
-                                                    this.searchInput.focus();
-                                            }}
-                                            onChangeText={query => this.setState({query})}
-                                        />
-
-                                    </View>
-                                    <TouchableNativeFeedback onPress={() => {
-                                        if (this.state.query) {
-                                            this.searchInput.blur();
-
-
-                                                props.searchProducts(this.state.query, category.categoryName, navigate)
-
-
-                                        }
-                                        else
-                                            this.searchInput.focus();
-                                    }}>
-                                        <View
-                                            style={[styles.flex1, styles.centerJustified, styles.alignItemsCenter]}>
-                                            <Icon name="search" color={mainTextColor}/>
-                                        </View>
-                                    </TouchableNativeFeedback>
-                                </View>
-                    </Card>
                     <Card style={[styles.centerJustified,{height:36,backgroundColor:uiTheme.COLOR.teal300,borderColor:"transparent",borderRadius:5}]}>
                         <Picker mode="dropdown" style={{color:mainTextColor}}
                                 selectedValue={this.state.subCategory}
@@ -242,7 +199,57 @@ export class ProductsList extends Component {
 
                         </Picker>
                     </Card>
+                    {false&&<Card style={[styles.centerJustified,{height:36,backgroundColor:uiTheme.COLOR.teal300,borderColor:"transparent",borderRadius:5}]}>
+                        <View style={[styles.horizontal]}>
+                            <View style={[styles.flex9]}>
 
+
+                                <TextInput
+                                    ref={component => this.searchInput = component}
+                                    keyboardType="web-search"
+                                    style={[styles.input,{backgroundColor:uiTheme.COLOR.teal300,color:mainTextColor}]}
+                                    autoCorrect={true}
+                                    autoCapitalize="none"
+                                    placeholderTextColor={mainTextColor}
+                                    placeholder={"Search "}
+                                    underlineColorAndroid={uiTheme.COLOR.teal500}
+                                    onSubmitEditing={(e) => {
+                                        if (this.state.query) {
+                                            this.searchInput.blur();
+                                            if (this.state.query) {
+
+                                                props.searchProducts(this.state.query, category.categoryName, navigate)
+                                            }
+                                        }
+                                        else
+                                            this.searchInput.focus();
+                                    }}
+                                    onChangeText={query => this.setState({query})}
+                                />
+
+                            </View>
+                            <TouchableNativeFeedback onPress={() => {
+                                if (this.state.query) {
+                                    this.searchInput.blur();
+
+
+                                    props.searchProducts(this.state.query, category.categoryName, navigate)
+
+
+                                }
+                                else
+                                    this.searchInput.focus();
+                            }}>
+                                <View
+                                    style={[styles.flex1, styles.centerJustified, styles.alignItemsCenter]}>
+                                    <Icon name="search" color={mainTextColor}/>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>
+                    </Card>}
+                    <View style={[styles.alignSelfEnd]}>
+                        <Icon name="arrow-drop-up" color={mainTextColor}/>
+                    </View>
                     {false&&<Text>
                         {this.state.error}
                     </Text>}
@@ -934,6 +941,8 @@ export class CreateProduct extends Component {
                       value:"hello world",
                       isRequired:false,
                       isMeta:true,
+                      vertical: true,
+                      lines: 1,
                   }
               }
           },
@@ -942,15 +951,23 @@ export class CreateProduct extends Component {
               post_status: {
                   validator: {
                       errorMessage: "[TITLE] must be args[0] to args[1] characters",
-                      validator: "isLength",
+                      validator: (value,a,b)=>{return !!value},
                       args: [2, 32]
 
                   },
-                  widget: "hidden",
-                  order: 0,
+                  widget: "option",
+                  order: 5,
                   label: "Status",
                   props: {
-                      value:"hello world",
+                      pickerProps:{},
+                      value:"Draft",
+                      items:[
+                          {label:"Draft",value:"Draft"},
+                          {label:"Published",value:"Published"},
+                          {label:"Archived",value:"Archived"},
+                          {label:"Deleted",value:"Deleted"},
+
+                      ]
                   }
               }
           },
@@ -1156,7 +1173,7 @@ export class CreateProduct extends Component {
         let { goBack} = this.props.navigation;
         let title = "New item";
         let {user}=this.props.screenProps;
-        const {primaryColor} = uiTheme.palette;
+       // const {primaryColor} = uiTheme.palette;
 
 
 

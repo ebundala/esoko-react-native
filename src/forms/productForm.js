@@ -9,6 +9,7 @@ import {
     TextInput,
     TouchableNativeFeedback,
     Modal,
+    Picker,
     ScrollView,
     ListView,
     Dimensions
@@ -279,7 +280,8 @@ class InlineTextInput extends EBwidgetBase{
                 <Text numberOfLines={1}  style={[{width: 110,
                     fontSize: 15,
                     color: textColor,
-                    padding: 10,}]}>
+                    padding: 10,
+                }]}>
                     {label}
                 </Text>
                 </View>
@@ -338,9 +340,7 @@ export const EbTextInput=connect((state)=>{
 
 
  class OptionInput extends EBwidgetBase{
-     constructor(props){
-         super(props)
-    }
+
    /*  componentDidMount() {
          let {forms,formName,field}=this.props;
 
@@ -353,11 +353,40 @@ export const EbTextInput=connect((state)=>{
 
      }*/
     render(){
+        let {items,pickerProps,label}=this.props;
+        const {textColor,accentColor} = uiTheme.palette;
+        const {COLOR}=uiTheme;
         return(
-            <View>
-                <Text>
-                    TEXT INPUT
-                </Text>
+            <View style={[{height:40}]}>
+                <View style={[styles.horizontal]}>
+                    <View >
+                        <Text numberOfLines={1}  style={[{width: 110,
+                            fontSize: 15,
+                            color: textColor,
+                            padding: 10,}]}>
+                            {label}
+                        </Text>
+                    </View>
+                    <View style={[styles.flex1]}>
+                        <View style={{paddingRight:10}}>
+                        <Picker {...{mode:"dropdown",style:{color:COLOR.amber500},...pickerProps,}}
+                                selectedValue={this.state.value}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    this.setState({value: itemValue});
+                                    this._onValueChange(itemValue)
+
+                                }}>
+
+                            {items instanceof Array?items.map((item, i) => {
+                                    return <Picker.Item key={item.label} label={item.label} value={item.value}/>
+
+                                }):null}
+
+                        </Picker>
+                        </View>
+                    </View>
+                </View>
+                {this.renderError()}
                 <Divider/>
             </View>
         )
@@ -379,14 +408,11 @@ export const EbOptionInput=connect((state)=>{
              modalVisible: false,
          }
     }
-
-
       componentWillMount(){
     let {fields}=this.props;
          this.fields=fields||[];
 
 }
-     // componentDidMount(){}
      setModalVisible(visible) {
          this.setState({modalVisible: visible});
      }
@@ -434,16 +460,7 @@ export const EbOptionInput=connect((state)=>{
             }
         }
 
-        //console.log(forms);
-        //debugger;
         onFormInit(forms);
-           debugger;
-       // this.setState({
-         //   value:value[field]
-        //});
-
-
-
     }
      validate(){
          let field;
@@ -603,7 +620,7 @@ export const EbOptionInput=connect((state)=>{
 
 
                     let {isMeta,value}=fields[i][key].props;
-                    console.log(isMeta);
+
 
                     let isInitialNotMeta=(!isMeta)&& (typeof forms[formName]==="undefined"
                         ||(typeof forms[formName]!=="undefined"?typeof forms[formName][key] === 'undefined':false));
@@ -615,7 +632,7 @@ export const EbOptionInput=connect((state)=>{
                     if(value&&( isInitialMeta||isInitialNotMeta))
                     {
                         this._onFormInit(key,value,isMeta);
-                       
+
                     }
 
 
@@ -1583,7 +1600,6 @@ export class ProductForm extends Component{
                                         ref={field}
                                         {...{...item.props,formName,title}}
                                         field={field}
-                                        fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
                                         label={item.hasOwnProperty("label")?item.label:""}
                                         validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
                                 );
