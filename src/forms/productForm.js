@@ -1,7 +1,7 @@
 /**
  * Created by ebundala on 5/11/2017.
  */
-import React,{Component} from "react";
+import React,{Component,PropTypes} from "react";
 import {
     Text,
     View,
@@ -39,6 +39,23 @@ const mergeProps = (stateProps, dispatchProp, ownProps) => {
         ...dispatchProp,
     }
 };
+const widgetPropTypes={
+    onValueChange:PropTypes.func.isRequired,
+    onFormInit:PropTypes.func.isRequired,
+    formName:PropTypes.string.isRequired,
+    title:PropTypes.string,
+    field:PropTypes.string.isRequired,
+    label:PropTypes.string.isRequired,
+    validator:PropTypes.shape({
+        errorMessage: PropTypes.string,
+        validator:PropTypes.oneOfType([PropTypes.string,PropTypes.func]).isRequired,
+        args: PropTypes.array}),
+    validate:PropTypes.bool,
+    isMeta:PropTypes.bool,
+    isRequired:PropTypes.bool,
+    value:PropTypes.any,
+    forms:PropTypes.object
+}
 
 class EBwidgetBase extends Component{
     constructor(props){
@@ -121,11 +138,13 @@ class EBwidgetBase extends Component{
 
         });
     }
-    validate(){
+    validate() {
 
-        let isValid=true;
-        let {validator,label,isRequired}=this.props;
-        if(isRequired) {
+        let isValid = true;
+        let {validator, label, isRequired}=this.props;
+        if(validator)
+        {
+            if (isRequired) {
             if (this.state.value) {
                 if (typeof validator.validator === "string") {
                     isValid = validation[validator.validator](this.state.value.toString(), {
@@ -144,7 +163,7 @@ class EBwidgetBase extends Component{
                 isValid = false;
             }
         }
-        else{
+        else {
             if (this.state.value) {
                 if (typeof validator.validator === "string") {
                     isValid = validation[validator.validator](this.state.value.toString(), {
@@ -163,7 +182,7 @@ class EBwidgetBase extends Component{
                 isValid = true;
             }
         }
-
+    }
         if(!isValid){
       this.setInvalid();
         }
@@ -245,7 +264,7 @@ class EBwidgetBase extends Component{
         return(<View></View>)
     }
 }
-
+EBwidgetBase.propTypes=widgetPropTypes;
 
 
 class InlineTextInput extends EBwidgetBase{
@@ -328,6 +347,14 @@ class InlineTextInput extends EBwidgetBase{
         )
     }
 }
+
+InlineTextInput.propTypes={...widgetPropTypes,...{
+    lines:PropTypes.number,
+    placeholder:PropTypes.string,
+    vertical:PropTypes.bool
+
+}};
+
 export const EbTextInput=connect((state)=>{
     return{
         forms:{...state.forms}
@@ -339,7 +366,7 @@ export const EbTextInput=connect((state)=>{
 
 
 
- class OptionInput extends EBwidgetBase{
+ class PickerInput extends EBwidgetBase {
 
    /*  componentDidMount() {
          let {forms,formName,field}=this.props;
@@ -392,6 +419,79 @@ export const EbTextInput=connect((state)=>{
         )
     }
 }
+PickerInput.propTypes={...widgetPropTypes,...{
+    pickerProps:PropTypes.object,
+    value:PropTypes.any,
+    items:PropTypes.arrayOf(
+        PropTypes.shape(
+        {  label:PropTypes.string.isRequired,
+            value:PropTypes.any.isRequired}
+            ).isRequired)
+}}
+
+export const EbPickerInput=connect((state)=>{
+    return{
+        forms:{...state.forms}
+    }
+},(dispatch)=>{
+    return bindActionCreators(actions,dispatch);
+},mergeProps, {withRef: true})(PickerInput);
+
+
+
+class OptionInput extends EBwidgetBase {
+
+    /*  componentDidMount() {
+     let {forms,formName,field}=this.props;
+
+     // get value from store
+     if (typeof forms[formName]!== 'undefined'&&typeof forms[formName][field] !== 'undefined') {
+     let values=forms[formName][field];
+     this._onValueChange(values);
+     }
+
+
+     }*/
+    render(){
+        let {items,pickerProps,label}=this.props;
+        const {textColor,accentColor} = uiTheme.palette;
+        const {COLOR}=uiTheme;
+        return(
+            <View style={[{height:40}]}>
+                <View style={[styles.horizontal]}>
+                    <View >
+                        <Text numberOfLines={1}  style={[{width: 110,
+                            fontSize: 15,
+                            color: textColor,
+                            padding: 10,}]}>
+                            {label}
+                        </Text>
+                    </View>
+                    <View style={[styles.flex1]}>
+                        <View style={{paddingRight:10}}>
+                            <Picker {...{mode:"dropdown",style:{color:COLOR.amber500},...pickerProps,}}
+                                    selectedValue={this.state.value}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        this.setState({value: itemValue});
+                                        this._onValueChange(itemValue)
+
+                                    }}>
+
+                                {items instanceof Array?items.map((item, i) => {
+                                        return <Picker.Item key={item.label} label={item.label} value={item.value}/>
+
+                                    }):null}
+
+                            </Picker>
+                        </View>
+                    </View>
+                </View>
+                {this.renderError()}
+                <Divider/>
+            </View>
+        )
+    }
+}
 export const EbOptionInput=connect((state)=>{
     return{
         forms:{...state.forms}
@@ -401,7 +501,8 @@ export const EbOptionInput=connect((state)=>{
 },mergeProps, {withRef: true})(OptionInput);
 
 
- class InputModal extends EBwidgetBase{
+
+class InputModal extends EBwidgetBase{
      constructor(props){
          super(props);
          this.state = {
@@ -499,105 +600,100 @@ export const EbOptionInput=connect((state)=>{
         // }
          return status;
      }
-     _validate(item,field){
-         let isValid=true;
-         let {validator,label}=item[field];
-         let {isRequired,isMeta}=item[field].props;
-         let {formName,forms}=this.props;
-
-         if(isRequired)
+     _validate(item,field) {
+         let isValid = true;
+         let {validator, label}=item[field];
+         let {isRequired, isMeta}=item[field].props;
+         let {formName, forms}=this.props;
+         if (validator)
          {
+             if (isRequired) {
 
-             if (isMeta)
-             {
+                 if (isMeta) {
 
-                 if (forms[formName] && forms[formName]["metadata"][field]) {
-                     if (typeof validator.validator === "string") {
-                         isValid = validation[validator.validator](forms[formName]["metadata"][field].toString(), {
-                             min: validator.args[0],
-                             max: validator.args[1]
-                         })
+                     if (forms[formName] && forms[formName]["metadata"][field]) {
+                         if (typeof validator.validator === "string") {
+                             isValid = validation[validator.validator](forms[formName]["metadata"][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
 
-                     } else if (typeof validator.validator === "function") {
-                         isValid = validator.validator(forms[formName]["metadata"][field].toString(), {
-                             min: validator.args[0],
-                             max: validator.args[1]
-                         })
+                         } else if (typeof validator.validator === "function") {
+                             isValid = validator.validator(forms[formName]["metadata"][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
+                         }
+                     }
+                     else {
+                         isValid = false;
+                     }
+                 } else {
+                     if (forms[formName] && forms[formName][field]) {
+                         if (typeof validator.validator === "string") {
+                             isValid = validation[validator.validator](forms[formName][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
+
+                         } else if (typeof validator.validator === "function") {
+                             isValid = validator.validator(forms[formName][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
+                         }
+                     }
+                     else {
+                         isValid = false;
+                     }
+                 }
+
+             }
+             else {
+                 if (isMeta) {
+                     if (forms[formName] && forms[formName]['metadata'][field]) {
+                         if (typeof validator.validator === "string") {
+                             isValid = validation[validator.validator](forms[formName]['metadata'][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
+
+                         } else if (typeof validator.validator === "function") {
+                             isValid = validator.validator(forms[formName]['metadata'][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
+                         }
+                     }
+                     else {
+                         isValid = true;
                      }
                  }
                  else {
-                     isValid = false;
-                 }
-             } else {
-                 if (forms[formName] && forms[formName][field]) {
-                     if (typeof validator.validator === "string") {
-                         isValid = validation[validator.validator](forms[formName][field].toString(), {
-                             min: validator.args[0],
-                             max: validator.args[1]
-                         })
+                     if (forms[formName] && forms[formName][field]) {
+                         if (typeof validator.validator === "string") {
+                             isValid = validation[validator.validator](forms[formName][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
 
-                     } else if (typeof validator.validator === "function") {
-                         isValid = validator.validator(forms[formName][field].toString(), {
-                             min: validator.args[0],
-                             max: validator.args[1]
-                         })
+                         } else if (typeof validator.validator === "function") {
+                             isValid = validator.validator(forms[formName][field].toString(), {
+                                 min: validator.args[0],
+                                 max: validator.args[1]
+                             })
+                         }
+                     }
+                     else {
+                         isValid = true;
                      }
                  }
-                 else {
-                     isValid = false;
-                 }
              }
-
-         }
-         else
-             {
-             if (isMeta)
-             {
-                 if (forms[formName]&&forms[formName]['metadata'][field]) {
-                     if (typeof validator.validator === "string") {
-                         isValid = validation[validator.validator](forms[formName]['metadata'][field].toString(), {
-                             min: validator.args[0],
-                             max: validator.args[1]
-                         })
-
-                     } else if (typeof validator.validator === "function") {
-                         isValid = validator.validator(forms[formName]['metadata'][field].toString(), {
-                             min: validator.args[0],
-                             max: validator.args[1]
-                         })
-                     }
-                 }
-                 else {
-                     isValid = true;
-                 }
-             }
-             else
-            {
-             if (forms[formName] && forms[formName][field])
-             {
-                 if (typeof validator.validator === "string") {
-                     isValid = validation[validator.validator](forms[formName][field].toString(), {
-                         min: validator.args[0],
-                         max: validator.args[1]
-                     })
-
-                 } else if (typeof validator.validator === "function") {
-                     isValid = validator.validator(forms[formName][field].toString(), {
-                         min: validator.args[0],
-                         max: validator.args[1]
-                     })
-                 }
-             }
-             else
-             {
-                 isValid = true;
-             }
-         }
-         }
 
          if(!isValid){
              this._setInvalid(validator,label,isRequired);
          }
+     }
          console.log("validating ",label,isValid);
          return isValid;
      }
@@ -1540,7 +1636,7 @@ export class ProductForm extends Component{
                                                   {...{...item.props,formName,title}}
                                                   field={field}
                                                   label={item.hasOwnProperty("label")?item.label:""}
-                                                  validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                  validator={item.hasOwnProperty("validator")?item.validator:null}
                                                   validate={this.state.validate}
 
                                     />
@@ -1590,6 +1686,18 @@ export class ProductForm extends Component{
                                                    label={item.hasOwnProperty("label")?item.label:""}
                                                    validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
                                     />
+                                );
+                                break;
+                            case "picker":
+                                return(
+                                    <EbPickerInput
+                                        validate={this.state.validate}
+                                        key={field}
+                                        ref={field}
+                                        {...{...item.props,formName,title}}
+                                        field={field}
+                                        label={item.hasOwnProperty("label")?item.label:""}
+                                        validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
                                 );
                                 break;
                             case "option":

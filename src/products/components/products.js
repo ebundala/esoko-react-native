@@ -43,8 +43,6 @@ const Screen = {
 };
 
 export class ProductsList extends Component {
-
-
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
@@ -798,7 +796,7 @@ export class searchResultsProductsList extends Component {
 
 
 import {ProductForm} from "../../forms/productForm"
-import dataScheme from "../../utils/dataSchema";
+//import dataScheme from "../../utils/dataSchema";
 export class CreateProduct extends Component {
     constructor(props) {
         super(props);
@@ -955,7 +953,7 @@ export class CreateProduct extends Component {
                       args: [2, 32]
 
                   },
-                  widget: "option",
+                  widget: "picker",
                   order: 5,
                   label: "Status",
                   props: {
