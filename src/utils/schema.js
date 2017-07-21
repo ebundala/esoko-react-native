@@ -17,8 +17,8 @@ export function get_DB_schema(scope="all", app_id)
     // Blog specific tables.
   const  app_tables = ["CREATE TABLE IF NOT EXISTS  "+DB.termmeta+" (" +
         "meta_id INTEGER  NOT NULL ," +
-        "term_id INTEGER  NOT NULL default '0'," +
-        "meta_key varchar(255) default NULL," +
+        "term_id INTEGER  NOT NULL DEFAULT '0'," +
+        "meta_key VARCHAR(255) DEFAULT NULL," +
         "meta_value longtext," +
         "PRIMARY KEY  (meta_id)" +
         //" KEY term_id (term_id)," +
@@ -27,9 +27,9 @@ export function get_DB_schema(scope="all", app_id)
       ,
    "CREATE TABLE IF NOT EXISTS  "+DB.terms +"(" +
     "term_id INTEGER  NOT NULL ," +
-        "name varchar(200) NOT NULL default ''," +
-        "slug varchar(200) NOT NULL default ''," +
-        "term_group bigint(10) NOT NULL default 0," +
+        "name VARCHAR(200) NOT NULL DEFAULT ''," +
+        "slug VARCHAR(200) NOT NULL DEFAULT ''," +
+        "term_group INTEGER NOT NULL DEFAULT 0," +
         "PRIMARY KEY  (term_id)" +
         //"KEY slug (slug("+max_index_length+"))," +
        // "KEY name (name("+max_index_length+"))" +
@@ -37,20 +37,20 @@ export function get_DB_schema(scope="all", app_id)
       ,
       "CREATE TABLE IF NOT EXISTS  "+DB.term_taxonomy +"(" +
         "term_taxonomy_id INTEGER  NOT NULL ," +
-        "term_id INTEGER  NOT NULL default 0," +
-        "taxonomy varchar(32) NOT NULL default ''," +
+        "term_id INTEGER  NOT NULL DEFAULT 0," +
+        "taxonomy VARCHAR(32) NOT NULL DEFAULT ''," +
         "description longtext NOT NULL," +
-        "parent INTEGER  NOT NULL default 0," +
-        "count INTEGER NOT NULL default 0," +
+        "parent INTEGER  NOT NULL DEFAULT 0," +
+        "count INTEGER NOT NULL DEFAULT 0," +
         "PRIMARY KEY  (term_taxonomy_id)" +
        // "UNIQUE KEY term_id_taxonomy (term_id,taxonomy)" +
        // "KEY taxonomy (taxonomy)" +
         ") ;"
       ,
         "CREATE TABLE IF NOT EXISTS  "+DB.term_relationships +"(" +
-        "object_id INTEGER  NOT NULL default 0," +
-        "term_taxonomy_id INTEGER  NOT NULL default 0," +
-        "term_order int(11) NOT NULL default 0," +
+        "object_id INTEGER  NOT NULL DEFAULT 0," +
+        "term_taxonomy_id INTEGER  NOT NULL DEFAULT 0," +
+        "term_order int(11) NOT NULL DEFAULT 0," +
         "PRIMARY KEY  (object_id,term_taxonomy_id)" +
        // "KEY term_taxonomy_id (term_taxonomy_id)" +
         ") ;"
@@ -58,8 +58,8 @@ export function get_DB_schema(scope="all", app_id)
             
         "CREATE TABLE IF NOT EXISTS  "+DB.commentmeta +"(" +
         "meta_id INTEGER  NOT NULL ," +
-        "comment_id INTEGER  NOT NULL default '0'," +
-        "meta_key varchar(255) default NULL," +
+        "comment_id INTEGER  NOT NULL DEFAULT '0'," +
+        "meta_key VARCHAR(255) DEFAULT NULL," +
         "meta_value longtext," +
         "PRIMARY KEY  (meta_id)" +
        // "KEY comment_id (comment_id)," +
@@ -69,20 +69,20 @@ export function get_DB_schema(scope="all", app_id)
             ,
         "CREATE TABLE IF NOT EXISTS  "+DB.comments+" (" +
         "comment_ID INTEGER  NOT NULL ," +
-        "comment_post_ID INTEGER  NOT NULL default '0'," +
+        "comment_post_ID INTEGER  NOT NULL DEFAULT '0'," +
         "comment_author tinytext NOT NULL," +
-       // "comment_author_email varchar(100) NOT NULL default ''," +
-       // "comment_author_url varchar(200) NOT NULL default ''," +
-       // "comment_author_IP varchar(100) NOT NULL default ''," +
-        "comment_date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP," +
-       // "comment_date_gmt TIMESTAMP NOT NULL default CURRENT_TIMESTAMP," +
+       // "comment_author_email VARCHAR(100) NOT NULL DEFAULT ''," +
+       // "comment_author_url VARCHAR(200) NOT NULL DEFAULT ''," +
+       // "comment_author_IP VARCHAR(100) NOT NULL DEFAULT ''," +
+        "comment_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+       // "comment_date_gmt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
         "comment_content text NOT NULL," +
-        //"comment_karma int(11) NOT NULL default '0'," +
-        "comment_approved varchar(20) NOT NULL default '1'," +
-        //"comment_agent varchar(255) NOT NULL default ''," +
-        "comment_type varchar(20) NOT NULL default ''," +
-        "comment_parent INTEGER  NOT NULL default '0'," +
-        "user_id INTEGER  NOT NULL default '0'," +
+        //"comment_karma int(11) NOT NULL DEFAULT '0'," +
+        "comment_approved VARCHAR(20) NOT NULL DEFAULT '1'," +
+        //"comment_agent VARCHAR(255) NOT NULL DEFAULT ''," +
+        "comment_type VARCHAR(20) NOT NULL DEFAULT ''," +
+        "comment_parent INTEGER  NOT NULL DEFAULT '0'," +
+        "user_id INTEGER  NOT NULL DEFAULT '0'," +
         "PRIMARY KEY  (comment_ID)" +
        // "KEY comment_post_ID (comment_post_ID)," +
        // "KEY comment_approved_date_gmt (comment_approved,comment_date_gmt)," +
@@ -93,8 +93,8 @@ export function get_DB_schema(scope="all", app_id)
         ,
         "CREATE TABLE IF NOT EXISTS  "+DB.postmeta+" (" +
         "meta_id INTEGER  NOT NULL ," +
-        "post_id INTEGER  NOT NULL default '0'," +
-        "meta_key varchar(255) default NULL," +
+        "post_id INTEGER  NOT NULL DEFAULT '0'," +
+        "meta_key VARCHAR(255) DEFAULT NULL," +
         "meta_value longtext," +
         "PRIMARY KEY  (meta_id)" +
        // "KEY post_id (post_id)," +
@@ -103,29 +103,29 @@ export function get_DB_schema(scope="all", app_id)
         ,
         "CREATE TABLE IF NOT EXISTS  "+DB.posts+" (" +
         "ID INTEGER  ," +
-        "post_author INTEGER  NOT NULL default '0'," +
-        "post_date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP," +
-       // "post_date_gmt TIMESTAMP NOT NULL default CURRENT_TIMESTAMP," +
+        "post_author INTEGER  NOT NULL DEFAULT '0'," +
+        "post_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+       // "post_date_gmt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
         "post_content longtext NOT NULL," +
         "post_title text NOT NULL," +
        // "post_excerpt text NOT NULL," +
-        "post_status varchar(20) NOT NULL default 'publish'," +
-        "comment_status varchar(20) NOT NULL default 'open'," +
-        //"ping_status varchar(20) NOT NULL default 'open'," +
-        //"post_password varchar(255) NOT NULL default ''," +
-        "post_name varchar(200) NOT NULL default ''," +
+        "post_status VARCHAR(20) NOT NULL DEFAULT 'publish'," +
+        "comment_status VARCHAR(20) NOT NULL DEFAULT 'open'," +
+        //"ping_status VARCHAR(20) NOT NULL DEFAULT 'open'," +
+        //"post_password VARCHAR(255) NOT NULL DEFAULT ''," +
+        "post_name VARCHAR(200) NOT NULL DEFAULT ''," +
        // "to_ping text NOT NULL," +
         //"pinged text NOT NULL," +
-        "post_modified TIMESTAMP NOT NULL default CURRENT_TIMESTAMP," +
-       // "post_modified_gmt TIMESTAMP NOT NULL default CURRENT_TIMESTAMP," +
+        "post_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+       // "post_modified_gmt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
         "post_content_filtered longtext NOT NULL," +
-        "post_parent INTEGER  NOT NULL default '0'," +
-        "guid varchar(255) NOT NULL default ''," +
-        "menu_order int(11) NOT NULL default '0'," +
-        "post_type varchar(20) NOT NULL default 'post'," +
-        "post_mime_type varchar(100) NOT NULL default ''," +
-        "comment_count INTEGER NOT NULL default '0'," +
-        "app_id INTEGER NOT NULL default '0'," +
+        "post_parent INTEGER  NOT NULL DEFAULT '0'," +
+        "guid VARCHAR(255) NOT NULL DEFAULT ''," +
+        "menu_order int(11) NOT NULL DEFAULT '0'," +
+        "post_type VARCHAR(20) NOT NULL DEFAULT 'post'," +
+        "post_mime_type VARCHAR(100) NOT NULL DEFAULT ''," +
+        "comment_count INTEGER NOT NULL DEFAULT '0'," +
+        "app_id INTEGER NOT NULL DEFAULT '0'," +
         "PRIMARY KEY  (ID)" +
         //"KEY post_name (post_name("+max_index_length+"))," +
        // "KEY type_status_date (post_type,post_status,post_date,ID)," +
@@ -135,16 +135,16 @@ export function get_DB_schema(scope="all", app_id)
            ,
         "CREATE TABLE IF NOT EXISTS  "+DB.apps+" (" +
         "id INTEGER NOT NULL ," +
-        "domain varchar(200) NOT NULL default ''," +
-       // "path varchar(100) NOT NULL default ''," +
+        "domain VARCHAR(200) NOT NULL DEFAULT ''," +
+       // "path VARCHAR(100) NOT NULL DEFAULT ''," +
         "PRIMARY KEY  (id)" +
         //"KEY domain (domain(140),path(51))" +
         ");"
             ,
         "CREATE TABLE IF NOT EXISTS "+DB.appsmeta+" (" +
         "meta_id INTEGER NOT NULL ," +
-        "site_id INTEGER NOT NULL default '0'," +
-        "meta_key varchar(255) default NULL," +
+        "site_id INTEGER NOT NULL DEFAULT '0'," +
+        "meta_key VARCHAR(255) DEFAULT NULL," +
         "meta_value longtext," +
         "PRIMARY KEY  (meta_id)" +
         //"KEY meta_key (meta_key("+max_index_length+"))," +

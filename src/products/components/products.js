@@ -816,12 +816,15 @@ export class CreateProduct extends Component {
 
                   },
                   widget: "hidden",
-                  isRequired:false,
-                  isMeta:false,
                   order: 0,
                   label: "ID",
-                  placeholder: "",
 
+                  props:{
+                      placeholder: "",
+                      isRequired:false,
+                      isMeta:false
+
+                  },
 
               }
           },
@@ -864,7 +867,7 @@ export class CreateProduct extends Component {
                                       args: [2, 32]
 
                                   },
-                                  widget: "inlineText",
+                                  widget: "text",
                                   order: 7,
                                   label: "Author",
                                   placeholder: "",
@@ -883,7 +886,7 @@ export class CreateProduct extends Component {
                                       args: [2, 32]
 
                                   },
-                                  widget: "inlineText",
+                                  widget: "text",
                                   order: 0,
                                   label: "Description",
                                   placeholder: "",
@@ -908,12 +911,13 @@ export class CreateProduct extends Component {
                       args: [2, 32]
 
                   },
-                  widget: "inlineText",
+                  widget: "text",
                   order: -9,
                   label: "Description",
-                  placeholder: "",
+
 
                   props: {
+                      placeholder: "",
                       value:"hello world",
                       isRequired:true,
                       isMeta:true,
@@ -930,7 +934,7 @@ export class CreateProduct extends Component {
                       args: [2, 32]
 
                   },
-                  widget: "inlineText",
+                  widget: "text",
                   order: 9,
                   label: "Title",
 
@@ -1188,12 +1192,50 @@ export class CreateProduct extends Component {
                 />
                 <ScrollView style={{flex: 1}}>
                     <Card style={{flex: 1}}>
-                        <ProductForm formName="createForm" title={title} fields={this.getFields()}/>
-                        <ProductForm formName="createFormy" title={title} fields={this.getFields()}/>
+                        <ProductForm formName="terms" title={title} fields={[
 
+                            { term_id:{
+                                widget: "text",
+                                order: 0,
+                                label: "term id",
+                                props:{
+                                placeholder: "id",
+                                isRequired:true,
+                                isMeta:false}
+                            }},
+                            {name:{
+                                widget: "text",
 
+                                order: 5,
+                                label: "name",
+                            props:{
+                                placeholder: "name",
+                                isRequired:false,
+                                isMeta:false}
+                            }},
+                            { slug:{
+                                widget: "text",
+                                order: 0,
+                                label: "slug",
+                               props:{
+                                placeholder: "slug",
+                                isRequired:false,
+                                isMeta:false
+                                }
+                            }},
+                            {term_group:{
+                                widget: "text",
+                                order: 0,
+                                label: "group",
+                                props:{ placeholder: "group",
+                                isRequired:false,
+                                isMeta:false}
+                            }}
 
-
+                        ]}/>
+                    </Card>
+                    <Card style={{flex: 1}}>
+                        {false&&<ProductForm formName="createForm" title={title} fields={this.getFields()}/>}
                     </Card>
                 </ScrollView>
             </View>)

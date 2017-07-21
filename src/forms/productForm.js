@@ -825,7 +825,7 @@ class InputModal extends EBwidgetBase{
                                          item=sect[field];
                                          switch (item.widget){
 
-                                             case "inlineText":
+                                             case "text":
                                                  return(
                                                      <EbTextInput  key={field}
                                                                    ref={field}
@@ -882,6 +882,18 @@ class InputModal extends EBwidgetBase{
                                                                     label={item.hasOwnProperty("label")?item.label:""}
                                                                     validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
                                                      />
+                                                 );
+                                                 break;
+                                             case "picker":
+                                                 return(
+                                                     <EbPickerInput
+                                                         validate={this.state.validate}
+                                                         key={field}
+                                                         ref={field}
+                                                         {...{...item.props,formName,title}}
+                                                         field={field}
+                                                         label={item.hasOwnProperty("label")?item.label:""}
+                                                         validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
                                                  );
                                                  break;
                                              case "option":
@@ -1438,7 +1450,7 @@ export class ProductForm extends Component{
                 item=sect[field];
                 switch (item.widget){
 
-                    case "inlineText":
+                    case "text":
                         return(
                             <EbTextInput  key={field}
 
@@ -1563,7 +1575,7 @@ export class ProductForm extends Component{
                         item=sect[field];
                         switch (item.widget){
 
-                            case "inlineText":
+                            case "text":
                                 return(
                                     <EbTextInput  key={field}
                                                   ref={field}

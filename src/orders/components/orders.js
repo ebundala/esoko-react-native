@@ -12,6 +12,7 @@ import {
     Text,
     View,
     ListView,
+    ScrollView,
     Button,
     TouchableNativeFeeDBack
 } from 'react-native';
@@ -61,7 +62,7 @@ export class OrdersList extends Component {
                     }}
                 />
 
-                <View>
+                <ScrollView>
                     <Button title=" connect " onPress={() => {
                         //DB.process_fields("users",this.state,"INSERT")
                         DB.connect()
@@ -237,7 +238,24 @@ export class OrdersList extends Component {
                         });
 
                 }}/>
-            </View>
+
+                    <Button title=" insert term " onPress={() => {
+                        //DB.process_fields("users",this.state,"INSERT")
+                        DB.insert_term({
+                           // term_id:null,
+                            name:"base_app",
+                           // slug:null,
+                           // term_group:null,
+                        })
+                            .then((res) => {
+
+                                DB.debug();
+                                console.log(res)
+                            });
+
+                    }}/>
+
+            </ScrollView>
     </View>
     )
     }

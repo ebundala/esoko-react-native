@@ -60,7 +60,7 @@ import {initialState } from "../navigationView/categories.actions"
 import Singleton from "./singleton";
 
 import SQLite from 'react-native-sqlite-storage';
-SQLite.DEBUG(false);
+SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
 
@@ -770,6 +770,39 @@ export default class DatabaseWrapper extends Singleton{
             console.log("Database DELETE error");
         });
     }
+      prepare_meta(metadata,table,format,args){
+        let key,batch=[];
+        for(key in metadata ){
+            batch.push(this.prepare(table,{meta_key:key,meta_value:metadata[key],...args},format))
+        }
+        return batch;
+}
+    insert_term(term,taxonomy="categories")
+    {
+        let metadata;
+        if(term.hasOwnProperty("metadata")){
+            metadata=term.metadata;
+            delete  term.metadata;
+        }
+       return this.insert(this.terms,term).then((res)=>{
+            if(metadata)
+            {
+        let batch= this.prepare_meta(metadata,this.termmeta,"INSERT",{term_id:this.insert_id})
+           for(let i=0;i<batch.length;i++){
+            this.query(batch[i]).then((res)=>{
+                console.log(res)
+            })
+           }
+            }
+
+
+        })
+    }
+    insert_post(post,term_relationship){}
+    update_term(term,taxonomy){}
+    update_post(post){}
+    delete_term(){}
+    delete_post(){}
 }
 
 export const DB =new DatabaseWrapper(database_name);
