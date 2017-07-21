@@ -1098,7 +1098,7 @@ export class CreateProduct extends Component {
                       args: [2, 32]
 
                   },
-                  widget: "modal",
+                  widget: "hidden",
                   label: "Order",
                   order: 0,
                   props: {}
@@ -1189,7 +1189,7 @@ export class CreateProduct extends Component {
                 <ScrollView style={{flex: 1}}>
                     <Card style={{flex: 1}}>
                         <ProductForm formName="createForm" title={title} fields={this.getFields()}/>
-
+                        <ProductForm formName="createFormy" title={title} fields={this.getFields()}/>
 
 
 

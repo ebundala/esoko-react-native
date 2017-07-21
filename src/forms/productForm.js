@@ -931,6 +931,13 @@ class InputModal extends EBwidgetBase{
      }
 
 }
+InputModal.propTypes={...widgetPropTypes,...{
+
+    isFilePicker:PropTypes.bool,
+    fields:PropTypes.arrayOf(
+        PropTypes.object.isRequired
+        )
+}}
 
 export const EbModalInput=connect((state)=>{
     return{
@@ -965,6 +972,10 @@ class HiddenInput extends EBwidgetBase{
         )
     }
 }
+HiddenInput.propTypes={...widgetPropTypes,...{
+label:PropTypes.string,
+}}
+
 export const EbHiddenInput=connect((state)=>{
     return{
         forms:{...state.forms}
@@ -1095,7 +1106,7 @@ class FilePickerInput extends EBwidgetBase{
 
     }*/
     render() {
-        const {textColor,errorColor} = uiTheme.palette;
+        const {accentColor} = uiTheme.palette;
        // let {onValueChange,forms,formName,field,label,validator,placeholder,lines,vertical}=this.props;
 
         return (
@@ -1106,8 +1117,8 @@ class FilePickerInput extends EBwidgetBase{
                               contentContainerStyle={[styles.horizontal, styles.spaceAround, styles.flexWrap]}
 
                               enableEmptySections={true}
-                              renderRow={(photo) =>
-                                  <View style={[{
+                              renderRow={(photo,sectID,rowID) =>
+                                  <View key={photo.uri} style={[{
                                       height: 220,
                                       width: 180
                                   },]}>
@@ -1121,6 +1132,8 @@ class FilePickerInput extends EBwidgetBase{
                                                   backgroundColor: colours.paperGrey300.color
                                               }]}
                                                      source={{uri: photo.uri}}>
+
+
 
                                               </Image>
                                               <View style={[styles.spaceAround, styles.alignItemsCenter, {height: 40}]}>
@@ -1138,6 +1151,17 @@ class FilePickerInput extends EBwidgetBase{
                                                       <Text style={[styles.price]}>
                                                           {photo.width + "x" + photo.height}
                                                       </Text>
+                                                      <TouchableNativeFeedback onPress={(e)=>{
+                                                          let newlist=this.state.value;
+                                                          newlist.splice(rowID,1);
+                                                          this.setState({value:newlist});
+                                                          this._onValueChange(this.state.value);
+
+                                                      }}>
+                                                          <View style="">
+                                                          <Icon name="delete"  />
+                                                          </View>
+                                                      </TouchableNativeFeedback>
                                                   </View>
                                               </View>
                                           </View>
@@ -1389,97 +1413,7 @@ export class ProductForm extends Component{
         });
     }
     getFields(fields){
-
-     let {formName,title}=this.props;
-
-        let field,_fields=[],item;
-
-        fields= this.sortFieldsOrder(fields);
-
-
-        /*fields.forEach((sect,i)=>{
-            for(field in sect)
-            {
-                item=sect[field];
-                switch (item.widget){
-
-                    case "inlineText":
-                        _fields.push(
-                            <EbTextInput  key={field}
-
-                                         {...{...item.props,formName,title}}
-                                         field={field}
-                                         label={item.hasOwnProperty("label")?item.label:""}
-                                         validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                            />
-                        );
-
-                        break;
-                    case "hidden":
-
-                        _fields.push(
-                            <EbHiddenInput  key={field}
-                                           {...{...item.props,formName,title}}
-                                           field={field}
-                                           label={item.hasOwnProperty("label")?item.label:""}
-                                           validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                            />
-                        );
-                        break;
-                    case"modal":
-                        _fields.push(
-
-                            <EbModalInput
-                                          key={field}
-                                          {...{...item.props,formName,title}}
-                                          field={field}
-                                          fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
-                                          label={item.hasOwnProperty("label")?item.label:""}
-                                          validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                            />
-
-                        );
-                        break;
-                    case"filePicker":
-
-                      let  picker=<EbFilePickerInput key={field}
-                                                     {...{...item.props,formName,title}}
-                                                     field={field}
-                                                     label={item.hasOwnProperty("label")?item.label:""}
-                                                     validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                      />;
-                        picker=[picker];
-
-                        _fields.push(
-                            <EbModalInput  key={field}
-                                          {...{...item.props,formName,title}}
-                                          field={field}
-                                          fields={picker}
-                                          label={item.hasOwnProperty("label")?item.label:""}
-                                          validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
-                            />
-                        );
-                        break;
-                    case "option":
-                        _fields.push(
-                            <EbOptionInput
-
-                                key={field}
-                                {...{...item.props,formName,title}}
-                                field={field}
-                                fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
-                                label={item.hasOwnProperty("label")?item.label:""}
-                                validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
-                        );
-                        break;
-                    default:
-
-                }
-
-
-            }
-        });*/
-        return fields;
+        return this.sortFieldsOrder(fields);
     }
     sortFieldsOrder(arr){
         return  arr.sort((a,b)=>{
@@ -1732,4 +1666,9 @@ export class ProductForm extends Component{
     }
 
 
+}
+ProductForm.propTypes={
+    formName:PropTypes.string.isRequired,
+    title:PropTypes.string,
+    fields:PropTypes.arrayOf(PropTypes.object).isRequired
 }
