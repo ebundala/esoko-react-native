@@ -39,7 +39,7 @@ export function get_DB_schema(scope="all", app_id)
         "term_taxonomy_id INTEGER  NOT NULL ," +
         "term_id INTEGER  NOT NULL DEFAULT 0," +
         "taxonomy VARCHAR(32) NOT NULL DEFAULT ''," +
-        "description longtext NOT NULL," +
+        "description longtext NOT NULL DEFAULT ''," +
         "parent INTEGER  NOT NULL DEFAULT 0," +
         "count INTEGER NOT NULL DEFAULT 0," +
         "PRIMARY KEY  (term_taxonomy_id)" +

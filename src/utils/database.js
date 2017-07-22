@@ -370,8 +370,8 @@ export default class DatabaseWrapper extends Singleton{
     tables() {
     }
 
-    prepare(table, data, format) {
-        return this.process_fields(table, data, format);
+    prepare(table, data, format,inline) {
+        return this.process_fields(table, data, format,inline);
     }
 
     show_errors() {
@@ -505,7 +505,7 @@ export default class DatabaseWrapper extends Singleton{
         return this.query(sql);
     }
 
-    process_fields(table, data, format) {
+    process_fields(table, data, format,inline=false) {
         let sql = [], placeholder = [], values = [], field;
         let conditions = "";
         this.func_call.push(`\db.process_fields(\"${table}\",${data},${format})`);
@@ -523,11 +523,10 @@ export default class DatabaseWrapper extends Singleton{
             case "INSERT":
                 for (field in data) {
                     if (data.hasOwnProperty(field)&&(field != "where")) {
-                        let val=data[field]?data[field].toString():null
-                        values.push(val);
-                        sql.push(field);
-
-                        placeholder.push("?");
+                        let val=data[field]?data[field].toString():null;
+                        !inline?values.push(val):null;
+                        inline?val?sql.push(field):null:sql.push(field);
+                        inline?(val?placeholder.push("'"+val+"'"):null):placeholder.push("?");
 
                     }
                 }
@@ -539,9 +538,13 @@ export default class DatabaseWrapper extends Singleton{
                 for (field in data) {
                     if (data.hasOwnProperty(field)) {
                         if (field != "where") {
-                            let val=data[field]?data[field].toString():null
+                            let val=data[field]?data[field].toString():null;
                             values.push(val);
-                            sql.push(field + "=?");
+                            !inline?values.push(val):null;
+                            inline?val?sql.push(field):null:sql.push(field);
+                            inline?(val?sql.push(field+"="+val):null):sql.push(field+"=?");
+
+
                         }
                         else {
                             conditions = data["where"].toString();
@@ -568,8 +571,8 @@ export default class DatabaseWrapper extends Singleton{
                         if (data.hasOwnProperty(field)) {
                             let val=data[field]?data[field].toString():null;
                             values.push(val);
-                            sql.push(field + "=?");
-
+                           // sql.push(field + "=?");
+                            inline?sql.push(field+"="+val):sql.push(field + "=?");
                         }
                     }
                 }
@@ -591,10 +594,10 @@ export default class DatabaseWrapper extends Singleton{
                     for (field in data) {
                         if (data.hasOwnProperty(field)&&(field != "where")) {
 
-                            let val=data[field]?data[field].toString():null
+                            let val=data[field]?data[field].toString():null;
                             values.push(val);
-                            sql.push(field + "=?");
-
+                            //sql.push(field + "=?");
+                            inline?sql.push(field+"="+val):sql.push(field + "=?");
                         }
                     }
                     sql = sql.join(" AND ");
@@ -615,9 +618,10 @@ export default class DatabaseWrapper extends Singleton{
                 else {
                     for (field in data) {
                         if (data.hasOwnProperty(field)&&(field != "where")) {
-                            let val=data[field]?data[field].toString():null
+                            let val=data[field]?data[field].toString():null;
                             values.push(val);
-                            sql.push(field + "=?");
+                           // sql.push(field + "=?");
+                            inline?sql.push(field+"="+val):sql.push(field + "=?");
                         }
                     }
                     sql = sql.join(" OR ");
@@ -634,7 +638,7 @@ export default class DatabaseWrapper extends Singleton{
 
         }
 
-        return {sql, values};
+        return inline?sql:{sql, values};
     }
 
     get_var( query = null,field, x = 0, y = this.num_queries) {
@@ -770,35 +774,81 @@ export default class DatabaseWrapper extends Singleton{
             console.log("Database DELETE error");
         });
     }
-      prepare_meta(metadata,table,format,args){
+    prepare_meta(metadata,table,format,args){
         let key,batch=[];
         for(key in metadata ){
-            batch.push(this.prepare(table,{meta_key:key,meta_value:metadata[key],...args},format))
+            batch.push(this.prepare(table,{meta_key:key,meta_value:metadata[key],...args},format,true))
         }
         return batch;
 }
-    insert_term(term,taxonomy="categories")
+    insert_term(term,taxonomy)
     {
         let metadata;
         if(term.hasOwnProperty("metadata")){
             metadata=term.metadata;
             delete  term.metadata;
         }
+
        return this.insert(this.terms,term).then((res)=>{
-            if(metadata)
+           let insertId=this.insert_id;
+         return new Promise((resolve,reject)=>{
+           if(metadata)
             {
-        let batch= this.prepare_meta(metadata,this.termmeta,"INSERT",{term_id:this.insert_id})
-           for(let i=0;i<batch.length;i++){
-            this.query(batch[i]).then((res)=>{
-                console.log(res)
+        let batch= this.prepare_meta(metadata,this.termmeta,"INSERT",{term_id:insertId});
+           //for(let i=0;i<batch.length;i++){
+          return  this.queryBatch(batch).then((res)=>{
+                //console.log(res)
+                resolve(insertId)
             })
            }
-            }
+           else{
+               resolve(insertId);
+           }
+
+         })
+
+        }).then((term_id)=>{
+           //add taxonomy after a term is added
+           console.log("tax_term "+term_id);
+           return this.insert(this.term_taxonomy,{...taxonomy,term_id})
+
+
+       })
+    }
+    insert_post(post,term_relationship){
+        let metadata;
+        if(post.hasOwnProperty("metadata"))
+        {
+            metadata=post.metadata;
+            delete  post.metadata;
+        }
+        metadata={region:"rukwa",district:"swax",price:"5000000"};//todo remove after tests
+        return this.insert(this.posts,post).then((res)=>{
+            let insertId=this.insert_id;
+            return new Promise((resolve,reject)=>{
+                if(metadata)
+                {
+                    let batch= this.prepare_meta(metadata,this.postmeta,"INSERT",{post_id:insertId});
+                    //for(let i=0;i<batch.length;i++){
+                    return  this.queryBatch(batch).then((res)=>{
+                        //console.log(res)
+                        resolve(insertId)
+                    })
+                }
+                else{
+                    resolve(insertId);
+                }
+
+            })
+
+        }).then((object_id)=>{
+            //add taxonomy after a term is added
+            console.log("tax_term "+object_id);
+            return this.insert(this.term_taxonomy,{...term_relationship,object_id})
 
 
         })
     }
-    insert_post(post,term_relationship){}
     update_term(term,taxonomy){}
     update_post(post){}
     delete_term(){}
