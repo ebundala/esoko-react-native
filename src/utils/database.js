@@ -417,26 +417,29 @@ export default class DatabaseWrapper extends Singleton{
         this.func_call.push(`\db.query(\"${sql}\")`);
 
         let that = this;
+        return new Promise((resolve, reject) => {
+            return this.db.executeSql(sql, values).then(res => {
+                console.log("query response ", res);
+                if (res instanceof Array && res.length) {
+                    that.rows_affected = res[0].rowsAffected;
+                    that.num_rows = res[0].rows.length;
+                    that.insert_id = res[0].insertId;
+                    that.last_result.push(res[0]);
 
-        return this.db.executeSql(sql, values).then(res => {
-            console.log("query response ", res);
-            if (res instanceof Array && res.length) {
-                that.rows_affected = res[0].rowsAffected;
-                that.num_rows = res[0].rows.length;
-                that.insert_id = res[0].insertId;
-                that.last_result.push(res[0]);
-
-                return res[0];
-            }
-            else {
-                throw new Error(sql + "\n query result is not an array");
-            }
-        }).catch(e => {
-            console.log(e);
-            that.last_error = e;
-            that.last_result.push(e);
-        });
-
+                    resolve(res[0]);
+                }
+                else {
+                    throw new Error(sql + "\n query result is not an array");
+                }
+            }).catch(e => {
+                console.log(e);
+                that.last_error = e;
+                that.last_result.push(e);
+                reject(e)
+            });
+        }).then((res) => {
+            return res;
+        })
 
     }
     queryBatch(sql){
@@ -774,13 +777,43 @@ export default class DatabaseWrapper extends Singleton{
             console.log("Database DELETE error");
         });
     }
-    prepare_meta(metadata,table,format,args){
+
+    prepare_meta(metadata={},table="",args={},format="INSERT"){
         let key,batch=[];
         for(key in metadata ){
             batch.push(this.prepare(table,{meta_key:key,meta_value:metadata[key],...args},format,true))
         }
         return batch;
-}
+    }
+
+    insert_meta(metadata,table="",args={},insertId){
+
+        return new Promise((resolve,reject)=>{
+            if(metadata)
+            {
+                let batch= this.prepare_meta(metadata,table,args);
+                //for(let i=0;i<batch.length;i++){
+                return  this.queryBatch(batch).then((res)=>{
+                    //console.log(res)
+                    resolve(insertId)
+                })
+            }
+            else{
+                resolve(insertId);
+            }
+
+        })
+    }
+
+    prepare_batch(data={},table="",args={},format="INSERT"){
+        let key,batch=[];
+        for(key in data)
+        {
+            batch.push(this.prepare(table,{...data[key],...args},format,true))
+        }
+        return batch;
+    }
+
     insert_term(term,taxonomy)
     {
         let metadata;
@@ -788,24 +821,10 @@ export default class DatabaseWrapper extends Singleton{
             metadata=term.metadata;
             delete  term.metadata;
         }
-
+        this.flush();
        return this.insert(this.terms,term).then((res)=>{
            let insertId=this.insert_id;
-         return new Promise((resolve,reject)=>{
-           if(metadata)
-            {
-        let batch= this.prepare_meta(metadata,this.termmeta,"INSERT",{term_id:insertId});
-           //for(let i=0;i<batch.length;i++){
-          return  this.queryBatch(batch).then((res)=>{
-                //console.log(res)
-                resolve(insertId)
-            })
-           }
-           else{
-               resolve(insertId);
-           }
-
-         })
+         return this.insert_meta(metadata,this.termmeta,{term_id:insertId},insertId);
 
         }).then((term_id)=>{
            //add taxonomy after a term is added
@@ -815,7 +834,26 @@ export default class DatabaseWrapper extends Singleton{
 
        })
     }
-    insert_post(post,term_relationship){
+    base_terms(){
+        this.query("SELECT * FROM terms WHERE name='")
+    }
+    get_term(name){}
+    insert_term_relationships(term_relationships,object_id){
+        return new Promise((resolve,reject)=>{
+            if(term_relationships&&object_id){
+                let batch = this.prepare_batch(term_relationships, this.term_relationships, {object_id});
+                //console.log(batch);
+                return this.queryBatch(batch).then((res) => {
+                    //console.log(res)
+                    resolve(object_id)
+                })
+            }
+            resolve(object_id)
+        })
+
+
+}
+    insert_post(post={},term_relationships={}){
         let metadata;
         if(post.hasOwnProperty("metadata"))
         {
@@ -823,13 +861,17 @@ export default class DatabaseWrapper extends Singleton{
             delete  post.metadata;
         }
         metadata={region:"rukwa",district:"swax",price:"5000000"};//todo remove after tests
+        this.flush();
         return this.insert(this.posts,post).then((res)=>{
             let insertId=this.insert_id;
-            return new Promise((resolve,reject)=>{
+            console.log("failed",res)
+           // debugger;
+            return this.insert_meta(metadata,this.postmeta,{post_id:insertId},insertId);
+            /*return new Promise((resolve,reject)=>{
                 if(metadata)
                 {
-                    let batch= this.prepare_meta(metadata,this.postmeta,"INSERT",{post_id:insertId});
-                    //for(let i=0;i<batch.length;i++){
+                    let batch= this.prepare_meta(metadata,this.postmeta,{post_id:insertId});
+
                     return  this.queryBatch(batch).then((res)=>{
                         //console.log(res)
                         resolve(insertId)
@@ -839,13 +881,12 @@ export default class DatabaseWrapper extends Singleton{
                     resolve(insertId);
                 }
 
-            })
+            })*/
 
         }).then((object_id)=>{
-            //add taxonomy after a term is added
-            console.log("tax_term "+object_id);
-            return this.insert(this.term_taxonomy,{...term_relationship,object_id})
-
+            //add term_relationships after a post is added
+            console.log("term "+object_id);
+            return this.insert_term_relationships(term_relationships,object_id);
 
         })
     }

@@ -36,6 +36,8 @@ export default class eSoko extends Component {
         DB.connect().then(db => {
             DB.queryBatch(get_DB_schema()).then((res) => {
                 console.log("table creation results", res);
+
+
                 persistStore(store, {
                     storage: AsyncStorage,
                     blacklist: ['activity', "nav", "navOauth", "products", "forms", "form"]

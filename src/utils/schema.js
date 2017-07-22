@@ -118,7 +118,7 @@ export function get_DB_schema(scope="all", app_id)
         //"pinged text NOT NULL," +
         "post_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
        // "post_modified_gmt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-        "post_content_filtered longtext NOT NULL," +
+        "post_content_filtered longtext NOT NULL DEFAULT ''," +
         "post_parent INTEGER  NOT NULL DEFAULT '0'," +
         "guid VARCHAR(255) NOT NULL DEFAULT ''," +
         "menu_order int(11) NOT NULL DEFAULT '0'," +

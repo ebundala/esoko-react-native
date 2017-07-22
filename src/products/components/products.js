@@ -50,7 +50,7 @@ export class ProductsList extends Component {
             canScroll: false,
             query: null,
             subCategory: "All",
-            products: [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
+            products: []
         }
         this._deltaY = new Animated.Value(0);
 
@@ -83,14 +83,18 @@ export class ProductsList extends Component {
         let {category}=this.props.navigation.state.params;
         let that = this;
         DB.query("SELECT * FROM "+DB.posts).then((products) => {
+            let res=[];
+            if(products.rows.length){
+                for(let i=0;i<products.rows.length;i++){
+                    res.push(products.rows.item(i));
+                }
+                that.setState({products: res})
+            }
 
-            if (products.rows.length === 0) {
+            else{
 
                 that.setState({error: "Nothing was found at " + this.state.subCategory+" ,"+category.categoryName})
 
-            } else {
-
-                that.setState({products: products})
             }
 
         }).catch((e) => {
@@ -295,7 +299,7 @@ export class ProductsList extends Component {
                                                               <View
                                                                   style={[styles.horizontal, styles.alignItemsCenter, styles.centerJustified]}>
                                                                   <Text numberOfLines={1} style={[styles.productTitle]}>
-                                                                      {data.name}
+                                                                      {data.post_title}
                                                                   </Text>
                                                               </View>
                                                               <View
@@ -449,7 +453,7 @@ export class SingleProductView extends Component {
                                 <View style={[styles.flex8, styles.centerJustified]}>
                                     <View style={[styles.horizontal]}>
                                         <Text style={[colorStyle.paperGrey900, {fontSize: 14, fontWeight: "500"}]}>
-                                            {data.name}
+                                            {data.post_title}
                                         </Text>
                                     </View>
 
@@ -494,7 +498,7 @@ export class SingleProductView extends Component {
                             <View>
                                 <Divider/>
                                 <Text style={[typographyStyle.paperFontBody1, {padding: 8}]}>
-                                    {data.description}
+                                    {data.post_content}
                                 </Text>
                             </View>
 

@@ -254,7 +254,47 @@ export class OrdersList extends Component {
                             });
 
                     }}/>
+                    <Button title=" insert post " onPress={() => {
+                        //DB.process_fields("users",this.state,"INSERT")
+                        DB.insert_post(
+                            {
+                               // ID:null,
+                               // post_author:"",
+                               // post_date:"",
+                                // post_date_gmt:"" ,
+                                post_content:"hello world",
+                                post_title:"am title",
+                                // post_excerpt:"" ,
+                               // post_status:"",
+                              //  comment_status:"",
+                                //ping_status:"" ,
+                                //post_password:"" ,
+                             //   post_name:"",
+                                // to_ping:"" ,
+                                //pinged:"" ,
+                             //   post_modified:"",
+                                // post_modified_gmt:"",
+                              //  post_content_filtered:"",
+                             //   post_parent:"",
+                              //  guid:"",
+                              //  menu_order:"",
+                             //   post_type:"",
+                            //    post_mime_type:"",
+                            //    comment_count:"",
+                                //app_id:"",
+                            },{category:{
+                               // object_id:"",
+                                term_taxonomy_id:0,
+                                //term_order:"",
+                            }}
+                        )
+                            .then((res) => {
 
+                                DB.debug();
+                                console.log(res)
+                            });
+
+                    }}/>
             </ScrollView>
     </View>
     )

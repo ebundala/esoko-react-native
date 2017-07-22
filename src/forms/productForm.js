@@ -469,20 +469,7 @@ class OptionInput extends EBwidgetBase {
                     </View>
                     <View style={[styles.flex1]}>
                         <View style={{paddingRight:10}}>
-                            <Picker {...{mode:"dropdown",style:{color:COLOR.amber500},...pickerProps,}}
-                                    selectedValue={this.state.value}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        this.setState({value: itemValue});
-                                        this._onValueChange(itemValue)
 
-                                    }}>
-
-                                {items instanceof Array?items.map((item, i) => {
-                                        return <Picker.Item key={item.label} label={item.label} value={item.value}/>
-
-                                    }):null}
-
-                            </Picker>
                         </View>
                     </View>
                 </View>
