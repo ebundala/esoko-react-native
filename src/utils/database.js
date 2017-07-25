@@ -57,6 +57,7 @@ let scheme={
     sold:Boolean};
 import {IMAGES} from "../products/products.actions"
 import {initialState } from "../navigationView/categories.actions"
+import dataScheme  from "../utils/dataSchema"
 import Singleton from "./singleton";
 
 import SQLite from 'react-native-sqlite-storage';
@@ -834,8 +835,88 @@ export default class DatabaseWrapper extends Singleton{
 
        })
     }
+    check_insert_term(term,taxonomy){
+      return  this.query("SELECT * FROM terms WHERE name='"+term.name+"'").then((res)=>{
+            if(res.rows.length===1){
+
+                return 0;
+
+            }
+            else if(res.rows.length<1) {
+                return this.insert_term(term, taxonomy);
+            }
+            else {
+                throw new Error("The term "+term.name+" exists ")
+            }
+        })
+    }
     base_terms(){
-        this.query("SELECT * FROM terms WHERE name='")
+        let term={
+                term_id:null,
+                name:"base_app",
+                slug:"app",
+                //term_group:0,
+            },
+            taxonomy={
+                // term_taxonomy_id:"",
+                //  term_id:"",
+                taxonomy:"app",
+                description:"the default app which every other app should inherit",
+               // parent:0,
+                //count:"",
+            };
+      return  this.check_insert_term(term,taxonomy).then((res)=>{
+            term={...term,name:"all",slug:"all"};
+            taxonomy={...taxonomy,taxonomy:"category",description:"the default category every other should inherit"}
+       return this.check_insert_term(term,taxonomy).then((res)=>{
+
+            term={...term,name:"anywhere",slug:"anywhere"};
+            taxonomy={...taxonomy,taxonomy:"location",description:"the default location every other should inherit"}
+        return    this.check_insert_term(term,taxonomy).then((res)=>{
+                term={...term,name:"tag",slug:"tag"};
+                taxonomy={...taxonomy,taxonomy:"tag",description:"the default tag every other should inherit"}
+            return    this.check_insert_term(term,taxonomy).then((res)=>{
+               // return  this.insert_terms_recursively(dataScheme.locations).then((res)=>{
+
+                    return this.query("SELECT * FROM "+this.terms+" JOIN "+this.term_taxonomy+" ON "+this.term_taxonomy+".term_id="+this.terms+".term_id").then((res)=>{
+
+                           // debugger;
+                            for(let j=0;j<res.rows.length;j++){
+                                console.log(res.rows.item(j))
+                            }
+                        })
+                   // })
+                })
+            })
+        })
+        })
+    }
+
+    insert_terms_recursively(data,term,taxonomy){
+        let field,items=[];
+        for(field in data){
+            items.push( this.check_insert_term({...term,name:field,slug:field},taxonomy).then((res)=> {
+
+debugger;
+                if (res.insertId) {
+
+                return this.query("SELECT name,term_id FROM " + this.terms + " WHERE term_id=" + res.insertId + " LIMIT 1").then((res) => {
+                    if (res.rows.length)
+                        return this.insert_terms_recursively(data[res.rows.item(0).name], term, {
+                            ...taxonomy,
+                            parent: res.rows.item(0).term_id
+                        });
+                    else
+                        return 0
+                })
+            }
+            return 0;
+            }))
+        }
+        return new Promise.all(items).then((res)=>{
+            console.log(res)
+        })
+
     }
     get_term(name){}
     insert_term_relationships(term_relationships,object_id){

@@ -294,6 +294,45 @@ export class OrdersList extends Component {
                                 console.log(res)
                             });
 
+
+
+                        return  this.insert_terms_recursively(dataScheme.locations).then((res)=>{
+
+                            return this.query("SELECT * FROM "+this.terms+" JOIN "+this.term_taxonomy+" ON "+this.term_taxonomy+".term_id="+this.terms+".term_id").then((res)=>{
+
+                                debugger;
+                                for(let j=0;j<res.rows.length;j++){
+                                    console.log(res.rows.item(j))
+                                }
+                            })
+                        })
+
+                    }}/>
+
+                    <Button title=" insert terms recursively " onPress={() => {
+                        //DB.process_fields("users",this.state,"INSERT")
+
+
+
+
+                        DB.insert_terms_recursively(dataSchema.locations,{},{
+                           // term_taxonomy_id:"",
+                          //  term_id:"",
+                            taxonomy:"location",
+                          //  description:"",
+                           parent:2,
+                          //  count:"",
+                        }).then((res)=>{
+
+                            return DB.query("SELECT * FROM "+DB.terms+" JOIN "+DB.term_taxonomy+" ON "+DB.term_taxonomy+".term_id="+DB.terms+".term_id").then((res)=>{
+
+                                //debugger;
+                                for(let j=0;j<res.rows.length;j++){
+                                    console.log(res.rows.item(j))
+                                }
+                            })
+                        })
+
                     }}/>
             </ScrollView>
     </View>

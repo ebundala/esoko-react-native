@@ -28,79 +28,90 @@ export default class eSoko extends Component {
 
     constructor() {
         super();
-        this.state = { rehydrated: false ,authChecked:false}
+        this.state = { rehydrated: false ,authChecked:false};
+        this.db_attempts=0;
     }
 
     componentDidMount(){
         let that=this;
+        that.db_attempts++;
         DB.connect().then(db => {
-            DB.queryBatch(get_DB_schema()).then((res) => {
+          return  DB.queryBatch(get_DB_schema()).then((res) => {
                 console.log("table creation results", res);
+             return   DB.base_terms().then((res)=>{
+                    persistStore(store, {
+                        storage: AsyncStorage,
+                        blacklist: ['activity', "nav", "navOauth", "products", "forms", "form"]
+                    }, () => {
+                        firestack.auth.listenForAuth((evt) => {
 
+                            // evt is the authentication event
+                            // it contains an `error` key for carrying the
+                            // error message in case of an error
+                            // and a `user` key upon successful authentication
+                            if (!evt.authenticated) {
+                                // There was an error or there is no user
 
-                persistStore(store, {
-                    storage: AsyncStorage,
-                    blacklist: ['activity', "nav", "navOauth", "products", "forms", "form"]
-                }, () => {
-                    firestack.auth.listenForAuth((evt) => {
-
-                        // evt is the authentication event
-                        // it contains an `error` key for carrying the
-                        // error message in case of an error
-                        // and a `user` key upon successful authentication
-                        if (!evt.authenticated) {
-                            // There was an error or there is no user
-
-                            //NavigationOauth.navigate("start")
-                            // setPage("Oauth")
-                            let {user}=store.getState();
-                            // console.log("user obj ",user)
-                            if (user.isNewUser) {
-                                store.dispatch(
-                                    {
-                                        type: USER_ACTIONS.LOGOUT,
-                                        status: "Initial"
-                                        //data:null
-                                    }
-                                )
-                            }
-                            else {
-                                store.dispatch(
-                                    {
-                                        type: USER_ACTIONS.LOGOUT,
-                                        status: "OK"
-                                        //data:null
-                                    })
-                            }
-
-                        } else {
-                            // evt.user contains the user details
-                            console.log('User details', evt.user);
-                            // NavigationOauth.navigate("account")
-                            // setPage("app")
-                            store.dispatch({
-                                type: USER_ACTIONS.LOGIN,
-                                status: "OK",
-                                data: {
-                                    ...evt
+                                //NavigationOauth.navigate("start")
+                                // setPage("Oauth")
+                                let {user}=store.getState();
+                                // console.log("user obj ",user)
+                                if (user.isNewUser) {
+                                    store.dispatch(
+                                        {
+                                            type: USER_ACTIONS.LOGOUT,
+                                            status: "Initial"
+                                            //data:null
+                                        }
+                                    )
                                 }
-                            });
-                            //userLoggedIn(evt,NavigationOauth.navigate,setPage,dispatch)
+                                else {
+                                    store.dispatch(
+                                        {
+                                            type: USER_ACTIONS.LOGOUT,
+                                            status: "OK"
+                                            //data:null
+                                        })
+                                }
+
+                            } else {
+                                // evt.user contains the user details
+                                console.log('User details', evt.user);
+                                // NavigationOauth.navigate("account")
+                                // setPage("app")
+                                store.dispatch({
+                                    type: USER_ACTIONS.LOGIN,
+                                    status: "OK",
+                                    data: {
+                                        ...evt
+                                    }
+                                });
+                                //userLoggedIn(evt,NavigationOauth.navigate,setPage,dispatch)
 
 
-                        }
+                            }
 
-                        this.setState({authChecked: true});
+                            this.setState({authChecked: true});
 
-                    })
-                        .then(() => console.log('Listening for authentication changes'))
+                        })
+                            .then(() => console.log('Listening for authentication changes'))
 
-                    this.setState({rehydrated: true})
+                        that.setState({rehydrated: true})
 
-                });
+                    });
+
+              });
+
+
 
             }).catch((e) => {
                 console.log(e)
+              if(that.db_attempts<5)
+                DB.delete_DB().then(()=>{
+                    that.componentDidMount();
+                }).catch((e)=>{
+                    that.setState({error:e.message});
+                })
             });
         }).catch((e) => {
 that.setState({error:e.message});
@@ -122,7 +133,7 @@ that.setState({error:e.message});
         return (
             <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
 
-                {!this.state.error&&<ActivityIndicator size={80}></ActivityIndicator>}
+                {!this.state.error&&<ActivityIndicator ></ActivityIndicator>}
                 <Text> {this.state.error}</Text>
                 {false&&<Image source={require("./src/pngs/background.png")} style={{resizeMode:Image.resizeMode.cover,height:null,width:null,flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"rgb(0,0,0)"}}>
 
