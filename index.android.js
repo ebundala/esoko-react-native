@@ -37,7 +37,7 @@ export default class eSoko extends Component {
         that.db_attempts++;
         DB.connect().then(db => {
           return  DB.queryBatch(get_DB_schema()).then((res) => {
-                console.log("table creation results", res);
+                //console.log("table creation results", res);
              return   DB.base_terms().then((res)=>{
                     persistStore(store, {
                         storage: AsyncStorage,

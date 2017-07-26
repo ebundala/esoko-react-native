@@ -16,7 +16,7 @@ import {Divider} from "react-native-material-design"
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as actions from  "../../products/products.actions"
-
+import {DB} from "../../utils/database"
 import styles, {typographyStyle,colorStyle,colours} from "../../styles/styles"
 
 
@@ -97,7 +97,38 @@ class categoryViewContainer extends Component {
 
     constructor(props) {
         super(props);
-        this.ds =new ListView.DataSource({rowHasChanged:(x,y)=>x!==y})
+
+
+
+this.state={categories:[]};
+
+       // let that=this;
+
+
+        DB.query("SELECT c.term_taxonomy_id,t.term_id,t.name,t.slug,c.taxonomy,c.parent FROM "+DB.term_taxonomy+" c JOIN "+DB.terms+" t ON c.term_id=t.term_id WHERE c.parent=(SELECT term_id FROM "+DB.terms+" WHERE name='anywhere')" ).then((res)=>{
+
+          //  for(let j=0;j<res.rows.length;j++){
+            //   console.log(res.rows.item(j))
+           // }
+            //that.categories=res.raws.raw();
+            if(res.rows.length>0)
+           this.setState({categories:res.rows.raw()});
+            //debugger;
+        })
+
+
+        this.ds =new ListView.DataSource({/*getSectionData:(dataBlob,sectionID)=>{
+            return dataBlob[sectionID];
+        },getRowData:(dataBlob,sectID,rowID)=>{
+            debugger;
+            let row;
+            if(dataBlob.hasOwnProperty("rows")) {
+                row = dataBlob.rows.item(0);
+
+                return row;
+            }
+
+        },*/rowHasChanged:(x,y)=>x!==y});
     }
 
 
@@ -115,7 +146,7 @@ class categoryViewContainer extends Component {
 
 
 
-                <ListView dataSource={this.ds.cloneWithRows(categories)}
+                <ListView dataSource={this.ds.cloneWithRows(this.state.categories)}
                           renderSeparator={(i,j)=><Divider key={j+"divider"+i}/>}
                           enableEmptySections={true}
                           renderRow={(category,sectionID, rowID, highlightRow) =>
@@ -142,7 +173,7 @@ class categoryViewContainer extends Component {
                                                   paddingHorizontal: 16,
                                                   //fontWeight:"500",
 
-                                              }]}>{category.categoryName}</Text>
+                                              }]}>{category?category.slug:""}</Text>
                                       </View>
                                   </TouchableNativeFeedback>
 

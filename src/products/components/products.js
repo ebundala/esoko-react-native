@@ -50,9 +50,18 @@ export class ProductsList extends Component {
             canScroll: false,
             query: null,
             subCategory: "All",
+            subCategories:[],
             products: []
-        }
+        };
         this._deltaY = new Animated.Value(0);
+        let {category,}=this.props.navigation.state.params;
+
+        DB.query("SELECT c.term_taxonomy_id,t.term_id,t.name,t.slug,c.taxonomy,c.parent FROM "+DB.term_taxonomy+" c JOIN "+DB.terms+" t ON c.term_id=t.term_id WHERE c.parent="+category.term_id )
+            .then((res)=>{
+
+            this.setState({subCategories:res.rows.raw()})
+        })
+
 
     }
     filterChanged(subCategory) {
@@ -132,11 +141,8 @@ export class ProductsList extends Component {
         let {navigate, goBack} = this.props.navigation;
         let {category,}=this.props.navigation.state.params;
         let props = this.props.screenProps;
-        // let {products}=this.props.screenProps
-        if (category.subCategories instanceof Array) {
-            if (category.subCategories[0] !== "All")
-                category.subCategories.unshift("All")
-        }
+
+
         const {primaryColor,filterBackgroundColor,mainTextColor} = uiTheme.palette;
         return (
             <View style={[styles.flex1]}>
@@ -145,7 +151,7 @@ export class ProductsList extends Component {
                     onLeftElementPress={() => {
                         goBack();
                     }}
-                    centerElement={category.categoryName}
+                    centerElement={category.slug}
                     searchableh={{
                         autoFocus: true,
                         placeholder: 'Search',
@@ -194,8 +200,8 @@ export class ProductsList extends Component {
 
                                 }}>
 
-                            {category.subCategories.map((item, i) => {
-                                return <Picker.Item key={item} label={item} value={item}/>
+                            {this.state.subCategories.map((item, i) => {
+                                return <Picker.Item key={item.name} label={item.name} value={item.term_taxonomy_id}/>
 
                             })}
 

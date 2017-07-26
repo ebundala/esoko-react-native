@@ -57,7 +57,7 @@ let scheme={
     sold:Boolean};
 import {IMAGES} from "../products/products.actions"
 import {initialState } from "../navigationView/categories.actions"
-import dataScheme  from "../utils/dataSchema"
+import dataSchema  from "../utils/dataSchema"
 import Singleton from "./singleton";
 
 import SQLite from 'react-native-sqlite-storage';
@@ -656,6 +656,7 @@ export default class DatabaseWrapper extends Singleton{
             // If there is a query then perform it if not then use cached results..
             if (query) {
                 return that.query(query).then((results) => {
+
                     resolve(results.rows.length ? results.rows.item(x)[field] : null);
                 });
             }
@@ -876,16 +877,31 @@ export default class DatabaseWrapper extends Singleton{
                 term={...term,name:"tag",slug:"tag"};
                 taxonomy={...taxonomy,taxonomy:"tag",description:"the default tag every other should inherit"}
             return    this.check_insert_term(term,taxonomy).then((res)=>{
-               // return  this.insert_terms_recursively(dataScheme.locations).then((res)=>{
+                DB.get_var("SELECT term_id FROM "+DB.terms+" WHERE name='anywhere' ","term_id").then((parent)=>{
 
-                    return this.query("SELECT * FROM "+this.terms+" JOIN "+this.term_taxonomy+" ON "+this.term_taxonomy+".term_id="+this.terms+".term_id").then((res)=>{
+               DB.insert_terms_recursively(dataSchema.locations,{},{
+                    // term_taxonomy_id:"",
+                    //  term_id:"",
+                    taxonomy:"location",
+                    //  description:"",
+                    parent
+                    //  count:"",
+                }).then((res)=>{
+                    return res;
+                    })
+
+
+
+/*
+                    return this.query("SELECT term_taxonomy_id,taxonomy,name,parent FROM "+this.term_taxonomy+" JOIN "+this.terms+" ON "+this.term_taxonomy+".term_id="+this.terms+".term_id AND "+this.term_taxonomy+".taxonomy='location'").then((res)=>{
 
                            // debugger;
                             for(let j=0;j<res.rows.length;j++){
                                 console.log(res.rows.item(j))
                             }
                         })
-                   // })
+*/
+                    })
                 })
             })
         })
@@ -895,9 +911,10 @@ export default class DatabaseWrapper extends Singleton{
     insert_terms_recursively(data,term,taxonomy){
         let field,items=[];
         for(field in data){
-            items.push( this.check_insert_term({...term,name:field,slug:field},taxonomy).then((res)=> {
+            if(data.hasOwnProperty(field))
+            items.push( this.check_insert_term({name:field,slug:field,...term},taxonomy).then((res)=> {
 
-debugger;
+//debugger;
                 if (res.insertId) {
 
                 return this.query("SELECT name,term_id FROM " + this.terms + " WHERE term_id=" + res.insertId + " LIMIT 1").then((res) => {
