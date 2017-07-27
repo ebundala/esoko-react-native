@@ -54,13 +54,7 @@ export class ProductsList extends Component {
             products: []
         };
         this._deltaY = new Animated.Value(0);
-        let {category,}=this.props.navigation.state.params;
 
-        DB.query("SELECT c.term_taxonomy_id,t.term_id,t.name,t.slug,c.taxonomy,c.parent FROM "+DB.term_taxonomy+" c JOIN "+DB.terms+" t ON c.term_id=t.term_id WHERE c.parent="+category.term_id )
-            .then((res)=>{
-
-            this.setState({subCategories:res.rows.raw()})
-        })
 
 
     }
@@ -91,26 +85,38 @@ export class ProductsList extends Component {
     componentDidMount() {
         let {category}=this.props.navigation.state.params;
         let that = this;
-        DB.query("SELECT * FROM "+DB.posts).then((products) => {
-            let res=[];
-            if(products.rows.length){
-                for(let i=0;i<products.rows.length;i++){
-                    res.push(products.rows.item(i));
-                }
-                that.setState({products: res})
-            }
 
-            else{
 
-                that.setState({error: "Nothing was found at " + this.state.subCategory+" ,"+category.categoryName})
+        DB.query("SELECT c.term_taxonomy_id,t.term_id,t.name,t.slug,c.taxonomy,c.parent FROM "+DB.term_taxonomy+" c JOIN "+DB.terms+" t ON c.term_id=t.term_id WHERE c.parent="+category.term_id )
+            .then((res)=>{
 
-            }
+                this.setState({subCategories:res.rows.raw()});
 
-        }).catch((e) => {
-            //alert("error occured");
-            that.setState({error: e.message});
-            console.log(e)
+
+                return   DB.query("SELECT c.term_taxonomy_id AS term_taxonomy,c.term_id AS term_id,c.taxonomy AS taxonomy,c.parent AS parent,t.name AS name,d.post_title as title FROM "+DB.term_taxonomy+" c JOIN ("+DB.term_taxonomy+"  p,"+DB.terms+"  t,"+DB.posts+" d,"+DB.term_relationships+" r) ON (p.term_id=c.parent AND c.term_id=t.term_id AND c.term_taxonomy_id=r.term_taxonomy_id AND d.ID=r.object_id) WHERE p.term_id="+category.term_id).then((products) => {
+                    //let res=[];
+                    if(products.rows.length){
+                        for(let i=0;i<products.rows.length;i++){
+                            console.log(products.rows.item(i));
+                        }
+                        ///that.setState({products: products.rows.raw()})
+                    }
+
+                    else{
+
+                        that.setState({error: "Nothing was found at " + this.state.subCategory+" ,"+category.name})
+
+                    }
+
+                }).catch((e) => {
+                    //alert("error occured");
+                    that.setState({error: e.message});
+                    console.log(e)
+                })
+            }).catch((e)=>{
+            alert("error "+e.message);
         })
+
 
 
         //alert(this.state.subCategory+" "+category.categoryName)

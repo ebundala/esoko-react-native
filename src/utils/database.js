@@ -16,7 +16,7 @@ import Firestack from 'react-native-firestack'
 
 
 
-let scheme={
+let schema={
     description: String,
     price: {
         value:Number,
@@ -56,7 +56,7 @@ let scheme={
     expireAt:Date,
     sold:Boolean};
 import {IMAGES} from "../products/products.actions"
-import {initialState } from "../navigationView/categories.actions"
+
 import dataSchema  from "../utils/dataSchema"
 import Singleton from "./singleton";
 
@@ -66,7 +66,7 @@ SQLite.enablePromise(true);
 
 
 export const database_name = "esoko.db";
-export const database_version = "1.0";
+//export const database_version = "1.0";
 //const database_displayname = "SQLite Test Database";
 //const database_size = 200000;
 
@@ -837,7 +837,7 @@ export default class DatabaseWrapper extends Singleton{
        })
     }
     check_insert_term(term,taxonomy){
-      return  this.query("SELECT * FROM terms WHERE name='"+term.name+"'").then((res)=>{
+      return  this.query("SELECT term_id FROM terms WHERE name='"+term.name+"'").then((res)=>{
             if(res.rows.length===1){
 
                 return 0;
@@ -847,7 +847,7 @@ export default class DatabaseWrapper extends Singleton{
                 return this.insert_term(term, taxonomy);
             }
             else {
-                throw new Error("The term "+term.name+" exists ")
+                throw new Error("The term "+term.name+" exists more than once")
             }
         })
     }
@@ -866,45 +866,56 @@ export default class DatabaseWrapper extends Singleton{
                // parent:0,
                 //count:"",
             };
-      return  this.check_insert_term(term,taxonomy).then((res)=>{
-            term={...term,name:"all",slug:"all"};
-            taxonomy={...taxonomy,taxonomy:"category",description:"the default category every other should inherit"}
-       return this.check_insert_term(term,taxonomy).then((res)=>{
+      return  this.check_insert_term(term,taxonomy).then((res)=> {
+          //debugger
+          if (res) {
 
-            term={...term,name:"anywhere",slug:"anywhere"};
-            taxonomy={...taxonomy,taxonomy:"location",description:"the default location every other should inherit"}
-        return    this.check_insert_term(term,taxonomy).then((res)=>{
-                term={...term,name:"tag",slug:"tag"};
-                taxonomy={...taxonomy,taxonomy:"tag",description:"the default tag every other should inherit"}
-            return    this.check_insert_term(term,taxonomy).then((res)=>{
-                DB.get_var("SELECT term_id FROM "+DB.terms+" WHERE name='anywhere' ","term_id").then((parent)=>{
+          term = {...term, name: "all", slug: "all"};
+          taxonomy = {...taxonomy, taxonomy: "category", description: "the default category every other should inherit"}
+          return this.check_insert_term(term, taxonomy).then((res) => {
 
-               DB.insert_terms_recursively(dataSchema.locations,{},{
-                    // term_taxonomy_id:"",
-                    //  term_id:"",
-                    taxonomy:"location",
-                    //  description:"",
-                    parent
-                    //  count:"",
-                }).then((res)=>{
-                    return res;
-                    })
+              term = {...term, name: "anywhere", slug: "anywhere"};
+              taxonomy = {
+                  ...taxonomy,
+                  taxonomy: "location",
+                  description: "the default location every other should inherit"
+              }
+              return this.check_insert_term(term, taxonomy).then((res) => {
+                  term = {...term, name: "tag", slug: "tag"};
+                  taxonomy = {...taxonomy, taxonomy: "tag", description: "the default tag every other should inherit"}
+                  return this.check_insert_term(term, taxonomy).then((res) => {
+                      return DB.get_var("SELECT term_id FROM " + DB.terms + " WHERE name='anywhere' ", "term_id").then((parent) => {
+
+                          return DB.insert_terms_recursively(dataSchema.locations, {}, {
+                              // term_taxonomy_id:"",
+                              //  term_id:"",
+                              taxonomy: "location",
+                              //  description:"",
+                              parent
+                              //  count:"",
+                          })
+                          /*.then((res)=>{
+                           return res;
+                           })*/
 
 
-
-/*
-                    return this.query("SELECT term_taxonomy_id,taxonomy,name,parent FROM "+this.term_taxonomy+" JOIN "+this.terms+" ON "+this.term_taxonomy+".term_id="+this.terms+".term_id AND "+this.term_taxonomy+".taxonomy='location'").then((res)=>{
+                          /*
+                           return this.query("SELECT term_taxonomy_id,taxonomy,name,parent FROM "+this.term_taxonomy+" JOIN "+this.terms+" ON "+this.term_taxonomy+".term_id="+this.terms+".term_id AND "+this.term_taxonomy+".taxonomy='location'").then((res)=>{
 
                            // debugger;
-                            for(let j=0;j<res.rows.length;j++){
-                                console.log(res.rows.item(j))
-                            }
-                        })
-*/
-                    })
-                })
-            })
-        })
+                           for(let j=0;j<res.rows.length;j++){
+                           console.log(res.rows.item(j))
+                           }
+                           })
+                           */
+                      })
+                  })
+              })
+          })
+      }
+      else{
+              return 0;
+          }
         })
     }
 

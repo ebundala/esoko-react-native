@@ -8,7 +8,7 @@ import {statusReducers} from "./statuses/components/statuses";
 import  {routeReducers, oauthRouteReducers} from "./app";
 import productsReducer from "./products/products.reducer";
 import productForm from "./forms/productForm.reducer";
-import categoriesReducer from "./navigationView/categories.reducer";
+import termsReducer from "./navigationView/terms.reducer";
 export default combineReducers({
     user,
     activity,
@@ -17,5 +17,5 @@ export default combineReducers({
     navOauth: oauthRouteReducers,
     products:productsReducer,
     forms:productForm,
-    categories:categoriesReducer
+    terms:termsReducer
 });

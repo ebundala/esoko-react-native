@@ -34,6 +34,7 @@ import {IntroOne, IntroTwo} from "./intro/components/intro"
 import NavigationView from "./navigationView/components/navigationView"
 //import {styles} from "./styles/styles"
 import * as actions from  "./products/products.actions"
+import * as termsActions from "./navigationView/terms.actions"
 //import {USER_ACTIONS} from "./user/user.actions"
 //import Firestack from "react-native-firestack"
 import { COLOR, ThemeProvider } from 'react-native-material-ui';
@@ -268,7 +269,8 @@ class root extends Component {
     }
 
     componentDidMount(){
-        const {user} = this.props;
+
+        let {user,getTerms} = this.props.screenProps;
         this.shouldClose=false;
 
          BackAndroid.addEventListener('backPress', () => {
@@ -282,8 +284,10 @@ class root extends Component {
          dispatch({ type: NavigationActions.BACK })
          return true
          })
-
-this.preConfig();
+        getTerms("locations","anywhere");
+        getTerms("categories","all");
+        getTerms("apps","base_app");
+        this.preConfig();
         //const res = user.isNewUser ? this._setPage("IntroOne") : !user.isAuthenticated ? this._setPage("Oauth"):null /*this._setPage("app")*/
     }
      setInitialScreen(){
@@ -379,8 +383,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps=(dispatch)=>{
 
 
-    return {...bindActionCreators(actions,dispatch),
-        dispatch}
+    return {...bindActionCreators({...actions,...termsActions},dispatch), dispatch}
 
 }
 const mergeProps = (stateProps, dispatchProp, ownProps) => {

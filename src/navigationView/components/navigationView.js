@@ -16,6 +16,7 @@ import {Divider} from "react-native-material-design"
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as actions from  "../../products/products.actions"
+import * as termsActions from  "../terms.actions"
 import {DB} from "../../utils/database"
 import styles, {typographyStyle,colorStyle,colours} from "../../styles/styles"
 
@@ -105,16 +106,6 @@ this.state={categories:[]};
        // let that=this;
 
 
-        DB.query("SELECT c.term_taxonomy_id,t.term_id,t.name,t.slug,c.taxonomy,c.parent FROM "+DB.term_taxonomy+" c JOIN "+DB.terms+" t ON c.term_id=t.term_id WHERE c.parent=(SELECT term_id FROM "+DB.terms+" WHERE name='anywhere')" ).then((res)=>{
-
-          //  for(let j=0;j<res.rows.length;j++){
-            //   console.log(res.rows.item(j))
-           // }
-            //that.categories=res.raws.raw();
-            if(res.rows.length>0)
-           this.setState({categories:res.rows.raw()});
-            //debugger;
-        })
 
 
         this.ds =new ListView.DataSource({/*getSectionData:(dataBlob,sectionID)=>{
@@ -128,15 +119,18 @@ this.state={categories:[]};
                 return row;
             }
 
-        },*/rowHasChanged:(x,y)=>x!==y});
+        },*/rowHasChanged:(x,y)=>x.slug!==y.slug});
     }
 
+componentDidMount(){
+        //let{getTerms}=this.props
 
+//debugger;
+}
     render() {
 
-        let {categories,navigate}=this.props;
-        //let {navigate}=this.props.navigation;
-        //console.log(this.props)
+        let {terms,navigate}=this.props;
+
         return (
 
 
@@ -146,7 +140,7 @@ this.state={categories:[]};
 
 
 
-                <ListView dataSource={this.ds.cloneWithRows(this.state.categories)}
+                <ListView dataSource={this.ds.cloneWithRows(terms.locations||[])}
                           renderSeparator={(i,j)=><Divider key={j+"divider"+i}/>}
                           enableEmptySections={true}
                           renderRow={(category,sectionID, rowID, highlightRow) =>
@@ -155,7 +149,7 @@ this.state={categories:[]};
                                       navigate("products", {category});
                                   }}>
                                       <View style={[{
-                                          height: 50,
+                                          height: 56,
                                           marginVertical: 2,
                                           //marginHorizontal:16,
 
@@ -200,14 +194,14 @@ const mapStateToProps = (state) => {
     "use strict";
 
         return{
-            categories:state.categories
+            terms:state.terms
         }
 }
 
 
 const mapDispatchToProps = (dispatch) => {
     "use strict";
-    return bindActionCreators(actions, dispatch)
+    return bindActionCreators({...actions,...termsActions}, dispatch)
 }
 const mergeProps=()=>{}
 

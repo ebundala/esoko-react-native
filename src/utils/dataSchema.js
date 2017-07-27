@@ -105,229 +105,229 @@ const dataSchema = {
     ,
     locations: {
 
-        "Arusha": {
-            "Arusha": {},
-            "Karatu": {},
-            "Longido": {},
-            "Meru": {},
-            "Monduli": {},
-            "Ngorongoro": {}
+       "Arusha": {
+           "Arusha": {},
+           "Karatu": {},
+           "Longido": {},
+           "Meru": {},
+           "Monduli": {},
+           "Ngorongoro": {}
         }
-        , "Dar es Salaam": {
-            "Ilala": {},
-            "Kinondoni": {},
-            "Temeke": {},
+        ,"Dar es Salaam": {
+           "Ilala": {},
+           "Kinondoni": {},
+           "Temeke": {},
 
         }
-        , "Dodoma": {
-            "Bahi": {},
-            "Chamwino": {},
-            "Chemba": {},
-            "Dodoma": {},
-            "Kondoa": {},
-            "Kongwa": {},
-            "Mpwapwa": {},
+        ,"Dodoma": {
+           "Bahi": {},
+           "Chamwino": {},
+           "Chemba": {},
+           "Dodoma": {},
+           "Kondoa": {},
+           "Kongwa": {},
+           "Mpwapwa": {},
         }
-        , "Geita": {
-            "Bukombe": {},
-            "Chato": {},
-            "Geita": {},
-            "Mbogwe": {},
-            "Nyanghwale": {},
+        ,"Geita": {
+           "Bukombe": {},
+           "Chato": {},
+           "Geita": {},
+           "Mbogwe": {},
+           "Nyanghwale": {},
         }
-        , "Iringa": {
-            "Iringa": {},
-            "Kilolo": {},
-            "Mafinga ": {},
-            "Mufindi": {},
+        ,"Iringa": {
+           "Iringa": {},
+           "Kilolo": {},
+           "Mafinga": {},
+           "Mufindi": {},
         }
-        , "Kagera": {
-            "Biharamulo": {},
-            "Bukoba M": {},
-            "Bukoba ": {},
-            "Karagwe": {},
-            "Kyerwa	": {},
-            "Missenyi": {},
-            "Muleba	": {},
-            "Ngara	": {},
+        ,"Kagera": {
+           "Biharamulo": {},
+           "Bukoba M": {},
+           "Bukoba": {},
+           "Karagwe": {},
+           "Kyerwa": {},
+           "Missenyi": {},
+           "Muleba": {},
+           "Ngara": {},
         }
-        , "Kaskazini Pemba ": {
-            "Micheweni": {},
-            "Wete": {}
+        ,"Kaskazini Pemba": {
+           "Micheweni": {},
+           "Wete": {}
         }
-        , "Kaskazini Unguja ": {
-            "Kaskazini A": {},
-            "Kaskazini B ": {},
+        ,"Kaskazini Unguja": {
+           "Kaskazini A": {},
+           "Kaskazini B": {},
         }
-        , "Katavi": {
-            "Mlele": {},
-            "Mpanda	": {},
-            "Mpanda ": {},
+        ,"Katavi": {
+           "Mlele": {},
+           "Mpanda": {},
+           "Mpanda": {},
         }
-        , "Kigoma": {
-            "Buhigwe": {},
-            "Kakonko": {},
-            "Kasulu": {},
-            "Kasulu ": {},
-            "Kibondo": {},
-            "Kigoma ": {},
-            "Kigoma-Ujiji": {},
-            "Uvinza": {},
+        ,"Kigoma": {
+           "Buhigwe": {},
+           "Kakonko": {},
+           "Kasulu": {},
+           "Kasulu": {},
+           "Kibondo": {},
+           "Kigoma": {},
+           "Kigoma Ujiji": {},
+           "Uvinza": {},
         }
-        , "Kilimanjaro": {
-            "Hai": {},
-            "Moshi": {},
-            "Moshi ": {},
-            "Mwanga": {},
-            "Rombo": {},
-            "Same": {},
-            "Siha": {},
+        ,"Kilimanjaro": {
+           "Hai": {},
+           "Moshi": {},
+           "Moshi": {},
+           "Mwanga": {},
+           "Rombo": {},
+           "Same": {},
+           "Siha": {},
         }
-        , "Kusini Pemba ": {
-            "Chake Chake": {},
-            "Mkoani": {}
+        ,"Kusini Pemba": {
+           "Chake Chake": {},
+           "Mkoani": {}
         }
-        , "Kusini Unguja": {
-            "Kati": {},
-            "Kusini": {},
+        ,"Kusini Unguja": {
+           "Kati": {},
+           "Kusini": {},
         }
-        , "Lindi": {
-            "Kilwa": {},
-            "Lindi ": {},
-            "Lindi": {},
-            "Liwale	": {},
-            "Nachingwea	": {},
-            "Ruangwa": {},
+        ,"Lindi": {
+           "Kilwa": {},
+           "Lindi M": {},
+           "Lindi": {},
+           "Liwale": {},
+           "Nachingwea": {},
+           "Ruangwa": {},
         }
-        , "Manyara": {
-            "Babati	": {},
-            "Babati": {},
-            "Hanang": {},
-            "Kiteto": {},
-            "Mbulu": {},
-            "Simanjiro": {},
+        ,"Manyara": {
+           "Babati M": {},
+           "Babati": {},
+           "Hanang": {},
+           "Kiteto": {},
+           "Mbulu": {},
+           "Simanjiro": {},
         }
-        , "Mara": {
-            "Bunda": {},
-            "Butiama": {},
-            "Musoma M": {},
-            "Musoma": {},
-            "Rorya": {},
-            "Serengeti	": {},
-            "Tarime	": {},
+        ,"Mara": {
+           "Bunda": {},
+           "Butiama": {},
+           "Musoma M": {},
+           "Musoma": {},
+           "Rorya": {},
+           "Serengeti": {},
+           "Tarime": {},
         }
-        , "Mbeya": {
-            "Chunya	": {},
-            "Ileje	": {},
-            "Kyela": {},
-            "Mbarali": {},
-            "Mbeya ": {},
-            "Mbozi": {},
-            "Momba": {},
-            "Rungwe": {},
-            "Tunduma ": {},
+        ,"Mbeya": {
+           "Chunya": {},
+           "Ileje": {},
+           "Kyela": {},
+           "Mbarali": {},
+           "Mbeya": {},
+           "Mbozi": {},
+           "Momba": {},
+           "Rungwe": {},
+           "Tunduma": {},
         }
-        , "Mjini Magharibi ": {
-            "Magharibi ": {},
-            "Mjini ": {},
+        ,"Mjini Magharibi": {
+           "Magharibi": {},
+           "Mjini": {},
         }
-        , "Morogoro": {
-            "Gairo	": {},
-            "Kilombero": {},
-            "Kilosa	": {},
-            "Morogoro 	": {},
-            "Morogoro ": {},
-            "Mvomero": {},
-            "Ulanga": {},
+        ,"Morogoro": {
+           "Gairo": {},
+           "Kilombero": {},
+           "Kilosa": {},
+           "Morogoro M": {},
+           "Morogoro": {},
+           "Mvomero": {},
+           "Ulanga": {},
         }
-        , "Mtwara": {
-            "Masasi	": {},
-            "Masasi ": {},
-            "Mtwara ": {},
-            "Nanyumbu": {},
-            "Newala	": {},
-            "Tandahimba	": {},
+        ,"Mtwara": {
+           "Masasi M": {},
+           "Masasi": {},
+           "Mtwara": {},
+           "Nanyumbu": {},
+           "Newala": {},
+           "Tandahimba": {},
         }
-        , "Mwanza": {
-            "Ilemela": {},
-            "Kwimba	": {},
-            "Magu	": {},
-            "Misungwi": {},
-            "Nyamagana ": {},
-            "Sengerema": {},
-            "Ukerewe": {},
+        ,"Mwanza": {
+           "Ilemela": {},
+           "Kwimba": {},
+           "Magu": {},
+           "Misungwi": {},
+           "Nyamagana": {},
+           "Sengerema": {},
+           "Ukerewe": {},
         }
-        , "Njombe": {
-            "Ludewa": {},
-            "Makambako": {},
-            "Makete": {},
-            "Njombe": {},
-            "Wangingombe": {},
+        ,"Njombe": {
+           "Ludewa": {},
+           "Makambako": {},
+           "Makete": {},
+           "Njombe": {},
+           "Wangingombe": {},
         }
-        , "Pwani": {
-            "Bagamoyo": {},
-            "Kibaha M": {},
-            "Kibaha": {},
-            "Kisarawe": {},
-            "Mafia": {},
-            "Mkuranga": {},
-            "Rufiji": {},
+        ,"Pwani": {
+           "Bagamoyo": {},
+           "Kibaha M": {},
+           "Kibaha": {},
+           "Kisarawe": {},
+           "Mafia": {},
+           "Mkuranga": {},
+           "Rufiji": {},
         }
-        , "Rukwa": {
-            "Kalambo": {},
-            "Nkasi": {},
-            "Sumbawanga M": {},
-            "Sumbawanga": {},
+        ,"Rukwa": {
+           "Kalambo": {},
+           "Nkasi": {},
+           "Sumbawanga M": {},
+           "Sumbawanga": {},
         }
-        , "Ruvuma": {
-            "Mbinga": {},
-            "Namtumbo": {},
-            "Nyasa": {},
-            "Songea M": {},
-            "Songea": {},
-            "Tunduru": {},
+        ,"Ruvuma": {
+           "Mbinga": {},
+           "Namtumbo": {},
+           "Nyasa": {},
+           "Songea M": {},
+           "Songea": {},
+           "Tunduru": {},
         }
-        , "Shinyanga": {
-            "Kahama M": {},
-            "Kahama": {},
-            "Kishapu": {},
-            "Shinyanga M": {},
-            "Shinyanga": {},
+        ,"Shinyanga": {
+           "Kahama M": {},
+           "Kahama": {},
+           "Kishapu": {},
+           "Shinyanga M": {},
+           "Shinyanga": {},
         }
-        , "Simiyu": {
-            "Bariadi": {},
-            "Busega": {},
-            "Itilima": {},
-            "Maswa": {},
-            "Meatu": {},
+        ,"Simiyu": {
+           "Bariadi": {},
+           "Busega": {},
+           "Itilima": {},
+           "Maswa": {},
+           "Meatu": {},
         }
-        , "Singida": {
-            "Ikungi": {},
-            "Manyoni": {},
-            "Mkalama": {},
-            "Singida M": {},
-            "Singida": {},
+        ,"Singida": {
+           "Ikungi": {},
+           "Manyoni": {},
+           "Mkalama": {},
+           "Singida M": {},
+           "Singida": {},
         }
-        , "Tabora": {
-            "Igunga": {},
-            "Kaliua": {},
-            "Nzega": {},
-            "Sikonge": {},
-            "Tabora": {},
-            "Urambo": {},
-            "Uyui": {},
+        ,"Tabora": {
+           "Igunga": {},
+           "Kaliua": {},
+           "Nzega": {},
+           "Sikonge": {},
+           "Tabora": {},
+           "Urambo": {},
+           "Uyui": {},
         }
-        , "Tanga": {
-            "Handeni M": {},
-            "Handeni": {},
-            "Kilindi": {},
-            "Korogwe M": {},
-            "Korogwe": {},
-            "Lushoto": {},
-            "Mkinga": {},
-            "Muheza": {},
-            "Pangani": {},
-            "Tanga ": {}
+        ,"Tanga": {
+           "Handeni M": {},
+           "Handeni": {},
+           "Kilindi": {},
+           "Korogwe M": {},
+           "Korogwe": {},
+           "Lushoto": {},
+           "Mkinga": {},
+           "Muheza": {},
+           "Pangani": {},
+           "Tanga": {}
         }
     }
 
