@@ -102,7 +102,7 @@ export default class CustomMultiPicker extends Component {
     const { options, returnValue } = this.props;
     const list = this.state.searchText ? this.filterObjectByValue(options, option => option.toLowerCase().includes(this.state.searchText)) : options
     const labels = Object.keys(list).map(i => list[i])
-    const values = Object.keys(list)
+    const values = Object.keys(list);
     return(
       <View onLayoutx={(evt)=>{this.getNewDimensions(evt)}}>
         {this.props.search && <View style={{ flexDirection: 'row', height: 55 }}>
@@ -153,7 +153,6 @@ export default class CustomMultiPicker extends Component {
                     borderRadius: this.props.rowRadius
                 }}
                 onPress={(e) => {
-                  console.log("hellow world")
                   this._onSelect(itemKey)
                 }}
               >

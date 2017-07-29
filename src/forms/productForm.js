@@ -60,7 +60,7 @@ const widgetPropTypes={
 
 class EBwidgetBase extends Component{
     constructor(props){
-        super(props)
+        super(props);
         this.state={
             value:"",
             isValid:true
@@ -1456,7 +1456,6 @@ export class ProductForm extends Component{
         });
     }
     componentWillMount(){
-
         let {fields}=this.props;
         this.fields=this.getFields(fields)
 
@@ -1622,6 +1621,7 @@ export class ProductForm extends Component{
                                 );
                                 break;
                             case"modal":
+
                                 return(
 
                                     <EbModalInput
@@ -1666,6 +1666,7 @@ export class ProductForm extends Component{
                                 );
                                 break;
                             case "option":
+
                                 return(
                                     <EbOptionInput
                                         validate={this.state.validate}

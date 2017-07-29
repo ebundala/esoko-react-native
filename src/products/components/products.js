@@ -817,7 +817,10 @@ export class CreateProduct extends Component {
     constructor(props) {
         super(props);
         let {user}=this.props.screenProps;
-        this.state = {}
+        this.state = {
+            options:{},
+            ready:false
+        }
     }
 
   getFields() {
@@ -1183,8 +1186,69 @@ export class CreateProduct extends Component {
                   props: {}
               }
           }
-      ]
+      ];
 
+     let metadata={
+          description: String,
+              price: {
+          value:Number,
+              unit:String},
+          size: {
+              value:Number,
+                  unit:String
+          },
+          location: {
+              region:  String,
+                  street:String,
+                  district: String,
+                  ward: String
+          },
+          legal: {
+              surveyed: Boolean,
+                  planned:Boolean,
+                  titleDeed:Boolean},
+          rating: {
+              value: Number,
+                  count: Number
+          },
+          photos: Array,
+
+              services: {
+          water:Boolean,
+              electricity:Boolean,
+              roads:Boolean},
+          seller: {
+              name: String,
+                  phones: String,
+                  email: String,
+                  address: String
+          },
+          createdAt:Date,
+              editedAt:Date,
+          expireAt:Date,
+          sold:Boolean};
+
+
+  }
+  componentDidMount(){
+      DB.query("SELECT c.term_taxonomy_id,t.term_id,t.name,t.slug,c.taxonomy,c.parent FROM "+DB.term_taxonomy+" c JOIN "+DB.terms+" t ON c.term_id=t.term_id WHERE c.taxonomy='location'" )
+          .then((res)=>{
+
+          let options={},item;
+
+          for(let i=0;i<res.rows.length;i++){
+          item=res.rows.item(i);
+          options[item.term_taxonomy_id]=item.name;
+          //debugger;
+
+          }
+          console.log(options);
+              this.setState({options:options,ready:true});
+
+
+          }).catch((e)=>{
+          alert("error "+e.message);
+      })
   }
     render() {
 
@@ -1208,23 +1272,9 @@ export class CreateProduct extends Component {
                 />
                 <ScrollView style={{flex: 1}}>
                     <Card style={{flex: 1}}>
-                        <ProductForm formName="terms" title={title} fields={[
+                        {false&&<ProductForm formName="terms" title={title} fields={[
 
-                            {
-                                slugf:{
-                                    widget: "option",
-                                    order: 0,
-                                    label: "slug",
-                                    props:{
-                                        pickerProps: {
-                                            options:{"i":"john","j":"vero"}
-                                        },
-                                        isRequired:false,
-                                        isMeta:false
-                                    }
-                                }
 
-                            },
                             {
 
                                 term_id:{
@@ -1233,14 +1283,22 @@ export class CreateProduct extends Component {
                                 label: "term id",
                                 props:{
                                     fields:[{
-                                   slug:{
+                                   slugv:{
+                                       validator: {
+                                           errorMessage: "[TITLE] must have atleast args[0] to args[1] values",
+                                           validator: (arr)=>{  return arr instanceof Array?arr.length:!!arr},
+                                           args: [1, 5]
+
+                                       },
                                 widget: "option",
                                 order: 0,
-                                label: "slug",
+                                label: "slug v",
                                 props:{
-                                    placeholder: "slug",
-                                    isRequired:false,
-                                    isMeta:false
+                                    pickerProps: {
+                                        options:{"i":"john","j":"vero"}
+                                    },
+                                    isRequired:true,
+                                    isMeta:true
                                 }
                             }
 
@@ -1280,10 +1338,84 @@ export class CreateProduct extends Component {
                                 isMeta:false}
                             }}
 
-                        ]}/>
+                        ]}/>}
                     </Card>
                     <Card style={{flex: 1}}>
-                        {false&&<ProductForm formName="createForm" title={title} fields={this.getFields()}/>}
+                        {this.state.ready&&<ProductForm formName="createForm" title={title} fields={[
+
+                            {post_title:{
+                                widget: "text",
+                                order: 50,
+                                label: "Title",
+                                props:{
+                                    placeholder: "Item title",
+                                    isRequired:true,
+                                    isMeta:false}
+                            }},
+                            {post_content:{
+                                widget: "text",
+                                order: 5,
+                                label: "Description",
+                                props:{
+                                    lines:7,
+                                    vertical:true,
+                                    placeholder: "Item description",
+                                    isRequired:true,
+                                    isMeta:false}
+
+                            }},
+                            {post_type:{
+                                widget: "hidden",
+                                order: 0,
+                                label: "Description",
+                                props:{
+                                    value:"product",
+                                    isRequired:true,
+                                    isMeta:false}
+
+                            }},
+                            {term_relationships:{
+                                widget: "modal",
+                                order: 6,
+                                label: "Location",
+                                props:{
+                                    fields:[{
+                                        term_relationships:{
+                                        widget: "option",
+                                        order: 5,
+                                        label: "Location",
+                                        props:{
+                                            pickerProps:{
+                                            options:this.state.options
+                                            },
+                                            isRequired:true,
+                                            isMeta:false}
+
+                                    }}]
+                                    }
+
+
+                            }},
+                            {post_photos:{
+                                widget: "filePicker",
+                                order: 5,
+                                label: "Photos",
+                                props:{
+                                    isRequired:true,
+                                    isMeta:true
+                                }
+                            }},
+                            {post_author:{
+                                widget: "hidden",
+                                order: 0,
+
+                                props:{
+                                    value:user,
+                                    isRequired:true,
+                                    isMeta:false
+                                }
+                            }},
+                        ]}/>}
                     </Card>
                 </ScrollView>
             </View>)
