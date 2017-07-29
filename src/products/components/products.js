@@ -1234,15 +1234,15 @@ export class CreateProduct extends Component {
       DB.query("SELECT c.term_taxonomy_id,t.term_id,t.name,t.slug,c.taxonomy,c.parent FROM "+DB.term_taxonomy+" c JOIN "+DB.terms+" t ON c.term_id=t.term_id WHERE c.taxonomy='location'" )
           .then((res)=>{
 
-          let options={},item;
+          let options=[],item;
 
           for(let i=0;i<res.rows.length;i++){
           item=res.rows.item(i);
-          options[item.term_taxonomy_id]=item.name;
+          options.push({value:item.term_taxonomy_id,label:item.name});
           //debugger;
 
           }
-          console.log(options);
+          //console.log(options);
               this.setState({options:options,ready:true});
 
 
@@ -1386,7 +1386,8 @@ export class CreateProduct extends Component {
                                         label: "Location",
                                         props:{
                                             pickerProps:{
-                                            options:this.state.options
+                                            options:this.state.options,
+                                                multiple:true
                                             },
                                             isRequired:true,
                                             isMeta:false}

@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
     TouchableNativeFeedback,
   ScrollView,
+    ListView,
   TextInput
 } from 'react-native';
 let { width, height } = Dimensions.get('window');
@@ -20,16 +21,19 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default class CustomMultiPicker extends Component {
   constructor(props){
     super(props);
+      this.ds = new ListView.DataSource({rowHasChanged: (x, y) => x !== y});
     this.state = {
       pageWidth: Dimensions.get('window').width,
       pageHeight: Dimensions.get('window').height,
+        options:[],
       searchText: null,
       selected: []
     };
   }
 
   componentDidMount(){
-    const selected = this.props.selected;
+    const {selected,options} = this.props;
+    this.setState({options});
     if(selected instanceof Array){
 
       selected.map(select => {
@@ -38,8 +42,18 @@ export default class CustomMultiPicker extends Component {
     } else if(selected) {
       this._onSelect(selected)
     }
-  }
 
+  }
+componentWillReceiveProps(nextProps){
+
+    if(JSON.stringify(nextProps.selected)!==JSON.stringify(this.props.selected)){
+          let {selected}=nextProps;
+        this.setState({
+            selected: selected
+        })
+
+    }
+}
   getNewDimensions(event){
         let pageHeight = event.nativeEvent.layout.height;
         let pageWidth = event.nativeEvent.layout.width;
@@ -79,9 +93,14 @@ export default class CustomMultiPicker extends Component {
   }
 
   _onSearch = (text) => {
-    this.setState({
-      searchText: text.length > 0 ? text.toLowerCase() : null
-    })
+      let {options}=this.props;
+   let searchText=text.length > 0 ? text.toLowerCase(): null;
+      const _options = searchText? this.filterObjectByValue(options, option => option.label.toLowerCase().includes(searchText)) :options
+
+      this.setState({
+          searchText:searchText,options:_options
+      })
+     // console.log(this.state.options)
   }
 
   _isSelected = (item) => {
@@ -93,16 +112,17 @@ export default class CustomMultiPicker extends Component {
   }
 
   filterObjectByValue = (obj, predicate) => {
-    return Object.keys(obj)
-          .filter( key => predicate(obj[key]) )
-          .reduce( (res, key) => (res[key] = obj[key], res), {} )
+   return obj
+          .filter( key => predicate(key) )
+          //.reduce( (res, key) => (res[key] = obj[key], res), {} )
+      //this.setState({options});
   }
 
   render(){
-    const { options, returnValue } = this.props;
-    const list = this.state.searchText ? this.filterObjectByValue(options, option => option.toLowerCase().includes(this.state.searchText)) : options
-    const labels = Object.keys(list).map(i => list[i])
-    const values = Object.keys(list);
+    const {returnValue } = this.props;
+    //const list = this.state.searchText ? this.filterObjectByValue(options, option => option.label.toLowerCase().includes(this.state.searchText)) : options
+   // const labels = Object.keys(list).map(i => list[i])
+   // const values = Object.keys(list);
     return(
       <View onLayoutx={(evt)=>{this.getNewDimensions(evt)}}>
         {this.props.search && <View style={{ flexDirection: 'row', height: 55 }}>
@@ -120,7 +140,8 @@ export default class CustomMultiPicker extends Component {
               paddingLeft: 30,
               borderColor: this.props.iconColor,
               borderWidth: 1,
-              borderRadius: 5
+              borderRadius: 5,
+
             }}
             onChangeText={(text) => { this._onSearch(text) }}
             clearButtonMode={'always'}
@@ -130,7 +151,7 @@ export default class CustomMultiPicker extends Component {
           />
         </View>}
 
-        <ScrollView
+          {false&&<ScrollView
           style={{ padding: 5,  flex:1}}
         >
           {labels.map((label, index) => {
@@ -171,12 +192,58 @@ export default class CustomMultiPicker extends Component {
 
 
           })}
-        </ScrollView>
+        </ScrollView>}
+        <ListView
+            dataSource={this.ds.cloneWithRows(this.state.options)}
+            contentContainerStyle={{ padding: 5,  flex:1}}
+            scrollRenderAheadDistanceb={640}
+            enableEmptySections={true}
+            renderRow={(data) =>{
+
+                const itemKey = returnValue == "label" ? data.label : data.value;
+                return(
+                    <TouchableOpacity
+
+
+                        onPress={(e) => {
+                            this._onSelect(itemKey)
+                        }}
+                    >
+                        <View style={{
+    padding: 7,
+    marginTop: 0,
+    marginLeft: 2,
+    marginRight: 2,
+    marginBottom: 6,
+    backgroundColor: this.props.rowBackgroundColor,
+    height: this.props.rowHeight,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: this.props.rowRadius
+}}>
+                        <Text>{data.label}</Text>
+                        {
+
+                            this._isSelected(itemKey) ?
+                                <Icon name={this.props.selectedIconName} color={this.props.iconColor} size={this.props.iconSize} />
+                                :
+                                <Icon name={this.props.unselectedIconName} color={this.props.iconColor} size={this.props.iconSize} />
+                        }
+
+                        </View>
+                    </TouchableOpacity>
+                )
+            }}
+
+        >
+
+        </ListView>
       </View>
     )
   }
 }
 CustomMultiPicker.PropTypes={
-    options:PropTypes.object.isRequired,
+    options:PropTypes.arrayOf(PropTypes.shape({label:PropTypes.string.isRequired,value:PropTypes.any})).isRequired,
     returnValue:PropTypes.string
 }

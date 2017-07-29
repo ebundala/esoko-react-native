@@ -123,7 +123,7 @@ class EBwidgetBase extends Component{
 
         //console.log(forms);
         onValueChange(forms);
-       // debugger;
+       //debugger;
         this.setState({
             value:value[field]
         });
@@ -470,8 +470,8 @@ class OptionInput extends EBwidgetBase {
             placeholderTextColor={'#757575'}
             returnValue={"value"} // label or value
             callback={(res)=>{
-                //console.log(res)
-                this.setState({value: res});
+                console.log("call selected ",res)
+                //this.setState({value: res});
                 this._onValueChange(res)
 
             }} // callback, array of selected items
@@ -492,7 +492,7 @@ class OptionInput extends EBwidgetBase {
 OptionInput.propTypes={...widgetPropTypes,...{
 
     pickerProps:PropTypes.shape({
-        options: PropTypes.shape({value: PropTypes.string}).isRequired,
+        options:PropTypes.arrayOf(PropTypes.shape({label:PropTypes.string.isRequired,value:PropTypes.any})).isRequired,
         search: PropTypes.bool, // should show search bar?
         multiple: PropTypes.bool,//
         placeholder: PropTypes.string,
