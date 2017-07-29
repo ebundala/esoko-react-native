@@ -48,7 +48,7 @@ export const getChildTerms=()=>{
 
             }).catch((e) => {
                 //alert("error occured");
-                that.setState({error: e.message});
+                this.setState({error: e.message});
                 console.log(e)
             })
         }).catch((e)=>{

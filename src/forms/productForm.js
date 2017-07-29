@@ -19,6 +19,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from "redux"
 import {Toolbar, Divider, Icon, ActionButton,RippleFeedback,Button} from 'react-native-material-ui';
 import {Card} from 'react-native-material-design';
+import CustomMultiPicker from "./multipleSelect";
 
 import styles, {typographyStyle, colorStyle, colours} from "../styles/styles"
 import {uiTheme} from "../app"
@@ -453,32 +454,63 @@ class OptionInput extends EBwidgetBase {
 
      }*/
     render(){
-        let {items,pickerProps,label}=this.props;
+        let {options,pickerProps,label}=this.props;
         const {textColor,accentColor} = uiTheme.palette;
         const {COLOR}=uiTheme;
-        return(
-            <View style={[{height:40}]}>
-                <View style={[styles.horizontal]}>
-                    <View >
-                        <Text numberOfLines={1}  style={[{width: 110,
-                            fontSize: 15,
-                            color: textColor,
-                            padding: 10,}]}>
-                            {label}
-                        </Text>
-                    </View>
-                    <View style={[styles.flex1]}>
-                        <View style={{paddingRight:10}}>
 
-                        </View>
-                    </View>
-                </View>
-                {this.renderError()}
-                <Divider/>
-            </View>
+        return(
+
+
+
+          <CustomMultiPicker
+            options={options}
+            search={true} // should show search bar?
+            multiple={false} //
+            placeholder={"Search"}
+            placeholderTextColor={'#757575'}
+            returnValue={"value"} // label or value
+            callback={(res)=>{
+                //console.log(res)
+                this.setState({value: res});
+                this._onValueChange(res)
+
+            }} // callback, array of selected items
+            rowBackgroundColor={"#eee"}
+            rowHeight={40}
+            rowRadius={5}
+            iconColor={"#00a2dd"}
+            iconSize={30}
+            selectedIconName={"ios-checkmark-circle-outline"}
+            unselectedIconName={"ios-radio-button-off-outline"}
+            scrollViewHeight={130}
+            selected={this.state.value} // list of options which are selected by default
+            {...pickerProps}
+        />
         )
     }
 }
+OptionInput.propTypes={...widgetPropTypes,...{
+
+    pickerProps:PropTypes.shape({
+        options: PropTypes.shape({value: PropTypes.string}).isRequired,
+        search: PropTypes.bool, // should show search bar?
+        multiple: PropTypes.bool,//
+        placeholder: PropTypes.string,
+        placeholderTextColor: PropTypes.string,
+        returnValue: PropTypes.string, // label or value
+        callback: PropTypes.func,// callback, array of selected items
+        rowBackgroundColor: PropTypes.string,
+        rowHeight: PropTypes.number,
+        rowRadius: PropTypes.number,
+        iconColor: PropTypes.string,
+        iconSize: PropTypes.number,
+        selectedIconName: PropTypes.string,
+        unselectedIconName: PropTypes.string,
+        scrollViewHeight: PropTypes.number,
+        selected: PropTypes.array, // list of options which are selected by default
+    }).isRequired
+}}
+
 export const EbOptionInput=connect((state)=>{
     return{
         forms:{...state.forms}
@@ -819,7 +851,7 @@ class InputModal extends EBwidgetBase{
                                                                    {...{...item.props,formName,title}}
                                                                    field={field}
                                                                    label={item.hasOwnProperty("label")?item.label:""}
-                                                                   validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                                   validator={item.hasOwnProperty("validator")?item.validator:null}
                                                                    validate={this.state.validate}
 
                                                      />
@@ -835,7 +867,7 @@ class InputModal extends EBwidgetBase{
                                                                      {...{...item.props,formName,title}}
                                                                      field={field}
                                                                      label={item.hasOwnProperty("label")?item.label:""}
-                                                                     validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                                     validator={item.hasOwnProperty("validator")?item.validator:null}
                                                      />
                                                  );
                                                  break;
@@ -867,7 +899,7 @@ class InputModal extends EBwidgetBase{
                                                                     field={field}
                                                                     isFilePicker={true}
                                                                     label={item.hasOwnProperty("label")?item.label:""}
-                                                                    validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                                    validator={item.hasOwnProperty("validator")?item.validator:null}
                                                      />
                                                  );
                                                  break;
@@ -880,7 +912,7 @@ class InputModal extends EBwidgetBase{
                                                          {...{...item.props,formName,title}}
                                                          field={field}
                                                          label={item.hasOwnProperty("label")?item.label:""}
-                                                         validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                                                         validator={item.hasOwnProperty("validator")?item.validator:null}                            />
                                                  );
                                                  break;
                                              case "option":
@@ -893,7 +925,7 @@ class InputModal extends EBwidgetBase{
                                                          field={field}
                                                          fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
                                                          label={item.hasOwnProperty("label")?item.label:""}
-                                                         validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                                                         validator={item.hasOwnProperty("validator")?item.validator:null}                            />
                                                  );
                                                  break;
                                              default:
@@ -1444,7 +1476,7 @@ export class ProductForm extends Component{
                                           {...{...item.props,formName,title}}
                                           field={field}
                                           label={item.hasOwnProperty("label")?item.label:""}
-                                          validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                          validator={item.hasOwnProperty("validator")?item.validator:null}
                             />
                         );
 
@@ -1456,7 +1488,7 @@ export class ProductForm extends Component{
                                             {...{...item.props,formName,title}}
                                             field={field}
                                             label={item.hasOwnProperty("label")?item.label:""}
-                                            validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                            validator={item.hasOwnProperty("validator")?item.validator:null}
                             />
                         );
                         break;
@@ -1469,7 +1501,7 @@ export class ProductForm extends Component{
                                 field={field}
                                 fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
                                 label={item.hasOwnProperty("label")?item.label:""}
-                                validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                validator={item.hasOwnProperty("validator")?item.validator:null}
                             />
 
                         );
@@ -1480,7 +1512,7 @@ export class ProductForm extends Component{
                                                        {...{...item.props,formName,title}}
                                                        field={field}
                                                        label={item.hasOwnProperty("label")?item.label:""}
-                                                       validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                       validator={item.hasOwnProperty("validator")?item.validator:null}
                         />;
                         picker=[picker];
 
@@ -1490,7 +1522,7 @@ export class ProductForm extends Component{
                                            field={field}
                                            fields={picker}
                                            label={item.hasOwnProperty("label")?item.label:""}
-                                           validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                           validator={item.hasOwnProperty("validator")?item.validator:null}
                             />
                         );
                         break;
@@ -1503,7 +1535,7 @@ export class ProductForm extends Component{
                                 field={field}
                                 fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
                                 label={item.hasOwnProperty("label")?item.label:""}
-                                validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                                validator={item.hasOwnProperty("validator")?item.validator:null}                            />
                         );
                         break;
                     default:
@@ -1585,7 +1617,7 @@ export class ProductForm extends Component{
                                                     {...{...item.props,formName,title}}
                                                     field={field}
                                                     label={item.hasOwnProperty("label")?item.label:""}
-                                                    validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                    validator={item.hasOwnProperty("validator")?item.validator:null}
                                     />
                                 );
                                 break;
@@ -1600,7 +1632,7 @@ export class ProductForm extends Component{
                                         field={field}
                                         fields={item.props.fields instanceof Array?this.getFields(item.props.fields):[]}
                                         label={item.hasOwnProperty("label")?item.label:""}
-                                        validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                        validator={item.hasOwnProperty("validator")?item.validator:null}
                                     />
 
                                 );
@@ -1617,7 +1649,7 @@ export class ProductForm extends Component{
                                                    field={field}
                                                    isFilePicker={true}
                                                    label={item.hasOwnProperty("label")?item.label:""}
-                                                   validator={item.hasOwnProperty("validator")?item.validator:()=>{}}
+                                                   validator={item.hasOwnProperty("validator")?item.validator:null}
                                     />
                                 );
                                 break;
@@ -1630,7 +1662,7 @@ export class ProductForm extends Component{
                                         {...{...item.props,formName,title}}
                                         field={field}
                                         label={item.hasOwnProperty("label")?item.label:""}
-                                        validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                                        validator={item.hasOwnProperty("validator")?item.validator:null}                            />
                                 );
                                 break;
                             case "option":
@@ -1642,7 +1674,7 @@ export class ProductForm extends Component{
                                         {...{...item.props,formName,title}}
                                         field={field}
                                         label={item.hasOwnProperty("label")?item.label:""}
-                                        validator={item.hasOwnProperty("validator")?item.validator:()=>{}}                            />
+                                        validator={item.hasOwnProperty("validator")?item.validator:null}                            />
                                 );
                                 break;
                             default:

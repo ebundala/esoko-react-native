@@ -104,7 +104,7 @@ export class ProductsList extends Component {
 
                     else{
 
-                        that.setState({error: "Nothing was found at " + this.state.subCategory+" ,"+category.name})
+                        that.setState({error:"Nothing was found at " + this.state.subCategory+" ,"+category.name})
 
                     }
 
@@ -1210,14 +1210,46 @@ export class CreateProduct extends Component {
                     <Card style={{flex: 1}}>
                         <ProductForm formName="terms" title={title} fields={[
 
-                            { term_id:{
-                                widget: "text",
+                            {
+                                slugf:{
+                                    widget: "option",
+                                    order: 0,
+                                    label: "slug",
+                                    props:{
+                                        pickerProps: {
+                                            options:{"i":"john","j":"vero"}
+                                        },
+                                        isRequired:false,
+                                        isMeta:false
+                                    }
+                                }
+
+                            },
+                            {
+
+                                term_id:{
+                                widget: "modal",
                                 order: 0,
                                 label: "term id",
                                 props:{
+                                    fields:[{
+                                   slug:{
+                                widget: "option",
+                                order: 0,
+                                label: "slug",
+                                props:{
+                                    placeholder: "slug",
+                                    isRequired:false,
+                                    isMeta:false
+                                }
+                            }
+
+                                    }],
                                 placeholder: "id",
                                 isRequired:true,
-                                isMeta:false}
+                                isMeta:false
+
+                                }
                             }},
                             {name:{
                                 widget: "text",

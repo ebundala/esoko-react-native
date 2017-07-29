@@ -41,7 +41,7 @@ export default class eSoko extends Component {
              return   DB.base_terms().then((res)=>{
                     persistStore(store, {
                         storage: AsyncStorage,
-                        blacklist: ['activity', "nav", "navOauth", "products", "forms", "form"]
+                        blacklist:['activity', "nav", "navOauth", "products", "forms", "form","terms"]
                     }, () => {
                         firestack.auth.listenForAuth((evt) => {
 
